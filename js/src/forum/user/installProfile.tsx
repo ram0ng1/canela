@@ -319,7 +319,7 @@ function extendProfileHero() {
 
       items.add(
         'canelaChat',
-        <Button {...(chat?.attrs || {})} className="Button Button--primary CanelaUserHero-chat" icon="fas fa-comment-dots">
+        <Button {...(chat?.attrs || {})} className="Button CanelaUserHero-chat" icon="fas fa-comment-dots">
           {t('chat.start_conversation')}
         </Button>,
         111

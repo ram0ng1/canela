@@ -224,7 +224,7 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
 
             <div className="CanelaUserCard-controls">
               {chat && (
-                <Button {...chat.attrs} className="Button Button--primary CanelaUserCard-chat" icon="fas fa-comment-dots">
+                <Button {...chat.attrs} className="Button CanelaUserCard-chat" icon="fas fa-comment-dots">
                   {t('chat.start_conversation')}
                 </Button>
               )}
