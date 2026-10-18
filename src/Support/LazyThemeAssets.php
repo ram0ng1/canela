@@ -15,43 +15,90 @@ namespace Ramon\Canela\Support;
 
 use Ernestdefoe\Wardrobe\ThemeAssets;
 use Ernestdefoe\Wardrobe\ThemeRegistry;
+use Ernestdefoe\Wardrobe\WarmThemeAssets;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Queue\Queue;
+use Illuminate\Queue\SyncQueue;
 
 /**
- * O Wardrobe, a cada recompilação dos assets, aquece TODOS os temas numa só
- * requisição (o job vai para a fila, que sem worker é síncrona). Cada tema é
- * um bundle inteiro de JS com sourcemap: com dois ou três temas a requisição
- * estoura a memória do PHP e o fórum responde 500. Aqui só o tema padrão é
- * aquecido; os outros compilam quando alguém que os escolheu abre o fórum.
- * No worker da fila (CLI, com memória própria), aquece todos, como o original.
+ * O Wardrobe sem peso na visita.
+ *
+ * O original recompila o tema dentro da requisição de quem abre o fórum
+ * depois de qualquer mudança nos assets, e aquece todos os temas de uma vez
+ * quando eles são recompilados. Num servidor pequeno isso estourava a memória
+ * (erro 500) e deixava a primeira visita lenta. Aqui:
+ *
+ * - na visita, o tema que já tem arquivo é servido como está, mesmo que um
+ *   pouco desatualizado, e a recompilação vai para a fila (o worker);
+ * - só um tema que ainda não tem arquivo nenhum é compilado na hora (uma vez);
+ * - no worker (CLI) e sem fila de verdade, vale o comportamento original.
  */
 final class LazyThemeAssets extends ThemeAssets
 {
     public function __construct(
-        Container $container,
-        private readonly ThemeRegistry $themes,
-        private readonly SettingsRepositoryInterface $config,
-        Cache $cache
+        private readonly Container $app,
+        ThemeRegistry $themes,
+        SettingsRepositoryInterface $config,
+        private readonly Cache $store
     ) {
-        parent::__construct($container, $themes, $config, $cache);
+        parent::__construct($app, $themes, $config, $store);
     }
 
     #[\Override]
-    public function warmAll(): void
+    public function cssUrlFor(string $themeId): ?string
     {
-        if (PHP_SAPI === 'cli') {
-            parent::warmAll();
+        return $this->servedUrl($themeId, 'css') ?? parent::cssUrlFor($themeId);
+    }
 
-            return;
+    #[\Override]
+    public function jsUrlFor(string $themeId): ?string
+    {
+        return $this->servedUrl($themeId, 'js') ?? parent::jsUrlFor($themeId);
+    }
+
+    /**
+     * A URL do arquivo já compilado, sem recompilar, pedindo à fila que o
+     * atualize se ele estiver velho. Null quando o original deve decidir:
+     * no CLI, sem worker (fila síncrona) ou se o tema ainda não tem arquivo.
+     */
+    private function servedUrl(string $themeId, string $type): ?string
+    {
+        if (PHP_SAPI === 'cli' || $this->queue() instanceof SyncQueue) {
+            return null;
         }
 
-        $default = (string) $this->config->get('wardrobe.default');
+        // Os membros do Wardrobe são privados: lidos no escopo dele.
+        $peek = \Closure::bind(function (string $themeId, string $type): ?array {
+            $compilers = $this->compilersFor($themeId);
 
-        if ($default !== '' && in_array($default, $this->themes->ids(), true)) {
-            // Pedir a URL recompila o tema (CSS e JS) se ele estiver velho.
-            $this->cssUrlFor($default);
+            return $compilers === null ? null : [$compilers[$type]->getUrl(), $this->isStale($themeId)];
+        }, $this, ThemeAssets::class);
+
+        [$url, $stale] = $peek($themeId, $type) ?? [null, false];
+
+        if ($url === null) {
+            return null;
         }
+
+        if ($stale) {
+            $this->requestWarm();
+        }
+
+        return $url;
+    }
+
+    /** Uma recompilação na fila por minuto, no máximo, por mais visitas que cheguem. */
+    private function requestWarm(): void
+    {
+        if ($this->store->add('canela.wardrobe.warm_requested', 1, 60)) {
+            $this->queue()->push(new WarmThemeAssets());
+        }
+    }
+
+    private function queue(): Queue
+    {
+        return $this->app->make(Queue::class);
     }
 }

@@ -3627,3 +3627,47 @@ body.CanelaRamonChatSurface {
   }
 }
 }
+
+// Os itens do "⋮" herdavam regras dos botões da barra de ações do ramon/chat
+// (caixa cinza com borda, ícone em cima do texto). Aqui, com especificidade
+// suficiente, eles são sempre itens de dropdown do tema: ícone à esquerda,
+// texto ao lado, largura total, sem caixa.
+.ChatMessage .ChatMessage-more .Dropdown-menu > li > .Button,
+.ChatMessage .ChatMessage-more .Dropdown-menu > .Button {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.6em;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 8px 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: var(--cn-primary) !important;
+  font-size: var(--cn-font-0);
+  line-height: 1.4;
+  text-align: left;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover) !important;
+  }
+
+  .Button-icon {
+    display: inline-flex !important;
+    margin: 0 !important;
+    width: 1.1em;
+    font-size: 1em;
+    color: var(--cn-primary-medium);
+  }
+
+  .Button-label {
+    display: inline !important;
+  }
+}

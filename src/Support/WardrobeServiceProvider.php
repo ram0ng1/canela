@@ -15,10 +15,13 @@ namespace Ramon\Canela\Support;
 
 use Ernestdefoe\Wardrobe\ThemeAssets;
 use Flarum\Foundation\AbstractServiceProvider;
+use Flarum\Foundation\Config;
+use Flarum\Frontend\Compiler\JsCompiler;
 
 /**
- * Troca o ThemeAssets do Wardrobe pelo que só aquece o tema padrão (ver
- * LazyThemeAssets). Registrado só com o Wardrobe habilitado.
+ * Wardrobe leve: o ThemeAssets que nunca compila na visita (ver
+ * LazyThemeAssets) e, em produção, o compilador de JS sem sourcemap (ver
+ * LeanJsCompiler). Registrado só com o Wardrobe habilitado.
  */
 final class WardrobeServiceProvider extends AbstractServiceProvider
 {
@@ -26,5 +29,9 @@ final class WardrobeServiceProvider extends AbstractServiceProvider
     public function register(): void
     {
         $this->container->bind(ThemeAssets::class, LazyThemeAssets::class);
+
+        if (! $this->container->make(Config::class)->inDebugMode()) {
+            $this->container->bind(JsCompiler::class, LeanJsCompiler::class);
+        }
     }
 }
