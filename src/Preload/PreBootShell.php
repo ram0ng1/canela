@@ -92,7 +92,33 @@ final class PreBootShell
         }
 
         $document->head[] = '<script>'.str_replace('__CONFIG__', (string) $config, self::SCRIPT).'</script>';
+
+        // O script do core no <head> resolve o modo só pela preferência que o
+        // servidor conhece; o visitante que escolheu claro/escuro guarda a
+        // escolha no sessionStorage, que o core só lê no boot do JS. Sem isto,
+        // a página pintava no modo do sistema e trocava depois (escuro → claro).
+        // Como no core, a escolha do visitante só vale com o padrão do fórum em "auto".
+        if (($this->settings->get('color_scheme') ?? 'auto') === 'auto') {
+            $document->head[] = '<script>'.self::THEME_SCRIPT.'</script>';
+        }
     }
+
+    /** O mesmo que o initColorScheme() do core faz no boot, antes da primeira pintura. */
+    private const THEME_SCRIPT = <<<'JS'
+(function () {
+  try {
+    var d = document.documentElement;
+    if (!d.classList.contains('guest-user')) return;
+    var s = sessionStorage.getItem('colorScheme');
+    if (!s) return;
+    if (s === 'auto') {
+      s = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (matchMedia('(prefers-contrast: more)').matches || localStorage.getItem('canela.highContrast') === '1') s += '-hc';
+    }
+    d.setAttribute('data-theme', s);
+  } catch (e) {}
+})();
+JS;
 
     /** Sem dependências e à prova de erro: no pior caso, a página fica como antes. */
     private const SCRIPT = <<<'JS'
