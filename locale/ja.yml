@@ -922,6 +922,7 @@ ramon-canela:
         notify_reminder_label: 指定した時刻にブックマークをリマインドする
     chat:
       title_capitalized: チャット
+      start_conversation: チャットする
       heading: チャット
       open: チャットを開く
       open_full_page: チャットを全画面で開く

@@ -2671,6 +2671,18 @@ body.CanelaRamonChatSurface {
   line-height: 1;
 }
 
+// O cartão de usuário (topic/components/UserCardPopover) também abre do chat:
+// da gaveta (acima do editor) e do modal do canal — fica acima dos dois.
+.CanelaUserCard {
+  z-index: ~"calc(var(--zindex-modal, 1050) + 5)";
+}
+
+.ChatMessage-gutter .Avatar,
+.ChatMessage-avatar,
+.ChatChannelInfo-member > .Avatar {
+  cursor: pointer;
+}
+
 // ---------------------------------------------------------------------
 // A página inicial do chat (thirdparty/ramonChat/lobby.tsx): as abas do topo,
 // "Continuar em", os botões e as listas de canais e de MDs — linhas sobre a

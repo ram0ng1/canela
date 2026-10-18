@@ -109,17 +109,8 @@ export default function installSidebarHome(): void {
     if (forumBool('canelaSidebarHomeLink', true)) {
       items.add('canelaHome', homeLink(), 110);
 
-      // Início e Tópicos no mesmo lugar: Tópicos vira a lista de Recentes.
-      if (homeTarget() === 'index' && items.has('topics')) {
-        const vnode = items.get('topics') as any;
-
-        if (vnode && vnode.attrs) {
-          const sort = app.search.state.params().sort;
-
-          vnode.attrs.href = app.route('index', { sort: 'latest' });
-          vnode.attrs.active = onIndexWithoutFilter() && sort === 'latest';
-        }
-      }
+      // Início e "Todas as Discussões" levariam à mesma lista: fica só o Início.
+      if (homeTarget() === 'index' && items.has('topics')) items.remove('topics');
     }
 
     if (items.has('myMessages')) {

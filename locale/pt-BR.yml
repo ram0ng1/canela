@@ -922,6 +922,7 @@ ramon-canela:
         notify_reminder_label: Me lembrar dos marcadores no horário que eu escolher
     chat:
       title_capitalized: Chat
+      start_conversation: Conversar
       heading: Chat
       open: Abrir chat
       open_full_page: Abrir chat em tela cheia

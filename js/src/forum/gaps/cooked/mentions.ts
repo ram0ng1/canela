@@ -14,7 +14,7 @@ import { gaps } from '../settings';
 
 const MENTION = '.Post-body a.UserMention, .CanelaEmbeddedPost-body a.UserMention';
 
-function slugFrom(link: HTMLAnchorElement): string | null {
+export function slugFrom(link: HTMLAnchorElement): string | null {
   try {
     const path = new URL(link.href, window.location.href).pathname;
     const match = path.match(/\/u\/([^/]+)\/?$/);
@@ -25,7 +25,7 @@ function slugFrom(link: HTMLAnchorElement): string | null {
   }
 }
 
-function findUser(slug: string): Promise<User | null> {
+export function findUser(slug: string): Promise<User | null> {
   const lower = slug.toLowerCase();
   const cached = app.store
     .all<User>('users')

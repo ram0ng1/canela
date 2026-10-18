@@ -319,8 +319,8 @@ function extendProfileHero() {
 
       items.add(
         'canelaChat',
-        <Button {...(chat?.attrs || {})} className="Button Button--primary CanelaUserHero-chat" icon="far fa-message">
-          {t('chat.title_capitalized')}
+        <Button {...(chat?.attrs || {})} className="Button Button--primary CanelaUserHero-chat" icon="fas fa-comment-dots">
+          {t('chat.start_conversation')}
         </Button>,
         111
       );

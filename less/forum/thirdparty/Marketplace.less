@@ -175,6 +175,15 @@ body:has(.Canela.MarketplacePage) {
     box-shadow: none;
   }
 
+  // Os embrulhos da extensão em volta da página (a `.MpShop` em volta dos
+  // planos, a `.MarketplacePage` em volta dos cursos) também não desenham.
+  #content div:has(.CanelaMp-page) {
+    max-width: none !important;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
   // (O `!important` vence o max-width da camada de compatibilidade com o avocado.)
   #content .CanelaMp-page {
     max-width: none !important;

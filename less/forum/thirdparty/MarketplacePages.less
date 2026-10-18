@@ -1660,6 +1660,11 @@
   .MpCourses-cardThumb {
     background: var(--cn-accent-low) !important;
     color: var(--cn-accent);
+
+    > svg.icon,
+    > i {
+      color: var(--cn-accent);
+    }
   }
 
   .MpCourseCard-title,
@@ -1719,7 +1724,11 @@
   .MpStore-section,
   .MpStore-card,
   .MpStore [class*="-panel"],
-  .MpStore-analytics {
+  .MpStore-analytics,
+  .MpStore-statusCard,
+  .MpStore-payoutCard,
+  .MpStore-form,
+  .MpStore-sellerLinks {
     margin: 0;
     padding: var(--cn-space-6) 0;
     border: 0;

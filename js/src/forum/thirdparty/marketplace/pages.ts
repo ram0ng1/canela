@@ -200,9 +200,7 @@ function take(node: unknown, className: string): AnyVnode | null {
 /**
  * A ficha do produto como uma página de loja:
  *
- * - em cima, a faixa larga com a galeria (ou, sem imagens, a capa com o ícone
- *   do produto na cor dele);
- * - embaixo, duas colunas: à esquerda o título, o aviso do Composer, as abas e
+ * - duas colunas: à esquerda o título, o aviso do Composer, as abas e
  *   as seções; à direita a caixa de compra (preço e botões, que estavam no
  *   topo), fixa ao rolar, e os blocos de informações.
  */
@@ -218,20 +216,9 @@ function productSheet(root: unknown): void {
   const hint = take(card, 'MpProduct-composerHint');
   const buy = hero ? take(hero, 'MpProduct-heroRight') : null;
 
-  // A galeria sai da aba "Visão geral" e vira a faixa de cima.
-  const gallery = findByClass(main, 'MpProduct-gallery') as AnyVnode | null;
-  let cover: AnyVnode | null = gallery ? sectionOf(main, gallery) : null;
-
-  if (cover) {
-    removeNode(main, cover);
-    addClass(cover, 'CanelaMpGallery');
-  } else {
-    const icon = hero ? take(hero, 'MpProduct-heroIcon') : null;
-    cover = m('div', { className: 'CanelaMpProduct-cover', 'aria-hidden': 'true' }, icon ? [icon] : []) as AnyVnode;
-  }
-
-  insert(card.children, Math.max(0, card.children.indexOf(cols)), cover, 'canela-cover');
-
+  // A imagem do produto fica no título (o ícone do hero) e as capturas de
+  // tela ficam na seção "Capturas" da Visão geral, como na extensão: nada de
+  // promover uma delas a capa larga no topo.
   if (hint) insert(main.children, 0, hint, 'canela-hint');
   if (hero) insert(main.children, 0, hero, 'canela-hero');
 
@@ -239,38 +226,6 @@ function productSheet(root: unknown): void {
     addClass(buy, 'CanelaMpBuyBox');
     insert(aside.children, 0, buy, 'canela-buy');
   }
-}
-
-/** A `.MpProduct-section` que contém o vnode. */
-function sectionOf(node: AnyVnode, target: AnyVnode, current: AnyVnode | null = null): AnyVnode | null {
-  if (node === target) return current;
-  if (!Array.isArray(node.children)) return null;
-
-  const here = isElement(node) && classes(node).split(/\s+/).includes('MpProduct-section') ? node : current;
-
-  for (const child of node.children) {
-    if (!child || typeof child !== 'object') continue;
-
-    const found = sectionOf(child, target, here);
-
-    if (found) return found;
-  }
-
-  return null;
-}
-
-function removeNode(node: AnyVnode, target: AnyVnode): boolean {
-  if (!Array.isArray(node.children)) return false;
-
-  const index = node.children.indexOf(target);
-
-  if (index !== -1) {
-    node.children.splice(index, 1);
-
-    return true;
-  }
-
-  return node.children.some((child: unknown) => !!child && typeof child === 'object' && removeNode(child as AnyVnode, target));
 }
 
 export default function installMarketplacePages(): void {

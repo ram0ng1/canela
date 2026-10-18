@@ -922,6 +922,7 @@ ramon-canela:
         notify_reminder_label: Remind me about my bookmarks at the time I choose
     chat:
       title_capitalized: Chat
+      start_conversation: Chat
       heading: Chat
       open: Open chat
       open_full_page: Open chat in full screen

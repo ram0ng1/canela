@@ -52,7 +52,22 @@ function applySlug(view: DiscoverState): void {
 }
 
 function nav(view: DiscoverState): Mithril.Children {
-  if (!view.categories?.length) return null;
+  // As categorias ainda vindo: as pílulas do skeleton no mesmo lugar e altura.
+  if (!view.categories?.length) {
+    if (!view.loading) return null;
+
+    return (
+      <nav className="CanelaMpCategories" aria-hidden="true">
+        <ul className="CanelaNav-tabs">
+          {[64, 92, 96, 70, 66].map((width, i) => (
+            <li key={String(i)} className="CanelaNav-tab">
+              <span className="CanelaSkeleton CanelaMpSkel-b CanelaMpSkel-pill" style={{ width: `${width}px`, height: '34px' }} />
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  }
 
   const current = view.selectedCategory;
   const tab = (key: string, href: string, label: string, active: boolean) => (

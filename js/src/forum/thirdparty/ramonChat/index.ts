@@ -33,6 +33,7 @@ import installRamonChatViews, { findByClass } from './views';
 import installRamonChatActions from './actions';
 import installRamonChatComposer from './composer';
 import installRamonChatDrawer from './drawer';
+import installRamonChatUserCard from './usercard';
 import { ChatFooter, Navbar, ct, toDrawer, type ChatTab, type NavbarAction } from './ui';
 import ChatLobby, { LobbyTabs, rememberContinue } from './lobby';
 
@@ -130,6 +131,7 @@ export default function installRamonChat(): void {
   installRamonChatViews();
   installRamonChatComposer();
   installRamonChatDrawer();
+  installRamonChatUserCard();
 
   extend(PAGE as any, 'view', function (this: any, vnode: Mithril.Vnode<any, any>) {
     if (!vnode || typeof vnode !== 'object' || !vnode.attrs || !thirdParty.ramonChat()) return;
