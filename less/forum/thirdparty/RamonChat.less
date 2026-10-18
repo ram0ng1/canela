@@ -2579,14 +2579,53 @@ body.CanelaRamonChatSurface {
     }
   }
 
+  // O menu herdava os estilos dos botões da barra de ações (tamanho fixo,
+  // fundo transparente, flex em linha) e às vezes saía sem caixa: aqui ele é
+  // sempre o dropdown do tema, com fundo, borda e itens de largura total.
+  // Abre para CIMA: a barra fica no topo da mensagem, e para baixo o menu
+  // seria cortado pela lista (que rola) na última mensagem.
   .Dropdown-menu {
-    top: 100%;
+    top: auto;
+    bottom: 100%;
     right: 0;
     left: auto;
-    margin-top: 4px;
+    z-index: 10;
+    display: none;
+    flex-direction: column;
+    width: max-content;
+    min-width: 190px;
+    margin: 0 0 4px;
+    padding: 4px 0;
+    background: var(--cn-surface);
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    box-shadow: var(--cn-shadow-menu, 0 4px 14px rgba(0, 0, 0, 0.12));
+
+    > li {
+      display: block;
+      width: 100%;
+    }
 
     .Button {
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
+      width: 100%;
+      height: auto;
+      min-width: 0;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      color: var(--cn-primary);
       font-weight: 500;
+      text-align: left;
+      justify-content: flex-start;
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-hover);
+      }
 
       .Button-icon {
         color: var(--cn-primary-medium);
@@ -2603,8 +2642,19 @@ body.CanelaRamonChatSurface {
   }
 }
 
+.ChatMessage-more.open .Dropdown-menu {
+  display: flex;
+}
+
+// Com o menu aberto, a barra de ações fica visível mesmo sem o mouse em cima.
 .ChatMessage:has(.ChatMessage-more.open) {
   z-index: 3;
+
+  .ChatMessage-actions {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
 }
 
 // O editor como o do chat do tema: o "+" redondo à esquerda do texto, o

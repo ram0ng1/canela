@@ -64,14 +64,16 @@ export default function installRamonChatActions(): void {
         accessibleToggleLabel={app.translator.trans('ramon-canela.forum.chat.more_message_actions', {}, true)}
       >
         {secondary.map((item: any) => (
-          <Button
-            icon={item.attrs?.icon}
-            className={item.attrs?.className?.includes('danger') ? 'Button--danger-text' : undefined}
-            disabled={item.attrs?.disabled}
-            onclick={(e: Event) => item.attrs?.onclick?.(e)}
-          >
-            {label(item)}
-          </Button>
+          <li>
+            <Button
+              icon={item.attrs?.icon}
+              className={item.attrs?.className?.includes('danger') ? 'Button--danger-text' : undefined}
+              disabled={item.attrs?.disabled}
+              onclick={(e: Event) => item.attrs?.onclick?.(e)}
+            >
+              {label(item)}
+            </Button>
+          </li>
         ))}
       </Dropdown>
     );

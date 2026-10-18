@@ -2748,3 +2748,12 @@ linkrobins-wiki:
     article_not_found: 'Article not found.'
     comment_required: 'Comment content is required.'
     comment_soft_delete_first: 'A comment must be deleted before it can be permanently removed.'
+
+# Rótulo do "sem tema" do Wardrobe.
+ernestdefoe-wardrobe:
+  admin:
+    settings:
+      flarum_title: Default
+  forum:
+    theme:
+      flarum: Default

@@ -292,5 +292,10 @@ return [
     // de derrubar o fórum com BadRouteException.
     (new Extend\ServiceProvider())->register(RouteConflictGuard::class),
 
+    // Wardrobe: só o tema padrão é aquecido a cada recompilação (ver LazyThemeAssets).
+    (new Extend\Conditional())->whenExtensionEnabled('ernestdefoe-wardrobe', static fn (): array => [
+        (new Extend\ServiceProvider())->register(\Ramon\Canela\Support\WardrobeServiceProvider::class),
+    ]),
+
     $settings,
 ];

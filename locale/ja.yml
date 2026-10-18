@@ -2748,3 +2748,12 @@ linkrobins-wiki:
     article_not_found: '記事が見つかりません。'
     comment_required: 'コメントの内容が必要です。'
     comment_soft_delete_first: '完全に削除する前に、コメントを削除する必要があります。'
+
+# Rótulo do "sem tema" do Wardrobe.
+ernestdefoe-wardrobe:
+  admin:
+    settings:
+      flarum_title: デフォルト
+  forum:
+    theme:
+      flarum: デフォルト

@@ -2748,3 +2748,12 @@ linkrobins-wiki:
     article_not_found: 'Artigo não encontrado.'
     comment_required: 'O comentário precisa de conteúdo.'
     comment_soft_delete_first: 'O comentário precisa ser excluído antes de ser removido para sempre.'
+
+# Rótulo do "sem tema" do Wardrobe.
+ernestdefoe-wardrobe:
+  admin:
+    settings:
+      flarum_title: Padrão
+  forum:
+    theme:
+      flarum: Padrão
