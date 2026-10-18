@@ -255,3 +255,25 @@ html.CanelaVerified {
     }
   }
 }
+
+// No chat, o popover do selo (320px centrado) passava da borda da gaveta e da
+// coluna da mensagem: a lista ganhava rolagem horizontal e o balão era
+// cortado. Lá ele abre a partir do selo para a direita, com a largura limitada
+// à da área de mensagens, e a lista nunca rola de lado.
+html.CanelaVerified {
+  .ChatChannel-stream {
+    overflow-x: hidden;
+  }
+
+  .ChatMessage-meta .VerifiedPopover {
+    left: -24px;
+    transform: none;
+    width: 280px;
+    max-width: ~"min(280px, calc(100vw - 24px))";
+    animation: none;
+  }
+
+  .ChatMessage-meta .VerifiedPopover-arrow {
+    left: 30px;
+  }
+}
