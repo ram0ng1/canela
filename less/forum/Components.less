@@ -1,0 +1,1408 @@
+// =====================================================================
+// Componentes gerais com a cara do Horizon (Discourse): botões, campos,
+// selects, switches, dropdowns, modais, alertas, tooltips, insígnias,
+// paginação, placeholder e indicador de carregamento.
+//
+// Os seletores são globais, e não presos ao `.Canela`: modais, alertas e
+// tooltips moram fora do #app (#modal, #alerts, body). Por isso a forma dos
+// botões vem de uma variável na raiz, ligada pelo `:has()` à classe que a
+// casca põe no #app quando a opção "botões em pílula" está ativa.
+// =====================================================================
+
+:root {
+  --cn-button-radius: var(--cn-radius);
+}
+
+:root:has(#app.Canela--pillButtons) {
+  --cn-button-radius: var(--cn-radius-pill);
+}
+
+[data-theme^=light],
+[data-theme^=dark] {
+  --switch-on-color: var(--cn-accent);
+  --loading-indicator-color: var(--cn-accent);
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+  --shadow-color: rgba(0, 0, 0, 0.12);
+
+  // Alertas: fundo claro tingido e texto do tema, como os avisos do Discourse.
+  --alert-bg: var(--cn-accent-low);
+  --alert-color: var(--cn-primary);
+  --alert-error-bg: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
+  --alert-error-color: ~"color-mix(in srgb, var(--cn-danger) 75%, var(--cn-primary))";
+  --alert-success-bg: ~"color-mix(in srgb, var(--cn-success) 14%, var(--cn-surface))";
+  --alert-success-color: ~"color-mix(in srgb, var(--cn-success) 70%, var(--cn-primary))";
+
+  --control-danger-bg: var(--cn-danger);
+  --control-danger-color: #fff;
+}
+
+// ---------------------------------------------------------------------
+// Botões
+// ---------------------------------------------------------------------
+.Button {
+  border-radius: var(--cn-button-radius);
+  font-weight: 400;
+  // `--d-button-transition: none` no Discourse: hover e foco trocam na hora.
+  transition: none;
+
+  // O core afunda o botão com uma sombra interna; o Horizon só troca o fundo.
+  &:active,
+  &.active,
+  .open > &.Dropdown-toggle {
+    box-shadow: none;
+  }
+}
+
+// Padrão: cinza claro com o ícone na cor de destaque. Hover e foco só trocam
+// o fundo, como os .btn do Discourse (sem anel).
+.Button:where(:not(.Button--primary, .Button--link, .Button--text, .Button--flat, .Button--danger, .Button--ua-reset)) > .Button-icon {
+  color: var(--cn-accent);
+}
+
+.Button:where(:not(.Button--link, .Button--text, .Button--flat, .Button--icon, .Button--ua-reset, .Button--more)) {
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+    background: var(--cn-primary-200);
+    color: var(--cn-primary);
+  }
+}
+
+.Button--primary {
+  font-weight: 400;
+  padding-left: 16px;
+  padding-right: 16px;
+  background: var(--cn-accent);
+  color: var(--cn-accent-text);
+
+  .Button-icon {
+    color: var(--cn-accent-text);
+  }
+
+  // --d-button-primary-bg-color--hover: var(--tertiary-hover).
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-accent-hover);
+    color: var(--cn-accent-text);
+  }
+
+  &:active,
+  &.active {
+    background: var(--cn-accent-active);
+  }
+
+  &.disabled,
+  &[disabled] {
+    background: var(--cn-accent);
+    opacity: 0.5;
+  }
+}
+
+.Button--danger {
+  background: var(--cn-danger);
+  color: #fff;
+
+  .Button-icon {
+    color: #fff;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: ~"color-mix(in srgb, var(--cn-danger) 82%, #000)";
+    color: #fff;
+  }
+}
+
+// Sem fundo: ícones e links soltos (controles de post, fechar modal…).
+.Button--flat,
+.Button--link {
+  color: var(--cn-primary-high);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+  }
+}
+
+.Button--flat {
+  border-radius: var(--cn-button-radius);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+  }
+}
+
+.Button--link.Button--text,
+.Button--text.Button--link {
+  color: var(--cn-link);
+}
+
+// Botões de ícone: redondos.
+.Button--icon {
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  &:not(.Button--link):not(.Button--flat):hover {
+    background: var(--cn-primary-low);
+  }
+}
+
+// O foco do teclado nunca desenha o anel do navegador num botão (o
+// `.btn:focus-visible { outline: none }` do Discourse): ele aparece como o
+// hover — o fundo ou a cor mudam.
+.Button:focus-visible {
+  outline: none;
+}
+
+// Pelo teclado (só :focus-visible, nunca no clique) o botão ganha um
+// contorno fino e afastado, além do fundo de hover — sem anel grosso.
+.Button:not(.Button--link):not(.Button--text):not(.Button--icon):focus-visible {
+  outline: 1.5px solid var(--cn-accent);
+  outline-offset: 2px;
+}
+
+.Button--icon:not(.Button--link):not(.Button--flat):focus-visible {
+  background: var(--cn-primary-low);
+}
+
+.Button--link.Button--icon:hover,
+.Button--link.Button--icon:focus-visible {
+  // O `!important` do core no Button--link zera o fundo; aqui só a cor muda.
+  color: var(--cn-primary);
+}
+
+.Button-badge {
+  font-weight: 400;
+  color: var(--cn-primary-medium);
+}
+
+// Controles de cabeçalho e itens de menu têm estilo próprio: nada de anel
+// nem de ícone colorido herdado dos botões padrão.
+.App-header .Button,
+.App-navigation .Button,
+.Dropdown-menu .Button {
+  &:hover,
+  &:focus-visible {
+    box-shadow: none;
+  }
+}
+
+.App-header .Button > .Button-icon,
+.App-navigation .Button > .Button-icon {
+  color: inherit;
+}
+
+.Dropdown-menu .Button > .Button-icon {
+  color: var(--cn-primary-high);
+}
+
+// ---------------------------------------------------------------------
+// Campos (o `input[type=text]` do Discourse): padding .5em .65em, 16px,
+// borda de 1px e, no foco, a borda e um contorno de 2px por dentro na cor de
+// destaque — sem brilho em volta.
+// ---------------------------------------------------------------------
+.FormControl {
+  height: var(--cn-control-height);
+  transition: var(--cn-transition-state);
+  padding: 0.5em 0.65em;
+  font-size: 16px;
+  line-height: normal;
+  color: var(--cn-primary);
+  background-color: var(--cn-surface);
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  box-shadow: none;
+  transition: none;
+  .placeholder(var(--cn-primary-medium));
+
+  &:hover:not(:focus):not([disabled]) {
+    border-color: var(--cn-primary-low-mid);
+  }
+
+  // Foco: a borda na cor de destaque, sem anel em volta.
+  &:focus,
+  &:focus-visible {
+    background-color: var(--cn-surface);
+    color: var(--cn-primary);
+    border-color: var(--cn-accent);
+    outline: none;
+    box-shadow: none;
+  }
+
+  // Inválido (as extensões e o core marcam com aria-invalid): borda de erro.
+  &[aria-invalid="true"] {
+    border-color: var(--cn-danger);
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// O core pinta os campos dos modais com o fundo do controle.
+.Modal-body .FormControl,
+.Modal--flat .Modal-body .FormControl:not(:focus) {
+  --form-control-bg: var(--cn-surface);
+  --form-control-color: var(--cn-primary);
+  background-color: var(--cn-surface);
+}
+
+textarea.FormControl {
+  height: auto;
+  padding: 0.5em 0.65em;
+  line-height: 1.5;
+}
+
+.Form-group > label,
+.FieldSet-label,
+.Form-header > label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cn-primary);
+}
+
+.helpText {
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+// Select nativo com a seta do core
+.Select select.FormControl {
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+.Select-caret {
+  color: var(--cn-primary-medium);
+}
+
+// Rótulo flutuante (`.input-group` do login do Discourse): o rótulo mora
+// dentro do campo e sobe para a borda ao focar ou quando há texto. O JS
+// (composer/installModals) põe o rótulo depois do campo e o placeholder " ".
+.CanelaFloat {
+  position: relative;
+
+  // Vence o `.Form--centered .FormControl[type=…]` do core (50px, 15px 20px).
+  > .FormControl,
+  .Form--centered & > .FormControl[type] {
+    height: var(--cn-control-height-lg);
+    margin: 0;
+    padding: 12px 12.32px;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  > .CanelaFloat-label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    max-width: ~"calc(100% - 20px)";
+    margin: 0;
+    padding: 0 3.48px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transform: translateY(-50%);
+    background: var(--cn-surface);
+    color: var(--cn-primary-medium);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+    pointer-events: none;
+    transition: 0.2s;
+  }
+
+  > .FormControl:focus + .CanelaFloat-label,
+  > .FormControl:not(:placeholder-shown) + .CanelaFloat-label,
+  > .FormControl:autofill + .CanelaFloat-label,
+  > .FormControl:-webkit-autofill + .CanelaFloat-label {
+    top: 0;
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-medium);
+  }
+
+  > .FormControl:focus {
+    border-color: var(--cn-accent);
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Checkbox e switch (d-toggle-switch: 45 × 24, bolinha de 18px)
+// ---------------------------------------------------------------------
+.Checkbox--switch {
+  --left-pad: 56px;
+
+  input[type="checkbox"] {
+    top: -2px;
+    width: 45px;
+    height: 24px;
+  }
+
+  .Checkbox-display {
+    margin-top: -2px;
+  }
+}
+
+.Checkbox--switch .Checkbox-display {
+  width: 45px;
+  height: 24px;
+  padding: 0;
+  border-radius: 24px;
+  background: var(--cn-primary-low-mid);
+  box-sizing: border-box;
+  transition: background-color 0.25s;
+
+  &::before {
+    width: 18px;
+    height: 18px;
+    top: 3px;
+    left: 3px;
+    border-radius: 50%;
+    background: var(--cn-secondary);
+    box-shadow: none;
+    transition: left 0.25s;
+  }
+
+  .on& {
+    background: var(--cn-accent);
+
+    &::before {
+      left: 24px;
+    }
+  }
+
+  .LoadingIndicator {
+    --size: 18px !important;
+  }
+}
+
+// O core escurece o switch desligado dentro dos modais.
+.Modal-body .off.Checkbox--switch .Checkbox-display {
+  background: var(--cn-primary-low-mid);
+}
+
+.Checkbox--switch:hover .Checkbox-display {
+  background: var(--cn-primary-high);
+}
+
+.Checkbox--switch.on:hover .Checkbox-display {
+  background: var(--cn-accent-active);
+}
+
+.Checkbox--switch.loading .Checkbox-display {
+  background: transparent !important;
+}
+
+.Checkbox input[type="checkbox"]:focus-visible + .Checkbox-display {
+  outline: 2px solid var(--cn-accent);
+  outline-offset: 2px;
+}
+
+// ---------------------------------------------------------------------
+// Dropdowns e menus (`.fk-d-menu` + `.dropdown-menu`): cartão branco de
+// raio 8, borda e a sombra `--shadow-dropdown`; itens de 8px × 4px com o
+// ícone a 8px do texto. Abre descendo (`float-down`, 250ms).
+// ---------------------------------------------------------------------
+@keyframes cn-float-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cn-float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.Dropdown-menu {
+  font-size: 16px;
+  color: var(--cn-primary);
+  background: var(--cn-surface);
+
+  > li > a,
+  > li > button,
+  > li > span {
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 16px;
+    color: var(--cn-primary);
+  }
+
+  > li > a,
+  > li > button {
+    transition: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover);
+      color: var(--cn-primary);
+    }
+  }
+
+  > li.active > a,
+  > li.active > button,
+  > li.active > .Dropdown-item {
+    background: var(--cn-selected);
+  }
+
+  .Dropdown-separator {
+    background-color: var(--cn-border);
+  }
+}
+
+.Dropdown-header {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-2);
+  letter-spacing: 0.04em;
+  border-top-color: var(--cn-border);
+}
+
+@media @tablet-up {
+  .Dropdown-menu {
+    padding: 4px;
+    margin: 6px 0;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    box-shadow: var(--cn-shadow-dropdown);
+
+    > li + li {
+      margin-top: 2px;
+    }
+
+    > li > a,
+    > li > button {
+      border-radius: var(--cn-radius);
+    }
+  }
+
+  // Abre como o `.fk-d-menu.-animated`, descendo.
+  .Dropdown.open > .Dropdown-menu {
+    animation: cn-float-down 250ms ease forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .Dropdown.open > .Dropdown-menu {
+      animation-duration: 0s;
+    }
+  }
+
+  .Dropdown-separator {
+    margin: 4px 0;
+  }
+
+  // Listas expandidas (navegação lateral, menus "inline") ficam sem moldura
+  // nem animação.
+  .Dropdown-menu--inline,
+  .Dropdown.open > .Dropdown-menu--inline {
+    border: 0;
+    box-shadow: none;
+    animation: none;
+  }
+}
+
+[data-theme^=dark] .Dropdown-menu {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.45);
+}
+
+// Celular: a folha que sobe de baixo, com cantos arredondados no topo
+// (o `fk-d-menu-modal` do Discourse).
+@media @phone {
+  .Dropdown .Dropdown-menu {
+    border-radius: 16px 16px 0 0;
+    background: var(--cn-surface);
+
+    > li > a,
+    > li > button {
+      background: var(--cn-surface);
+    }
+
+    > .active > a,
+    > .active > button {
+      &,
+      &:hover {
+        background: var(--cn-selected) !important;
+        color: var(--cn-primary) !important;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Modais (`.d-modal`): o cartão de raio 8 no meio da tela, a sombra
+// `--shadow-modal`, o cabeçalho com o título (font-up-3, negrito) à esquerda
+// e o ✕ à direita sobre um traço, o corpo de 16px × 24px e o rodapé com os
+// botões. Entra crescendo de 70% (250ms) sobre o fundo preto a 60% (300ms);
+// no celular, sobe de baixo como uma folha.
+// ---------------------------------------------------------------------
+.Modal-content {
+  background-color: var(--cn-surface);
+  color: var(--cn-primary);
+}
+
+.Modal-header h3 {
+  color: var(--cn-primary);
+}
+
+.Modal-body {
+  background-color: var(--cn-surface);
+  color: var(--cn-primary);
+}
+
+.Modal-footer {
+  color: var(--cn-primary-high);
+
+  a,
+  .Button--link {
+    color: var(--cn-link);
+  }
+}
+
+.Modal-divider {
+  border-color: var(--cn-border);
+}
+
+// O spinner dentro de um botão (entrando, salvando…): pequeno, ao lado do
+// texto, sem mudar a altura do botão. Sem isto, uma regra de espaçamento de
+// carregamento de página que pegue o botão o faz crescer.
+.Button .LoadingIndicator-container {
+  --size: 1em;
+  --thickness: 2px;
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: auto !important;
+  margin: 0 0 0 0.5em;
+  padding: 0 !important;
+  vertical-align: middle;
+}
+
+// O fundo: preto a 60%, aparece em 300ms e some em 250ms.
+.Modal-backdrop {
+  background: #000;
+  transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &[data-showing] {
+    opacity: 0.6;
+    transition: opacity 300ms ease;
+  }
+}
+
+// Os espaços de todo modal (do tema, do core e das extensões) num lugar só:
+// as regras que esticam um rodapé até as bordas usam os mesmos valores.
+.Modal {
+  --cn-modal-pad-x: 20px;
+  --cn-modal-pad-y: 14px;
+  --cn-modal-close: 32px;
+}
+
+// O ✕ do brechó: um círculo pequeno e discreto, cinza bem claro, que só
+// escurece no hover — sem anel de foco grosso (o foco do teclado é o
+// contorno fino do navegador).
+.Modal-close .Button {
+  display: inline-grid;
+  place-items: center;
+  width: var(--cn-modal-close);
+  height: var(--cn-modal-close);
+  min-height: 0;
+  padding: 0 !important;
+  border-radius: 50%;
+  background: var(--cn-primary-very-low) !important;
+  color: var(--cn-primary-medium);
+  line-height: 1;
+
+  .Button-icon {
+    margin: 0;
+    font-size: 14px;
+    color: inherit;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-primary-low) !important;
+    color: var(--cn-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cn-accent);
+    outline-offset: 1px;
+  }
+}
+
+@media @tablet-up {
+  // Centrado na tela (o `.d-modal` é um flex): `margin: auto` numa coluna
+  // flexível centra quando cabe e rola a partir do topo quando não cabe.
+  .ModalManager {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .Modal {
+    --cn-modal-shadow: 0 8px 60px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 540px;
+    margin: auto;
+    border-radius: var(--cn-radius);
+    box-shadow: var(--cn-modal-shadow);
+    // `modal-enter-desktop`/`modal-exit-desktop`. O core troca as classes
+    // `in`/`out` e espera o fim da transição para seguir.
+    opacity: 0;
+    transform: scale(0.7);
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.in {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    &.out {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+  }
+
+  [data-theme^=dark] .Modal {
+    --cn-modal-shadow: 0 8px 60px rgba(0, 0, 0, 0.9);
+  }
+
+  .Modal--small {
+    max-width: 380px;
+  }
+
+  .Modal--medium {
+    max-width: 600px;
+  }
+
+  .Modal--large {
+    max-width: 800px;
+  }
+
+  .Modal-content {
+    border-radius: var(--cn-radius);
+  }
+
+  .Modal-close {
+    top: 10px;
+    right: 10px;
+  }
+
+  // Cabeçalho compacto e sem traço (o título já separa), como no brechó: o
+  // título de 1,15em à esquerda, alinhado ao centro do ✕.
+  .Modal-header {
+    display: flex;
+    align-items: center;
+    min-height: ~"calc(var(--cn-modal-close) + 20px)";
+    padding: 10px ~"calc(var(--cn-modal-close) + 20px)" 0 var(--cn-modal-pad-x);
+    text-align: left;
+    background: transparent;
+    border-bottom: 0;
+
+    h3 {
+      margin: 0;
+      font-size: var(--cn-font-up-1);
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: left;
+    }
+  }
+
+  .Modal-body {
+    padding: 8px var(--cn-modal-pad-x) var(--cn-modal-pad-y);
+  }
+
+  .Modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px var(--cn-modal-pad-x);
+    border-top: 1px solid var(--cn-primary-low);
+    text-align: left;
+
+    > p {
+      margin: 0;
+    }
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  // Os modais "simples" e "planos" do core seguem o mesmo cabeçalho.
+  .Modal--simple,
+  .Modal--flat,
+  .Modal--inverted {
+    .Modal-header {
+      background: transparent;
+      padding: 10px ~"calc(var(--cn-modal-close) + 20px)" 0 var(--cn-modal-pad-x);
+
+      h3 {
+        font-size: var(--cn-font-up-1);
+        color: var(--cn-primary);
+      }
+    }
+
+    .Modal-body {
+      background: transparent;
+      padding: 8px var(--cn-modal-pad-x) var(--cn-modal-pad-y);
+    }
+  }
+}
+
+@media @tablet-up and (prefers-reduced-motion: reduce) {
+  // 1ms em vez de 0: o core espera o `transitionend` para abrir e fechar.
+  // O fundo fica com a duração normal: ao abrir um modal carregado sob
+  // demanda ele perde o `data-showing` por um quadro, e uma transição que
+  // termina nesse quadro faria o core tirá-lo da tela.
+  .Modal {
+    transition-duration: 1ms;
+  }
+}
+
+// Celular: a folha que sobe de baixo (`modal-enter-mobile`, 250ms), até 85%
+// da altura, com o título e o ✕ na primeira linha — e não a tela cheia com o
+// cabeçalho azul do core.
+@media @phone {
+  .ModalManager {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .Modal {
+    top: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    transform: translateY(100%) !important;
+    transition: transform 250ms ease;
+
+    &.in {
+      top: auto;
+      transform: translateY(0) !important;
+    }
+
+    &.out {
+      transform: translateY(100%) !important;
+    }
+  }
+
+  .Modal-content {
+    min-height: 0;
+    max-height: 85dvh;
+    overflow-y: auto;
+    padding-top: 0;
+    border-radius: var(--cn-radius) var(--cn-radius) 0 0;
+    box-shadow: 0 8px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  .Modal {
+    --cn-modal-pad-x: 16px;
+  }
+
+  .Modal-close.App-backControl {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px;
+    left: auto;
+    z-index: 2;
+
+    > .Button {
+      width: var(--cn-modal-close);
+      height: var(--cn-modal-close);
+      padding: 0 !important;
+      color: var(--cn-primary-medium) !important;
+    }
+  }
+
+  .Modal-header {
+    display: flex;
+    align-items: center;
+    min-height: ~"calc(var(--cn-modal-close) + 20px)";
+    padding: 10px ~"calc(var(--cn-modal-close) + 20px)" 0 var(--cn-modal-pad-x);
+    border-bottom: 0;
+
+    h3.App-titleControl,
+    h3 {
+      position: static !important;
+      width: auto;
+      margin: 0;
+      left: auto;
+      color: var(--cn-primary) !important;
+      font-size: var(--cn-font-up-1);
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: left;
+      white-space: normal;
+    }
+  }
+
+  .Modal-body {
+    padding: 8px var(--cn-modal-pad-x) var(--cn-modal-pad-y);
+  }
+
+  .Modal-footer {
+    padding: 12px var(--cn-modal-pad-x);
+    border-top: 1px solid var(--cn-primary-low);
+  }
+}
+
+@media @phone and (prefers-reduced-motion: reduce) {
+  .Modal {
+    transition-duration: 1ms;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Entrar / Cadastrar-se / Esqueci a senha: a página de login do Discourse
+// num cartão — o título grande ("Boas-vindas outra vez", 36px, negrito), os
+// campos de 46px com rótulo flutuante, o primário largo em pílula e, embaixo
+// de um traço, "Não tem uma conta?" e "Cadastrar-se".
+// ---------------------------------------------------------------------
+.LogInModal,
+.SignUpModal {
+  .Modal-header {
+    border-bottom: 0;
+  }
+
+  .Form--centered {
+    --gap: 16px;
+    text-align: left;
+
+    .FormControl[type=text],
+    .FormControl[type=email],
+    .FormControl[type=password] {
+      text-align: left;
+    }
+
+    .Button--primary.Button--block {
+      width: 100%;
+      height: auto;
+      min-height: 38px;
+      padding: 8px 10.4px;
+      font-size: 16px;
+    }
+
+    .helpText {
+      margin-bottom: 16px;
+      text-align: left;
+      color: var(--cn-primary-high);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+  }
+
+  // "Lembrar de mim" discreto, como os textos pequenos do login; a mesma
+  // caixinha de 16px na cor de destaque do aceite do fof/terms.
+  .checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+
+    input[type="checkbox"] {
+      position: static;
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--cn-accent);
+      cursor: pointer;
+    }
+  }
+
+  // "Não tem uma conta?" em cinza e, na linha de baixo, "Cadastrar-se".
+  .Modal-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+
+    // "Cadastrar-se"/"Entrar": o botão secundário de borda, da largura do
+    // primário de cima — e não um texto solto.
+    .Button--link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 38px;
+      margin: 8px 0 0;
+      padding: 8px 12px;
+      border: 1px solid var(--cn-primary-low-mid);
+      border-radius: var(--cn-button-radius);
+      background: var(--cn-surface);
+      color: var(--cn-primary);
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--cn-primary-medium);
+        background: var(--cn-primary-very-low);
+        color: var(--cn-primary);
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+// "Esqueci minha senha" sob a senha (14px, na cor dos links).
+.CanelaLogin-forgot {
+  margin-top: -12px;
+  text-align: left;
+
+  .Form--centered & .Button.Button--link,
+  .Button.Button--link {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 4px 0 0;
+    text-align: left;
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-link);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// "Redefinição de senha": um `.d-modal` comum — o texto em negrito cinza, o
+// campo largo e "Redefinir senha" (sem largura total) no rodapé, sobre um
+// traço que vai de borda a borda.
+.ForgotPasswordModal {
+  .Form--centered {
+    text-align: left;
+  }
+
+  .helpText {
+    margin: 0 0 4px;
+    color: var(--cn-primary-high);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .Form-group:not(.Form-controls) .FormControl {
+    width: 100%;
+    text-align: left;
+  }
+
+  .Form-controls {
+    align-self: stretch;
+    justify-content: flex-start;
+    width: auto;
+    margin: 24px ~"calc(-1 * var(--cn-modal-pad-x))" ~"calc(-1 * var(--cn-modal-pad-y))";
+    padding: 12px var(--cn-modal-pad-x);
+    border-top: 1px solid var(--cn-primary-low);
+    text-align: left;
+
+    .Button {
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+  }
+}
+
+@media @tablet-up {
+  .ForgotPasswordModal.Modal {
+    max-width: 440px;
+  }
+}
+
+
+// Sinalizar (`.flag-modal-body`): cada motivo com o rádio à esquerda, o nome
+// em negrito e a descrição embaixo; "Sinalizar postagem" no rodapé, à
+// esquerda, sobre um traço de borda a borda.
+.FlagPostModal {
+  .Form--centered {
+    text-align: left;
+  }
+
+  .Form-body > .Form-group:first-child {
+    align-self: stretch;
+  }
+
+  .Form-group > div > .checkbox {
+    position: relative;
+    display: block;
+    margin: 0 0 0.75em;
+    padding-left: 1.75em;
+    color: var(--cn-primary);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+
+    > input[type="radio"] {
+      position: absolute;
+      top: 0.3em;
+      left: 0;
+      margin: 0;
+      accent-color: var(--cn-accent);
+    }
+
+    > strong {
+      display: block;
+      margin-bottom: 0.25em;
+      font-weight: 700;
+    }
+
+    > .FormControl {
+      display: block;
+      width: 100%;
+      height: 3em;
+      min-height: 3em;
+      margin-top: 0.5em;
+    }
+  }
+
+  .Form-controls {
+    align-self: stretch;
+    justify-content: flex-start;
+    width: auto;
+    margin: 16px ~"calc(-1 * var(--cn-modal-pad-x))" ~"calc(-1 * var(--cn-modal-pad-y))";
+    padding: 12px var(--cn-modal-pad-x);
+    border-top: 1px solid var(--cn-primary-low);
+    text-align: left;
+
+    .Button {
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+  }
+}
+
+
+// O link do rodapé foi para baixo da senha.
+.LogInModal .LogInModal-forgotPassword {
+  display: none;
+}
+
+@media @tablet-up {
+  .LogInModal,
+  .SignUpModal {
+    --cn-auth-pad: 28px;
+    max-width: 400px;
+
+    .Modal-header {
+      min-height: 0;
+      padding: var(--cn-auth-pad) 56px 0 var(--cn-auth-pad);
+
+      h3 {
+        font-size: var(--cn-font-up-4);
+        font-weight: 700;
+        line-height: 1.2;
+      }
+    }
+
+    .Modal-body {
+      padding: 16px var(--cn-auth-pad) 8px;
+    }
+
+    .Modal-footer {
+      margin: 0 var(--cn-auth-pad);
+      padding: 12px 0 24px;
+      border-top: 1px solid var(--cn-primary-low);
+    }
+  }
+
+  // Com login social, as duas colunas do Discourse: o formulário à esquerda
+  // e os botões à direita, separados por um traço.
+  .LogInModal:has(.LogInButtons:not(:empty)),
+  .SignUpModal:has(.LogInButtons:not(:empty)) {
+    max-width: 720px;
+
+    .Modal-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      column-gap: 0;
+    }
+
+    .Form {
+      grid-row: 1;
+      grid-column: 1;
+      padding-right: var(--cn-auth-pad);
+    }
+
+    .LogInButtons {
+      grid-row: 1;
+      grid-column: 2;
+      align-self: start;
+      margin: 0;
+      padding: 0 0 0 var(--cn-auth-pad);
+      border-left: 1px solid var(--cn-primary-low);
+    }
+  }
+}
+
+.LogInButtons {
+  width: auto;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.LogInButton.Button {
+  height: 46px;
+  padding: 12px 12.32px;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: 16px;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-surface);
+    border-color: var(--cn-primary-low-mid);
+    box-shadow: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Alertas. Na página, o `.alert` do Discourse: faixa de cor clara, sem raio.
+// Os avisos que aparecem e somem (o AlertManager) são os toasts
+// (`.fk-d-toast`): cartão branco com borda e sombra no alto à direita,
+// entrando de 2vh abaixo em 300ms.
+// ---------------------------------------------------------------------
+@keyframes cn-toast-opening {
+  from {
+    transform: translateY(2vh);
+  }
+}
+
+.Alert {
+  padding: 0.5em 1em;
+  border-radius: 0;
+  font-size: 16px;
+}
+
+.AlertManager {
+  // `z("max")` do `.fk-d-toasts`: acima de modais e do editor.
+  z-index: 9999;
+  top: ~"calc(var(--cn-header-height, 52px) + 0.33rem)";
+  right: 5px;
+  bottom: auto;
+  left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+
+  .Alert {
+    display: flex;
+    margin: 0;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    max-width: ~"min(480px, calc(100vw - 10px))";
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    box-shadow: var(--cn-shadow-dropdown);
+    animation: cn-toast-opening 0.3s ease-in-out;
+    transition: opacity 0.5s;
+
+    &:hover {
+      border-color: var(--cn-primary-300);
+    }
+
+    // A cor do tipo fica no ícone (`.CanelaToast-icon`, em Motion.less).
+
+    &,
+    a,
+    .Button {
+      color: var(--cn-primary);
+    }
+  }
+
+  @media @phone {
+    left: 5px;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .AlertManager .Alert {
+    animation: none;
+  }
+}
+
+.Alert-controls > li > a,
+.Alert-controls > li > .Button {
+  text-transform: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+// ---------------------------------------------------------------------
+// Tooltips (`.fk-d-tooltip__content`): cartão branco de raio 8, borda,
+// `--shadow-dropdown`, 8px de respiro; aparece em 150ms (ease-in).
+// ---------------------------------------------------------------------
+[data-theme^=light],
+[data-theme^=dark] {
+  --tooltip-bg: var(--cn-surface);
+  --tooltip-color: var(--cn-primary);
+}
+
+.tooltip {
+  font-size: var(--cn-font-down-1);
+  transition: opacity 0.15s ease-in;
+}
+
+.tooltip-inner {
+  max-width: 300px;
+  padding: 0.5rem;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  box-shadow: var(--cn-shadow-dropdown);
+  font-weight: 400;
+  text-align: left;
+}
+
+// ---------------------------------------------------------------------
+// Insígnias (grupos, fixado, trancado…): planas, sem a sombra do core.
+// ---------------------------------------------------------------------
+.Badge {
+  box-shadow: none;
+}
+
+.badges--packed .Badge {
+  box-shadow: 0 0 0 2px var(--cn-surface);
+}
+
+.Pill {
+  border-radius: var(--cn-radius-pill);
+}
+
+// ---------------------------------------------------------------------
+// Paginação, "carregar mais", placeholder e carregamento
+// ---------------------------------------------------------------------
+.DiscussionList-loadMore,
+.PostList-loadMore {
+  text-align: center;
+  margin-top: var(--cn-space-4);
+
+  .Button:not(.Button--primary) {
+    padding: 8px 20px;
+  }
+}
+
+.Pagination {
+  gap: var(--cn-space-2);
+
+  .Button {
+    min-width: 36px;
+  }
+
+  &-pageNumber {
+    color: var(--cn-primary-high);
+  }
+}
+
+.Placeholder {
+  margin-top: var(--cn-space-8);
+  padding: var(--cn-space-8) var(--cn-space-4);
+  border-radius: var(--cn-radius);
+
+  p {
+    font-size: var(--cn-font-up-1);
+    color: var(--cn-primary-medium);
+  }
+}
+
+.LoadingIndicator-container {
+  color: var(--loading-indicator-color, var(--cn-accent));
+}
+
+// ---------------------------------------------------------------------
+// Abas do core (busca, modais com abas)
+// ---------------------------------------------------------------------
+.Tabs-nav > .Button {
+  font-size: 15px;
+  padding: 10px 12px;
+  color: var(--cn-primary);
+  border-bottom-width: 2px;
+
+  &:hover {
+    color: var(--cn-link);
+  }
+
+  &[active] {
+    --button-color: var(--cn-link);
+    --link-color: var(--cn-link);
+    color: var(--cn-link);
+    border-color: var(--cn-accent);
+    font-weight: 400;
+  }
+}
+
+.Tabs-divider {
+  border-color: var(--cn-border);
+}
+
+// Tabelas do core (grade de notificações, tokens de acesso)
+.NotificationGrid,
+.AccessTokensList {
+  --control-bg: var(--cn-primary-very-low);
+}
+
+// Com o menu aberto, o tooltip do botão some: o foco fica no botão depois do
+// clique e o tooltip (gatilho "hover focus") ficaria por cima do menu.
+.Dropdown.open .tooltip {
+  display: none !important;
+}
+
+// Um menu aberto dentro de um post (data do post, "…", reações) fica acima
+// da linha do tempo e dos posts seguintes: o post cria contexto de
+// empilhamento (isolation/sticky) e a coluna da linha do tempo vem depois
+// no DOM, pintando por cima.
+.PostStream-item:has(.Dropdown.open),
+.MessageStream-item:has(.Dropdown.open),
+.CanelaMessagePost:has(.Dropdown.open),
+.CanelaMessagePost .Post-main:has(.Dropdown.open) {
+  position: relative;
+  z-index: 20;
+}
+
+// Tooltips laterais (ex.: o "⌄" dos rascunhos) numa linha só: são rótulos
+// curtos, e o cálculo de posição à direita os espremia em várias linhas.
+.tooltip.right .tooltip-inner,
+.tooltip.left .tooltip-inner {
+  white-space: nowrap;
+  max-width: none;
+}

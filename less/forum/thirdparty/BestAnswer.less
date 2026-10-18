@@ -1,0 +1,223 @@
+// ---------------------------------------------------------------------
+// fof/best-answer no jeito do discourse-solved
+// (css-discourse-solved.css + d-post-accordion do Meta)
+// ---------------------------------------------------------------------
+
+// "✓ Solução" na barra do post aceito: `.accepted-text`, verde, font-up-1.
+.CanelaSolved--accepted {
+  &.Button.CanelaPostAction,
+  &.CanelaSolved--static {
+    color: var(--cn-success);
+    white-space: nowrap;
+
+    .Button-icon,
+    .icon {
+      color: var(--cn-success);
+    }
+  }
+
+  &.CanelaSolved--static {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    height: 38px;
+    padding: 0 0.5rem;
+    font-size: var(--cn-font-up-1);
+    line-height: 1;
+  }
+
+  &.Button.CanelaPostAction {
+    font-size: var(--cn-font-up-1);
+    gap: 0.25em;
+
+    .Button-label {
+      display: inline;
+    }
+
+    // Quem pode desmarcar vê o fundo de hover, mas o verde fica.
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-success);
+    }
+  }
+}
+
+// O quadrado vazio de marcar: verde ao passar o mouse.
+.CanelaSolved.Button.CanelaPostAction:not(.CanelaSolved--accepted) {
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-success);
+  }
+}
+
+// A resposta aceita sob o 1º post: `.accepted-answers.d-post-accordion`.
+// A melhor resposta no primeiro post e a própria resposta no fluxo: o mesmo
+// desenho do post sinalizado (borda de 2px e faixa no topo), em verde.
+.CanelaSolution {
+  --canela-solution-radius: var(--cn-radius);
+  margin: var(--cn-space-4) 0 0;
+  overflow: hidden;
+  border: 2px solid var(--cn-success);
+  border-radius: var(--canela-solution-radius);
+  background: var(--cn-surface);
+}
+
+.CanelaSolution-header {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  padding: 8px var(--cn-space-3);
+  background: var(--cn-success);
+  color: #fff;
+}
+
+.CanelaSolution-title {
+  margin: 0;
+  font-size: var(--cn-font-0);
+  font-weight: 600;
+}
+
+.CanelaSolution-item {
+  overflow: hidden;
+  background: var(--cn-surface);
+}
+
+.CanelaSolution-itemHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-1);
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border-top: 1px solid ~"color-mix(in srgb, var(--cn-success) 20%, var(--cn-border))";
+  background: transparent;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaSolution-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-1);
+  min-width: 0;
+}
+
+.CanelaSolution-user {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-1);
+  color: var(--cn-primary-high);
+  font-weight: bold;
+
+  &:hover,
+  &:visited {
+    color: var(--cn-primary-high);
+    text-decoration: none;
+  }
+
+  .Avatar {
+    .Avatar--size(20px);
+  }
+}
+
+.CanelaSolution-controls {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  .Button.Button--icon {
+    width: auto;
+    height: auto;
+    padding: 0 0 0 var(--cn-space-2);
+    background: none;
+    color: var(--cn-primary-low-mid);
+    font-size: var(--cn-font-down-1);
+
+    &:hover,
+    &:focus-visible {
+      background: none;
+      color: var(--cn-primary);
+    }
+  }
+}
+
+// Seis linhas e o degradê por cima do fim, como o `data-overflowing` do Discourse.
+.CanelaSolution-content.Post-body {
+  position: relative;
+  max-height: calc(var(--canela-solution-lines, 6) * 1.6em);
+  margin: 0;
+  padding: var(--cn-space-2) var(--cn-space-3) 0;
+  overflow: hidden;
+  border-top: 1px solid var(--cn-primary-low);
+  font-size: var(--cn-font-0);
+  line-height: 1.6;
+
+  .CanelaSolution-item--overflowing &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent, 75%, var(--cn-surface));
+    pointer-events: none;
+  }
+
+  .CanelaSolution-item--expanded & {
+    max-height: none;
+    padding-bottom: var(--cn-space-3);
+
+    &::after {
+      display: none;
+    }
+  }
+
+  > :last-child {
+    margin-bottom: var(--cn-space-3);
+  }
+}
+
+// Na lista: o selo de resolvido em verde (`.topic-status.--solved`).
+.Badge.Badge--bestAnswer {
+  background: var(--cn-success);
+  color: #fff;
+}
+
+.CanelaTopic-status .Badge.Badge--bestAnswer {
+  background: none;
+  color: var(--cn-success);
+}
+
+// O botão "Ir para a melhor resposta" que a extensão põe na coluna do tópico.
+.Button-jumpBestAnswer.Button {
+  color: var(--cn-success);
+}
+
+// No título do tópico (o hero pinta os selos de cinza): o certo verde.
+.DiscussionHero.CanelaTopicHero .DiscussionHero-badges .Badge.Badge--bestAnswer {
+  color: var(--cn-success);
+}
+
+// A resposta escolhida no fluxo do tópico: a faixa "Solução aceita" vai de
+// ponta a ponta do cartão, acima do avatar (como a do post sinalizado).
+.CanelaTopic .CommentPost.CanelaPost--solution {
+  position: relative;
+  margin-left: -12px;
+  padding: 48px 12px 4px;
+  border: 2px solid var(--cn-success);
+  border-radius: var(--cn-radius);
+
+  .Post-main {
+    position: static;
+  }
+}
+
+.CanelaPost-solutionBar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: calc(var(--cn-radius) - 2px) calc(var(--cn-radius) - 2px) 0 0;
+  background: var(--cn-success);
+  color: #fff;
+  font-weight: 600;
+}

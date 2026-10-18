@@ -1,0 +1,466 @@
+// Emblemas e níveis de confiança: medalhas, cartões, a página /badges, a
+// página de um emblema, a aba do perfil, o cartão do usuário e o resumo.
+//
+// As cores ouro, prata e bronze são as do Discourse (`$gold`, `$silver`,
+// `$bronze`) e não saem da paleta do fórum: são o significado do emblema. O
+// tom do ícone é um pouco mais escuro no claro e mais vivo no escuro, para o
+// contraste com o fundo tingido da medalha.
+
+.CanelaBadgeMedal,
+.CanelaBadgeCard,
+.CanelaBadgeChip {
+  --badge-color: #cd7f32;
+  --badge-ink: #a0612a;
+  --badge-tint: rgba(205, 127, 50, 0.16);
+
+  &--gold {
+    --badge-color: #e7c300;
+    --badge-ink: #9a8200;
+    --badge-tint: rgba(231, 195, 0, 0.18);
+  }
+
+  &--silver {
+    --badge-color: #a8a8a8;
+    --badge-ink: #6f6f6f;
+    --badge-tint: rgba(168, 168, 168, 0.2);
+  }
+}
+
+[data-theme^='dark'] {
+  .CanelaBadgeMedal,
+  .CanelaBadgeCard,
+  .CanelaBadgeChip {
+    --badge-ink: #e3a466;
+
+    &--gold {
+      --badge-ink: #f2d43a;
+    }
+
+    &--silver {
+      --badge-ink: #d6d6d6;
+    }
+  }
+}
+
+// ── Medalha ─────────────────────────────────────────────────────────────────
+
+.CanelaBadgeMedal {
+  --medal-size: 32px;
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--medal-size);
+  height: var(--medal-size);
+  border-radius: 50%;
+  background: var(--badge-tint);
+  box-shadow: inset 0 0 0 2px var(--badge-color);
+  color: var(--badge-ink);
+  font-size: ~"calc(var(--medal-size) * 0.45)";
+  line-height: 1;
+
+  &--small {
+    --medal-size: 20px;
+
+    box-shadow: inset 0 0 0 1.5px var(--badge-color);
+  }
+
+  &--large {
+    --medal-size: 48px;
+
+    box-shadow: inset 0 0 0 3px var(--badge-color);
+  }
+}
+
+// ── Cartão (grade de /badges, aba do perfil, resumo) ────────────────────────
+// O `badge-card` do Discourse: borda fina, canto de 8px, 1.5em de respiro, o
+// ícone de 3.5em na cor do tipo e o nome em negrito. Sem transição nem efeito
+// de hover — o Horizon não tem nenhum nos cartões de emblema.
+
+.CanelaBadges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));
+  gap: 1em;
+  width: 100%;
+  margin: 0 0 1.5em;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    min-width: 0;
+  }
+
+  // No resumo os cartões ficam em três colunas mesmo quando são poucos.
+  &--compact {
+    grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
+  }
+}
+
+.CanelaBadgeCard {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: 16px;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &-contents {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5em;
+  }
+
+  &-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 3.5em;
+    height: 3.5em;
+    // O glifo cheio do Font Awesome pesa mais que o traço do Lucide do
+    // Discourse: um pouco menor, para ocupar o mesmo espaço à vista.
+    font-size: 1em;
+    line-height: 1;
+
+    .icon {
+      font-size: 2.9em;
+    }
+
+    &--gold {
+      color: #e7c300;
+    }
+
+    &--silver {
+      color: silver;
+    }
+
+    &--bronze {
+      color: #cd7f32;
+    }
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    color: var(--cn-primary);
+  }
+
+  &-name {
+    margin: 0 0 0.25em;
+    font-size: 1.1487em;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--cn-primary);
+  }
+
+  &-times {
+    margin-left: 6px;
+    color: var(--cn-primary-medium);
+    font-weight: 400;
+    font-size: 0.8706em;
+  }
+
+  &-description {
+    font-size: 1em;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+  }
+
+  &-meta {
+    display: block;
+    margin-top: 0.5em;
+    color: var(--cn-primary-medium);
+    font-size: 0.8706em;
+  }
+
+  // Emblema que a pessoa logada já tem: a marca no canto (`.check-display`).
+  &-owned {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--cn-success, #1ca551);
+    color: #fff;
+    font-size: 11px;
+  }
+
+  // A página de um emblema: até metade da largura máxima, título maior.
+  &--large {
+    width: 100%;
+    max-width: 555px;
+    align-self: flex-start;
+
+    .CanelaBadgeCard-name {
+      font-size: 1.5157em;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .CanelaBadgeCard-name {
+    font-size: 1.3195em;
+  }
+}
+
+// ── Pílula (cartão do usuário) ──────────────────────────────────────────────
+
+.CanelaBadgeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 2px 10px 2px 3px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: var(--cn-font-down-1, 0.875em);
+  line-height: 22px;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--badge-color);
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &-count {
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaFeaturedBadges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+
+  &-more {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1, 0.875em);
+  }
+}
+
+// ── Páginas ─────────────────────────────────────────────────────────────────
+
+// O Discourse trabalha com 16px de base (o corpo do Flarum é 15px).
+.CanelaBadgesPage .Page-container {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.CanelaBadgesPage .Page-sidebar {
+  display: none;
+}
+
+.CanelaBadgesPage .Page-content {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+// O elemento raiz da página é `.CanelaBadgesPage`, e não `.CanelaBadges`: esse
+// nome já é a linha de categoria e etiquetas da lista. As partes mantêm o
+// prefixo `.CanelaBadges-*`, que não colide com nada.
+.CanelaBadges {
+  &-title {
+    margin: 0 0 8px;
+    font-size: 2em;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: normal;
+    color: var(--cn-primary);
+  }
+
+  &-group:first-of-type {
+    margin-top: 20px;
+  }
+
+  // `.CanelaBadgesPage` à frente: o `.Canela h2` da base pinta os títulos.
+  .CanelaBadgesPage &-groupTitle {
+    margin: 0 0 8px;
+    color: var(--cn-primary-medium);
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  &-empty {
+    padding: var(--cn-space-6, 24px) 0;
+    color: var(--cn-primary-medium);
+    text-align: center;
+  }
+}
+
+// /badges/:id/:slug — o `show-badge`
+.CanelaBadgeShow {
+  &-title a {
+    color: var(--cn-link);
+  }
+
+  &-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin: 1em 0 2em;
+  }
+
+  &-long {
+    white-space: pre-line;
+  }
+
+  &-more {
+    margin: 0 0 2em;
+    text-align: center;
+  }
+}
+
+// Quem ganhou: o `.badges-granted` (grade de 18em, 3em × 2em de vão) com o
+// `user-info medium` — avatar de 48px, nome em negrito e a data.
+.CanelaBadgeRecipients {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));
+  gap: 3em 2em;
+  margin: 0 0 2em;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaBadgeRecipient {
+  display: flex;
+  gap: 1em;
+  min-width: 0;
+  min-height: 80px;
+
+  &--highlight {
+    margin: -8px;
+    padding: 8px;
+    border-radius: var(--cn-radius);
+    background: var(--cn-selected);
+  }
+
+  &-avatar {
+    flex: none;
+
+    .Avatar {
+      --size: 48px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+
+  &-detail {
+    min-width: 0;
+  }
+
+  &-user {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5em;
+    color: var(--cn-primary-high);
+
+    &:hover {
+      color: var(--cn-primary-high);
+      text-decoration: none;
+    }
+  }
+
+  &-username {
+    overflow: hidden;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &-date {
+    color: var(--cn-primary-medium);
+  }
+
+  &-post {
+    display: block;
+    margin-top: 0.2em;
+    color: var(--cn-link);
+  }
+}
+
+// ── Perfil ──────────────────────────────────────────────────────────────────
+
+
+.CanelaUserBadges-level {
+  margin: 16px 0;
+  color: var(--cn-primary);
+}
+
+.CanelaTrustLevelModal .Select {
+  width: 100%;
+}
+
+@media @phone {
+  .CanelaBadges-grid,
+  .CanelaBadges-grid--compact {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Emblema com imagem (definida no admin): a imagem preenche o círculo, e o
+// anel da cor do tipo fica por cima.
+.CanelaBadgeMedal--image {
+  position: relative;
+  overflow: hidden;
+  background: var(--cn-surface);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inherit;
+    pointer-events: none;
+  }
+}
+
+.CanelaBadgeMedal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.CanelaBadgeRecipient-reason {
+  font-style: italic;
+}

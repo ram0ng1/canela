@@ -1,0 +1,90 @@
+// ---------------------------------------------------------------------
+// fof/oauth: os botões sociais do login do Discourse (`.btn-social`).
+// Todos brancos com borda, o ícone na cor da marca; a coluna da direita do
+// login já é do tema (Components.less).
+// ---------------------------------------------------------------------
+.LogInButtons .LogInButtonContainer {
+  margin: 0;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.FoFLogInButton.LogInButton.Button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  width: 100%;
+  border: 1px solid var(--cn-primary-300);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-weight: normal;
+
+  .Button-label {
+    margin: 0;
+  }
+
+  .Button-icon {
+    margin: 0;
+    font-size: 1.15em;
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    border-color: var(--cn-primary-low-mid);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+  }
+
+  &.LogInButton--discord .Button-icon {
+    color: #5865f2;
+  }
+
+  &.LogInButton--facebook .Button-icon {
+    color: #1877f2;
+  }
+
+  &.LogInButton--gitlab .Button-icon {
+    color: #e24329;
+  }
+
+  &.LogInButton--linkedin .Button-icon {
+    color: #0a66c2;
+  }
+
+  &.LogInButton--github .Button-icon,
+  &.LogInButton--twitter .Button-icon {
+    color: var(--cn-primary);
+  }
+}
+
+// Só ícones: os quadrados em linha.
+.FoFLogInButtons--icons {
+  gap: var(--cn-space-2);
+
+  .FoFLogInButton.LogInButton.Button {
+    width: 46px;
+    padding: 0;
+  }
+}
+
+// Celular: os botões sociais vêm antes do formulário (a ordem do core);
+// um traço os separa dos campos, que antes encostavam no último botão.
+@media @phone {
+  .LogInModal,
+  .SignUpModal {
+    .LogInButtons:not(:empty) {
+      margin: 0 0 16px;
+      padding: 0 0 16px;
+      border-bottom: 1px solid var(--cn-primary-low);
+      gap: 10px;
+    }
+
+    .FoFLogInButton.LogInButton.Button {
+      height: 42px;
+    }
+  }
+}

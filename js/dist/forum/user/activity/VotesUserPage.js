@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_ramon_canela=self.webpackChunk_ramon_canela||[]).push([["forum/user/activity/VotesUserPage"],{"./src/forum/user/activity/VotesUserPage.tsx"(e,s,a){a.r(s),a.d(s,{default:()=>o});var r=a("flarum/forum/components/PostsUserPage"),t=a.n(r),u=a("./src/forum/user/activity/install.tsx");class o extends(t()){show(e){(0,u.dZ)("votes",e)||super.show(e)}params(e){return{filter:{canelaVoter:e.slug()}}}}flarum.reg.add("ramon-canela","forum/user/activity/VotesUserPage",o)}}]);
+//# sourceMappingURL=VotesUserPage.js.map

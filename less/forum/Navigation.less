@@ -1,0 +1,492 @@
+// =====================================================================
+// Barra de navegação da lista (o `.list-controls` do Horizon): dropdowns de
+// categoria/etiqueta, abas sublinhadas, botões redondos e "Novo tópico".
+// Medidas do CSS computado do meta.discourse.org: 16px de padding em cima,
+// controles de 38px e 12px até o cabeçalho da lista. No Meta a barra rola
+// junto com a página; grudar no topo (como no Horizon puro) é opção.
+// =====================================================================
+
+@canela-nav-height: 38px;
+
+.CanelaNav {
+  // Fica no alto do cartão (o .Page-container tem 16px de padding): as
+  // margens negativas esticam o fundo até a borda, para que a lista não
+  // apareça pelas laterais quando a barra gruda.
+  --canela-card-pad: var(--cn-card-padding, 16px);
+
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  margin: calc(~"var(--canela-card-pad) * -1") calc(~"var(--canela-card-pad) * -1") 0;
+  padding: var(--canela-card-pad) var(--canela-card-pad) 12px;
+  background: var(--cn-surface);
+  border-radius: var(--cn-radius-large) var(--cn-radius-large) 0 0;
+  // Sem a sombra do `.list-controls` do Horizon sob a barra: o usuário
+  // prefere a barra limpa, separada só pelo cabeçalho das colunas.
+  // Em rem, como a lista: o body do tema é 15px e o Discourse mede em 16px.
+  font-size: 1rem;
+
+  &--sticky {
+    position: sticky;
+    top: var(--cn-header-height, 52px);
+  }
+}
+
+.CanelaNav-start,
+.CanelaNav-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.CanelaNav-start {
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  column-gap: 20px;
+}
+.CanelaNav-end {
+  flex: 0 0 auto;
+}
+
+// ---------------------------------------------------------------------
+// Dropdowns "categorias ›" / "subcategorias ›" / "etiquetas ›": o
+// `category-drop`/`tag-drop` do Discourse sobre o SelectKit do composer.
+// Medidas do select-kit aberto no meta.discourse.org.
+// ---------------------------------------------------------------------
+.CanelaNav-dropdowns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.CanelaNav .CanelaNav-drop {
+  flex: none;
+
+  // `.list-controls .combo-box .combo-box-header`: 38px, padding 8px, borda
+  // primary-300, raio 8, peso 500; a seta `angle-right` vira `angle-down`.
+  .CanelaSelectKit-header {
+    gap: 0;
+    width: auto;
+    height: @canela-nav-height;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25;
+    white-space: nowrap;
+    transition: none;
+
+    // Como no Meta: o hover só troca o fundo (primary-100); o foco do
+    // teclado acende a borda, sem anel em volta.
+    &:hover {
+      background: var(--cn-primary-100);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      border-color: var(--cn-accent);
+      box-shadow: none;
+    }
+  }
+
+  // Aberto: fundo primary-100 (`:hover` do uc-modernize), borda igual.
+  &.is-expanded > .CanelaSelectKit-header {
+    background: var(--cn-primary-100);
+    outline: 0;
+  }
+
+  .CanelaSelectKit-headerContent {
+    flex: 0 1 auto;
+    max-width: 220px;
+  }
+
+  .CanelaSelectKit-caret {
+    box-sizing: content-box;
+    width: 16px;
+    margin-left: 0;
+    padding-left: 5px;
+    font-size: 0.9em;
+    color: var(--cn-primary-high);
+    text-align: center;
+  }
+
+  // Filtro ativo: a borda acende; a etiqueta escolhida fica na cor também.
+  &.has-selection > .CanelaSelectKit-header {
+    border-color: var(--cn-accent);
+  }
+  &.CanelaNav-drop--tags.has-selection > .CanelaSelectKit-header {
+    color: var(--cn-hover-accent-text);
+  }
+
+  // O corpo: 3px abaixo do botão, `width: max-content` até 600px, borda
+  // primary-low, raio 8 e `--shadow-dropdown`.
+  .CanelaSelectKit-body {
+    top: ~"calc(100% + 3px)";
+    width: max-content;
+    min-width: 100%;
+    max-width: 600px;
+    border: 1px solid var(--cn-primary-low);
+    border-radius: var(--cn-radius);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    font-weight: normal;
+  }
+
+  .CanelaSelectKit-filter {
+    padding: 4px 8px;
+  }
+
+  .CanelaSelectKit-filterInput {
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  .CanelaSelectKit-filterIcon {
+    margin-left: 4px;
+    font-size: 15px;
+    color: var(--cn-primary-medium);
+  }
+
+  // A lista: 40vh no máximo, sem linha sob a busca, e a barra de rolagem
+  // cinza de 10px com raio 5 do select-kit.
+  .CanelaSelectKit-collection {
+    max-height: 40vh;
+    border-top: 0;
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+
+    &::-webkit-scrollbar {
+      appearance: none;
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background: var(--cn-primary-medium);
+      cursor: pointer;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+
+  &.is-above .CanelaSelectKit-collection {
+    border-bottom: 0;
+  }
+
+  // `.select-kit-row`: 8px, texto primary-high; destaque e escolhido com o
+  // lilás de --d-hover/--d-selected (a cor de destaque a 15%).
+  .CanelaSelectKit-row {
+    padding: 8px;
+    color: var(--cn-primary-high);
+    line-height: 1.4;
+
+    &.is-highlighted,
+    &.is-selected {
+      background: ~"oklch(from var(--cn-accent) l c h / 0.15)";
+    }
+  }
+
+  .CanelaSelectKit-empty {
+    padding: 8px;
+  }
+}
+
+[data-theme^=dark] .CanelaNav::before {
+  background: linear-gradient(~"oklch(from var(--cn-accent) l c h / 0.05)", transparent);
+}
+
+[data-theme^=dark] .CanelaNav .CanelaNav-drop .CanelaSelectKit-body {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+}
+
+// O badge no cabeçalho e nas linhas: ícone 0.74em, 0.33em até o nome.
+.CanelaNav-dropBadge,
+.CanelaNav-dropStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.33em;
+  min-width: 0;
+
+  .CanelaCategorySymbol {
+    width: auto;
+    height: auto;
+
+    .icon {
+      font-size: 0.74em;
+    }
+  }
+}
+.CanelaNav-dropBadge // O ícone da etiqueta do Flarum nas linhas/cabeçalho de "etiquetas".
+.CanelaNav-dropTagIcon {
+  display: inline-flex;
+  align-self: center;
+  font-size: 0.74em;
+  color: var(--tag-color, var(--cn-primary-medium));
+}
+.CanelaNav-dropName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.CanelaNav-drop:not(.CanelaNav-drop--tags).has-selection .CanelaNav-dropBadge {
+  color: var(--cn-primary-high);
+}
+
+.CanelaNav-dropRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.CanelaNav-dropStatus {
+  align-items: baseline;
+  max-width: 100%;
+
+  .CanelaCategorySymbol {
+    align-self: center;
+  }
+}
+.CanelaNav-dropName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// "× 264": --font-down-1, primary-medium, 0.5em do nome.
+.CanelaNav-dropCount {
+  margin-left: 0.17em;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+  white-space: nowrap;
+}
+.CanelaNav-dropDesc {
+  margin-top: 2px;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+  white-space: normal;
+}
+// "remover filtro", "nenhuma subcategoria", "sem etiquetas".
+.CanelaNav-dropSpecial {
+  color: var(--cn-hover-accent-text);
+  font-weight: 700;
+}
+// `.filter-for-more`
+.CanelaNav-dropMore {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5em 1em;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-low-mid);
+}
+
+// ---------------------------------------------------------------------
+// Abas
+// ---------------------------------------------------------------------
+.CanelaNav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// `.nav-pills > li > a`: 0 0.65em, line-height 16px, sublinhado de 0.125em.
+.CanelaNav-tab > a,
+.CanelaNav-moreButton.Button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: @canela-nav-height;
+  padding: 0 0.65em;
+  border-radius: var(--cn-radius);
+  background: transparent;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-0);
+  font-weight: normal;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  // `.nav-pills > li > a { transition: var(--d-button-transition) }`, que é
+  // `none` no Meta; só o ícone tem `color .2s`.
+  transition: none;
+
+  .icon,
+  .Button-icon,
+  .Button-caret {
+    transition: color 0.2s;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0.125em;
+    background: transparent;
+  }
+
+  // A cor de destaque em texto: no escuro, o tom claro dela (o tertiary
+  // do esquema escuro do Meta, #a99af0 para o #7b5fe2), senão o vermelho/
+  // azul cru sobre o cinza-escuro não chega ao contraste mínimo.
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+    color: var(--cn-hover-accent-text);
+    text-decoration: none;
+
+    &::after {
+      background: var(--cn-hover-accent-text);
+    }
+  }
+}
+
+.CanelaNav-tab.active > a,
+.CanelaNav-more.active .CanelaNav-moreButton {
+  color: var(--cn-hover-accent-text);
+
+  &::after {
+    background: var(--cn-hover-accent-text);
+  }
+}
+
+.CanelaNav-more .Dropdown-menu {
+  min-width: 180px;
+}
+
+.CanelaNav-view,
+.CanelaNav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// No celular as abas viram um seletor; no tablet+ ele some.
+.CanelaNav-select {
+  display: none;
+}
+
+// ---------------------------------------------------------------------
+// Ações (botões redondos) e "Novo tópico"
+// ---------------------------------------------------------------------
+.CanelaNav-actions .Button--icon,
+.CanelaNav-actions .Search-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: @canela-nav-height;
+  height: @canela-nav-height;
+  padding: 0;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: 50%;
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  transition: none;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--cn-accent);
+    background: var(--cn-surface);
+    color: var(--cn-accent);
+  }
+
+  .Button-icon {
+    margin: 0;
+  }
+}
+
+.CanelaNav .CanelaNav-newTopic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: @canela-nav-height;
+  padding: 0 14px;
+  border-radius: var(--cn-radius-pill);
+  font-size: var(--cn-font-0);
+  font-weight: normal;
+  white-space: nowrap;
+  transition: none;
+
+  .Button-icon {
+    margin: 0;
+  }
+
+  &:focus-visible {
+    box-shadow: none;
+    background: var(--cn-primary-200);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular (print mob-a): "Recentes ⇅" + botões só com ícone
+// ---------------------------------------------------------------------
+@media @phone {
+  // O core deixa 15px acima do conteúdo no celular; a barra é o topo do
+  // cartão (no Meta, a 0px dele).
+  .Canela .Page-content:has(.CanelaNav) {
+    margin-top: 0;
+  }
+
+  .CanelaNav {
+    // O cartão tem 16px de padding também no celular: com 12px a barra não
+    // chegava às bordas dele (a faixa de baixo ficava recuada).
+    --canela-card-pad: var(--cn-card-padding-phone, 16px);
+
+    flex-wrap: nowrap;
+    padding-bottom: 12px;
+  }
+
+  .CanelaNav-dropdowns,
+  .CanelaNav-tabs {
+    display: none;
+  }
+
+  .CanelaNav-select {
+    display: block;
+    min-width: 0;
+  }
+
+  .CanelaNav-selectButton.Button {
+    padding: 0;
+    background: transparent;
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+    color: var(--cn-primary-high);
+
+    &:hover,
+    &:focus-visible {
+      background: transparent;
+      color: var(--cn-primary);
+    }
+
+    // `.list-control-toggle-link-trigger .d-icon`: --font-down-2, 0.5em de folga.
+    .Button-caret {
+      margin-left: 0.5em;
+      font-size: var(--cn-font-down-2);
+    }
+  }
+
+  .CanelaNav .CanelaNav-newTopic {
+    width: @canela-nav-height;
+    padding: 0;
+    justify-content: center;
+    border-radius: 12px;
+
+    .Button-label {
+      display: none;
+    }
+  }
+}

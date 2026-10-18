@@ -1,0 +1,106 @@
+// ---------------------------------------------------------------------
+// fof/split, fof/merge-discussions e fof/ignore-users: os controles no
+// visual do tema.
+// ---------------------------------------------------------------------
+
+// Dividir tópico: os botões que a extensão põe no post, como os botões de
+// texto da barra do post; o de concluir em destaque.
+.flagrow-split-startSplitButton,
+.flagrow-split-endSplitButton.Button,
+.flagrow-split-cancelSplitButton.Button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 38px;
+  padding: 8px 0.65em;
+  border-radius: var(--cn-radius-pill);
+  color: var(--cn-primary-high);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+// O `Button--link` do core zera o fundo: sem o !important o texto branco
+// ficava invisível sobre o branco do post.
+.flagrow-split-endSplitButton.Button {
+  padding: 8px 1em;
+  background: var(--cn-accent) !important;
+  color: var(--cn-accent-text) !important;
+
+  .Button-icon {
+    color: var(--cn-accent-text);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-accent-hover) !important;
+    color: var(--cn-accent-text) !important;
+  }
+}
+
+// "Dividir até aqui" e "Cancelar divisão" lado a lado, alinhados à direita
+// como a barra de ações logo acima.
+.Post-footer .item-splitTo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--cn-space-2);
+}
+
+// Os avisos de "dividido/mesclado" no fluxo: um small action do Discourse.
+.EventPost-Split-target,
+.DiscussionMergePost {
+  color: var(--cn-primary-medium);
+}
+
+.DiscussionMergeModal h3 {
+  margin: var(--cn-space-4) 0 var(--cn-space-2);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-0);
+  font-weight: 600;
+}
+
+// Ignorar usuários: a lista na página do perfil.
+.ignorePage-avatar {
+  .Avatar--size(32px);
+  margin-right: var(--cn-space-2);
+  vertical-align: middle;
+}
+
+.ignorePage-button.Button {
+  border-radius: var(--cn-radius);
+}
+
+// Mesclar discussões: a busca usa o `.Search-input` do core (lupa + campo),
+// cujo posicionamento a busca do tema não cobre fora do cabeçalho. A lupa
+// fica dentro do campo, à esquerda, centralizada na altura.
+.FoFMergeDiscussionsModal .MergeDiscussions-Search .Search-input {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  > .icon,
+  > svg {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    z-index: 1;
+    margin: 0;
+    transform: translateY(-50%);
+    color: var(--cn-primary-medium);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  .FormControl,
+  input {
+    width: 100%;
+    height: var(--cn-control-height, 36px);
+    padding-left: 36px;
+  }
+}

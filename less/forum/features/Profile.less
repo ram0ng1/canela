@@ -1,0 +1,390 @@
+// =====================================================================
+// Perfil estendido: status, título, bio, local/site/aniversário no
+// UserCard e nos posts; a seção "Perfil" das Configurações.
+// =====================================================================
+
+// ── Emoji do status ──────────────────────────────────────────────────
+.CanelaStatusEmoji {
+  display: inline-block;
+  font-size: 1em;
+  line-height: 1;
+  font-style: normal;
+  cursor: default;
+}
+
+// Nos posts, depois do nome, um pouco menor que o texto do nome.
+.CanelaStatusEmoji--post {
+  margin-left: var(--cn-space-1);
+  font-size: 0.95em;
+  vertical-align: baseline;
+}
+
+// No cabeçalho, um selo redondo no canto do avatar, como no Discourse.
+.SessionDropdown .Dropdown-toggle {
+  position: relative;
+}
+
+.CanelaStatusEmoji--avatar {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cn-surface);
+  box-shadow: 0 0 0 1px var(--cn-border);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+// ── Título e status no UserCard ──────────────────────────────────────
+.CanelaProfileTitle {
+  margin-top: 2px;
+  font-size: var(--cn-font-up-1);
+  font-weight: 500;
+  color: var(--cn-primary-high);
+}
+
+.CanelaProfileStatus {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--cn-space-1) var(--cn-space-2);
+  margin-top: var(--cn-space-2);
+  padding: 2px var(--cn-space-3) 2px var(--cn-space-2);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-primary-very-low);
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary);
+}
+
+.CanelaProfileStatus-emoji {
+  font-size: 1.1em;
+}
+
+.CanelaProfileStatus-until {
+  color: var(--cn-primary-medium);
+}
+
+// A bio é HTML do BioRenderer: parágrafos, links e ênfase.
+.CanelaProfileBio {
+  max-width: 70ch;
+  margin-top: var(--cn-space-3);
+  font-size: var(--cn-font-0);
+  line-height: 1.5;
+  color: var(--cn-primary);
+  overflow-wrap: anywhere;
+
+  p {
+    margin: 0 0 var(--cn-space-2);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: var(--cn-link);
+  }
+
+  code {
+    padding: 0 4px;
+    border-radius: 4px;
+    background: var(--cn-primary-very-low);
+    font-size: 0.9em;
+  }
+}
+
+// Local, site e aniversário: ícone + texto, na linha do "visto há".
+.CanelaProfileFact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  color: var(--cn-primary-high);
+
+  .icon {
+    flex: none;
+    width: 1em;
+    color: var(--cn-primary-medium);
+  }
+
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+a.CanelaProfileFact {
+  color: var(--cn-link);
+
+  &:hover span {
+    text-decoration: underline;
+  }
+}
+
+.CanelaProfileFact--birthday.is-today {
+  font-weight: 600;
+  color: var(--cn-primary);
+}
+
+// Bloco único para quem desenha um cartão próprio (ProfileCardExtras).
+.CanelaProfileExtras {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .CanelaProfileStatus:first-child,
+  .CanelaProfileTitle:first-child {
+    margin-top: 0;
+  }
+}
+
+.CanelaProfileFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cn-space-1) var(--cn-space-4);
+  margin-top: var(--cn-space-3);
+  font-size: var(--cn-font-down-1);
+}
+
+// ── Fundo do cartão (popover do core) ────────────────────────────────
+// A imagem fica embaixo de um véu da cor da superfície, para o texto do
+// cartão continuar legível sobre qualquer foto.
+.UserCard--popover.CanelaProfile--hasCardBg,
+.CanelaUserCard.CanelaProfile--hasCardBg {
+  background-image:
+    linear-gradient(~"color-mix(in srgb, var(--cn-surface) 78%, transparent)", ~"color-mix(in srgb, var(--cn-surface) 92%, transparent)"),
+    var(--canela-user-card-bg);
+  background-size: cover;
+  background-position: var(--canela-cover-position, center);
+}
+
+// ── Título nos posts ─────────────────────────────────────────────────
+.CanelaPostUserTitle {
+  font-size: var(--cn-font-down-1);
+  font-style: italic;
+  color: var(--cn-primary-medium);
+}
+
+// ── Configurações → Perfil ───────────────────────────────────────────
+.CanelaProfileSettings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cn-space-4);
+
+  .Form-group {
+    margin: 0;
+  }
+
+  label {
+    display: block;
+    margin-bottom: var(--cn-space-1);
+    font-weight: 600;
+  }
+
+  .Checkbox label,
+  .Switch label {
+    font-weight: normal;
+  }
+
+  .helpText {
+    margin: var(--cn-space-1) 0 0;
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaProfileSettings-readonly {
+  margin: 0;
+  font-weight: 500;
+}
+
+.CanelaProfileSettings-bioFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--cn-space-3);
+}
+
+.CanelaProfileSettings-counter {
+  flex: none;
+  font-size: var(--cn-font-down-1);
+  font-variant-numeric: tabular-nums;
+  color: var(--cn-primary-medium);
+
+  &.is-full {
+    color: var(--cn-danger);
+  }
+}
+
+.CanelaProfileSettings-birthday {
+  input[type='date'] {
+    max-width: 220px;
+    margin-bottom: var(--cn-space-2);
+  }
+}
+
+.CanelaProfileSettings-statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+
+  > .FormControl {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.CanelaProfileSettings-statusClear {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cn-space-2);
+  margin-top: var(--cn-space-2);
+
+  label {
+    margin: 0;
+    font-weight: normal;
+    color: var(--cn-primary-high);
+  }
+
+  select,
+  input {
+    width: auto;
+    max-width: 100%;
+  }
+}
+
+.CanelaProfileSettings-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+}
+
+// ── Seletor de emoji ─────────────────────────────────────────────────
+.CanelaStatusPicker {
+  position: relative;
+  flex: none;
+}
+
+.CanelaStatusPicker-toggle {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius-input);
+  background: var(--cn-surface);
+}
+
+.CanelaStatusPicker-current {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.CanelaStatusPicker-panel {
+  position: absolute;
+  top: calc(~"100% + 4px");
+  left: 0;
+  z-index: 20;
+  width: 300px;
+  max-width: calc(~"100vw - 32px");
+  padding: var(--cn-space-2);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+}
+
+.CanelaStatusPicker-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+}
+
+.CanelaStatusPicker-option {
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+  }
+
+  &.is-selected {
+    background: var(--cn-selected);
+  }
+}
+
+.CanelaStatusPicker-custom {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  margin-top: var(--cn-space-2);
+  padding-top: var(--cn-space-2);
+  border-top: 1px solid var(--cn-border);
+
+  .FormControl {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+// ── Campo de imagem ──────────────────────────────────────────────────
+.CanelaProfileImage-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: var(--cn-space-2);
+  border: 1px dashed var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background-color: var(--cn-primary-very-low);
+  background-size: cover;
+  background-position: center;
+
+  &.has-image {
+    border-style: solid;
+    border-color: var(--cn-border);
+  }
+}
+
+// As proporções em que as imagens aparecem: a capa larga, o cartão médio.
+.CanelaProfileImage--cover .CanelaProfileImage-preview {
+  aspect-ratio: ~"4 / 1";
+}
+
+.CanelaProfileImage--card-background .CanelaProfileImage-preview {
+  max-width: 400px;
+  aspect-ratio: ~"2 / 1";
+}
+
+.CanelaProfileImage-empty {
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+.CanelaProfileImage-controls {
+  display: flex;
+  gap: var(--cn-space-2);
+  margin-bottom: var(--cn-space-2);
+}
+
+@media @phone {
+  .CanelaProfileImage--cover .CanelaProfileImage-preview {
+    aspect-ratio: ~"2.5 / 1";
+  }
+
+  .CanelaStatusPicker-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}

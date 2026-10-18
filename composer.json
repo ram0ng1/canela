@@ -1,0 +1,124 @@
+{
+    "name": "ramon/canela",
+    "description": "An unofficial theme for Flarum 2 inspired by Discourse Horizon, not affiliated with Discourse",
+    "keywords": [
+        "flarum",
+        "theme",
+        "discourse"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ramon Guilherme",
+            "email": "ramon@ramonguilherme.com.br",
+            "homepage": "https://ramonguilherme.com.br",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ram0ng1/canela/issues",
+        "source": "https://github.com/ram0ng1/canela",
+        "forum": "https://github.com/ram0ng1/canela/discussions"
+    },
+    "funding": [
+        {
+            "type": "website",
+            "url": "https://donate.stripe.com/fZe5o66nebkf39S28a"
+        }
+    ],
+    "require": {
+        "flarum/core": "^2.0.0"
+    },
+    "require-dev": {
+        "flarum/tags": "^2.0.0",
+        "flarum/messages": "^2.0.0",
+        "phpunit/phpunit": "^11.5 || ^13.2.0",
+        "phpstan/phpstan": "^2.1",
+        "roave/security-advisories": "dev-latest"
+    },
+    "suggest": {
+        "flarum/tags": "Categorias e etiquetas na barra lateral, na lista e na página de categorias.",
+        "flarum/subscriptions": "Link \"Seguindo\" e o sino de notificações do tópico.",
+        "flarum/likes": "Curtidas no mapa do tópico e no resumo do perfil.",
+        "flarum/messages": "Link \"Minhas mensagens\" na barra lateral.",
+        "fof/polls": "Enquetes no estilo do plugin poll do Discourse.",
+        "fof/best-answer": "Solução aceita (discourse-solved).",
+        "fof/reactions": "Reações (discourse-reactions).",
+        "fof/upload": "Envio de imagens e arquivos no editor.",
+        "fof/follow-tags": "Observar/silenciar categorias e etiquetas.",
+        "fof/split": "Dividir tópicos.",
+        "fof/merge-discussions": "Mesclar tópicos.",
+        "fof/ignore-users": "Ignorar usuários.",
+        "fof/terms": "Termos e diretrizes no cadastro.",
+        "fof/formatting": "Spoiler, detalhes e mais formatação.",
+        "fof/links": "Links personalizados.",
+        "fof/oauth": "Login social.",
+        "fof/discussion-thumbnail": "Miniaturas na lista de tópicos."
+    },
+    "autoload": {
+        "psr-4": {
+            "Ramon\\Canela\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ramon\\Canela\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --memory-limit=2G"
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Canela",
+            "category": "theme",
+            "optional-dependencies": [
+                "flarum/tags",
+                "flarum/sticky",
+                "flarum/subscriptions",
+                "flarum/likes",
+                "flarum/mentions",
+                "flarum/lock",
+                "flarum/approval",
+                "flarum/flags",
+                "flarum/messages",
+                "flarum/realtime",
+                "flarum/suspend",
+                "flarum/nicknames",
+                "fof/polls",
+                "fof/best-answer",
+                "fof/reactions",
+                "fof/upload",
+                "fof/follow-tags",
+                "fof/split",
+                "fof/merge-discussions",
+                "fof/ignore-users",
+                "fof/terms",
+                "fof/formatting",
+                "fof/links",
+                "fof/oauth",
+                "fof/discussion-thumbnail"
+            ],
+            "icon": {
+                "image": "icon.png",
+                "backgroundColor": "#fff",
+                "backgroundSize": "cover"
+            }
+        },
+        "flarum-cli": {
+            "modules": {
+                "admin": true,
+                "forum": true,
+                "js": true,
+                "jsCommon": true,
+                "css": true,
+                "locale": true,
+                "typescript": true
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

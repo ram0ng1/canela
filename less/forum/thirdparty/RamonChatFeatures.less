@@ -1,0 +1,406 @@
+// =====================================================================
+// Os recursos do chat do Discourse postos por cima do ramon/chat
+// (js/src/forum/thirdparty/ramonChat/features): reações de um clique, a
+// folha de ações do celular, as excluídas agrupadas, o ponto das fixadas não
+// vistas, a estrela, o soltar arquivo no compositor, o nome do grupo, o
+// "excluir digitando o nome" e o modal "Nova mensagem".
+//
+// O visual do resto do ramon/chat mora em RamonChat.less (outro arquivo).
+// Só com a extensão e a integração ligadas (@config-ramon-chat, extend.php).
+// =====================================================================
+& when (@config-ramon-chat = true) {
+
+// ─── (1) Configurações → Chat ──────────────────────────────────────────
+.CanelaRamonChatPreferences {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .Form-group {
+    margin: 0;
+
+    > label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+  }
+
+  .Select {
+    max-width: 420px;
+  }
+
+  .FormControl:not(.Select-input) {
+    max-width: 420px;
+    margin-top: 8px;
+  }
+
+  .helpText {
+    margin: 4px 0 0;
+  }
+}
+
+// ─── (3) Reações de um clique ──────────────────────────────────────────
+.CanelaRamonChat-quickReaction {
+  .Button-label {
+    display: inline-flex;
+  }
+}
+
+.CanelaRamonChat-quickReaction-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+// ─── (15) Restaurar ────────────────────────────────────────────────────
+.CanelaRamonChat-restore {
+  margin-left: 4px;
+}
+
+// ─── (17) Folha de ações do celular ────────────────────────────────────
+.CanelaRamonChatSheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.4);
+  animation: canelaRamonSheetFade 0.18s ease;
+}
+
+.CanelaRamonChatSheet {
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  border-radius: var(--cn-radius-large) var(--cn-radius-large) 0 0;
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-modal);
+  animation: canelaRamonSheetUp 0.18s ease;
+}
+
+.CanelaRamonChatSheet-outlet.is-closing {
+  .CanelaRamonChatSheet-backdrop {
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+
+  .CanelaRamonChatSheet {
+    transform: translateY(100%);
+    transition: transform 0.18s ease;
+  }
+}
+
+.CanelaRamonChatSheet-preview {
+  padding: 8px 16px 12px;
+  color: var(--cn-primary-high);
+  font-size: 14px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  border-bottom: 1px solid var(--cn-border);
+}
+
+.CanelaRamonChatSheet-reactions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--cn-border);
+}
+
+.CanelaRamonChatSheet-reaction {
+  flex: 1;
+  height: 44px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+  font-size: 22px;
+  cursor: pointer;
+
+  &.reacted {
+    border-color: var(--cn-accent);
+    background: ~"color-mix(in srgb, var(--cn-accent) 12%, transparent)";
+  }
+}
+
+.CanelaRamonChatSheet-actions {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.CanelaRamonChatSheet-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 18px;
+  border: 0;
+  background: none;
+  color: var(--cn-primary);
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+
+  .icon {
+    width: 18px;
+    color: var(--cn-primary-high);
+  }
+
+  &.active .icon {
+    color: var(--cn-accent);
+  }
+
+  &:active {
+    background: var(--cn-primary-very-low);
+  }
+}
+
+@keyframes canelaRamonSheetUp {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes canelaRamonSheetFade {
+  from {
+    opacity: 0;
+  }
+}
+
+// Segurar a mensagem não seleciona o texto nem abre o menu do navegador.
+@media (max-width: @screen-phone-max) {
+  .ChatMessage {
+    -webkit-touch-callout: none;
+  }
+}
+
+// ─── (18) Excluídas em sequência ───────────────────────────────────────
+.CanelaRamonChat-deletedRun-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--cn-primary-medium);
+  font-style: italic;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--cn-accent);
+    text-decoration: underline;
+  }
+}
+
+// ─── (19) Fixadas não vistas ───────────────────────────────────────────
+.CanelaRamonChat-unseenDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--cn-accent);
+}
+
+.CanelaRamonChat-pinnedBar--unseen .ChatChannel-pinnedBar-text {
+  font-weight: 600;
+}
+
+// ─── (11) Favoritos ────────────────────────────────────────────────────
+.CanelaRamonChat-star.ChatChannel-headerAction--active .icon,
+.CanelaRamonChat-starred {
+  color: #f0b400;
+}
+
+.CanelaRamonChat-starred {
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+// ─── (16) Soltar arquivo no compositor ─────────────────────────────────
+.CanelaRamonChat-dropping {
+  outline: 2px dashed var(--cn-accent);
+  outline-offset: -4px;
+  border-radius: var(--cn-radius);
+}
+
+// ─── (7) Nome do grupo / (20) retenção / (21) excluir ──────────────────
+.CanelaRamonChat-groupName {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .FormControl {
+    flex: 1 1 200px;
+  }
+
+  .helpText {
+    flex-basis: 100%;
+    margin: 0;
+  }
+}
+
+.CanelaRamonChat-retention {
+  margin: 0;
+  color: var(--cn-primary-high);
+}
+
+.CanelaRamonChat-deleteConfirm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--cn-danger);
+  border-radius: var(--cn-radius);
+}
+
+.CanelaRamonChat-deleteConfirm-text {
+  margin: 0;
+  font-size: 13px;
+}
+
+.CanelaRamonChat-deleteConfirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+// ─── Denúncias do chat na fila "Revisar" (review/ReviewQueue.tsx) ──────
+.CanelaReview-chatChannel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  > .icon {
+    flex: none;
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaReview-chatDeleted {
+  color: var(--cn-primary-medium);
+}
+
+// ─── (6) Nova mensagem ─────────────────────────────────────────────────
+.CanelaRamonNewMessage {
+  .Modal-body {
+    padding-top: 12px;
+  }
+}
+
+.CanelaRamonNewMessage-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-input);
+  background: var(--cn-surface);
+
+  > .icon {
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaRamonNewMessage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px 0 2px;
+  border-radius: var(--cn-radius-pill);
+  font-size: 13px;
+
+  .Avatar {
+    --size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.CanelaRamonNewMessage-input.FormControl {
+  flex: 1 1 120px;
+  min-width: 120px;
+  border: 0;
+  padding: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.CanelaRamonNewMessage-counter {
+  margin: 6px 2px;
+  font-size: 12px;
+  color: var(--cn-primary-medium);
+  text-align: right;
+}
+
+.CanelaRamonNewMessage-groupName {
+  margin-bottom: 8px;
+}
+
+.CanelaRamonNewMessage-results {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.CanelaRamonNewMessage-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  color: var(--cn-primary);
+  text-align: left;
+  cursor: pointer;
+
+  .Avatar {
+    --size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  &.active,
+  &:hover {
+    background: var(--cn-primary-very-low);
+  }
+
+  &.chosen .icon {
+    margin-left: auto;
+    color: var(--cn-accent);
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.CanelaRamonNewMessage-name {
+  font-weight: 600;
+}
+
+.CanelaRamonNewMessage-hint {
+  color: var(--cn-primary-medium);
+  font-size: 13px;
+}
+
+.CanelaRamonNewMessage-empty,
+.CanelaRamonNewMessage-loading {
+  padding: 10px;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaRamonNewMessage-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+}

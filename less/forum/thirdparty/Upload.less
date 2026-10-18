@@ -1,0 +1,78 @@
+// ---------------------------------------------------------------------
+// fof/upload: o "Enviando…" do editor do Discourse (#file-uploading), o
+// destaque ao arrastar arquivos e o gerenciador de arquivos. O botão na
+// barra de ferramentas é do editor (Composer.less).
+// ---------------------------------------------------------------------
+.CanelaUploadProgress {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  padding: var(--cn-space-1) 0;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaUploadProgress-label {
+  white-space: nowrap;
+}
+
+.CanelaUploadProgress-bar {
+  position: relative;
+  flex: 0 1 160px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--cn-primary-low);
+}
+
+.CanelaUploadProgress-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--cn-accent);
+}
+
+@keyframes canela-upload-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .CanelaUploadProgress-fill {
+    animation: canela-upload-indeterminate 1.2s ease-in-out infinite;
+  }
+}
+
+// Em envio, a extensão troca o ícone pelo spinner e escreve "Carregando…":
+// o aviso acima já diz isso, então o botão fica só com o spinner.
+.fof-upload-button.uploading.Button {
+  width: auto;
+  padding: 0 8px;
+
+  .Button-label {
+    display: none;
+  }
+}
+
+// Arrastando arquivos sobre o editor: o contorno tracejado do Discourse.
+.Composer.fof-upload-dragging {
+  background: var(--cn-surface);
+  box-shadow: none;
+  outline: 2px dashed var(--cn-accent);
+  outline-offset: -6px;
+}
+
+.FofUpload-TextPreview {
+  border-color: var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary);
+}

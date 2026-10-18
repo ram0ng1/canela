@@ -1,0 +1,219 @@
+// Cards dos emblemas no admin: a tabela de emblemas (com a medalha, que
+// repete aqui o essencial da do fórum — o admin não carrega o CSS do fórum)
+// e os títulos dos níveis no card de requisitos.
+
+.CanelaBadgeMedal {
+  --badge-color: #cd7f32;
+  --badge-ink: #a0612a;
+  --badge-tint: rgba(205, 127, 50, 0.16);
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--badge-tint);
+  box-shadow: inset 0 0 0 2px var(--badge-color);
+  color: var(--badge-ink);
+  font-size: 12px;
+
+  &--gold {
+    --badge-color: #e7c300;
+    --badge-ink: #9a8200;
+    --badge-tint: rgba(231, 195, 0, 0.18);
+  }
+
+  &--silver {
+    --badge-color: #a8a8a8;
+    --badge-ink: #6f6f6f;
+    --badge-tint: rgba(168, 168, 168, 0.2);
+  }
+}
+
+.CanelaAdmin-badgesRun {
+  .Button {
+    margin-right: 10px;
+  }
+}
+
+.CanelaAdmin-badgesRunDone {
+  color: var(--success-color, #1ca551);
+}
+
+.CanelaAdmin-badgesTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--control-bg);
+    color: var(--muted-color);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--control-bg);
+    vertical-align: middle;
+  }
+
+  tr.is-unavailable td:first-child {
+    opacity: 0.6;
+  }
+
+  .Checkbox {
+    margin: 0;
+  }
+}
+
+.CanelaAdmin-badgeCell {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+.CanelaAdmin-badgeDescription,
+.CanelaAdmin-badgeUnavailable {
+  color: var(--muted-color);
+  font-size: 12px;
+}
+
+.CanelaAdmin-badgeUnavailable {
+  font-style: italic;
+}
+
+.CanelaAdmin-badgeCount {
+  color: var(--muted-color);
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Admin de emblemas ───────────────────────────────────────────────────────
+
+.CanelaBadgeMedal--large {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.CanelaBadgeMedal--image {
+  position: relative;
+  overflow: hidden;
+  background: var(--body-bg);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--badge-color);
+  }
+}
+
+.CanelaBadgeMedal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.CanelaBadgeManager-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.CanelaAdmin-badgeTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.CanelaAdmin-badgeTag {
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--control-bg);
+  color: var(--control-color);
+  font-size: 11px;
+  line-height: 18px;
+
+  &--system {
+    background: var(--primary-color);
+    color: var(--body-bg);
+  }
+}
+
+.CanelaAdmin-badgeType {
+  color: var(--muted-color);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.CanelaAdmin-badgeActions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.CanelaAdmin-danger.Button,
+.CanelaAdmin-danger.Button .icon {
+  color: var(--alert-error-color, #d83e3e);
+}
+
+.CanelaAdmin-formError {
+  color: var(--alert-error-color, #d83e3e);
+}
+
+.CanelaAdmin-formDone {
+  color: var(--success-color, #1ca551);
+}
+
+.CanelaAdmin-grantReason {
+  display: block;
+  font-style: italic;
+  word-break: break-word;
+}
+
+.CanelaBadgeEdit {
+  &-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      span {
+        color: var(--muted-color);
+        font-size: 12px;
+      }
+    }
+  }
+
+  &-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0 12px;
+  }
+
+  textarea.FormControl {
+    resize: vertical;
+  }
+}
+
+.CanelaGrantBadgeModal .Select,
+.CanelaBadgeEditModal .Select {
+  width: 100%;
+}

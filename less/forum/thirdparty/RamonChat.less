@@ -1,0 +1,3567 @@
+// =====================================================================
+// ramon/chat no visual do chat do Discourse (o plugin de chat do Meta)
+//
+// O ramon/chat foi desenhado para o tema avocado: cartões com sombra,
+// pílulas, tons fixos e tokens `--avocado-*`. Aqui cada tela dele fica com
+// as medidas do chat próprio do tema (less/forum/features/Chat.less, que
+// copia o css-chat do Meta): avatar de 28px numa coluna de 42px, nome em
+// negrito, hora em cinza, fundo no hover da linha, o editor de borda
+// arredondada, as reações quadradas, a gaveta de 400px, a lista de canais.
+//
+// O Canela compila depois do ramon/chat, então as regras de mesma
+// especificidade daqui vencem as dele; onde ele é mais específico, o
+// seletor daqui acompanha. A barra lateral com os canais e a classe
+// `.ChatPage--canelaSidebar` vêm de js/src/forum/thirdparty/ramonChat.
+//
+// Só com a extensão e a integração ligadas (@config-ramon-chat, extend.php).
+// =====================================================================
+& when (@config-ramon-chat = true) {
+
+// ---------------------------------------------------------------------
+// Tokens: os do ramon/chat (avocado, chat, browse) viram os do tema, no
+// claro e no escuro, a partir da cor primária do fórum.
+// ---------------------------------------------------------------------
+[data-theme^=light],
+[data-theme^=dark] {
+  // Medidas do chat do Discourse (as mesmas do Chat.less).
+  --chat-message-left-width: 42px;
+  --chat-full-page-sidebar-width: 275px;
+  --chat-header-offset: 45px;
+  --chat-radius: var(--cn-radius);
+  --chat-radius-large: calc(var(--cn-radius) * 2);
+  --chat-tertiary-very-low: ~"color-mix(in srgb, var(--cn-accent) 7%, var(--cn-surface))";
+  --chat-tertiary-low: ~"color-mix(in srgb, var(--cn-accent) 18%, var(--cn-surface))";
+  --chat-tertiary-medium: ~"color-mix(in srgb, var(--cn-accent) 55%, var(--cn-surface))";
+  --chat-tertiary-hover: var(--cn-accent-active);
+  --chat-danger-low: ~"color-mix(in srgb, var(--cn-danger) 9%, var(--cn-surface))";
+  --chat-danger-medium: ~"color-mix(in srgb, var(--cn-danger) 60%, var(--cn-surface))";
+  // O hover das linhas é o cinza bem claro do tema, não um tom da primária
+  // (com a primária forte, o tom puxado dela ficava rosa demais).
+  --chat-hover: var(--cn-primary-very-low);
+  --chat-input-bg: ~"color-mix(in srgb, var(--cn-primary-very-low) 50%, transparent)";
+  --chat-shadow-card: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --chat-shadow-dropdown: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+  // O avocado (fallbacks.less do ramon/chat).
+  --avocado-surface-1: var(--cn-primary-very-low);
+  --avocado-surface-2: var(--chat-input-bg);
+  --avocado-border-subtle: var(--cn-primary-low);
+  --avocado-border-soft: var(--cn-border);
+  --avocado-border-chip: var(--cn-primary-300);
+  --avocado-muted-icon: var(--cn-primary-medium);
+  --avocado-muted-placeholder: var(--cn-primary-medium);
+  --avocado-muted-label: var(--cn-primary-high);
+  --avocado-text-dark: var(--cn-primary);
+  --avocado-body-color: var(--cn-primary);
+  --avocado-online: var(--cn-success);
+  --avocado-online-ring: var(--cn-surface);
+  --shadow-subtle: none;
+  --shadow-medium: var(--cn-shadow-dropdown);
+  --shadow-lifted: var(--cn-shadow-dropdown);
+
+  // Os do chat (variables.less do ramon/chat): sem as cores fixas dele.
+  --chat-unread-line: var(--chat-danger-medium);
+  --chat-mention-bg: var(--cn-primary-low);
+  --chat-mention-border: transparent;
+  --chat-pinned-bg: transparent;
+  --chat-pinned-border: var(--cn-link);
+  --chat-danger-tint: var(--chat-danger-low);
+  --chat-row-hover-bg: var(--chat-hover);
+  --chat-row-selected-bg: var(--chat-tertiary-very-low);
+  --chat-reaction-bg: transparent;
+  --chat-reaction-bg-active: var(--chat-tertiary-very-low);
+  --chat-reaction-border: var(--cn-primary-300);
+  --chat-tombstone-color: var(--cn-primary-medium);
+  --chat-thread-strip: transparent;
+  --chat-scrollbar-thumb: var(--cn-primary-low);
+  --chat-scrollbar-thumb-hover: var(--cn-primary-low-mid);
+}
+
+// A rolagem fina do Discourse (o mixin chat-scrollbar).
+.canela-rc-scrollbar() {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cn-primary-low) transparent;
+  overscroll-behavior: contain;
+}
+
+// O ponto azul das não lidas e o número verde das menções (c-unread-indicator).
+.canela-rc-dot() {
+  display: inline-block;
+  box-sizing: content-box;
+  width: 0.5rem;
+  min-width: 0;
+  height: 0.5rem;
+  padding: 0;
+  // Em px: com `font-size: 0` (o número escondido), um raio em em seria zero.
+  border-radius: 999px;
+  background: var(--cn-accent);
+  font-size: 0;
+  line-height: 0;
+}
+
+.canela-rc-urgent() {
+  // O contador do tema: pílula com a largura mínima igual à altura, o número
+  // centrado e em algarismos de mesma largura (o "1" não fica encostado).
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--cn-success);
+  color: var(--cn-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+
+  &::before,
+  &::after {
+    content: none;
+  }
+}
+
+// Sem anel grosso: o foco do teclado é a mesma marca fina em todo o tema.
+.ChatPage,
+.ChatDrawer,
+.ChatFab,
+.ChatModal,
+.ChatLightbox,
+.ChatStickerPicker,
+.EmojiPicker {
+  button:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 1px solid var(--cn-primary-low-mid);
+    outline-offset: -1px;
+  }
+}
+
+// Campos dentro de um contêiner com moldura (o editor, as buscas, o campo de
+// membros): o realce é só do contêiner (`:focus-within`). Sem isto, o
+// contorno de foco global do tema (`.Canela :focus-visible`, 2px na cor de
+// destaque) e a borda do `.FormControl` desenhavam um retângulo de cantos
+// retos dentro da caixa arredondada.
+body :is(.ChatComposer-shell, .ChatBrowse-search, .ChatSearch-bar, .ChatAddMembers-field) :is(input, textarea) {
+  &,
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.ChatComposer-shell:hover:not(:focus-within),
+.ChatBrowse-search:hover:not(:focus-within),
+.ChatSearch-bar:hover:not(:focus-within),
+.ChatAddMembers-field:hover:not(:focus-within) {
+  border-color: var(--cn-primary-low-mid);
+}
+
+// ---------------------------------------------------------------------
+// Barra lateral do tema: as seções "Canais" e "Mensagens diretas"
+// (thirdparty/ramonChat/sidebar.tsx), como as do chat do Discourse.
+// ---------------------------------------------------------------------
+.CanelaSidebar-sectionContent > li > .CanelaRamonChatLink {
+  position: relative;
+
+  .CanelaRamonChatLink-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 24px;
+    width: 24px;
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .CanelaRamonChatLink-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cn-primary-medium);
+
+    .ChatChannelIcon-image {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+    }
+
+    .emoji {
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  // MD: o avatar (ou os dois primeiros, sobrepostos) no lugar do ícone.
+  .ChatChannelIcon--avatars .Avatar {
+    --size: 20px;
+    width: 20px;
+    height: 20px;
+    border: 0;
+    font-size: 9px;
+    line-height: 20px;
+
+    & + .Avatar {
+      margin-left: -12px;
+      box-shadow: 0 0 0 2px var(--cn-surface);
+    }
+  }
+
+  &.has-unread .Button-label {
+    color: var(--cn-primary);
+    font-weight: 600;
+  }
+
+  &.muted {
+    opacity: 0.65;
+  }
+
+  .CanelaRamonChatLink-lock {
+    flex-shrink: 0;
+    color: var(--cn-primary-low-mid);
+    font-size: 0.6599rem;
+  }
+
+  .CanelaRamonChatLink-suffix {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-right: 4px;
+  }
+}
+
+.CanelaRamonChat-unread {
+  .canela-rc-dot();
+  background: var(--cn-sidebar-suffix, var(--cn-accent));
+
+  &.-urgent {
+    .canela-rc-urgent();
+  }
+}
+
+// O "+" das mensagens diretas fica à vista, como no Discourse (o lápis de
+// "Navegar por todos os canais" aparece no hover, como o das categorias).
+.CanelaSidebar-section--ramon-chat-direct .CanelaSidebar-sectionEdit {
+  opacity: 1;
+}
+
+// ---------------------------------------------------------------------
+// Página cheia (full-page-chat): sem o fundo tingido nem as peças que
+// flutuam atrás, a conversa ocupando a área inteira do conteúdo.
+// ---------------------------------------------------------------------
+body.ChatFullPage {
+  background-color: var(--cn-surface);
+  background-image: none;
+
+  .CanelaBackdrop {
+    display: none;
+  }
+
+  .App-footer,
+  .App-composer {
+    display: none;
+  }
+
+  // O `min-height: 100vh` do .App mais o espaço do cabeçalho passava da
+  // janela: a página rolava 52px e a barra de rolagem roubava 15px da conversa.
+  .App {
+    min-height: 0;
+  }
+}
+
+.ChatPage {
+  height: ~"calc(100dvh - var(--cn-header-height))";
+  background: var(--cn-surface);
+  animation: none;
+
+  &-main {
+    min-height: 0;
+    background: var(--cn-surface);
+  }
+}
+
+@media @tablet-up {
+  body.ChatFullPage .Canela .App-content,
+  body.ChatFullPage .Canela--sidebarOpen .App-content {
+    padding: 0;
+  }
+
+  body.ChatFullPage .Canela .Page {
+    padding-bottom: 0;
+  }
+
+  .ChatPage {
+    border-right: 1px solid var(--cn-border);
+  }
+
+  // Os canais já estão na barra do tema: a página não repete a coluna.
+  .Canela--sidebarOpen .ChatPage--canelaSidebar > .ChatSidebar {
+    display: none;
+  }
+}
+
+@media @phone {
+  .ChatPage {
+    flex-direction: column;
+    height: ~"calc(100dvh - var(--header-height-phone, 46px))";
+  }
+
+  // O título que o ramon/chat põe na barra do celular do core caía por cima
+  // do cabeçalho do tema: o Discourse móvel mantém o cabeçalho do fórum e o
+  // nome fica na barra da própria tela.
+  .ChatToolbarTitle {
+    display: none !important;
+  }
+
+  // O "voltar aos canais" das telas Meus tópicos, Pesquisar, Salvos e
+  // Denúncias: a barra de cima (c-navbar) da tela, com o botão à esquerda.
+  .ChatPage > .ChatToolbarBack {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: 56px;
+    padding: 0 0.5rem;
+    border-bottom: 1px solid var(--cn-border);
+    background: var(--cn-surface);
+
+    .Button,
+    .Button .Button-icon {
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  .ChatToolbarBack-title {
+    overflow: hidden;
+    color: var(--cn-primary);
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .ChatPage-main {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  body.ChatFullPage .App-content {
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------------
+// A lista de canais do próprio ramon/chat: a coluna de 275px da página sem
+// a barra do tema, a lista da gaveta e a tela "Canais" do celular.
+// ---------------------------------------------------------------------
+.ChatSidebar {
+  width: var(--chat-full-page-sidebar-width);
+  border-right: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+
+  &-top {
+    gap: 0.125rem;
+    padding: 0.5rem 0.5rem 0;
+    border-bottom: 0;
+  }
+
+  &-quickLink {
+    gap: 0.5rem;
+    height: 2.5em;
+    padding: 0 0.5rem;
+    border-radius: var(--cn-radius);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-0);
+    font-weight: 400;
+    transition: none;
+
+    &:hover {
+      background: var(--cn-primary-low);
+      color: var(--cn-primary);
+    }
+
+    &--active {
+      background: var(--cn-primary-low);
+      color: var(--cn-primary-very-high);
+      font-weight: 600;
+    }
+
+    &-icon {
+      width: 24px;
+      font-size: 16px;
+      opacity: 1;
+      color: var(--cn-primary-medium);
+    }
+
+    &-badge {
+      .canela-rc-urgent();
+    }
+  }
+
+  &-scroll {
+    padding: 0 0 1rem;
+    .canela-rc-scrollbar();
+  }
+
+  // O título da seção (chat-channel-divider): sem versalete.
+  &-sectionHeader {
+    gap: 4px;
+    padding: 1.5rem 0.5rem 0.5rem 1rem;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.4;
+    text-transform: none;
+
+    &-action {
+      display: flex;
+      align-items: center;
+      padding: 0;
+      background: transparent;
+      color: var(--cn-primary-medium);
+
+      &:hover {
+        background: transparent;
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &-empty {
+    padding: var(--cn-space-6) var(--cn-space-4);
+
+    &-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--cn-primary-very-low);
+      color: var(--cn-primary-medium);
+    }
+
+    p {
+      color: var(--cn-primary-medium);
+      font-size: var(--cn-font-0);
+    }
+  }
+}
+
+// A linha do canal (chat-channel-row).
+.ChatChannelRow {
+  gap: 0.75rem;
+  width: ~"calc(100% - 1rem)";
+  height: 2.5em;
+  margin: 0 0.5rem 0.125rem;
+  padding: 0 0.5rem;
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary);
+  font-weight: 400;
+  transition: none;
+
+  &:hover,
+  &--active {
+    background: var(--cn-primary-low);
+  }
+
+  &--active {
+    font-weight: 400;
+  }
+
+  &--muted {
+    opacity: 0.65;
+  }
+
+  &-icon {
+    width: 24px;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-up-1);
+  }
+
+  &-name {
+    font-size: var(--cn-font-0);
+  }
+
+  &:has(.ChatChannelRow-badge) &-name {
+    font-weight: 600;
+  }
+
+  // As não lidas são o ponto azul; só as menções têm número (o verde).
+  &-badge {
+    .canela-rc-dot();
+
+    &--mention {
+      .canela-rc-urgent();
+    }
+  }
+
+  .ChatChannelIcon--avatars .Avatar {
+    --size: 24px;
+    width: 24px;
+    height: 24px;
+    border-color: var(--cn-surface);
+  }
+}
+
+.ChatChannelRow-lock,
+.ChatChannelRow-mute,
+.ChatBrowseCard-lock {
+  color: var(--cn-primary-low-mid);
+  font-size: var(--cn-font-down-2);
+}
+
+// Na gaveta, a lista ocupa a largura toda com as linhas separadas por fio.
+.ChatDrawer-body > .ChatSidebar {
+  .ChatChannelRow {
+    width: 100%;
+    height: 3.6em;
+    margin: 0;
+    padding: 0 1rem;
+    border-radius: 0;
+    border-bottom: 1px solid var(--cn-border);
+
+    &:hover,
+    &--active {
+      background: var(--cn-primary-very-low);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// A conversa (chat-channel) e a barra de cima (c-navbar)
+// ---------------------------------------------------------------------
+.ChatChannel {
+  background: var(--cn-surface);
+
+  &-header {
+    gap: 0.25rem;
+    height: var(--chat-header-offset);
+    padding: 0 0.67em;
+    border-bottom: 1px solid var(--cn-border);
+    background: var(--cn-surface);
+
+    .Button--icon {
+      color: var(--cn-primary-medium);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  // O nome do canal, em negrito, sem a pílula do hover (o clique ainda abre as informações).
+  &-title {
+    gap: 0.5rem;
+    margin-left: 0;
+    padding: 0 0.3rem;
+    border-radius: var(--cn-radius);
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 700;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &-icon {
+    display: flex;
+    align-items: center;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-up-1);
+
+    &.ChatChannelIcon--avatars .Avatar {
+      --size: 24px;
+      width: 24px;
+      height: 24px;
+      border: 0;
+      font-size: 11px;
+      line-height: 24px;
+
+      & + .Avatar {
+        box-shadow: 0 0 0 2px var(--cn-surface);
+      }
+    }
+  }
+
+  &-name {
+    line-height: 1.4;
+  }
+
+  // O Discourse não repete a descrição na barra: ela mora nas informações.
+  &-description {
+    display: none;
+  }
+
+  &-headerActions {
+    gap: 0;
+  }
+
+  // A faixa das fixadas (chat-pinned-bar).
+  &-pinnedBar {
+    min-height: 2.75rem;
+    border-bottom: 1px solid var(--cn-border);
+    background: var(--cn-surface);
+
+    &-jump {
+      gap: var(--cn-space-2);
+      padding: var(--cn-space-1) var(--cn-space-4);
+
+      &:hover:not(:disabled) {
+        background: var(--chat-hover);
+      }
+    }
+
+    &-icon {
+      color: var(--cn-link);
+      font-size: var(--cn-font-down-1);
+      transform: rotate(45deg);
+    }
+
+    &-text {
+      color: var(--cn-primary);
+      font-size: var(--cn-font-down-1);
+    }
+
+    &-all {
+      border-left: 0;
+      color: var(--cn-primary-medium);
+      font-size: var(--cn-font-down-1);
+
+      &:hover {
+        background: var(--chat-hover);
+        color: var(--cn-primary);
+      }
+
+      &--active {
+        color: var(--cn-link);
+      }
+    }
+  }
+
+  &-stream {
+    padding: 0 0 4px;
+    .canela-rc-scrollbar();
+  }
+
+  // "Pular para o fim": o botão cinza do Discourse.
+  &-scrollDown {
+    z-index: 1;
+    border: 0;
+    background: var(--cn-primary-medium);
+    color: var(--cn-secondary);
+    box-shadow: none;
+    opacity: 0.8;
+
+    &:hover {
+      background-image: none;
+      opacity: 1;
+    }
+  }
+
+  // Canal fechado, arquivado, modo lento: a faixa de status (chat-channel-status).
+  &-frozen {
+    margin: 0.5rem 1rem 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--chat-radius-large);
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+
+    // Quem ainda não entrou: o cartão de prévia do Discourse (chat-channel-preview-card).
+    &--join {
+      border-color: var(--chat-tertiary-medium);
+      background: ~"color-mix(in srgb, var(--cn-accent) 7.5%, transparent)";
+      box-shadow: var(--chat-shadow-card);
+      color: var(--cn-primary);
+    }
+
+    &--invited {
+      border-color: var(--chat-tertiary-medium);
+    }
+
+    &--archived a {
+      color: var(--cn-link);
+    }
+  }
+}
+
+// Separador de dia: o texto pequeno e cinza no meio do fio.
+.ChatDateSeparator {
+  gap: 0;
+  margin: 1rem 0 0.25rem;
+
+  &::before,
+  &::after {
+    background: var(--cn-border);
+  }
+
+  &-label {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--chat-radius);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+}
+
+// "Novas mensagens": a linha vermelha clara (chat-message-separator-new).
+.ChatUnreadDivider {
+  gap: 0;
+  margin: 1rem 0 0.25rem;
+  color: var(--chat-danger-medium);
+
+  &-label {
+    padding: 0.25rem 0.5rem;
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// A mensagem (chat-message-container)
+// ---------------------------------------------------------------------
+.ChatMessage {
+  gap: 0;
+  margin-top: 0;
+  padding: 0.65rem 1rem 0.15rem;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: var(--chat-hover);
+  }
+
+  &--grouped {
+    margin-top: 0;
+    padding: 0.15rem 1rem;
+  }
+
+  // O Discourse não tinge a linha que menciona o leitor nem a fixada: a
+  // menção acende na pílula e a fixada leva a marca ao lado da hora.
+  &--mentioned,
+  &--pinned {
+    background: transparent;
+    box-shadow: none;
+
+    &:hover {
+      background: var(--chat-hover);
+    }
+  }
+
+  &--selected,
+  &--selected:hover {
+    background: var(--chat-tertiary-very-low);
+  }
+
+  // A mensagem pedida (link, resposta, fixada) acende e apaga devagar.
+  &--flash {
+    animation: canela-rc-highlight 2.5s ease-in forwards;
+  }
+
+  &-gutter {
+    width: var(--chat-message-left-width);
+
+    .Avatar {
+      --size: 28px;
+      width: 28px;
+      height: 28px;
+      font-size: 12.6px;
+      line-height: 28px;
+    }
+  }
+
+  &-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  &-badges .Badge {
+    box-shadow: 0 0 0 2px var(--cn-surface);
+  }
+
+  // Na sequência do mesmo autor, a hora curta aparece na coluna do avatar no hover.
+  &--grouped &-gutter {
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 0.25em;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+  }
+
+  &--online &-gutter .Avatar {
+    box-shadow: none;
+  }
+
+  &-meta {
+    gap: 0.25rem;
+    margin-bottom: 0;
+
+    // O selo do ramon/verified: o ramon/chat o puxa 4px para dentro dos dois
+    // lados (conta com o gap de 8px dele); com o gap de 0.25rem daqui ele
+    // ficava colado no nome e na hora. Fica ~0.25em antes e ~0.4em depois,
+    // no meio da altura do texto.
+    > .VerifiedPopover-anchor,
+    > .VerifiedBadge--chat {
+      align-self: center;
+      margin: 0 0.15em 0 0;
+    }
+  }
+
+  &-author {
+    color: var(--cn-primary-very-high);
+    font-size: var(--cn-font-0);
+    font-weight: 700;
+
+    a {
+      color: inherit;
+    }
+  }
+
+  &-time {
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+    white-space: nowrap;
+  }
+
+  &-pinMark {
+    gap: 0.25em;
+    margin-left: 0.25rem;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+
+    .icon {
+      transform: rotate(45deg);
+    }
+  }
+
+  &-botTag {
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-low);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-3);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  &-content {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    line-height: 1.4;
+
+    p {
+      margin: 0.5em 0;
+
+      &:first-child {
+        margin-top: 0.1em;
+      }
+
+      &:last-child {
+        margin-bottom: 0.1em;
+      }
+    }
+
+    blockquote {
+      margin: 0.5em 0;
+      padding: 0.5em 0.75em;
+      border-left: 4px solid var(--cn-primary-low);
+      background: var(--cn-primary-very-low);
+    }
+
+    code {
+      font-size: var(--cn-font-down-1);
+    }
+
+    img.emoji {
+      width: 1.25em;
+      height: 1.25em;
+      vertical-align: middle;
+    }
+
+    // A pílula da menção; a do próprio leitor em destaque.
+    .UserMention,
+    .mention {
+      display: inline-block;
+      padding: 0.2em 0.34em;
+      border-radius: 0.6em;
+      background: var(--chat-mention-bg);
+      color: var(--cn-primary-high);
+      font-size: 0.93em;
+      font-weight: 400;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+
+      &.UserMention--me,
+      &.highlighted {
+        background: var(--chat-tertiary-low);
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &-editedMark {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+  }
+
+  &-tombstone {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  // "Em resposta a" (chat-reply).
+  &-replyTo {
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    padding: 0;
+    border-left: 0;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+
+    .icon {
+      color: var(--cn-primary-low-mid);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-primary);
+    }
+  }
+
+  // As ações do hover (chat-message-actions): os botões colados numa barra
+  // de borda cinza, sem sombra, no canto de cima da linha.
+  // A linha com o mouse fica por cima das vizinhas: se a barra de ações
+  // passar da borda, ela cobre a vizinha, e não o contrário.
+  &:hover,
+  &:focus-within {
+    z-index: 2;
+  }
+
+  // Dentro da própria mensagem, no canto de cima: subindo para a linha de
+  // cima (o -0.75em do Discourse), a barra da mensagem seguinte cobria o pé
+  // da anterior — e o indicador do fio dela deixava de receber o clique.
+  // Acima do "pular para o fim" (z-index 1, ChatChannel-scrollDown): com a
+  // última mensagem no hover, o botão redondo cobria a barra de ações dela.
+  &-actions {
+    z-index: 3;
+    top: 4px;
+    right: var(--cn-space-2);
+    gap: 0;
+    padding: 0;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--chat-radius);
+    background: var(--cn-surface);
+    box-shadow: none;
+  }
+
+  // A da sequência (uma linha só) fica centrada na altura da linha.
+  &--grouped &-actions {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &-action {
+    width: 1.9em;
+    height: 1.75em;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-0);
+
+    &:first-child {
+      border-top-left-radius: var(--chat-radius);
+      border-bottom-left-radius: var(--chat-radius);
+    }
+
+    &:last-child {
+      border-top-right-radius: var(--chat-radius);
+      border-bottom-right-radius: var(--chat-radius);
+    }
+
+    &:hover {
+      background: var(--cn-primary-low);
+      color: var(--cn-primary);
+    }
+
+    &--active {
+      color: var(--cn-link);
+    }
+  }
+
+  &-purge {
+    color: var(--cn-primary-medium);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-danger);
+    }
+  }
+}
+
+// Na gaveta e nas telas estreitas a barra tem os mesmos botões num tamanho
+// menor: com a barra do tamanho da página cheia (o ramon/chat mostra todas as
+// ações, não três e um "…" como o Discourse), ela cobria o nome do autor.
+.ChatDrawer .ChatMessage-actions,
+.ChatThreadPanel .ChatMessage-actions {
+  top: 2px;
+}
+
+.ChatDrawer .ChatMessage-action,
+.ChatThreadPanel .ChatMessage-action {
+  width: 22px;
+  height: 24px;
+  font-size: var(--cn-font-down-1);
+}
+
+@media (max-width: 1023px) {
+  .ChatPage .ChatMessage-action {
+    width: 24px;
+    height: 24px;
+    font-size: var(--cn-font-down-1);
+  }
+}
+
+.ChatMessage--system {
+  padding: 0.15rem 1rem;
+
+  .ChatMessage-body {
+    text-align: left;
+  }
+
+  .ChatMessage-tombstone {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-style: normal;
+  }
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.ChatMessage--announcement .ChatMessage-content {
+  border-left-color: var(--cn-primary-low);
+
+  > p:first-child a {
+    color: var(--cn-link);
+  }
+}
+
+@keyframes canela-rc-highlight {
+  0%,
+  60% {
+    background-color: var(--chat-tertiary-low);
+    box-shadow: none;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.ChatChannel-headerAction--active {
+  color: var(--cn-link) !important;
+}
+
+// Reações (chat-message-reaction): caixinhas de canto de 4px.
+.ChatReactions {
+  gap: 0;
+  margin-top: 0.25em;
+
+  &-chip {
+    gap: 4px;
+    margin: 1px 0.25em 1px 0;
+    padding: 0.3em 0.6em;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-down-2);
+    font-weight: 400;
+    line-height: 1.2;
+    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+
+    &:hover {
+      background: var(--cn-primary-low);
+      border-color: var(--cn-primary-low-mid);
+    }
+
+    &:active {
+      transform: scale(0.93);
+    }
+
+    &--active {
+      border-color: var(--chat-tertiary-medium);
+      background: var(--chat-tertiary-very-low);
+      color: var(--chat-tertiary-hover);
+
+      &:hover {
+        background: var(--chat-tertiary-low);
+        border-color: var(--chat-tertiary-medium);
+      }
+    }
+
+    img.emoji {
+      width: auto;
+      height: 15px;
+    }
+  }
+
+  &-emoji {
+    font-size: 15px;
+  }
+
+  &-chip--active &-icon {
+    color: var(--cn-link);
+  }
+}
+
+// Anexos.
+.ChatUploads {
+  gap: 0.5em;
+  margin: 0.25em 0 0.5em;
+
+  &-image {
+    max-height: 150px;
+    border: 0;
+    border-radius: var(--chat-radius);
+    background: transparent;
+  }
+
+  &-file {
+    border: 1px solid var(--cn-border);
+    border-radius: var(--chat-radius);
+    background: var(--cn-primary-very-low);
+    font-size: var(--cn-font-down-1);
+
+    &-size {
+      color: var(--cn-primary-medium);
+    }
+  }
+}
+
+// O indicador do fio debaixo da original (chat-message-thread-indicator).
+// O clique é sempre do botão inteiro (o Discourse tira os filhos do alvo) e
+// ele fica acima da barra de ações das linhas vizinhas.
+.ChatThreadIndicator {
+  position: relative;
+  z-index: 1;
+
+  > * {
+    pointer-events: none;
+  }
+
+  max-width: 600px;
+  margin: 4px 0 -2px -0.25rem;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: var(--chat-radius-large);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary);
+  font-size: var(--cn-font-down-1);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    background: var(--cn-primary-very-low);
+    box-shadow: var(--chat-shadow-dropdown);
+
+    .ChatThreadIndicator-count {
+      text-decoration: underline;
+    }
+  }
+
+  .icon {
+    color: var(--cn-primary-medium);
+  }
+
+  &-count {
+    color: var(--cn-link);
+    font-weight: 400;
+  }
+
+  &-preview {
+    color: var(--cn-primary-high);
+  }
+}
+
+// ---------------------------------------------------------------------
+// O editor (chat-composer): uma linha só, borda arredondada, os botões à
+// direita do texto e o enviar sem fundo, na cor de destaque quando dá.
+// ---------------------------------------------------------------------
+.ChatComposer {
+  padding: var(--cn-space-1) 1rem ~"calc(0.75rem + env(safe-area-inset-bottom))";
+  background: var(--cn-surface);
+
+  &-shell {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0;
+    min-height: 50px;
+    padding: 0 0 0 0.75rem;
+    border: 1px solid var(--cn-primary-low);
+    border-radius: var(--chat-radius-large);
+    background: var(--chat-input-bg);
+    box-sizing: border-box;
+    transition: box-shadow 0.15s;
+
+    &:focus-within {
+      border-color: var(--cn-primary-300);
+      box-shadow: 0 0 1px 0 var(--cn-accent);
+    }
+  }
+
+  // O texto não tem moldura própria: o realce é o do contêiner arredondado
+  // (o :focus-within acima). Sem o anel do foco do navegador, e a barra de
+  // rolagem só quando o texto passa da altura máxima.
+  &-input,
+  &-input:hover,
+  &-input:focus,
+  &-input:focus-visible {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  // Cresce até umas 10 linhas (o resize do ramon/chat mede o scrollHeight);
+  // a barra de rolagem é ligada pelo views.ts só quando passa disso.
+  &-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 48px;
+    max-height: ~"min(calc(14em + 26px), 40vh)";
+    overflow-x: hidden;
+    overflow-y: hidden;
+    resize: none;
+    scrollbar-gutter: auto;
+    margin: 0;
+    padding: 13px 0;
+    color: var(--cn-primary);
+    font-family: inherit;
+    font-size: var(--cn-font-0);
+    line-height: 1.4;
+    .canela-rc-scrollbar();
+
+    &::placeholder {
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  &-bar {
+    align-self: stretch;
+    align-items: flex-end;
+    gap: 0;
+    padding-right: 0.25rem;
+  }
+
+  &-tools {
+    gap: 0;
+  }
+
+  &-tool,
+  &-send {
+    width: auto;
+    height: 48px;
+    padding: 0 0.6rem;
+    border-radius: 0;
+    background: transparent;
+    font-size: var(--cn-font-up-1);
+  }
+
+  &-tool {
+    color: var(--cn-primary-medium);
+
+    &:hover:not(:disabled) {
+      background: transparent;
+      color: var(--cn-primary);
+    }
+  }
+
+  &-send {
+    color: var(--cn-link);
+    transition: transform 0.1s;
+
+    &:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+
+    &:disabled {
+      opacity: 1;
+      color: var(--cn-primary-low-mid);
+    }
+  }
+
+  &-counter {
+    align-self: center;
+    margin-right: 0.25rem;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+
+    &--warning {
+      color: var(--cn-danger);
+    }
+
+    &--over {
+      background: var(--cn-danger);
+      color: #fff;
+    }
+  }
+
+  // "Respondendo a…" / "Editando" (chat-composer-message-details).
+  &-context {
+    margin: 0 0 0.5rem;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+
+    &-label {
+      color: var(--cn-primary);
+      font-weight: 700;
+    }
+
+    .ChatComposer-tool {
+      height: auto;
+      padding: 0.25rem;
+    }
+  }
+
+  &-pending {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+// O autocompletar de @pessoa e :emoji: (chat-composer-autocomplete).
+.ChatAutocomplete {
+  margin-bottom: 4px;
+  padding: 4px 0;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+  .canela-rc-scrollbar();
+
+  &-item {
+    gap: 0.5em;
+    padding: 6px 12px;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+
+    &--active,
+    &:hover {
+      background: var(--chat-tertiary-very-low);
+    }
+
+    .Avatar {
+      --size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &-hint {
+      color: var(--cn-primary-high);
+      font-size: var(--cn-font-down-1);
+    }
+  }
+}
+
+// "Fulano está digitando…" (chat-replying-indicator).
+.ChatTyping {
+  min-height: 1em;
+  padding: 0 1rem 2px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-2);
+}
+
+// ---------------------------------------------------------------------
+// O fio e as fixadas no painel lateral (chat-side-panel)
+// ---------------------------------------------------------------------
+.ChatThreadPanel {
+  width: 400px;
+  border-left: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+
+  &-header {
+    gap: 0.5rem;
+    height: var(--chat-header-offset);
+    padding: 0 0.67em 0 1rem;
+    border-bottom: 1px solid var(--cn-border);
+
+    > .icon {
+      color: var(--cn-primary-medium);
+    }
+
+    .Button--icon {
+      color: var(--cn-primary-medium);
+
+      &:hover {
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &-title {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 700;
+  }
+
+  &-stream {
+    padding: 0 0 4px;
+    .canela-rc-scrollbar();
+  }
+}
+
+.ChatPinnedPanel .ChatThreadPanel-header > .icon {
+  transform: rotate(45deg);
+}
+
+// ---------------------------------------------------------------------
+// Pesquisar, Meus tópicos, Salvos e Denúncias: as listas do Discourse
+// (fio embaixo de cada item, fundo no hover).
+// ---------------------------------------------------------------------
+.ChatSearch {
+  padding: var(--cn-space-4);
+
+  &-bar {
+    gap: 0.5rem;
+    max-width: 500px;
+    height: 36px;
+    padding: 0 0.5rem 0 0.75rem;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-surface);
+
+    &:focus-within {
+      border-color: var(--cn-accent);
+    }
+  }
+
+  &-icon {
+    color: var(--cn-primary-medium);
+  }
+
+  &-input {
+    height: 34px;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+  }
+
+  &-scope {
+    padding: 0.5rem 0 0;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-results {
+    margin-top: 0.5rem;
+    .canela-rc-scrollbar();
+  }
+
+  &-result {
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--chat-radius);
+
+    &:hover {
+      background: transparent;
+      box-shadow: var(--chat-shadow-card);
+    }
+
+    .Avatar {
+      --size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    &-author {
+      color: var(--cn-primary-very-high);
+      font-size: var(--cn-font-0);
+      font-weight: 700;
+    }
+
+    &-channel,
+    &-time {
+      color: var(--cn-primary-high);
+      font-size: var(--cn-font-down-1);
+    }
+
+    &-excerpt {
+      color: var(--cn-primary);
+      font-size: var(--cn-font-0);
+    }
+  }
+}
+
+.ChatSearch--embedded {
+  padding: 0;
+
+  .ChatSearch-bar {
+    margin: 0.75rem 1rem 0;
+  }
+
+  .ChatSearch-scope {
+    padding: 0.5rem 1rem 0;
+  }
+
+  .ChatSearch-results {
+    padding: 0 1rem;
+  }
+}
+
+.ChatThreadsList {
+  padding: 0;
+  .canela-rc-scrollbar();
+
+  &-row {
+    gap: 0.75rem;
+    width: ~"calc(100% - 1.75rem)";
+    margin-inline: 1rem 0.75rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--cn-border);
+    border-radius: 0;
+
+    &:hover {
+      width: 100%;
+      margin-inline: 0;
+      padding-inline: 1rem 0.75rem;
+      background: var(--chat-hover);
+    }
+
+    &--unread .ChatThreadsList-title {
+      font-weight: 700;
+    }
+  }
+
+  &-icon {
+    color: var(--cn-primary-medium);
+  }
+
+  &-title {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 600;
+  }
+
+  &-meta {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-scope {
+    color: var(--cn-primary-medium);
+  }
+
+  &-badge {
+    .canela-rc-urgent();
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+  }
+}
+
+.ChatThreadsList--embedded {
+  .ChatThreadsList-rows,
+  .ChatBrowse-empty {
+    padding: 0;
+  }
+}
+
+.ChatBookmarks {
+  padding: 0 0 1rem;
+  .canela-rc-scrollbar();
+
+  &-row {
+    gap: 0.75rem;
+    margin-inline: 1rem 0.75rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--cn-border);
+
+    &:hover {
+      margin-inline: 0;
+      padding-inline: 1rem 0.75rem;
+      background: var(--chat-hover);
+    }
+
+    .Avatar {
+      --size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  &-meta {
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-author {
+    color: var(--cn-primary-very-high);
+    font-weight: 700;
+  }
+
+  &-channel {
+    padding: 0;
+    background: transparent;
+    color: var(--cn-primary-medium);
+  }
+
+  &-excerpt {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+  }
+
+  &-remove {
+    color: var(--cn-link);
+  }
+}
+
+.ChatFlags {
+  padding: var(--cn-space-4);
+  .canela-rc-scrollbar();
+
+  &-title {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-2);
+    font-weight: 700;
+  }
+
+  &-toggle--active {
+    color: var(--cn-link);
+  }
+
+  &-row {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--chat-radius);
+    background: var(--cn-surface);
+    box-shadow: none;
+  }
+
+  &-reporter-name,
+  &-target-author {
+    color: var(--cn-primary-very-high);
+    font-weight: 700;
+  }
+
+  &-time,
+  &-resolvedBy {
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-reason {
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+    font-weight: 400;
+  }
+
+  &-reason--harassment,
+  &-reason--inappropriate {
+    background: var(--chat-danger-low);
+    color: var(--cn-danger);
+  }
+
+  &-detail {
+    border-left: 4px solid var(--cn-primary-low);
+    color: var(--cn-primary);
+  }
+
+  &-target {
+    border-radius: var(--chat-radius);
+    background: var(--cn-primary-very-low);
+
+    &-channel {
+      padding: 0;
+      background: transparent;
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  &-delete {
+    color: var(--cn-danger);
+  }
+}
+
+.ChatSelectionBar {
+  border-top: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+  box-shadow: none;
+
+  &-count {
+    color: var(--cn-primary);
+    font-weight: 700;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Esqueletos (chat-skeleton)
+// ---------------------------------------------------------------------
+.ChatSkeleton {
+  padding: 0.5em 1em;
+
+  &-row {
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &-avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--cn-primary-100);
+  }
+
+  &-line,
+  &-heading,
+  &-button,
+  &-composer {
+    border-radius: var(--chat-radius);
+    background: var(--cn-primary-100);
+  }
+
+  &-row:nth-child(even) &-avatar,
+  &-row:nth-child(even) &-line {
+    background: var(--cn-primary-200);
+  }
+
+  &-composer {
+    height: 50px;
+    margin: 0.25rem 1rem 0.75rem;
+    border-radius: var(--chat-radius-large);
+  }
+}
+
+// ---------------------------------------------------------------------
+// A gaveta (chat-drawer): 400px no canto direito, cantos de cima
+// arredondados, a barra de 45px com o nome em negrito.
+// ---------------------------------------------------------------------
+.ChatDrawer {
+  right: 20px;
+  width: 400px;
+  max-width: ~"calc(100% - 20px)";
+  max-height: ~"calc(100vh - var(--cn-header-height) - 15px)";
+  border: 1px solid var(--cn-border);
+  border-bottom: 0;
+  border-radius: var(--chat-radius-large) var(--chat-radius-large) 0 0;
+  background: var(--cn-surface);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.125);
+  overflow: hidden;
+
+  &--collapsed {
+    height: var(--chat-header-offset);
+  }
+
+  &-header {
+    gap: 0.25rem;
+    height: var(--chat-header-offset);
+    padding: 0 0.5em 0 0.67em;
+    border-bottom: 1px solid var(--cn-border);
+    background: var(--cn-surface);
+
+    > .icon {
+      color: var(--cn-primary-medium);
+    }
+
+    .Button--icon {
+      color: var(--cn-primary-medium);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &--collapsed &-header {
+    border-bottom: 0;
+  }
+
+  &-title {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 700;
+  }
+
+  &-title--channel {
+    gap: 0.5rem;
+    padding: 0 0.3rem;
+    margin-left: 0;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &-icon {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-up-1);
+
+    &.ChatChannelIcon--avatars .Avatar {
+      --size: 24px;
+      width: 24px;
+      height: 24px;
+      border: 0;
+      font-size: 11px;
+      line-height: 24px;
+    }
+  }
+
+  &-actions {
+    gap: 0;
+  }
+
+  &-channelMenu {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  // Recolhida: o ponto azul das não lidas, o número verde das menções.
+  &-badge {
+    .canela-rc-dot();
+
+    &--mention {
+      .canela-rc-urgent();
+    }
+  }
+
+  &-body {
+    .ChatComposer-input {
+      min-height: 48px;
+      max-height: ~"min(calc(8.4em + 26px), 25vh)";
+    }
+  }
+}
+
+// No celular, a gaveta aberta vira o botão redondo de destaque.
+.ChatFab {
+  &-button {
+    width: 48px;
+    height: 48px;
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-size: var(--cn-font-up-3);
+    box-shadow: 0 5px 5px -1px rgba(0, 0, 0, 0.25);
+  }
+
+  &-badge {
+    .canela-rc-urgent();
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    border: 2px solid var(--cn-surface);
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+
+    &--mention {
+      background: var(--cn-success);
+      color: var(--cn-secondary);
+    }
+  }
+
+  &-dismiss {
+    background: var(--cn-surface) !important;
+    color: var(--cn-primary-medium) !important;
+    box-shadow: var(--cn-shadow-dropdown);
+  }
+}
+
+// ---------------------------------------------------------------------
+// O ícone do cabeçalho: o balão dos ícones do tema, com o ponto azul das
+// não lidas e o número verde das menções (chat-header-icon do Discourse).
+// ---------------------------------------------------------------------
+.Canela .Header-secondary .Header-controls > li > .ChatNavButton {
+  position: relative;
+
+  .Bubble {
+    position: absolute;
+    top: 0;
+    right: 2px;
+    left: auto;
+    .canela-rc-dot();
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--cn-surface);
+    color: transparent;
+  }
+
+  &.new .Bubble {
+    .canela-rc-urgent();
+    top: -2px;
+    right: -2px;
+    box-sizing: content-box;
+    border: 2px solid var(--cn-surface);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Explorar canais: a mesma tela do chat do tema (chat-browse-view) — a barra
+// "‹ Canais" em cima, o título, as abas em pílula, o filtro com o "Novo
+// canal" ao lado e os cartões de canal em duas colunas (cinza claro, a borda
+// colorida à esquerda, o nome, os membros e o botão à direita).
+// ---------------------------------------------------------------------
+[data-theme] .ChatBrowse {
+  --browse-text: var(--cn-primary);
+  --browse-muted: var(--cn-primary-high);
+  --browse-faint: var(--cn-primary-medium);
+  --browse-accent: var(--cn-link);
+  --browse-accent-soft: var(--cn-selected);
+  --browse-on-accent: var(--cn-accent-text);
+  --browse-accent-bg: var(--cn-accent);
+  --browse-accent-bg-hover: var(--cn-accent-hover);
+  --browse-card-bg: var(--cn-primary-very-low);
+  --browse-card-border: transparent;
+  --browse-card-border-hover: transparent;
+  --browse-card-shadow: none;
+  --browse-card-shadow-hover: none;
+  --browse-frozen-bg: var(--cn-primary-very-low);
+  --browse-control-bg: var(--cn-surface);
+  --browse-control-border: var(--cn-primary-300);
+  --browse-control-hover-bg: var(--cn-primary-very-low);
+  --browse-control-hover-border: var(--cn-primary-low-mid);
+  --browse-control-active-bg: var(--cn-primary-low);
+  --browse-track-bg: transparent;
+  --browse-track-border: transparent;
+  --browse-tab-hover-bg: var(--cn-primary-very-low);
+  --browse-chip-bg: transparent;
+  --browse-chip-text: var(--cn-primary-medium);
+  --browse-joined-bg: transparent;
+  --browse-joined-text: var(--cn-primary-medium);
+  --browse-invited-bg: transparent;
+  --browse-invited-text: var(--cn-link);
+  --browse-inspecting-bg: transparent;
+  --browse-inspecting-text: var(--cn-primary-medium);
+  --browse-frozen-chip-bg: transparent;
+  --browse-frozen-chip-text: var(--cn-primary-medium);
+  --browse-danger: var(--cn-danger);
+  --browse-danger-bg: var(--chat-danger-low);
+  --browse-focus-ring: 0 0 0 1px var(--cn-primary-low-mid);
+}
+
+// A página inteira na superfície lisa, como a do chat.
+body.CanelaRamonChatSurface {
+  background-color: var(--cn-surface);
+  background-image: none;
+
+  .CanelaBackdrop {
+    display: none;
+  }
+}
+
+@media @tablet-up {
+  body.CanelaRamonChatSurface .Canela .App-content,
+  body.CanelaRamonChatSurface .Canela--sidebarOpen .App-content {
+    padding: 0;
+  }
+
+  body.CanelaRamonChatSurface .Canela .Page {
+    padding-bottom: 0;
+  }
+}
+
+// A grade da tela: a barra, o título, as abas, o filtro + "Novo canal" e a
+// lista. O cabeçalho e a faixa de ferramentas do ramon/chat se desfazem
+// (`display: contents`) para cada peça cair na sua linha.
+.ChatBrowse {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "back back"
+    "title title"
+    "filters filters"
+    "search button"
+    "list list";
+  align-items: center;
+  column-gap: 0.5rem;
+  max-width: none;
+  min-height: ~"calc(100dvh - var(--cn-header-height))";
+  margin: 0;
+  padding: 0 1rem 2rem;
+  box-sizing: border-box;
+  align-content: start;
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  container-type: inline-size;
+
+  // A barra de cima (c-navbar): "‹ Canais".
+  &-back {
+    grid-area: back;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    height: var(--chat-header-offset);
+    margin: 0 -1rem;
+    padding: 0 0.67em;
+    border: 0;
+    border-bottom: 1px solid var(--cn-border);
+    border-radius: 0;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 700;
+
+    .icon {
+      flex-shrink: 0;
+      margin: 0 0.55rem 0 0.25rem;
+      color: var(--cn-primary-medium);
+      font-size: var(--cn-font-0);
+      vertical-align: 0;
+    }
+
+    &:hover {
+      border-color: var(--cn-border);
+      background: transparent;
+      color: var(--cn-primary);
+
+      .icon {
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &-header,
+  &-heading,
+  &-toolbar {
+    display: contents;
+  }
+
+  &-title {
+    grid-area: title;
+    margin: 1.5rem 0 0;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-3);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  &-subtitle {
+    display: none;
+  }
+
+  // O "Novo canal" ao lado do filtro, com a altura dos botões do tema.
+  &-header .Button--primary {
+    grid-area: button;
+    justify-self: start;
+    height: auto;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: var(--cn-button-radius, var(--cn-radius));
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-weight: 400;
+    line-height: 20px;
+    box-shadow: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-accent-hover);
+      box-shadow: none;
+    }
+  }
+
+  // As abas (Todos, Abertos, Fechados, Arquivados): as pílulas do Discourse.
+  &-filters {
+    grid-area: filters;
+    gap: 0;
+    margin: 0.25rem 0 1rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  &-filter {
+    height: auto;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--cn-radius-pill);
+    background: transparent;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-1);
+    font-weight: 400;
+
+    &:hover {
+      background: var(--cn-primary-very-low);
+      color: var(--cn-primary);
+    }
+
+    &--active,
+    &--active:hover,
+    &--active:active {
+      background: var(--cn-selected);
+      color: var(--cn-link);
+      box-shadow: none;
+    }
+  }
+
+  // O filtro: o campo do tema, com a lupa dentro.
+  &-search {
+    grid-area: search;
+    flex: none;
+    width: 260px;
+    min-width: 0;
+    height: 36px;
+    margin: 0;
+    padding: 0 4px 0 10px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-surface);
+
+    &:hover {
+      border-color: var(--cn-primary-low-mid);
+    }
+
+    &:focus-within {
+      border-color: var(--cn-accent);
+      box-shadow: none;
+    }
+
+    &-icon,
+    &:focus-within &-icon {
+      color: var(--cn-primary-medium);
+    }
+
+    &-input {
+      color: var(--cn-primary);
+      font-size: var(--cn-font-0);
+
+      &::placeholder {
+        color: var(--cn-primary-medium);
+      }
+    }
+  }
+
+  // Os cartões, em duas colunas (chat-browse-view__cards).
+  &-list {
+    grid-area: list;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+    border: 0;
+  }
+
+  // Vazio: só o texto (e o "limpar busca"), sem caixa.
+  > .ChatBrowse-empty {
+    grid-area: list;
+    margin-top: 1rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+
+    .ChatBrowse-empty-icon {
+      display: none;
+    }
+
+    .ChatBrowse-empty-text {
+      color: var(--cn-primary-medium);
+      font-size: var(--cn-font-0);
+    }
+
+    // O "Novo canal" já está ao lado do filtro: o vazio não o repete.
+    .Button--primary {
+      display: none;
+    }
+
+    .Button:not(.Button--primary) {
+      height: auto;
+      padding: 8px 13px;
+      border: 0;
+      border-radius: var(--cn-button-radius, var(--cn-radius));
+      background: var(--cn-primary-100);
+      color: var(--cn-primary);
+      font-weight: 400;
+      box-shadow: none;
+    }
+  }
+}
+
+.ChatBrowse-empty {
+  padding: 2rem 1rem;
+
+  &-icon {
+    background: transparent;
+    color: var(--cn-primary-low-mid);
+  }
+
+  &-text {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-0);
+  }
+}
+
+// O cartão (chat-channel-card): o nome e o botão na primeira linha, os
+// membros embaixo, a descrição por último.
+.ChatBrowseCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "head action"
+    "meta meta"
+    "description description";
+  grid-template-rows: auto auto 1fr;
+  align-items: center;
+  gap: var(--cn-space-1) var(--cn-space-2);
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-left: 5px solid var(--cn-primary-low);
+  border-radius: var(--chat-radius);
+  background: var(--cn-primary-very-low);
+  box-shadow: none;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--cn-primary-low);
+    box-shadow: none;
+  }
+
+  &--frozen {
+    background: var(--cn-primary-very-low);
+    opacity: 0.6;
+  }
+
+  &-head {
+    grid-area: head;
+    align-items: center;
+    gap: 0.5em;
+    min-width: 0;
+  }
+
+  &-headText {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
+    min-width: 0;
+    padding-top: 0;
+  }
+
+  &-icon:not(.ChatChannelIcon--avatars) {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-up-1);
+  }
+
+  &-icon.ChatChannelIcon--avatars {
+    width: auto;
+
+    .Avatar {
+      --size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &--frozen &-icon:not(.ChatChannelIcon--avatars) {
+    background: transparent;
+  }
+
+  &-name {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-1);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  // Selos: só os que mudam o que o leitor pode fazer (convite, fechado,
+  // arquivado, privado); "Membro" e "Tópicos ativos" o chat do tema não mostra.
+  &-badges {
+    gap: 0.5rem;
+
+    &:not(:empty) {
+      margin-top: 0;
+    }
+  }
+
+  &-status {
+    gap: 0.3em;
+    height: auto;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    letter-spacing: 0;
+
+    &--joined {
+      display: none;
+    }
+
+    &--inspecting {
+      display: inline-flex;
+    }
+
+    &:has(.fa-code-branch) {
+      display: none;
+    }
+
+    &--frozen {
+      background: transparent;
+      color: var(--cn-primary-medium);
+    }
+
+    &--invited {
+      background: transparent;
+      color: var(--cn-link);
+    }
+  }
+
+  &-description {
+    grid-area: description;
+    align-self: flex-start;
+    min-height: 0;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-0);
+
+    &--empty {
+      display: none;
+    }
+  }
+
+  // O rodapé se desfaz: os membros e o botão caem nas áreas da grade.
+  &-footer {
+    display: contents;
+  }
+
+  &-meta {
+    grid-area: meta;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    justify-self: start;
+    min-height: 0;
+    text-align: left;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+
+    // Só os membros, sem ícone, como "2 membros" do chat do tema.
+    > span + span {
+      display: none;
+    }
+
+    i,
+    .icon {
+      display: none;
+    }
+  }
+
+  &-action {
+    grid-area: action;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    margin-left: 0;
+
+    .Button {
+      height: auto;
+      padding: 6px 12px;
+      border: 0;
+      border-radius: var(--cn-button-radius, var(--cn-radius));
+      font-size: var(--cn-font-0);
+      font-weight: 400;
+      line-height: 20px;
+      box-shadow: none !important;
+
+      .Button-icon {
+        display: none;
+      }
+    }
+
+    .Button:not(.Button--primary) {
+      border: 0;
+      background: var(--cn-primary-100);
+      color: var(--cn-primary);
+      font-weight: 400;
+
+      &:hover,
+      &:focus-visible {
+        border: 0;
+        background: var(--cn-primary-200);
+        color: var(--cn-primary);
+      }
+    }
+
+    .Button--primary {
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+
+      &:hover,
+      &:active {
+        background: var(--cn-accent-hover);
+        color: var(--cn-accent-text);
+      }
+    }
+  }
+
+  // Editar mora nas informações do canal; aqui ficam só os ícones do convite
+  // e do "entrar sem aparecer".
+  &-iconButton {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: transparent;
+    color: var(--cn-primary-medium);
+
+    &:has(.fa-pen-to-square) {
+      display: none;
+    }
+
+    &:hover,
+    &:focus-visible {
+      border: 0;
+      background: var(--cn-primary-low);
+      color: var(--cn-primary);
+      box-shadow: none;
+    }
+
+    &--danger:hover,
+    &--danger:focus-visible {
+      background: var(--chat-danger-low);
+      color: var(--cn-danger);
+    }
+  }
+}
+
+.ChatBrowseCard.ChatSkeleton {
+  padding: 0.75rem 1rem;
+
+  .ChatSkeleton-avatar,
+  .ChatSkeleton-line,
+  .ChatSkeleton-button {
+    background: var(--cn-primary-100);
+  }
+}
+
+// Estreito (celular, gaveta): uma coluna de cartões; o filtro ocupa a linha.
+@container (width < 48rem) {
+  .ChatBrowse-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+
+@container (width < 30rem) {
+  .ChatBrowse {
+    grid-template-areas:
+      "back back"
+      "title title"
+      "filters filters"
+      "search search"
+      "button button"
+      "list list";
+    row-gap: 0.5rem;
+  }
+
+  .ChatBrowse-search {
+    width: auto;
+  }
+
+  .ChatBrowse-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}
+
+// ---------------------------------------------------------------------
+// A lista do chat (thirdparty/ramonChat/ui.tsx): a página inicial (/chat,
+// Canais e MDs), a moldura das telas Meus tópicos/Pesquisar/Salvos/Denúncias
+// e a lista da gaveta. As peças (c-navbar, chat-channel-row, c-footer) já
+// têm o visual do Chat.less; aqui só o encaixe no ChatPage do ramon/chat.
+// ---------------------------------------------------------------------
+.ChatPage--home > .CanelaRamonChatHome {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border-right: 0;
+}
+
+.ChatPage-main--section {
+  flex-direction: column;
+
+  > .CanelaRamonChatSection-navbar {
+    flex-shrink: 0;
+  }
+
+  > .CanelaRamonChatSection-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    animation: none;
+
+    > * {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+  }
+
+  > .c-footer {
+    flex-shrink: 0;
+  }
+}
+
+.ChatDrawer-body > .CanelaRamonChatDrawerHome {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+
+  .chat-drawer-content {
+    animation: none;
+  }
+}
+
+// A gaveta redimensionável: sem a animação de altura enquanto arrasta.
+.ChatDrawer.is-resizing {
+  transition: none;
+  user-select: none;
+}
+
+.ChatDrawer > .chat-drawer-resizer {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  z-index: 2;
+  width: 15px;
+  height: 15px;
+  cursor: nwse-resize;
+}
+
+// O "⋮" das ações da mensagem (o dropdown de "Mais ações" do chat do tema).
+.ChatMessage-actions {
+  overflow: visible;
+
+  &:has(.Dropdown.open) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.ChatMessage-more {
+  display: flex;
+
+  > .Dropdown-toggle.ChatMessage-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 0 var(--chat-radius) var(--chat-radius) 0;
+
+    .Button-icon {
+      margin: 0;
+      font-size: var(--cn-font-0);
+    }
+
+    .Button-label,
+    .Button-caret {
+      display: none;
+    }
+  }
+
+  .Dropdown-menu {
+    top: 100%;
+    right: 0;
+    left: auto;
+    margin-top: 4px;
+
+    .Button {
+      font-weight: 500;
+
+      .Button-icon {
+        color: var(--cn-primary-medium);
+      }
+    }
+
+    .Button:has(.fa-trash) {
+      color: var(--cn-danger);
+
+      .Button-icon {
+        color: var(--cn-danger);
+      }
+    }
+  }
+}
+
+.ChatMessage:has(.ChatMessage-more.open) {
+  z-index: 3;
+}
+
+// O editor como o do chat do tema: o "+" redondo à esquerda do texto, o
+// emoji e o enviar à direita. A faixa de ferramentas do ramon/chat se desfaz
+// para cada botão cair no seu lugar da linha.
+.ChatComposer {
+  &-shell {
+    padding-left: 0.25rem;
+  }
+
+  &-bar {
+    display: contents;
+  }
+
+  &-tools {
+    order: -1;
+    align-self: flex-end;
+  }
+
+  &-input {
+    padding-left: 0.35rem;
+  }
+
+  &-attach {
+    padding: 0 0.4rem;
+
+    .icon {
+      box-sizing: content-box;
+      padding: 5px;
+      border-radius: 100%;
+      background: var(--cn-primary-low);
+      color: var(--cn-primary-medium);
+      font-size: var(--cn-font-down-1);
+    }
+
+    &:hover:not(:disabled) .icon {
+      color: var(--cn-primary);
+    }
+  }
+
+  &-emoji {
+    transition: transform 0.1s ease-in-out;
+
+    &:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+  }
+
+  &-shell:focus-within &-emoji {
+    color: var(--cn-link);
+  }
+}
+
+// Os indicadores das listas (os do chat do tema): o número das menções e das
+// MDs com o mesmo contador; o ponto das não lidas continua o ponto.
+.chat-channel-unread-indicator.-urgent,
+.c-unread-indicator.-urgent,
+.chat-thread-list-item-unread-indicator.-urgent {
+  .canela-rc-urgent();
+}
+
+.chat-channel-unread-indicator__number,
+.c-unread-indicator__number {
+  line-height: 1;
+}
+
+// ---------------------------------------------------------------------
+// A página inicial do chat (thirdparty/ramonChat/lobby.tsx): as abas do topo,
+// "Continuar em", os botões e as listas de canais e de MDs — linhas sobre a
+// superfície, separadas por fio, com o fundo leve no hover.
+// ---------------------------------------------------------------------
+.CanelaRamonChatLobby-tabs {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.CanelaRamonChatLobby-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--cn-radius-pill);
+  color: var(--cn-primary);
+  font-size: var(--cn-font-0);
+  text-decoration: none;
+
+  .icon {
+    color: var(--cn-primary-medium);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &.active,
+  &.active:hover {
+    background: var(--cn-selected);
+    color: var(--cn-link);
+
+    .icon {
+      color: var(--cn-link);
+    }
+  }
+}
+
+.CanelaRamonChatLobby-body {
+  max-width: 920px;
+  padding: 1rem 1.5rem 2rem;
+}
+
+// "Continuar em #canal": a última conversa, com a barrinha de destaque.
+.CanelaRamonChatLobby-continue {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cn-border);
+  border-left: 3px solid var(--cn-accent);
+  border-radius: var(--chat-radius);
+  color: var(--cn-primary);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--chat-hover);
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  .CanelaRamonChatLobby-label {
+    font-weight: 600;
+  }
+}
+
+.CanelaRamonChatLobby-continueLabel {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaRamonChatLobby-continueArrow {
+  margin-left: auto;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaRamonChatLobby-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.CanelaRamonChatLobby-heading {
+  margin: 0 auto 0 0;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-1);
+  font-weight: 700;
+}
+
+.CanelaRamonChatLobby-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cn-border);
+  list-style: none;
+}
+
+.CanelaRamonChatLobby-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--cn-border);
+  color: var(--cn-primary);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--chat-hover);
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &.muted {
+    opacity: 0.65;
+  }
+
+  &.has-unread .CanelaRamonChatLobby-label {
+    font-weight: 600;
+  }
+}
+
+.CanelaRamonChatLobby-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-up-2);
+  line-height: 1;
+
+  .ChatChannelIcon-image {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--cn-radius);
+  }
+
+  .ChatChannelIcon--avatars .Avatar {
+    --size: 32px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    font-size: 14px;
+    line-height: 32px;
+
+    & + .Avatar {
+      margin-left: -18px;
+      box-shadow: 0 0 0 2px var(--cn-surface);
+    }
+  }
+}
+
+.CanelaRamonChatLobby-continue .CanelaRamonChatLobby-icon {
+  flex-basis: 24px;
+  width: 24px;
+  height: 24px;
+  font-size: var(--cn-font-up-1);
+
+  .ChatChannelIcon--avatars .Avatar {
+    --size: 24px;
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+    line-height: 24px;
+  }
+}
+
+.CanelaRamonChatLobby-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.CanelaRamonChatLobby-name {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.CanelaRamonChatLobby-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--cn-font-0);
+}
+
+.CanelaRamonChatLobby-lock {
+  flex-shrink: 0;
+  color: var(--cn-primary-low-mid);
+  font-size: var(--cn-font-down-2);
+}
+
+.CanelaRamonChatLobby-subtitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaRamonChatLobby-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+
+.CanelaRamonChatLobby-time {
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-2);
+  white-space: nowrap;
+}
+
+.CanelaRamonChatLobby-empty {
+  margin: 0;
+  padding: 1rem 0;
+  color: var(--cn-primary-medium);
+}
+
+// Nas seções (Meus tópicos, Pesquisar…) as abas do topo ficam embaixo da barra.
+.CanelaRamonChatSection-navbar .CanelaRamonChatLobby-tabs {
+  border-bottom: 1px solid var(--cn-border);
+}
+
+@media @phone {
+  .CanelaRamonChatLobby-body {
+    padding: 0 0 1rem;
+  }
+
+  .CanelaRamonChatLobby-continue {
+    margin: 0.75rem 1rem;
+  }
+
+  .CanelaRamonChatLobby-actions {
+    padding: 0.75rem 1rem 0;
+  }
+
+  .CanelaRamonChatLobby-row {
+    padding: 0.75rem 1rem;
+  }
+
+  .CanelaRamonChatLobby-empty {
+    padding: 1rem;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Janelas (canal, membros, denúncia, posse): os campos e as seções do tema,
+// sem as caixas tingidas do avocado.
+// ---------------------------------------------------------------------
+.ChatModal {
+  .Form-group > label {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 600;
+  }
+
+  .helpText {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  label.checkbox {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 400;
+  }
+}
+
+.ChannelFormModal {
+  &-header {
+    border-bottom-color: var(--cn-border);
+
+    h3 {
+      color: var(--cn-primary);
+      font-size: var(--cn-font-up-2);
+      font-weight: 700;
+    }
+  }
+
+  &-headerIcon {
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary-medium);
+  }
+
+  &-headerSubtitle {
+    color: var(--cn-primary-medium);
+  }
+
+  &-section {
+    border: 1px solid var(--cn-border);
+    border-radius: var(--chat-radius);
+    background: transparent;
+  }
+
+  // O título da seção (chat-form__section-title): cinza, sem versalete.
+  &-sectionTitle {
+    margin-bottom: 0.75rem;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  &-choice {
+    border-color: var(--cn-primary-low);
+    border-radius: var(--chat-radius);
+    background: var(--cn-surface);
+
+    &:focus-within {
+      outline: 1px solid var(--cn-primary-low-mid);
+      outline-offset: 0;
+    }
+
+    &--selected {
+      border-color: var(--cn-accent);
+      background: var(--chat-tertiary-very-low);
+    }
+
+    &--selected &-title .icon {
+      color: var(--cn-link);
+    }
+  }
+
+  &-iconKind {
+    border-color: var(--cn-primary-low);
+    background: var(--cn-surface);
+
+    &-option--active {
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+    }
+  }
+
+  &-toggle + &-toggle {
+    border-top-color: var(--cn-border);
+  }
+
+  &-lifecycle {
+    border-style: dashed;
+  }
+
+  &-footer {
+    border-top-color: var(--cn-border);
+    background: var(--cn-surface);
+  }
+}
+
+// As informações do canal (Ajustes, Membros, Cargos) no formato horizontal
+// das configurações de canal do Discourse (control-group): o modal largo,
+// cada seção com o rótulo à esquerda e o controle, com a ajuda logo abaixo,
+// à direita. No celular volta a uma coluna.
+.ChatChannelInfoModal.Modal--medium {
+  @media @tablet-up {
+    max-width: 780px;
+    width: 100%;
+  }
+}
+
+.ChatChannelInfo {
+  // As abas: as pílulas do tema (nav-pills).
+  &-tabs {
+    gap: 0.25rem;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  &-tab {
+    padding: 0.35rem 0.75rem;
+    border-bottom: 0;
+    border-radius: var(--cn-radius-pill);
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 400;
+
+    &:hover {
+      background: var(--cn-primary-very-low);
+    }
+
+    &--active,
+    &--active:hover {
+      background: var(--cn-selected);
+      color: var(--cn-link);
+    }
+  }
+
+  // A seção: [rótulo | controle + ajuda].
+  &-section {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    column-gap: 1.5rem;
+    row-gap: 0.5rem;
+    align-items: start;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--cn-border);
+
+    > * {
+      grid-column: 2;
+    }
+
+    // Só na primeira linha: os controles descem na coluna da direita, e o
+    // rótulo fica no topo da seção (um `span` de várias linhas abria linhas
+    // vazias, com o espaçamento delas, e a seção ficava alta à toa).
+    &-label {
+      grid-column: 1;
+      grid-row: 1;
+      margin: 0;
+      padding-top: 0.4rem;
+      color: var(--cn-primary);
+      font-size: var(--cn-font-0);
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    // Os campos, as caixas e os botões não esticam: a largura do que eles são.
+    > label,
+    > .Switch,
+    > .Button {
+      display: block;
+      margin-bottom: 0;
+    }
+
+    .FormControl {
+      margin-top: 0;
+    }
+
+    select.FormControl,
+    .Select {
+      width: auto;
+      min-width: 220px;
+      max-width: 100%;
+    }
+
+    textarea.FormControl {
+      width: 100%;
+    }
+
+    // A ajuda logo abaixo do controle, sempre com o mesmo respiro.
+    .helpText {
+      margin: 0.25rem 0 0.5rem;
+      color: var(--cn-primary-medium);
+      font-size: var(--cn-font-down-1);
+      line-height: 1.4;
+    }
+
+    // As chaves com o rótulo na mesma linha.
+    .Checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.25rem 0 0;
+    }
+
+    // Fechar e arquivar: botões compactos, o ícone à esquerda do texto.
+    > .Button,
+    .Button:not(.Button--icon) {
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+      gap: 0.5em;
+      width: auto;
+      height: auto;
+      padding: 6px 12px;
+      border: 0;
+      border-radius: var(--cn-button-radius, var(--cn-radius));
+      background: var(--cn-primary-100);
+      color: var(--cn-primary);
+      font-weight: 400;
+      line-height: 20px;
+      white-space: nowrap;
+
+      .Button-icon {
+        margin: 0;
+        color: var(--cn-accent);
+      }
+
+      &:hover,
+      &:focus-visible {
+        border: 0;
+        background: var(--cn-primary-200);
+        color: var(--cn-primary);
+      }
+    }
+
+    .Button--primary:not(.Button--icon) {
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+
+      .Button-icon {
+        color: var(--cn-accent-text);
+      }
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-accent-hover);
+        color: var(--cn-accent-text);
+      }
+    }
+  }
+
+  // A zona de "perigo" no rodapé: o excluir à esquerda, discreto.
+  &-danger {
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem 1.5rem;
+  }
+
+  &-danger &-deleteButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-left: 0;
+    padding: 6px 12px;
+    border-radius: var(--cn-button-radius, var(--cn-radius));
+    color: var(--cn-danger);
+
+    .Button-icon {
+      margin: 0;
+      color: var(--cn-danger);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--chat-danger-low);
+      color: var(--cn-danger);
+    }
+  }
+
+  // Membros e cargos: a lista horizontal — avatar, nome e as ações à direita.
+  &-memberHeader {
+    grid-column: ~"1 / -1";
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &-memberCount {
+    color: var(--cn-primary);
+    font-weight: 700;
+  }
+
+  &-filter,
+  &-memberList,
+  &-invited,
+  &-moderatorHelp {
+    grid-column: ~"1 / -1";
+  }
+
+  &-memberList {
+    max-height: 360px;
+  }
+
+  &-member {
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--cn-border);
+    font-size: var(--cn-font-0);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    &:hover {
+      background: var(--cn-primary-very-low);
+    }
+
+    .Avatar {
+      --size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    &--online .Avatar {
+      box-shadow: none;
+    }
+
+    > .Button--icon {
+      color: var(--cn-primary-medium);
+
+      &:hover {
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &-invited,
+  &-transfer {
+    border-color: var(--cn-border);
+  }
+
+  // Dentro de "Membros" a seção não tem rótulo: a lista usa as duas colunas.
+  &-section:not(:has(> .ChatChannelInfo-section-label)) {
+    display: block;
+
+    .Checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  @media @phone {
+    &-tabs {
+      padding: 0.5rem 1rem;
+    }
+
+    &-section {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 1rem;
+
+      > *,
+      &-label {
+        grid-column: 1;
+        grid-row: auto;
+      }
+
+      &-label {
+        padding-top: 0;
+      }
+    }
+
+    &-danger {
+      padding: 1rem;
+    }
+  }
+}
+
+.ChatChannelInfo-member-badge {
+  border-radius: var(--cn-radius);
+  font-size: var(--cn-font-down-3);
+  font-weight: 600;
+  text-transform: none;
+
+  &--owner {
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+  }
+
+  &--moderator {
+    background: var(--chat-tertiary-very-low);
+    color: var(--cn-link);
+    box-shadow: none;
+  }
+}
+
+.ChatAddMembers {
+  &-field {
+    border-color: var(--cn-primary-300);
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-surface);
+
+    &:focus-within {
+      border-color: var(--cn-accent);
+      box-shadow: none;
+    }
+  }
+
+  &-chip {
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-low);
+    font-weight: 400;
+
+    &:hover:not(:disabled) {
+      background: var(--cn-primary-low-mid);
+    }
+  }
+
+  &-heading {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  &-result {
+    border-radius: var(--chat-radius);
+
+    &:hover:not(:disabled),
+    &--highlighted:not(:disabled) {
+      background: var(--chat-tertiary-very-low);
+    }
+
+    &--selected:not(:disabled) {
+      background: var(--chat-tertiary-low);
+    }
+
+    &--selected .ChatAddMembers-result-mark {
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+    }
+
+    &-status {
+      border-radius: var(--cn-radius);
+      text-transform: none;
+    }
+  }
+}
+
+.ChatFlagModal {
+  &-target {
+    border-radius: var(--chat-radius);
+    background: var(--cn-primary-very-low);
+  }
+
+  &-reason {
+    border-color: var(--cn-primary-300);
+    border-radius: var(--cn-radius-pill);
+    font-weight: 400;
+
+    &--active {
+      border-color: var(--cn-accent);
+      background: var(--cn-selected);
+      color: var(--cn-link);
+      font-weight: 400;
+    }
+  }
+}
+
+// Seletores de emoji e de figurinha: o painel suspenso do tema.
+.EmojiPicker-dropdown,
+.ChatStickerPicker {
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+}
+
+.EmojiPicker-option,
+.ChatStickerPicker-item {
+  border-radius: var(--cn-radius);
+
+  &:hover,
+  &--active {
+    background: var(--cn-primary-low);
+  }
+}
+
+.ChatInviteActions-hint {
+  color: var(--cn-primary-medium);
+}
+
+// ---------------------------------------------------------------------
+// Celular (css-chat_mobile do Discourse): a lista de canais é a tela
+// inteira, com linhas de 4em separadas por fio; a conversa tem os toques
+// maiores e o enviar na bolinha de destaque.
+// ---------------------------------------------------------------------
+@media @phone {
+  .ChatSidebar {
+    width: auto;
+    border-right: 0;
+
+    &-top {
+      gap: 0;
+      padding: 0;
+      border-bottom: 1px solid var(--cn-border);
+    }
+
+    &-quickLink {
+      height: 3.25em;
+      min-height: 0;
+      padding: 0 1.5rem;
+      border-radius: 0;
+      font-size: var(--cn-font-up-1);
+
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--cn-border);
+      }
+    }
+
+    &-scroll {
+      padding: 0 0 1rem;
+    }
+
+    &-sectionHeader {
+      padding: 1.5rem 1rem 0.5rem 1.5rem;
+      font-size: var(--cn-font-0);
+
+      &-action {
+        width: 2rem;
+        height: 2rem;
+        justify-content: center;
+      }
+    }
+  }
+
+  .ChatChannelRow {
+    gap: 0.75rem;
+    width: 100%;
+    height: 4em;
+    min-height: 0;
+    margin: 0;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0;
+    border-bottom: 1px solid var(--cn-border);
+
+    &:hover,
+    &--active {
+      background: var(--cn-primary-very-low);
+    }
+
+    &-icon {
+      width: 38px;
+      font-size: var(--cn-font-up-3);
+    }
+
+    &-name {
+      font-size: var(--cn-font-up-1);
+    }
+
+    .ChatChannelIcon--avatars .Avatar {
+      --size: 38px;
+      width: 38px;
+      height: 38px;
+
+      & + .Avatar {
+        margin-left: -20px;
+      }
+    }
+  }
+
+  .ChatChannel-header {
+    height: 56px;
+  }
+
+  .ChatMessage {
+    &:hover {
+      background: transparent;
+    }
+
+    &:not(.ChatMessage--grouped) {
+      padding-top: 0.75em;
+    }
+  }
+
+  .ChatComposer {
+    padding: 0.75rem 0 ~"calc(0.5rem + env(safe-area-inset-bottom))" 0.5rem;
+
+    &-shell {
+      min-height: 0;
+    }
+
+    &-send:not(:disabled) {
+      width: 34px;
+      height: 34px;
+      margin: 0 0.5rem 7px;
+      padding: 0;
+      border-radius: 100%;
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+    }
+  }
+
+  .ChatThreadPanel {
+    width: auto;
+    border-left: 0;
+  }
+
+}
+
+// Quem pediu menos movimento não vê as animações do chat.
+@media (prefers-reduced-motion: reduce) {
+  .ChatMessage,
+  .ChatReactions-chip,
+  .ChatComposer-send,
+  .ChatThreadIndicator {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+}

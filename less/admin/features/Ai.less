@@ -1,0 +1,106 @@
+// Cards da IA no admin: campos de chave, grupos, resultado do "Testar
+// conexão" e o editor de personas.
+
+.CanelaAiAdmin-clearKey {
+  margin-top: 0.25em;
+  padding: 0;
+  font-size: 12px;
+}
+
+.CanelaAiAdmin-groupList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 1.5em;
+
+  .Form-group {
+    margin: 0;
+  }
+}
+
+.CanelaAiAdmin-test {
+  margin-top: 1em;
+}
+
+.CanelaAiAdmin-testResults {
+  margin: 0.75em 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5em;
+    padding: 0.4em 0;
+    border-top: 1px solid var(--control-bg);
+  }
+
+  .is-ok .icon {
+    color: #1a7f37;
+  }
+
+  .is-error .icon,
+  .is-error span {
+    color: #c62828;
+  }
+
+  code {
+    font-size: 12px;
+  }
+}
+
+.CanelaAiAdmin-testMs {
+  margin-left: auto;
+  color: var(--muted-color);
+}
+
+.CanelaAiAdmin-persona {
+  margin-bottom: 0.5em;
+  border: 1px solid var(--control-bg);
+  border-radius: 8px;
+
+  > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.6em 0.9em;
+    cursor: pointer;
+  }
+
+  &[open] > summary {
+    border-bottom: 1px solid var(--control-bg);
+  }
+}
+
+.CanelaAiAdmin-personaId {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--muted-color);
+}
+
+.CanelaAiAdmin-off {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted-color);
+}
+
+.CanelaAiAdmin-personaBody {
+  padding: 0.9em;
+
+  textarea {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px;
+  }
+}
+
+.CanelaAiAdmin-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 1.5em;
+  margin-bottom: 1em;
+
+  .Form-group {
+    margin: 0;
+  }
+}

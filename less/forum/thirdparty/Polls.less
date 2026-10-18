@@ -1,0 +1,240 @@
+// ---------------------------------------------------------------------
+// fof/polls no jeito do poll do Discourse (css-poll.css do Meta)
+//
+// Grade: opções à esquerda, a coluna de informações (10em) à direita com a
+// contagem grande, e a faixa dos botões embaixo. O rodapé da extensão
+// (informações + botão de votar) é desmontado com `display: contents`
+// para cada parte cair na sua área.
+// ---------------------------------------------------------------------
+.Post-poll {
+  --canela-poll-bar: var(--cn-primary-medium);
+  --canela-poll-bar-chosen: var(--cn-accent);
+  --canela-poll-bar-bg: var(--cn-primary-low);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "header"
+    "content"
+    "info"
+    "buttons";
+  gap: 0;
+  margin: 1em 0;
+  border: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+
+  .Poll-header {
+    grid-area: header;
+    margin: 0 1em;
+    padding: 1em 0 0.5em;
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  .Poll-title {
+    font-size: var(--cn-font-0);
+    font-weight: bold;
+    line-height: 1.4;
+  }
+
+  .Poll-subtitle {
+    margin-top: 0.25em;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  .Poll-controls .Button {
+    color: var(--cn-primary-low-mid);
+  }
+
+  .Poll-content {
+    grid-area: content;
+    align-self: center;
+    padding: 0.5em 1em 1em;
+  }
+
+  .Poll-options {
+    gap: 0;
+  }
+
+  // O rodapé some como caixa; os filhos viram itens da grade.
+  .Poll-footer {
+    display: contents;
+  }
+
+  .PollInfoText {
+    grid-area: info;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em 1em;
+    padding: 1em;
+    border-top: 1px solid var(--cn-border);
+    color: var(--cn-primary-medium);
+    line-height: 1.4;
+
+    > li {
+      display: flex;
+      gap: 0.5em;
+    }
+
+    .icon {
+      margin: 0.2em 0 0;
+      font-size: var(--cn-font-down-1);
+    }
+  }
+
+  // A faixa dos botões: borda em cima, 1em de folga. O pseudo-elemento
+  // desenha a faixa mesmo com o botão sendo o único item.
+  &:has(.Poll-submit)::after {
+    content: "";
+    grid-area: buttons;
+    border-top: 1px solid var(--cn-border);
+  }
+
+  .Poll-submit.Button {
+    grid-area: buttons;
+    z-index: 1;
+    justify-self: start;
+    margin: 1em;
+  }
+}
+
+// A contagem grande ("0 / votos", info-number font-up-6 e info-label font-up-2).
+.CanelaPollCount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.CanelaPollCount-number,
+.CanelaPollCount-label {
+  color: var(--cn-primary-medium);
+}
+
+@media @tablet-up {
+  .Post-poll {
+    grid-template-columns: minmax(0, 1fr) 10em;
+    grid-template-areas:
+      "header info"
+      "content info"
+      "buttons buttons";
+
+    .PollInfoText {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 0;
+      padding: 0.5em;
+      border-top: 0;
+      border-left: 1px solid var(--cn-border);
+      text-align: center;
+
+      > li + li {
+        margin-top: 1.25em;
+        padding-top: 1.25em;
+        border-top: 1px solid var(--cn-border);
+      }
+    }
+  }
+
+  .CanelaPollCount {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .CanelaPollCount-number {
+    font-size: var(--cn-font-up-6);
+  }
+
+  .CanelaPollCount-label {
+    font-size: var(--cn-font-up-2);
+  }
+}
+
+// Cada opção: sem caixa, o círculo à esquerda e o texto em font-up-1,
+// `.5em 0` de folga. Depois de votar, a barra fina embaixo do texto
+// (`.results .bar`, .75em) e a porcentagem à direita.
+.Post-poll .PollOption {
+  border-radius: 0;
+  background: none;
+
+  &:hover {
+    background: none;
+  }
+}
+
+.Post-poll .PollBar {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5em;
+  padding: 0.5em 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-1);
+  overflow: visible;
+
+  // A barra: fundo claro de ponta a ponta e o preenchimento na largura do voto.
+  &::after {
+    content: none;
+  }
+
+  .PollOption-input {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    accent-color: var(--canela-poll-bar-chosen);
+  }
+}
+
+.Post-poll .PollOption-text {
+  flex-wrap: wrap;
+  word-break: break-word;
+  mix-blend-mode: normal !important;
+}
+
+.Post-poll .PollOption-percent {
+  order: 2;
+  margin-left: 0.25em;
+  padding: 0;
+  color: var(--cn-primary-medium);
+  font-size: inherit;
+  font-weight: normal;
+}
+
+// Com a contagem visível (votou ou terminou), a barra aparece sob o texto.
+.Post-poll .PollOption:has(.PollOption-percent) .PollBar {
+  padding: 0.25em 0;
+
+  .PollOption-text::after {
+    content: "";
+    order: 3;
+    flex: 0 0 100%;
+    height: 0.75em;
+    margin-top: 0.25em;
+    background: ~"linear-gradient(var(--canela-poll-bar), var(--canela-poll-bar)) no-repeat 0 0 / var(--poll-option-width, 0%) 100%, var(--canela-poll-bar-bg)";
+  }
+
+  &[data-selected] .PollOption-text::after {
+    background: ~"linear-gradient(var(--canela-poll-bar-chosen), var(--canela-poll-bar-chosen)) no-repeat 0 0 / var(--poll-option-width, 0%) 100%, var(--canela-poll-bar-bg)";
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .Post-poll .PollOption:has(.PollOption-percent) .PollBar .PollOption-text::after {
+    transition: background-size 0.75s ease-in-out;
+  }
+}
+
+// Escolhido: o círculo cheio na cor da barra escolhida (`.chosen`).
+.Post-poll .PollOption--voted .PollOption-answer {
+  color: var(--cn-primary);
+}
+
+// A janela de quem votou e o formulário: campos e botões do tema já valem;
+// só os separadores.
+.PollForm-answer + .PollForm-answer {
+  padding-top: 0;
+}

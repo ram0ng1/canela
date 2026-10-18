@@ -1,0 +1,1256 @@
+// IA do Discourse (discourse-ai): página de conversas, painel de resumo,
+// ajudante ✨ do editor, "Perguntar à IA" na busca, resumos curtos e
+// relacionados. Medidas e transições tiradas do CSS do Meta
+// (css-discourse-ai*.css); as cores vêm dos tokens --cn-*.
+
+// Só com o recurso ligado (@config-canela-ai, registrada no extend.php).
+& when (@config-canela-ai = true) {
+
+// ── Animações (os nomes do Discourse, com prefixo) ──────────────────────────
+
+@keyframes canela-ai-flashing {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes canela-ai-wave {
+  0%,
+  60%,
+  100% {
+    transform: initial;
+  }
+  30% {
+    transform: translateY(-0.2em);
+  }
+}
+
+@keyframes canela-ai-appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+// O piscar passa de bloco em bloco: cada um pisca no seu vigésimo do ciclo.
+@keyframes canela-ai-blink {
+  0%,
+  10%,
+  100% {
+    opacity: 1;
+  }
+  5% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes canela-ai-fade-opacity {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes canela-ai-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// O painel de resumo entra pela direita e sai por ela (float-left /
+// float-out-right do Discourse).
+@keyframes canela-ai-float-left {
+  from {
+    opacity: 0;
+    transform: translateX(2em);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes canela-ai-float-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(2em);
+  }
+}
+
+// Os menus do float-kit aparecem com um fade e um deslize curto.
+@keyframes canela-ai-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes canela-ai-scroll-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+// ── Peças comuns ────────────────────────────────────────────────────────────
+
+.CanelaAi-wave {
+  flex: 0 0 auto;
+  display: inline-flex;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaAi-waveDot {
+  display: inline-block;
+  animation: canela-ai-wave 1.8s linear infinite;
+
+  &:nth-child(2) {
+    animation-delay: -1.6s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: -1.4s;
+  }
+}
+
+// O "●" piscando no fim do texto enquanto a IA escreve.
+.CanelaAi-cooked.is-streaming > :last-child::after {
+  content: "●";
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-size: 1rem;
+  line-height: normal;
+  vertical-align: baseline;
+  color: var(--cn-link);
+  animation: canela-ai-flashing 1.5s 3s infinite;
+}
+
+.CanelaAi-cooked {
+  overflow-wrap: break-word;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.CanelaAi-blinking {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+}
+
+.CanelaAi-blinkingItem {
+  display: block;
+  height: 1em;
+  margin: 0 8px 8px 0;
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-300);
+  opacity: 0;
+  animation:
+    canela-ai-appear 0.5s cubic-bezier(0.445, 0.05, 0.55, 0.95) ~"calc(var(--i) * 250ms)" forwards,
+    canela-ai-blink 5s cubic-bezier(0.55, 0.085, 0.68, 0.53) ~"calc(5s + var(--i) * 250ms)" infinite;
+
+  // As larguras do Discourse, bloco a bloco.
+  @widths: 10%, 12%, 18%, 14%, 18%, 14%, 22%, 5%, 25%, 14%, 18%, 12%, 22%, 18%, 13%, 22%, 19%, 13%, 22%, 25%;
+
+  .width-loop(@i) when (@i > 0) {
+    &:nth-child(@{i}) {
+      width: extract(@widths, @i);
+    }
+    .width-loop(@i - 1);
+  }
+  .width-loop(20);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: canela-ai-appear 0s forwards;
+  }
+}
+
+// "Pesquisou por …" — o .ai-details do Discourse.
+.CanelaAi-tools {
+  margin-bottom: 0.5rem;
+}
+
+.CanelaAi-details {
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--cn-primary-very-low);
+  border-radius: var(--cn-radius);
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-high);
+
+  &:not([open]):is(:hover, :focus-within) {
+    background-color: var(--cn-hover);
+  }
+
+  .icon {
+    color: var(--cn-primary-medium);
+  }
+
+  a {
+    color: var(--cn-link);
+  }
+}
+
+.CanelaAi-detailsSummary {
+  display: block;
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+.CanelaAi-detailsCaret {
+  margin-inline-end: 0.25em;
+  font-size: var(--cn-font-down-1);
+
+  &--expanded {
+    display: none;
+  }
+
+  [open] > .CanelaAi-detailsSummary & {
+    &--collapsed {
+      display: none;
+    }
+
+    &--expanded {
+      display: inline-block;
+    }
+  }
+}
+
+.CanelaAi-detailsList {
+  margin: 0.35em 0 0.25em;
+  padding-left: 1.6em;
+}
+
+// ── Página de conversas ─────────────────────────────────────────────────────
+
+.CanelaAiPage {
+  .CanelaAi-empty {
+    padding: 3em 1em;
+    text-align: center;
+    color: var(--cn-primary-medium);
+  }
+}
+
+.ai-bot-conversations {
+  --input-max-width: 46em;
+  display: flex;
+  flex-direction: column;
+  min-height: ~"calc(100dvh - var(--cn-header-height, 52px) - 5em)";
+
+  &__content-wrapper {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cn-space-4, 1rem);
+    box-sizing: border-box;
+  }
+
+  &__title {
+    margin-bottom: 0.25em;
+    font-size: var(--cn-font-up-5);
+    font-weight: bold;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--cn-primary);
+    animation: canela-ai-fade-in 0.3s ease-out;
+
+    .icon {
+      margin-right: 0.15em;
+      vertical-align: -0.05em;
+    }
+
+    // Centralização ótica, como no Discourse.
+    @media screen and (min-height: 600px) {
+      margin-top: -6em;
+    }
+  }
+
+  &__input-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-2, 0.5rem);
+    width: 80%;
+    max-width: var(--input-max-width);
+
+    @media @phone {
+      width: 100%;
+    }
+  }
+
+  .ai-disclaimer {
+    margin: 0;
+    font-size: var(--cn-font-down-1);
+    text-align: center;
+    color: var(--cn-primary-medium);
+
+    @media @tablet-up {
+      width: 80%;
+      max-width: var(--input-max-width);
+    }
+  }
+}
+
+.ai-bot-conversations__input-wrapper {
+  --input-min-height: 2.5em;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--cn-primary-low);
+  border-radius: var(--cn-radius-input);
+  background-color: var(--cn-surface);
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+
+  &:focus-within {
+    border-color: var(--cn-accent);
+    box-shadow: 0 0 0 1px var(--cn-accent);
+  }
+
+  &.--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    textarea,
+    .Button {
+      pointer-events: none;
+    }
+  }
+
+  textarea {
+    flex-grow: 1;
+    box-sizing: border-box;
+    min-height: var(--input-min-height);
+    max-height: 30vh;
+    margin: 0;
+    padding: 0.55em 0 0.55em 0.75em;
+    border: none;
+    background: transparent;
+    color: var(--cn-primary);
+    font: inherit;
+    line-height: 1.6;
+    resize: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cn-primary-low) transparent;
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &::placeholder {
+      color: var(--cn-placeholder, var(--cn-primary-medium));
+    }
+  }
+
+  .ai-conversation-submit {
+    flex-shrink: 0;
+    align-self: flex-end;
+    margin: 0.2em;
+    color: var(--cn-primary-medium);
+    background: transparent !important;
+    transition: transform 0.15s ease;
+    will-change: transform;
+
+    &.is-ready {
+      color: var(--cn-link);
+
+      &:hover,
+      &:focus-visible {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  &.is-docked {
+    background-color: var(--cn-surface);
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.agent-llm-selector {
+  display: flex;
+  gap: var(--cn-space-4, 1rem);
+  justify-content: flex-start;
+
+  &__selection-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25em;
+
+    label {
+      margin: 0;
+      font-size: var(--cn-font-down-1);
+      font-weight: 500;
+      color: var(--cn-primary-high);
+    }
+  }
+}
+
+.CanelaAi-selectWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  .icon {
+    position: absolute;
+    right: 0.4em;
+    pointer-events: none;
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaAi-select {
+  appearance: none;
+  padding: 0.3em 1.6em 0.3em 0.4em;
+  border: none;
+  border-radius: var(--cn-radius);
+  background: transparent;
+  color: var(--cn-primary);
+  font: inherit;
+  font-size: var(--cn-font-down-1);
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    outline: none;
+  }
+}
+
+.CanelaAi-remaining {
+  margin: 0;
+  font-size: var(--cn-font-down-2);
+  color: var(--cn-primary-medium);
+
+  &.is-out {
+    color: var(--cn-danger);
+  }
+}
+
+// A conversa aberta: as mensagens como posts e o campo encaixado no pé.
+.CanelaAiConversation {
+  display: flex;
+  flex-direction: column;
+  max-width: 50.5em;
+  margin: 0 auto;
+  min-height: ~"calc(100dvh - var(--cn-header-height, 52px) - 4em)";
+
+  &-title {
+    margin: 0.25em 0 1em;
+    font-size: var(--cn-font-up-3);
+    font-weight: bold;
+    line-height: 1.3;
+    color: var(--cn-primary);
+  }
+
+  &-stream {
+    flex: 1 1 auto;
+  }
+
+  &-composer {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding: 0.75em 0 max(env(safe-area-inset-bottom), 0.5em);
+    // O fundo esconde o texto que rola por baixo do campo.
+    background: linear-gradient(to bottom, transparent, var(--cn-surface) 1.5em);
+
+    .ai-disclaimer {
+      margin: 0.5em 0 0;
+      font-size: var(--cn-font-down-2);
+      text-align: center;
+      color: var(--cn-primary-medium);
+    }
+  }
+}
+
+.CanelaAiPost {
+  display: flex;
+  gap: 0.75em;
+  padding: 1em 0;
+  border-top: 1px solid var(--cn-border);
+  animation: canela-ai-fade-in 0.3s ease-out;
+
+  &:first-child {
+    border-top: none;
+  }
+
+  &-avatar .Avatar {
+    --size: 45px;
+    width: 45px;
+    height: 45px;
+  }
+
+  &-botAvatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-size: 1.25em;
+  }
+
+  &-body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5em;
+    margin-bottom: 0.4em;
+  }
+
+  &-name {
+    font-weight: bold;
+    color: var(--cn-primary-high);
+  }
+
+  .agent-flair__model {
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-medium);
+  }
+
+  &-stop {
+    margin-left: auto;
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-thinking {
+    padding: 0.25em 0;
+    font-size: var(--cn-font-up-2);
+  }
+
+  // A resposta em andamento reserva espaço, para o campo não pular.
+  &--bot.streaming .CanelaAiPost-body {
+    min-height: 6em;
+  }
+}
+
+// O indicador "tem mais abaixo" acima do campo, com os pontinhos enquanto a
+// resposta chega.
+.ai-bot-scroll-indicator {
+  position: absolute;
+  bottom: ~"calc(100% + 0.25em)";
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4em 0.8em;
+  transform: translateX(-50%);
+  border: 1px solid var(--cn-border);
+  border-radius: 2em;
+  background: var(--cn-surface);
+  color: var(--cn-primary-medium);
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+  animation: canela-ai-fade-in 0.2s ease-out;
+
+  &:hover {
+    border-color: var(--cn-primary-medium);
+    color: var(--cn-primary);
+  }
+
+  &__dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-block: 0.15em;
+  }
+
+  &__dot {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cn-primary-medium);
+    animation: canela-ai-scroll-dot 1.4s ease-in-out infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+// ── Barra lateral nas conversas ─────────────────────────────────────────────
+
+.ai-new-question-button__wrapper {
+  margin: var(--cn-space-6, 1.5rem) var(--cn-space-4, 1rem) var(--cn-space-2, 0.5rem);
+
+  .ai-new-question-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.CanelaAiSidebar-back {
+  padding: var(--cn-space-4, 1rem) var(--cn-space-4, 1rem) 0;
+}
+
+.ai-bot-sidebar-empty-state {
+  margin: var(--cn-space-4, 1rem);
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+.CanelaAiSidebar-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  // Sem ícone: o texto começa onde começaria o ícone dos outros links, e o
+  // "…" do menu não cobre o fim do título.
+  .CanelaSidebar-sectionContent > li > & > .ai-conversation-sidebar__link {
+    padding: 0 2em 0 0.5rem;
+  }
+
+  .ai-conversation-sidebar__link {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: var(--cn-font-down-1);
+
+    .Button-label {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // O "…" aparece ao passar o mouse, como o menu de contexto do Discourse.
+  .CanelaAiSidebar-menu {
+    position: absolute;
+    right: 0.25em;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+
+    .Button {
+      height: 26px;
+      width: 26px;
+      min-width: 0;
+      padding: 0;
+      font-size: var(--cn-font-down-1);
+    }
+  }
+
+  &:hover .CanelaAiSidebar-menu,
+  .CanelaAiSidebar-menu.open,
+  .CanelaAiSidebar-menu:focus-within {
+    opacity: 1;
+  }
+}
+
+.CanelaAiSidebar-more {
+  padding: 0 var(--cn-space-4, 1rem);
+}
+
+// ── Busca: "Perguntar à IA" ─────────────────────────────────────────────────
+
+.CanelaAskAi {
+  .CanelaAskAi-menu {
+    margin: 0;
+    padding: 0.25em 0;
+  }
+
+  .CanelaAskAi-button {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    width: 100%;
+    padding: 0.6em 1em;
+    text-align: left;
+    color: var(--cn-primary);
+    border-radius: var(--cn-radius);
+    animation: canela-ai-fade-in 0.2s ease-out;
+
+    &:hover,
+    &:focus-visible,
+    li.active & {
+      background: var(--cn-hover);
+    }
+  }
+
+  .CanelaAskAi-icon {
+    color: var(--cn-link);
+  }
+
+  .CanelaAskAi-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .CanelaAskAi-prefix {
+    color: var(--cn-primary-high);
+  }
+
+  .CanelaAskAi-query {
+    font-weight: bold;
+  }
+
+  .CanelaAskAi-badge {
+    flex-shrink: 0;
+    padding: 0 0.5em;
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-accent-low);
+    color: var(--cn-link);
+    font-size: var(--cn-font-down-2);
+    font-weight: 600;
+    line-height: 1.6;
+  }
+}
+
+// ── Mapa do tópico: "Resumir" ───────────────────────────────────────────────
+
+.CanelaTopicMap-ai {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  .ai-summarization-button {
+    white-space: nowrap;
+
+    .icon {
+      color: var(--cn-link);
+    }
+  }
+}
+
+// ── Painel do resumo ────────────────────────────────────────────────────────
+
+.CanelaAiSummary {
+  position: fixed;
+  top: ~"calc(var(--cn-header-height, 52px) + 1em)";
+  right: 1em;
+  z-index: 1060;
+  width: 100vw;
+  max-width: 30em;
+  animation: canela-ai-float-left 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-exiting {
+    animation: canela-ai-float-out-right 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  @media @phone {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-width: none;
+    width: auto;
+  }
+
+  &-container {
+    display: flex;
+    flex-direction: column;
+    max-height: ~"calc(100vh - var(--cn-header-height, 52px) - 3rem)";
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-surface);
+    box-shadow: var(--cn-shadow-dropdown);
+
+    @media @phone {
+      max-height: 70vh;
+      border-radius: var(--cn-radius-large) var(--cn-radius-large) 0 0;
+    }
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 0.5rem 1.5rem;
+  }
+
+  &-title {
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: var(--cn-font-up-2);
+    font-weight: bold;
+    color: var(--cn-primary);
+  }
+
+  &-body {
+    overflow-y: auto;
+    padding: 0 1.5rem 1rem;
+  }
+
+  &-empty {
+    margin: 0;
+    color: var(--cn-primary-medium);
+  }
+
+  .ai-summary__container {
+    padding-top: 0.5em;
+  }
+
+  .ai-summary__generating-text {
+    display: inline-block;
+    margin-left: 3px;
+    color: var(--cn-primary-high);
+  }
+
+  .generated-summary p {
+    margin: 0 0 0.75em;
+  }
+
+  // Rodapé: "Resumo feito com a IA em…" à esquerda, "Gerar novamente" à direita.
+  &-footer {
+    display: grid;
+    grid-template-areas: "summarized regenerate" "outdated regenerate";
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0 0.5em;
+    padding: 0.75rem 1.5rem 1rem;
+    border-top: 1px solid var(--cn-border);
+
+    @media @phone {
+      grid-template-areas: "summarized summarized" "regenerate outdated";
+      gap: 0.25em 0.5em;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .summarized-on {
+      grid-area: summarized;
+      font-size: var(--cn-font-down-1);
+      color: var(--cn-primary-high);
+    }
+
+    .summary-outdated {
+      grid-area: outdated;
+      font-size: var(--cn-font-down-1);
+      line-height: 1.4;
+      color: var(--cn-primary-high);
+    }
+
+    .CanelaAiSummary-regenerate {
+      grid-area: regenerate;
+      justify-self: start;
+    }
+  }
+
+  &-info {
+    color: var(--cn-primary-medium);
+    cursor: help;
+  }
+}
+
+// ── Ajudante do editor ──────────────────────────────────────────────────────
+
+.CanelaAiHelper {
+  position: relative;
+  display: inline-block;
+
+  .ai-helper-trigger .icon {
+    color: var(--cn-link);
+  }
+
+  &-menu {
+    position: absolute;
+    right: 0;
+    bottom: ~"calc(100% + 6px)";
+    z-index: 1100;
+    width: 25rem;
+    max-width: ~"calc(100vw - 2rem)";
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 0.25em 0;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    box-shadow: var(--cn-shadow-dropdown);
+    text-align: left;
+    animation: canela-ai-menu-in 0.15s ease-out;
+  }
+
+  &-toast {
+    padding: 0.75em 1rem;
+    color: var(--cn-danger);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-tagColor {
+    display: inline-block;
+    width: 0.65em;
+    height: 0.65em;
+    margin-right: 0.4em;
+    border-radius: 2px;
+    background: var(--cn-primary-low-mid);
+  }
+}
+
+.ai-helper-options {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+
+  &__button.Button {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    width: 100%;
+    margin: 0;
+    padding: 0.7rem 1rem;
+    border-radius: 0;
+    background: none;
+    color: var(--cn-primary);
+    text-align: left;
+    justify-content: flex-start;
+
+    .icon {
+      color: var(--cn-primary-medium);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover);
+      color: var(--cn-primary);
+
+      .icon {
+        color: var(--cn-primary-high);
+      }
+    }
+
+    .shortcut {
+      margin-left: auto;
+      font-size: var(--cn-font-down-2);
+      color: var(--cn-primary-medium);
+    }
+
+    &.is-selected .icon {
+      color: var(--cn-success);
+    }
+  }
+}
+
+.ai-custom-prompt {
+  display: flex;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.75em 1rem;
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    border-color: var(--cn-primary-300);
+
+    &::placeholder {
+      color: var(--cn-primary-medium);
+    }
+  }
+}
+
+.ai-suggestions-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  .Button-label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__loading {
+    padding: var(--cn-space-2, 0.5rem);
+    text-align: center;
+    color: var(--cn-primary-medium);
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-2, 0.5rem);
+    padding: 0.25em 0.5em 0.25em 1rem;
+  }
+
+  &__empty-text {
+    font-size: var(--cn-font-down-1);
+  }
+}
+
+// O modal "Edições sugeridas".
+.composer-ai-helper-modal {
+  .text-preview {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .inline-diff {
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-ligatures: none;
+
+    .diff-inner {
+      display: inline;
+    }
+  }
+
+  .text-preview,
+  .inline-diff {
+    ins {
+      background-color: ~"color-mix(in srgb, var(--cn-success) 18%, transparent)";
+      text-decoration: none;
+    }
+
+    del {
+      background-color: ~"color-mix(in srgb, var(--cn-danger) 18%, transparent)";
+      text-decoration: line-through;
+    }
+
+    .same-word {
+      color: var(--cn-primary);
+    }
+  }
+
+  &__loading {
+    white-space: pre-wrap;
+    animation: canela-ai-fade-opacity 1.5s infinite alternate;
+  }
+
+  &__old-value {
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--cn-danger);
+    color: var(--cn-danger);
+    white-space: pre-wrap;
+    animation: canela-ai-appear 0.2s ease-out;
+  }
+
+  &__new-value {
+    padding-left: 1rem;
+    border-left: 2px solid var(--cn-success);
+    color: var(--cn-success);
+    animation: canela-ai-fade-in 0.25s ease-out;
+  }
+}
+
+.CanelaAiDiffModal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+
+  .regenerate {
+    margin-left: auto;
+  }
+
+  .confirm .CanelaAi-wave {
+    color: inherit;
+    margin-left: 0.15em;
+  }
+}
+
+// ── Lista: resumo curto ─────────────────────────────────────────────────────
+
+.CanelaAiGist {
+  display: block;
+  line-height: 1.6;
+  color: var(--cn-primary-high);
+
+  .excerpt__contents {
+    max-width: 70ch;
+    overflow-wrap: break-word;
+  }
+}
+
+// ── Relacionados ────────────────────────────────────────────────────────────
+
+.CanelaAiRelated {
+  .CanelaSuggested-title .icon {
+    margin-right: 0.25em;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+  }
+}
+}
+
+// ---------------------------------------------------------------------------
+// Tradução automática: o 文A ao lado da data (.post-language do Discourse),
+// com o balão do idioma original e o aviso em cinza, e o botão redondo da
+// linha do tempo que alterna o tópico inteiro.
+// ---------------------------------------------------------------------------
+
+.Post-header .item-canelaTranslated {
+  order: 4;
+  margin-right: 0.5em;
+}
+
+// No celular a primeira linha é nome … lápis, 文A, data (Posts.less, @phone).
+@media @phone {
+  .CanelaTopic .Post-header .item-canelaTranslated {
+    order: 2;
+    margin-right: 0.3em;
+  }
+}
+
+.CanelaTranslated {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  &-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 2px;
+    border: 0;
+    background: none;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-up-1, 1.1em);
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-primary-high);
+    }
+  }
+
+  // Mostrando o original: o ícone fica apagado, como o Discourse faz.
+  &.is-original &-button {
+    opacity: 0.55;
+  }
+
+  &-tip {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    // O 文A da postagem fica perto da borda direita: o balão abre para a esquerda.
+    right: -8px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    width: max-content;
+    max-width: ~"min(320px, 80vw)";
+    padding: 8px 12px;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-secondary);
+    box-shadow: var(--cn-shadow-dropdown);
+    color: var(--cn-primary);
+    font-size: var(--cn-font-down-1, 0.875em);
+    font-weight: normal;
+    line-height: 1.4;
+    text-align: left;
+    white-space: normal;
+    pointer-events: none;
+  }
+
+  &:hover &-tip,
+  &-button:focus-visible + &-tip {
+    display: flex;
+  }
+
+  &-disclaimer {
+    color: var(--cn-primary-medium);
+    font-size: 0.9em;
+  }
+}
+
+// O título com o 文A na mesma linha; o ícone acompanha o tamanho do texto.
+.CanelaTitleTranslated {
+  display: flex;
+  align-items: center;
+  gap: 0 0.4em;
+
+  > :first-child {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  > .CanelaTranslated .CanelaTranslated-button {
+    font-size: 1.1rem;
+  }
+
+  > .CanelaTranslated .CanelaTranslated-tip {
+    right: auto;
+    left: 0;
+    font-size: 0.875rem;
+  }
+}
+
+.CanelaTranslationToggle.Button.Button--icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-high);
+
+  &.active {
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+  }
+}

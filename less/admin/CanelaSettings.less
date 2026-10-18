@@ -1,0 +1,888 @@
+// ─── Painel do tema ─────────────────────────────────────────────────────────────
+// Grupos numa coluna à esquerda (grudada, para trocar de grupo sem voltar ao
+// topo), cards à direita. As cores saem das variáveis do admin do Flarum
+// (--body-bg, --control-bg, --text-color, --muted-color, --primary-color), que
+// já mudam no modo escuro; as bordas misturam o texto com transparente, para
+// valerem nos dois modos sem um par de cores para cada um.
+
+.CanelaAdmin {
+  --cna-accent: var(--primary-color);
+  --cna-surface: var(--body-bg, #fff);
+  --cna-subtle: var(--control-bg, #f2f3f5);
+  --cna-border: ~"color-mix(in srgb, var(--text-color) 11%, transparent)";
+  --cna-border-soft: ~"color-mix(in srgb, var(--text-color) 7%, transparent)";
+  --cna-tint: ~"color-mix(in srgb, var(--primary-color) 12%, transparent)";
+  --cna-success: var(--success-color, #1f9d55);
+  --cna-warning: #c27803;
+  --cna-danger: var(--alert-error-bg, #d83e3e);
+  --cna-radius: 14px;
+
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 24px;
+  color: var(--text-color);
+}
+
+// ─── Coluna dos grupos ──────────────────────────────────────────────────────────
+.CanelaAdmin-side {
+  position: sticky;
+  top: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.CanelaAdmin-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--cna-border);
+  border-radius: 10px;
+  background: var(--cna-surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  > i {
+    font-size: 13px;
+    color: var(--muted-color);
+    flex-shrink: 0;
+  }
+
+  &:focus-within {
+    border-color: var(--cna-accent);
+    box-shadow: 0 0 0 3px var(--cna-tint);
+  }
+}
+
+.CanelaAdmin-searchInput {
+  flex: 1;
+  min-width: 0;
+  max-width: none !important;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-color);
+
+  &::placeholder { color: var(--muted-color); }
+  // O X nativo do type=search duplicaria o botão de limpar ao lado.
+  &::-webkit-search-cancel-button { display: none; }
+}
+
+.CanelaAdmin-searchClear {
+  border: 0;
+  background: none;
+  padding: 0 2px;
+  color: var(--muted-color);
+  cursor: pointer;
+  font-size: 13px;
+
+  &:hover { color: var(--text-color); }
+}
+
+.CanelaAdmin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.CanelaAdmin-navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  > i {
+    width: 18px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted-color);
+  }
+
+  &:hover { background: var(--cna-subtle); }
+
+  &:focus-visible {
+    outline: 2px solid var(--cna-accent);
+    outline-offset: -2px;
+  }
+
+  &.is-active {
+    background: var(--cna-tint);
+    color: var(--cna-accent);
+    font-weight: 700;
+
+    > i { color: var(--cna-accent); }
+
+    .CanelaAdmin-navCount {
+      background: var(--cna-surface);
+      color: var(--cna-accent);
+    }
+  }
+}
+
+.CanelaAdmin-navLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+// Quantos recursos do grupo estão ativos, dos que o grupo tem.
+.CanelaAdmin-navCount {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--cna-subtle);
+  color: var(--muted-color);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+// ─── Cabeçalho do grupo + indicador de gravação ─────────────────────────────────
+.CanelaAdmin-main {
+  min-width: 0;
+}
+
+.CanelaAdmin-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.CanelaAdmin-headTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-color);
+
+  > i {
+    font-size: 17px;
+    color: var(--cna-accent);
+  }
+}
+
+.CanelaAdmin-headDesc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted-color);
+}
+
+.CanelaAdmin-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--cna-subtle);
+  color: var(--muted-color);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+
+  &.is-saving { color: var(--cna-accent); }
+
+  &.is-saved {
+    background: ~"color-mix(in srgb, var(--cna-success) 14%, transparent)";
+    color: var(--cna-success);
+  }
+
+  &.is-error {
+    background: ~"color-mix(in srgb, var(--cna-danger) 14%, transparent)";
+    color: var(--cna-danger);
+  }
+}
+
+.CanelaAdmin-empty {
+  margin: 8px 0;
+  padding: 24px;
+  border: 1px dashed var(--cna-border);
+  border-radius: var(--cna-radius);
+  text-align: center;
+  color: var(--muted-color);
+  font-size: 13px;
+}
+
+// ─── Cards ──────────────────────────────────────────────────────────────────────
+.CanelaAdmin-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.CanelaAdmin-card {
+  border: 1px solid var(--cna-border);
+  border-radius: var(--cna-radius);
+  background: var(--cna-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s, border-color 0.3s;
+  scroll-margin-top: 90px;
+  // Sem `overflow: hidden`: um menu absoluto dentro do card precisa poder
+  // escapar dele.
+
+  // Chegada por um link "precisa de…": um anel rápido mostra qual é o card.
+  &[data-flash] {
+    border-color: var(--cna-accent);
+    box-shadow: 0 0 0 4px var(--cna-tint);
+  }
+}
+
+.CanelaAdmin-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+
+  .CanelaAdmin-card:not(.is-empty) > & {
+    border-bottom: 1px solid var(--cna-border-soft);
+  }
+}
+
+.CanelaAdmin-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--cna-tint);
+  color: var(--cna-accent);
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.CanelaAdmin-card-heading {
+  flex: 1;
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.CanelaAdmin-card-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--text-color);
+}
+
+// O grupo do card, nos resultados da busca.
+.CanelaAdmin-card-group {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--cna-subtle);
+  color: var(--muted-color);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.CanelaAdmin-card-desc {
+  margin: 3px 0 0;
+  max-width: 72ch;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted-color);
+}
+
+.CanelaAdmin-card-master {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.CanelaAdmin-card-state {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+
+  .CanelaAdmin-card.is-feature:not(.is-off) & { color: var(--cna-accent); }
+}
+
+// "Salvo": aparece no card em que se mexeu e some sozinho (util.ts, flashCard).
+.CanelaAdmin-card-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding-top: 6px;
+  color: var(--cna-success);
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+
+  .CanelaAdmin-card[data-saved] & {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// Recurso desligado: só o cabeçalho, com o ícone apagado.
+.CanelaAdmin-card.is-off {
+  box-shadow: none;
+
+  .CanelaAdmin-card-icon {
+    background: var(--cna-subtle);
+    color: var(--muted-color);
+  }
+}
+
+// Trancado por uma extensão (ou outro requisito): o motivo no lugar do miolo.
+.CanelaAdmin-card.is-locked {
+  .CanelaAdmin-card-header { padding-bottom: 10px; }
+  .CanelaAdmin-card-title,
+  .CanelaAdmin-card-desc { opacity: 0.75; }
+}
+
+.CanelaAdmin-card-lock {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 18px 14px 62px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: ~"color-mix(in srgb, var(--cna-warning) 12%, transparent)";
+  color: var(--text-color);
+  font-size: 12.5px;
+  line-height: 1.45;
+
+  > i { color: var(--cna-warning); }
+  > span { flex: 1; min-width: 160px; }
+}
+
+.CanelaAdmin-card-lockLink {
+  font-weight: 600;
+  color: var(--cna-accent);
+}
+
+.CanelaAdmin-card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 18px 16px 62px;
+
+  // O espaçamento entre as opções é do card, não da margem do Form-group.
+  // O core alinha os filhos do Form-group no começo (flex-start), o que
+  // encolheria a linha da opção e afastaria a chave da margem direita.
+  .Form-group {
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: 12px 0;
+  }
+
+  .helpText {
+    margin: 4px 0 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted-color);
+  }
+}
+
+// ─── A chave liga/desliga ───────────────────────────────────────────────────────
+.CanelaSwitch {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: ~"color-mix(in srgb, var(--text-color) 22%, transparent)";
+  cursor: pointer;
+  transition: background 0.18s;
+
+  &:focus-visible {
+    outline: 2px solid var(--cna-accent, var(--primary-color));
+    outline-offset: 2px;
+  }
+
+  &.is-on { background: var(--cna-accent, var(--primary-color)); }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.CanelaSwitch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.18s;
+
+  .CanelaSwitch.is-on & { transform: translateX(18px); }
+  .CanelaSwitch.is-saving & { animation: canela-switch-pulse 0.8s ease-in-out infinite; }
+}
+
+@keyframes canela-switch-pulse {
+  50% { box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .CanelaSwitch,
+  .CanelaSwitch-thumb { transition: none; }
+  .CanelaSwitch.is-saving .CanelaSwitch-thumb { animation: none; }
+}
+
+// ─── Opção liga/desliga ─────────────────────────────────────────────────────────
+.CanelaAdmin-toggle + .CanelaAdmin-toggle {
+  border-top: 1px solid var(--cna-border-soft);
+}
+
+.CanelaAdmin-toggleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.CanelaAdmin-toggleLabel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin: 0;
+  padding-top: 1px;
+  font-size: 13.5px;
+  font-weight: 550;
+  line-height: 1.4;
+  color: var(--text-color);
+  cursor: pointer;
+
+  .is-locked > .CanelaAdmin-toggleRow > & {
+    cursor: default;
+    color: var(--muted-color);
+  }
+}
+
+.CanelaAdmin-toggle .helpText {
+  max-width: 68ch;
+  padding-right: 56px; // não passa por baixo da chave
+}
+
+.CanelaAdmin-extBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: ~"color-mix(in srgb, var(--cna-warning) 14%, transparent)";
+  color: ~"color-mix(in srgb, var(--cna-warning) 80%, var(--text-color))";
+  font-size: 11px;
+  font-weight: 600;
+}
+
+// ─── Blocos do miolo ────────────────────────────────────────────────────────────
+.CanelaAdmin-subDivider {
+  height: 1px;
+  margin: 6px 0;
+  background: var(--cna-border-soft);
+}
+
+// Opções que só valem com a de cima: recuadas num bloco.
+.CanelaAdmin-subGroup {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 8px;
+  padding: 2px 14px;
+  border-radius: 10px;
+  border-left: 3px solid var(--cna-tint);
+  background: var(--cna-subtle);
+
+  // Campos claros: sobre o cinza do bloco, um campo cinza pareceria desativado.
+  .FormControl {
+    background: var(--cna-surface) !important;
+  }
+}
+
+.CanelaAdmin-subTitle {
+  margin: 14px 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+}
+
+// ─── Ocultos (dependem de algo desligado) ───────────────────────────────────────
+.CanelaAdmin-hidden {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px dashed var(--cna-border);
+  border-radius: var(--cna-radius);
+  color: var(--muted-color);
+  font-size: 12.5px;
+
+  ul {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 5px 0;
+
+    i { width: 16px; text-align: center; }
+  }
+}
+
+.CanelaAdmin-hidden-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.CanelaAdmin-hidden-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cna-accent);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+// Card oculto nos resultados da busca: o aviso e o atalho.
+.CanelaAdmin-stub {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border: 1px dashed var(--cna-border);
+  border-radius: var(--cna-radius);
+
+  .CanelaAdmin-card-icon {
+    background: var(--cna-subtle);
+    color: var(--muted-color);
+  }
+}
+
+.CanelaAdmin-stub-text {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+}
+
+.CanelaAdmin-stub-reason {
+  flex-basis: 100%;
+  font-size: 12.5px;
+  color: var(--muted-color);
+}
+
+.CanelaAdmin-stub-go {
+  flex-shrink: 0;
+  color: var(--cna-accent) !important;
+  font-weight: 600;
+}
+
+// ─── Rótulos e campos ───────────────────────────────────────────────────────────
+.CanelaAdmin-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 6px;
+}
+
+.CanelaAdmin-select-wrap {
+  position: relative;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  max-width: 440px;
+  width: 100%;
+}
+
+.CanelaAdmin-select {
+  width: 100%;
+  padding-right: 32px !important; // espaço para a seta
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.CanelaAdmin-select-chevron {
+  position: absolute;
+  right: 11px;
+  font-size: 11px;
+  color: var(--muted-color);
+  pointer-events: none;
+}
+
+.CanelaAdmin-numberWrap {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.CanelaAdmin-numberInput {
+  width: 110px;
+}
+
+.CanelaAdmin-numberSuffix {
+  font-size: 13px;
+  color: var(--muted-color);
+}
+
+// ─── Avisos ─────────────────────────────────────────────────────────────────────
+.CanelaAdmin-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--cna-tint);
+  color: var(--text-color);
+  font-size: 12.5px;
+  line-height: 1.45;
+
+  > i {
+    margin-top: 2px;
+    color: var(--cna-accent);
+  }
+}
+
+.CanelaAdmin-intro {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.CanelaAdmin-actions {
+  margin: 12px 0 4px;
+}
+
+// ─── Telas estreitas ────────────────────────────────────────────────────────────
+// Abaixo de 900px a coluna dos grupos vira uma faixa rolável acima dos cards.
+@media (max-width: 899px) {
+  .CanelaAdmin {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .CanelaAdmin-side {
+    position: static;
+  }
+
+  .CanelaAdmin-nav {
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .CanelaAdmin-navItem {
+    width: auto;
+    flex-shrink: 0;
+    border: 1px solid var(--cna-border);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .CanelaAdmin-card-body {
+    padding-left: 18px;
+  }
+
+  .CanelaAdmin-card-lock {
+    margin-left: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .CanelaAdmin-head {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .CanelaAdmin-card-header {
+    flex-wrap: wrap;
+  }
+
+  .CanelaAdmin-card-state {
+    display: none;
+  }
+
+  .CanelaAdmin-toggle .helpText {
+    padding-right: 0;
+  }
+}
+
+// ─── Cores: a cor primária e a paleta derivada ─────────────────────────────────
+.CanelaAdmin-colorCurrent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+
+  .CanelaAdmin-label {
+    margin: 0;
+  }
+}
+
+.CanelaAdmin-colorChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 4px;
+  border: 1px solid var(--control-bg-dark, #e7e7ed);
+  border-radius: 999px;
+
+  code {
+    background: none;
+    padding: 0;
+    font-size: 12px;
+  }
+}
+
+.CanelaAdmin-colorDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cn-preview-accent);
+}
+
+// As fórmulas abaixo são cópia de less/common/tokens.less (o admin não carrega
+// os tokens do fórum, que redefiniriam as cores do próprio admin). Mudou lá,
+// muda aqui — senão a prévia mente. A cor chega pelo `style` do PalettePreview;
+// a do CSS é só o recuo se o valor gravado não for um hexadecimal.
+.CanelaAdmin-palette {
+  --cn-preview-accent: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.CanelaAdmin-paletteRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--control-bg-dark, #e7e7ed);
+  border-radius: 12px;
+
+  &--light {
+    background: #fff;
+    color: #646464;
+
+    [data-swatch='accent'] .CanelaAdmin-swatchColor { background: var(--cn-preview-accent); }
+    [data-swatch='background'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) 96% calc(c * 0.125) h)"; }
+    [data-swatch='selected'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) 92% calc(c * 0.5) h)"; }
+    [data-swatch='accent-low'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) 95% calc(c * 0.3) h)"; }
+    [data-swatch='ring'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) calc(l * 1.5) calc(c * 0.35) h)"; }
+    [data-swatch='link'] .CanelaAdmin-swatchColor { background: var(--cn-preview-accent); }
+  }
+
+  &--dark {
+    background: #1a1a1a;
+    border-color: #2e2e2e;
+    color: #b5b5b5;
+
+    .CanelaAdmin-swatchColor { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
+
+    [data-swatch='accent'] .CanelaAdmin-swatchColor { background: var(--cn-preview-accent); }
+    [data-swatch='background'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) 10% 0.025 h)"; }
+    [data-swatch='selected'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) calc(l * 0.7) calc(c * 0.25) h)"; }
+    [data-swatch='accent-low'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) 25% calc(c * 0.4) h)"; }
+    [data-swatch='ring'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) calc(l * 0.75) calc(c * 0.5) h)"; }
+    [data-swatch='link'] .CanelaAdmin-swatchColor { background: ~"oklch(from var(--cn-preview-accent) calc(l * 1.2) c h)"; }
+  }
+}
+
+.CanelaAdmin-paletteScheme {
+  flex: 0 0 56px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.CanelaAdmin-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.CanelaAdmin-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 64px;
+}
+
+.CanelaAdmin-swatchColor {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.CanelaAdmin-swatchLabel {
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .CanelaAdmin-paletteRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

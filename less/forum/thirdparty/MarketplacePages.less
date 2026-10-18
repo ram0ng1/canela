@@ -1,0 +1,2203 @@
+// =====================================================================
+// ramon/marketplace: as telas, uma a uma, no desenho do Discourse/Canela
+//
+// O Marketplace.less troca os tokens e as peças (botões, campos, pílulas);
+// aqui cada página ganha o leiaute do tema:
+//
+// - barra de ferramentas (busca, filtros, ação) como a navegação da lista;
+// - vitrine e lista de desejos: grade de cartões limpos, como as caixas da
+//   página de categorias (borda fina, raio grande, a borda acende no hover);
+// - ficha do produto: título como o de um tópico, galeria antes das abas e a
+//   caixa de compra fixa na coluna lateral (a moldura vem do JS, pages.ts);
+// - pedidos, assinaturas, reembolsos, downloads, pacotes, cupons e mensagens:
+//   linhas da lista de tópicos (separadas por uma borda, sem caixa em volta);
+// - estados vazios, carregamento e celular.
+//
+// Mesmas condições do Marketplace.less (@config-ramon-marketplace).
+// =====================================================================
+& when (@config-ramon-marketplace = true) {
+
+// A linha da lista de tópicos: sem caixa, a borda do tema embaixo.
+.cn-mp-row() {
+  margin: 0;
+  padding: var(--cn-space-4) 0;
+  border: 0;
+  border-bottom: 1px solid var(--cn-border);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+// A caixa das categorias (CanelaCategoryBox): borda fina, raio grande.
+.cn-mp-box() {
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-surface);
+  box-shadow: none;
+  transition: none;
+}
+
+// O selo quadrado tingido dos ícones (o `category-badge` grande do Horizon).
+.cn-mp-tile(@size: 40px) {
+  width: @size;
+  height: @size;
+  flex: 0 0 @size;
+  border-radius: var(--cn-radius);
+  background: var(--cn-accent-low);
+  color: var(--cn-accent);
+  font-size: (@size * 0.45);
+
+  > img {
+    border-radius: inherit;
+  }
+}
+
+[data-theme] {
+
+  // -------------------------------------------------------------------
+  // Barra de ferramentas das páginas (busca + filtros + ação)
+  // -------------------------------------------------------------------
+  .CanelaMp-page [class*="-toolbar"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--cn-space-2) var(--cn-space-3);
+    margin: 0 0 var(--cn-space-4);
+
+    [class*="-searchWrap"] {
+      flex: 1 1 240px;
+      min-width: 0;
+      margin: 0;
+    }
+  }
+
+  // Os filtros em segmento ("Todos | Pagos | Pendentes") viram as abas
+  // sublinhadas da navegação da lista.
+  .CanelaMp-card [class*="-filters"]:not([class*="-filtersRow"]) {
+    display: flex;
+    gap: 0 4px;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .CanelaMp-card button[class*="-filter"]:not([class*="-filters"]) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 0.65em;
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: none;
+    box-shadow: none;
+    color: var(--cn-primary);
+    font-size: 15px;
+    font-weight: 400;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.125em;
+      background: transparent;
+    }
+
+    &:hover,
+    &.is-active {
+      background: none;
+      color: var(--cn-hover-accent-text);
+      box-shadow: none;
+
+      &::after {
+        background: var(--cn-hover-accent-text);
+      }
+    }
+  }
+
+  // A contagem dentro do filtro ("Em análise 1").
+  .CanelaMp-card [class*="-filterBadge"] {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  // -------------------------------------------------------------------
+  // Vitrine: categorias, etiquetas e a grade
+  // -------------------------------------------------------------------
+  // As categorias em pílulas, no hero da loja (categories.tsx).
+  .CanelaMpCategories {
+    margin: var(--cn-space-4) 0 0;
+    font-size: 15px;
+
+    .CanelaNav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--cn-space-2);
+    }
+
+    .CanelaNav-tab {
+      flex: none;
+
+      > a {
+        height: 34px;
+        padding: 0 14px;
+        border: 1px solid var(--cn-primary-low);
+        border-radius: var(--cn-radius-pill);
+        background: var(--cn-surface);
+        color: var(--cn-primary);
+
+        &::after {
+          display: none;
+        }
+
+        &:hover,
+        &:focus-visible {
+          border-color: var(--cn-primary-low-mid);
+          background: var(--cn-primary-very-low);
+          color: var(--cn-primary);
+        }
+      }
+
+      &.active > a {
+        border-color: var(--cn-accent);
+        background: var(--cn-accent);
+        color: var(--cn-accent-text);
+      }
+    }
+  }
+
+  // O hero da vitrine: o título, a busca larga e as pílulas.
+  .CanelaMp-hero .MpShop-toolbar {
+    margin: var(--cn-space-6) 0 0;
+
+    .MpShop-searchWrap input {
+      height: var(--cn-control-height-lg);
+      font-size: 16px;
+    }
+
+    .MpShop-sortTrigger,
+    .MpShop-cartBtn {
+      height: var(--cn-control-height-lg) !important;
+    }
+  }
+
+  .MpShop-tags {
+    margin: 0 0 var(--cn-space-4);
+  }
+
+  .MpShop-grid,
+  .MpWishlist-grid,
+  .MpCourses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--cn-space-4);
+  }
+
+  // O cartão do produto: a caixa da categoria do Discourse.
+  .MpShop-card {
+    .cn-mp-box();
+    min-height: 0;
+    padding: var(--cn-space-4);
+    color: var(--cn-primary);
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--cn-accent);
+      background: var(--cn-surface);
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  .MpShop-cardHead {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "icon main" "price price";
+    gap: var(--cn-space-3);
+    align-items: start;
+    margin: 0 0 var(--cn-space-3);
+  }
+
+  .MpShop-cardIcon {
+    grid-area: icon;
+    .cn-mp-tile(44px);
+  }
+
+  .MpShop-cardMain {
+    grid-area: main;
+    min-width: 0;
+  }
+
+  // Nome em --font-up-1 negrito, como o título da caixa de categoria.
+  .MpShop-cardTitle {
+    margin: 0 0 4px;
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--cn-primary);
+  }
+
+  .MpShop-cardChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  // O preço sai da pílula e vira texto: o valor em negrito, o antigo riscado.
+  .MpShop-priceBtn {
+    grid-area: price;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+    order: 0;
+    justify-content: flex-start;
+  }
+
+  .MpShop-priceWas,
+  .MpProduct-priceWas {
+    color: var(--cn-primary-medium);
+    font-size: 0.8em;
+    font-weight: 400;
+  }
+
+  // O "já é seu": o ✓ numa coluna própria do cabeçalho, à direita do nome,
+  // sem cobrir o título (que pode quebrar em duas linhas).
+  .MpShop-cardHead:has(.MpShop-ownedBadge) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "icon main badge" "price price price";
+  }
+
+  .MpShop-ownedBadge {
+    grid-area: badge;
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--cn-success);
+    color: #fff;
+    box-shadow: none;
+    transform: none;
+  }
+
+  // A descrição: 3 linhas, cinza, como a da caixa da categoria.
+  .MpShop-cardDesc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    margin: 0 0 var(--cn-space-4);
+    color: var(--cn-primary-high);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .MpShop-cardFoot {
+    margin-top: auto;
+    padding-top: var(--cn-space-3);
+    border-top: 1px solid var(--cn-border);
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+  }
+
+  .MpShop-cardCategory,
+  .MpShop-cardSeller {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    color: var(--cn-primary-high);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .MpShop-cardSeller-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex: none;
+    color: var(--cn-primary-high);
+  }
+
+  // A caixa inteira já é o link (como a da categoria): o "Ver detalhes" sobra.
+  .MpShop-cardDetails {
+    display: none;
+  }
+
+  .MpShop-loadMoreWrap {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--cn-space-6);
+  }
+
+  // -------------------------------------------------------------------
+  // Ficha do produto
+  // -------------------------------------------------------------------
+  .MpProduct-back,
+  .MpOrderDetail-back,
+  [class*="Mp"][class*="-back"]:is(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 var(--cn-space-3);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+
+    &:hover {
+      color: var(--cn-link);
+    }
+  }
+
+  // O topo: o título como o de um tópico (1,5em/700), sem caixa em volta.
+  .MpProduct-hero {
+    display: block;
+    margin: 0 0 var(--cn-space-4);
+    padding: 0 0 var(--cn-space-4);
+    border: 0;
+    border-bottom: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .MpProduct-heroLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-4);
+  }
+
+  .MpProduct-heroIcon {
+    .cn-mp-tile(64px);
+    border-radius: var(--cn-radius-large);
+  }
+
+  .MpProduct-title {
+    margin: 0 0 6px;
+    font-size: var(--cn-font-up-3);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .MpProduct-heroRow {
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+  }
+
+  .MpProduct-author {
+    color: var(--cn-primary-high);
+    font-weight: 400;
+  }
+
+  // A caixa de compra no alto da coluna lateral, fixa ao rolar.
+  .MpProduct-sidebar {
+    position: sticky;
+    top: calc(~"var(--cn-header-height) + 16px");
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-4);
+  }
+
+  .CanelaMpBuyBox {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--cn-space-2);
+    padding: var(--cn-space-4);
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-surface);
+    text-align: left;
+
+    .MpProduct-priceBlock {
+      flex: 1 0 100%;
+      align-items: flex-start;
+      text-align: left;
+      margin: 0 0 var(--cn-space-2);
+    }
+
+    .MpProduct-priceAmount {
+      justify-content: flex-start;
+      font-size: var(--cn-font-up-3);
+      font-weight: 700;
+      color: var(--cn-primary);
+    }
+
+    .MpProduct-priceLabel {
+      color: var(--cn-primary-high);
+      font-size: var(--cn-font-down-1);
+    }
+
+    // Comprar: o botão principal na largura toda; os outros ao lado, menores.
+    .MpProduct-buyBtn {
+      flex: 1 1 auto;
+      justify-content: center;
+      height: var(--cn-control-height-lg);
+      font-size: 16px;
+    }
+
+    .MpProduct-wishlistBtn {
+      flex: none;
+      width: var(--cn-control-height-lg);
+      height: var(--cn-control-height-lg);
+      padding: 0;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .MpProduct-reportBtn {
+      flex: 1 1 auto;
+      justify-content: center;
+      background: none;
+      color: var(--cn-primary-medium);
+
+      > svg.icon,
+      > i {
+        color: var(--cn-primary-medium);
+      }
+
+      &:hover {
+        background: var(--cn-primary-100);
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  // "Já no carrinho"/"Já possui": o botão de sucesso do tema.
+  .MpProduct-ownedBtn,
+  .MpProduct-buyBtn--added,
+  .MpProduct-buyBtn.is-in-cart {
+    background: var(--mp-success-soft);
+    color: var(--mp-success-strong);
+  }
+
+  .MpProduct-cols {
+    gap: var(--cn-space-6);
+  }
+
+  // As caixas da lateral (Informações, Requisitos): borda fina, sem fundo.
+  .MpProduct-card {
+    .cn-mp-box();
+    padding: var(--cn-space-4);
+
+    > h3 {
+      margin: 0 0 var(--cn-space-3);
+      font-size: var(--cn-font-0);
+      font-weight: 700;
+    }
+  }
+
+  .MpProduct-infoIcon {
+    .cn-mp-tile(32px);
+    background: var(--cn-primary-100);
+    color: var(--cn-primary-high);
+  }
+
+  .MpProduct-infoLabel {
+    color: var(--cn-primary-medium);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .MpProduct-infoValue {
+    color: var(--cn-primary);
+    font-weight: 400;
+  }
+
+  .MpProduct-reqList li > svg.icon {
+    color: var(--cn-success);
+  }
+
+  .MpProduct-section > h2 {
+    margin: var(--cn-space-6) 0 var(--cn-space-3);
+    font-size: var(--cn-font-up-1);
+  }
+
+  .MpProduct-prose {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--cn-primary);
+  }
+
+  // A lista de características: texto do post, não bloco de código.
+  .MpProduct-features {
+    margin: 0;
+    padding: var(--cn-space-3) var(--cn-space-4);
+    border: 0;
+    border-left: 3px solid var(--cn-primary-low);
+    border-radius: 0;
+    background: none;
+    color: var(--cn-primary);
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-line;
+  }
+
+  // A galeria antes das abas: a imagem grande e as miniaturas embaixo.
+  .CanelaMpGallery {
+    margin: 0 0 var(--cn-space-6);
+
+    > h2 {
+      display: none;
+    }
+
+    .MpProduct-gallery {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--cn-space-2);
+    }
+
+    .MpProduct-gallery-item {
+      aspect-ratio: ~"16 / 10";
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--cn-border);
+      border-radius: var(--cn-radius);
+      background: var(--cn-primary-very-low);
+      cursor: zoom-in;
+
+      &:first-child {
+        grid-column: ~"1 / -1";
+        border-radius: var(--cn-radius-large);
+      }
+
+      &:hover {
+        border-color: var(--cn-accent);
+        transform: none;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: none;
+      }
+    }
+  }
+
+  // Sem imagens: só uma linha discreta, sem a caixa pontilhada enorme.
+  .MpProduct-screensEmpty {
+    flex-direction: row;
+    gap: var(--cn-space-2);
+    min-height: 0;
+    padding: var(--cn-space-3) 0;
+    border: 0;
+    background: none;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    justify-content: flex-start;
+  }
+
+  // O aviso do Composer: a faixa cinza dos avisos do tema.
+  .MpProduct-composerHint {
+    margin: 0 0 var(--cn-space-4);
+    padding: var(--cn-space-3) var(--cn-space-4);
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+
+    small {
+      color: var(--cn-primary-high);
+      font-weight: 400;
+    }
+
+    code {
+      color: var(--cn-primary);
+    }
+  }
+
+  // Avaliações: o formulário como o editor do tema, as avaliações como posts.
+  .MpProduct-reviewForm {
+    .cn-mp-box();
+    padding: var(--cn-space-4);
+    background: var(--cn-primary-very-low);
+    border-color: transparent;
+  }
+
+  .MpProduct-review {
+    .cn-mp-row();
+  }
+
+  // Relacionados: a mesma caixa da vitrine, menor.
+  .MpProduct-related {
+    margin-top: var(--cn-space-8);
+    padding-top: var(--cn-space-6);
+    border-top: 1px solid var(--cn-border);
+
+    > h2 {
+      margin: 0 0 var(--cn-space-4);
+      font-size: var(--cn-font-up-1);
+    }
+  }
+
+  .MpRelated-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--cn-space-4);
+  }
+
+  .MpRelated-card {
+    .cn-mp-box();
+    overflow: hidden;
+
+    &:hover {
+      border-color: var(--cn-accent);
+    }
+  }
+
+  .MpRelated-thumb {
+    background: var(--cn-accent-low);
+    color: var(--cn-accent);
+  }
+
+  .MpRelated-name {
+    font-weight: 700;
+  }
+
+  .MpRelated-cat {
+    color: var(--cn-primary-medium);
+  }
+
+  .MpRelated-price {
+    color: var(--cn-primary);
+  }
+
+  // -------------------------------------------------------------------
+  // Ficha do produto: a página de loja (pages.ts, productSheet)
+  // -------------------------------------------------------------------
+  // A capa sem imagens: a faixa larga na cor clara do destaque, com o ícone
+  // do produto grande no meio.
+  .CanelaMpProduct-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: clamp(~"160px, 22vw, 280px");
+    margin: 0 0 var(--cn-space-6);
+    border-radius: var(--cn-radius-large);
+    background:
+      radial-gradient(circle at 20% 30%, var(--cn-blob-1), transparent 45%),
+      radial-gradient(circle at 80% 70%, var(--cn-blob-2), transparent 50%),
+      var(--cn-accent-low);
+    overflow: hidden;
+
+    .MpProduct-heroIcon {
+      width: 112px;
+      height: 112px;
+      flex: none;
+      border-radius: 28px;
+      background: var(--cn-surface);
+      color: var(--cn-accent);
+      font-size: 48px;
+      box-shadow: 0 8px 30px ~"oklch(from var(--cn-accent) 40% c h / 0.18)";
+    }
+  }
+
+  // A galeria como faixa de cima: a imagem grande à esquerda e as outras em
+  // coluna à direita (a grade vira uma linha só no celular).
+  .CanelaMp-card > .CanelaMpGallery {
+    margin: 0 0 var(--cn-space-6);
+
+    .MpProduct-gallery {
+      grid-template-columns: 2fr 1fr;
+      grid-auto-rows: minmax(0, 1fr);
+      height: clamp(~"240px, 34vw, 440px");
+    }
+
+    .MpProduct-gallery-item {
+      aspect-ratio: auto;
+      height: 100%;
+
+      &:first-child {
+        grid-column: auto;
+        grid-row: span 3;
+      }
+    }
+  }
+
+  // O produto com imagem: a capa é a própria imagem, na faixa inteira.
+  .CanelaMpProduct-cover:has(img) {
+    background: var(--cn-primary-very-low);
+
+    .MpProduct-heroIcon {
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  // Galeria: a grande e até duas ao lado (o resto abre na visualização).
+  .CanelaMp-card > .CanelaMpGallery {
+    .MpProduct-gallery {
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .MpProduct-gallery-item {
+      &:first-child {
+        grid-row: span 2;
+      }
+
+      &:only-child {
+        grid-column: ~"1 / -1";
+      }
+
+      &:nth-child(n + 4) {
+        display: none;
+      }
+    }
+  }
+
+  // Sem imagens, a seção "Screenshots" sobra (a capa já ocupa o lugar).
+  .MpProduct-section:has(> .MpProduct-screensEmpty) {
+    display: none;
+  }
+
+  // As duas colunas: o conteúdo e a de compra (320px), com o fio entre elas
+  // só pelo espaço.
+  .MpProduct-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--cn-space-8);
+    align-items: start;
+  }
+
+  // O título dentro da coluna: grande, sem fio embaixo (as abas já separam).
+  .MpProduct-main > .MpProduct-hero {
+    margin: 0 0 var(--cn-space-4);
+    padding: 0;
+    border: 0;
+
+    .MpProduct-heroLeft {
+      align-items: flex-start;
+    }
+
+    .MpProduct-title {
+      font-size: clamp(~"1.8rem, 3.2vw, 2.4rem");
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .MpProduct-heroRow {
+      gap: var(--cn-space-2);
+      font-size: 15px;
+    }
+  }
+
+  // A coluna de compra: a caixa fixa e, embaixo, os blocos separados por fios
+  // (sem caixa dentro de caixa).
+  .MpProduct-sidebar {
+    gap: 0;
+  }
+
+  .MpProduct-sidebar .CanelaMpBuyBox {
+    margin: 0 0 var(--cn-space-6);
+    padding: var(--cn-space-6);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+
+    .MpProduct-priceAmount {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  .MpProduct-sidebar .MpProduct-card {
+    margin: 0;
+    padding: var(--cn-space-4) 0;
+    border: 0;
+    border-top: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+  }
+
+  // -------------------------------------------------------------------
+  // Carrinho e checkout
+  // -------------------------------------------------------------------
+  .MpCart-item,
+  .MpCheckout-item {
+    .cn-mp-row();
+    padding-left: 0;
+    padding-right: 0;
+
+    &:first-child {
+      border-top: 1px solid var(--cn-border);
+    }
+  }
+
+  .MpCart-item-icon,
+  .MpCart-thumb,
+  .MpCheckout-itemIcon {
+    .cn-mp-tile(56px);
+  }
+
+  .MpCart-itemPrice,
+  .MpCart-lineTotal {
+    font-weight: 700;
+  }
+
+  // O resumo: a caixa da lateral, fixa ao rolar, como a de compra.
+  .MpCart-summary,
+  .MpCheckout-summary {
+    .cn-mp-box();
+    position: sticky;
+    top: calc(~"var(--cn-header-height) + 16px");
+    align-self: start;
+    padding: var(--cn-space-6);
+    background: var(--cn-primary-very-low);
+    border-color: transparent;
+
+    h2,
+    h3 {
+      font-size: var(--cn-font-up-1);
+    }
+  }
+
+  [class*="-summary-row--total"],
+  .MpCart-total,
+  .MpCheckout-total {
+    strong,
+    [class*="Value"] {
+      color: var(--cn-primary);
+      font-size: var(--cn-font-up-2);
+      font-weight: 700;
+    }
+  }
+
+  // As etapas do checkout: blocos com o número no círculo da cor de destaque.
+  .MpCheckout-step,
+  .MpCheckout-card,
+  .MpCheckout-section {
+    margin: 0;
+    padding: 0 0 var(--cn-space-6);
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+
+    // Uma etapa por bloco, separadas pela borda do tema.
+    & + & {
+      padding-top: var(--cn-space-6);
+      border-top: 1px solid var(--cn-border);
+    }
+  }
+
+  .MpCheckout-main {
+    min-width: 0;
+  }
+
+  [class*="MpCheckout-stepNum"],
+  [class*="MpCheckout-stepNumber"] {
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-weight: 700;
+  }
+
+  // O cupom: o campo com o botão encostado, como um grupo de campo.
+  .MpCheckout-coupon input,
+  .MpCheckout-giftcard input,
+  [class*="MpCheckout-coupon"] input {
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 400;
+
+    &::placeholder {
+      text-transform: none;
+    }
+  }
+
+  // Quantidade (carrinho e ficha): o grupo de botões do tema.
+  [class*="Mp"][class*="-qty"]:is(div) {
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-surface);
+    box-shadow: none;
+
+    button {
+      color: var(--cn-primary-high);
+
+      &:hover {
+        background: var(--cn-primary-100);
+        color: var(--cn-primary);
+      }
+    }
+
+    // O número no meio do grupo, sem a caixa de campo em volta.
+    input {
+      min-height: 0;
+      border: 0 !important;
+      background: none !important;
+      text-align: center;
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // Sucesso do checkout
+  // -------------------------------------------------------------------
+  .MpSuccess-hero {
+    .cn-mp-box();
+    background: none;
+  }
+
+  .MpSuccess-heroIcon {
+    background: var(--mp-success-soft);
+    color: var(--cn-success);
+  }
+
+  .MpSuccess-meta,
+  [class*="MpSuccess-ref"] {
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+  }
+
+  // Os próximos passos: linhas, sem a faixa colorida na borda esquerda.
+  .MpSuccess-step,
+  .MpSuccess-card:not(.MpSuccess-card--notfound),
+  [class*="MpSuccess-next"] > div {
+    border: 1px solid var(--cn-border);
+    border-left-width: 1px;
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-surface);
+  }
+
+  [class*="MpSuccess"][class*="Icon"]:not(.MpSuccess-heroIcon) {
+    .cn-mp-tile(44px);
+  }
+
+  [class*="MpSuccess-progress"] {
+    background: var(--cn-primary-low);
+
+    > span,
+    > div {
+      background: var(--cn-accent);
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // Pedidos, assinaturas e reembolsos: linhas da lista de tópicos
+  // -------------------------------------------------------------------
+  .MpOrders-list,
+  .MpSubs-grid,
+  .MpRefundRequests-list,
+  .MpCoupons-list,
+  .MpMessages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--cn-border);
+  }
+
+  .MpOrders-card,
+  .MpSubs-card,
+  .MpRefundRequests-card,
+  .MpCoupons-row {
+    .cn-mp-row();
+    gap: var(--cn-space-3);
+
+    &:hover {
+      border-color: var(--cn-border);
+      box-shadow: none;
+    }
+  }
+
+  // O título da linha: o título do tópico (1,15em, peso normal).
+  .MpOrders-cardRef,
+  .MpSubs-cardTitle,
+  .MpRefundRequests-cardOrder {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-1);
+    font-weight: 400;
+  }
+
+  .MpOrders-cardDate,
+  .MpRefundRequests-cardDate,
+  .MpSubs-cardFoot-info {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+  }
+
+  .MpOrders-cardTotal,
+  .MpSubs-cardPrice {
+    color: var(--cn-primary);
+    font-weight: 700;
+  }
+
+  // Os itens do pedido: sub-linhas recuadas, sem caixa por item.
+  .MpOrders-items {
+    gap: 0;
+    padding: 0 0 0 var(--cn-space-4);
+    border-left: 2px solid var(--cn-primary-low);
+    border-radius: 0;
+    background: none;
+  }
+
+  .MpOrders-item {
+    padding: var(--cn-space-2) var(--cn-space-2);
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: none;
+
+    &:hover {
+      border: 0;
+      background: var(--cn-primary-very-low);
+      box-shadow: none;
+    }
+  }
+
+  .MpOrders-itemIcon,
+  .MpSubs-cardIcon,
+  [class*="MpRefundRequests-cardProduct"] [class*="Icon"] {
+    .cn-mp-tile(36px);
+  }
+
+  .MpOrders-itemName {
+    font-weight: 400;
+  }
+
+  .MpOrders-cardFoot,
+  .MpSubs-cardFoot {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  // Selos de estado com o ponto: a pílula do tema.
+  .MpOrders-statusChip,
+  .MpSubs-statusChip {
+    font-weight: 500;
+  }
+
+  .MpRefundRequests-label {
+    color: var(--cn-primary-medium);
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .MpRefundRequests-block {
+    padding: var(--cn-space-2) var(--cn-space-3);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+  }
+
+  // -------------------------------------------------------------------
+  // Detalhe do pedido
+  // -------------------------------------------------------------------
+  .MpOrderDetail-hero,
+  .MpOrderDetail-header {
+    margin: 0 0 var(--cn-space-4);
+    padding: 0 0 var(--cn-space-4);
+    border: 0;
+    border-bottom: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+  }
+
+  [class*="MpOrderDetail"][class*="-item"]:not([class*="-items"]):not([class*="Icon"]):not([class*="Name"]):not([class*="Price"]):not([class*="Meta"]):not([class*="Body"]) {
+    border-color: var(--cn-border);
+    border-radius: var(--cn-radius-large);
+    box-shadow: none;
+  }
+
+  // As faixas de entrega (download, curso, Composer): cinza do tema, sem a
+  // borda colorida na esquerda.
+  .MpOrderDetail-item-note {
+    border-left: 0;
+    background: var(--cn-primary-very-low);
+
+    // Ativado/manual (serviço) mantêm só o tom de estado, sem a faixa.
+    &--activated {
+      background: var(--mp-success-soft);
+    }
+
+    &--manual {
+      background: ~"color-mix(in srgb, var(--mp-warning) 10%, var(--cn-surface))";
+    }
+  }
+
+  .MpOrderDetail-item-icon {
+    .cn-mp-tile(44px);
+  }
+
+  .MpOrderDetail-summary,
+  .MpOrderDetail-refund,
+  .MpOrderDetail-customer,
+  [class*="MpOrderDetail-side"] > div {
+    .cn-mp-box();
+  }
+
+  // -------------------------------------------------------------------
+  // Downloads e pacotes: linhas com o botão no fim
+  // -------------------------------------------------------------------
+  .MpDownloads-grid,
+  .MpComposer-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--cn-border);
+  }
+
+  // A linha: [ícone] [nome e pedido / data] [contador] [botão], como uma
+  // linha da lista de discussões com as colunas à direita.
+  .MpDownloads-card,
+  .MpComposer-card {
+    .cn-mp-row();
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) minmax(160px, 240px) auto;
+    align-items: center;
+    gap: var(--cn-space-1) var(--cn-space-4);
+  }
+
+  .MpDownloads-cardHead,
+  .MpComposer-cardHead {
+    display: contents;
+  }
+
+  .MpDownloads-cardIcon,
+  .MpComposer-cardIcon {
+    grid-column: 1;
+    grid-row: ~"1 / span 2";
+    align-self: start;
+  }
+
+  .MpDownloads-cardMain,
+  .MpComposer-cardMain {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .MpDownloads-counter,
+  .MpComposer-license {
+    grid-column: 3;
+    grid-row: ~"1 / span 2";
+  }
+
+  .MpDownloads-cardHead > .MpBtn,
+  .MpComposer-cardHead > .MpBtn {
+    grid-column: 4;
+    grid-row: ~"1 / span 2";
+  }
+
+  .MpDownloads-cardFoot,
+  .MpComposer-cardFoot {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .MpDownloads-cardIcon,
+  .MpComposer-cardIcon {
+    .cn-mp-tile(40px);
+  }
+
+  .MpDownloads-cardTitle,
+  .MpComposer-cardTitle {
+    font-size: var(--cn-font-up-1);
+    font-weight: 400;
+  }
+
+  .MpDownloads-counter,
+  .MpComposer-license,
+  [class*="MpComposer-key"] {
+    margin: 0;
+    padding: var(--cn-space-2) var(--cn-space-3);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+  }
+
+  .MpDownloads-progress {
+    background: var(--cn-primary-low);
+
+    > span {
+      background: var(--cn-accent);
+    }
+  }
+
+  .MpDownloads-cardFoot,
+  .MpComposer-cardFoot {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+  }
+
+  // -------------------------------------------------------------------
+  // Conta (/my/marketplace): os atalhos como as caixas de categoria
+  // -------------------------------------------------------------------
+  .MpAccount-card {
+    .cn-mp-box();
+    padding: var(--cn-space-4);
+
+    &:hover {
+      border-color: var(--cn-accent);
+    }
+  }
+
+  .MpAccount-cardIcon {
+    .cn-mp-tile(44px);
+  }
+
+  .MpAccount-cardTitle {
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+  }
+
+  .MpAccount-cardDesc {
+    color: var(--cn-primary-high);
+    font-weight: 400;
+  }
+
+  .MpAccount-cardStat {
+    strong,
+    b {
+      font-weight: 700;
+    }
+
+    small,
+    span {
+      color: var(--cn-primary-medium);
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+  }
+
+  .MpAccount-section > h2,
+  .MpAccount-sectionTitle {
+    margin: var(--cn-space-6) 0 var(--cn-space-3);
+    font-size: var(--cn-font-up-1);
+  }
+
+  // -------------------------------------------------------------------
+  // Lista de desejos: os cartões da vitrine com a imagem em cima
+  // -------------------------------------------------------------------
+  .MpWishlist-card {
+    .cn-mp-box();
+    overflow: hidden;
+
+    &:hover {
+      border-color: var(--cn-accent);
+    }
+  }
+
+  .MpWishlist-cardImg {
+    background: var(--cn-accent-low);
+    color: var(--cn-accent);
+  }
+
+  .MpWishlist-cardName {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+  }
+
+  .MpWishlist-cardSeller {
+    color: var(--cn-primary-medium);
+  }
+
+  .MpWishlist-cardPrice {
+    color: var(--cn-primary);
+    font-weight: 700;
+  }
+
+  // -------------------------------------------------------------------
+  // Cupons e gift cards
+  // -------------------------------------------------------------------
+  .MpCoupons-new {
+    margin: 0 0 var(--cn-space-4);
+  }
+
+  .MpCoupons-row {
+    display: flex;
+    align-items: center;
+    padding: var(--cn-space-3) 0;
+  }
+
+  .MpCoupons-code {
+    padding: 2px 8px;
+    border: 1px dashed var(--cn-primary-300);
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary);
+    font-weight: 700;
+  }
+
+  .MpCoupons-value {
+    color: var(--cn-success);
+    font-weight: 700;
+  }
+
+  [class*="MpGiftCards-form"],
+  [class*="MpGiftCards-buy"] {
+    .cn-mp-box();
+    padding: var(--cn-space-6);
+    background: var(--cn-primary-very-low);
+    border-color: transparent;
+  }
+
+  // Os valores prontos: botões de escolha do tema, o escolhido na cor de
+  // destaque.
+  [class*="MpGiftCards-preset"]:is(button) {
+    height: var(--cn-control-height-lg);
+    padding: 0 var(--cn-space-4);
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    font-weight: 700;
+    box-shadow: none;
+
+    &:hover {
+      border-color: var(--cn-primary-low-mid);
+    }
+
+    &.is-active,
+    &.active,
+    &[aria-pressed="true"] {
+      border-color: var(--cn-accent);
+      background: var(--cn-selected);
+    }
+  }
+
+  // O gift card comprado: um cartão-presente discreto, com o código em fonte
+  // de código.
+  [class*="MpGiftCards-card"]:not([class*="-cards"]) {
+    .cn-mp-box();
+  }
+
+  // -------------------------------------------------------------------
+  // Planos
+  // -------------------------------------------------------------------
+  // O cabeçalho dos planos vira o hero (pages.ts): à esquerda, como os outros.
+  .CanelaMp-hero .MpPlans-head {
+    display: block;
+    max-width: none;
+    margin: 0;
+    text-align: left;
+  }
+
+  .MpPlans-eyebrow {
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .CanelaMp-hero .MpPlans-head p,
+  .MpPlans-sub {
+    margin: 4px 0 0;
+    color: var(--cn-primary-high);
+  }
+
+  // O "Planos" pequeno em cima do título repete o título: sai.
+  .CanelaMp-hero .MpPlans-eyebrow {
+    display: none;
+  }
+
+  .CanelaMp-hero .MpPlans-head {
+    padding: 0;
+  }
+
+  // Mensal/Anual: um controle segmentado. Dois segmentos da mesma largura
+  // (a grade de duas colunas iguais), 4px de respiro no contêiner e a pílula
+  // ativa na cor de destaque, com o raio de dentro, deslizando entre eles.
+  .MpPlans-toggle {
+    --cn-mp-seg-pad: 4px;
+
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    gap: 0;
+    margin: var(--cn-space-4) 0 0;
+    padding: var(--cn-mp-seg-pad);
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-primary-very-low);
+    box-shadow: none;
+  }
+
+  .MpPlans-toggleThumb {
+    top: var(--cn-mp-seg-pad);
+    bottom: var(--cn-mp-seg-pad);
+    left: var(--cn-mp-seg-pad);
+    width: calc(~"50% - var(--cn-mp-seg-pad)");
+    border: 0;
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-accent);
+    box-shadow: none;
+    transition: transform 0.25s ease;
+  }
+
+  .MpPlans-toggleBtn {
+    justify-content: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: var(--cn-radius-pill);
+    background: none;
+    color: var(--cn-primary);
+    font-size: 15px;
+    font-weight: 400;
+    white-space: nowrap;
+    box-shadow: none;
+    transition: color 0.2s ease;
+
+    &.is-active {
+      color: var(--cn-accent-text);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--cn-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  // O selo "-17%" dentro do segmento Anual, depois do texto.
+  .MpPlans-save {
+    padding: 2px 7px;
+    border-radius: var(--cn-radius-pill);
+    background: var(--mp-success-soft);
+    color: var(--mp-success-strong);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: normal;
+  }
+
+  .MpPlans-toggleBtn.is-active .MpPlans-save {
+    background: ~"rgb(255 255 255 / 0.22)";
+    color: var(--cn-accent-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .MpPlans-toggleThumb,
+    .MpPlans-toggleBtn {
+      transition: none;
+    }
+  }
+
+  .MpPlans-grid {
+    gap: var(--cn-space-6);
+  }
+
+  // O plano: a coluna de preço com a borda fina; o atual com a borda acesa.
+  .MpPlan {
+    .cn-mp-box();
+    padding: var(--cn-space-6);
+
+    &.is-current,
+    &.is-featured {
+      border-color: var(--cn-accent);
+    }
+  }
+
+  .MpPlan-name {
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .MpPlan-tagline,
+  .MpPlan-billnote {
+    color: var(--cn-primary-high);
+    font-weight: 400;
+  }
+
+  .MpPlan-amount {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .MpPlan-currency,
+  .MpPlan-period {
+    color: var(--cn-primary-high);
+    font-weight: 400;
+  }
+
+  // Assinar: o botão principal; o plano atual fica no botão padrão, apagado.
+  .MpPlan-cta {
+    height: var(--cn-control-height-lg);
+    border: 0;
+    border-radius: var(--cn-button-radius);
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-size: 16px;
+    font-weight: 400;
+    box-shadow: none;
+
+    &:hover {
+      background: var(--cn-accent-hover);
+      color: var(--cn-accent-text);
+    }
+
+    &:disabled,
+    .MpPlan.is-current & {
+      background: var(--cn-primary-100);
+      color: var(--cn-primary-high);
+    }
+  }
+
+  .MpPlan-features li > svg.icon {
+    color: var(--cn-success);
+  }
+
+  .MpPlans-foot {
+    color: var(--cn-primary-high);
+  }
+
+  // -------------------------------------------------------------------
+  // Cursos: a vitrine, meus cursos e o player
+  // -------------------------------------------------------------------
+  .CanelaMp-hero .MpCoursesHero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--cn-space-4);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .MpCoursesHero-title {
+    margin: 0;
+    font-size: clamp(~"1.728rem, 4vw, 2.296rem");
+    font-weight: 700;
+    letter-spacing: -0.01em;
+
+    // "cursos práticos" vinha na cor de destaque: o título fica de uma cor só.
+    span,
+    em {
+      color: inherit;
+      font-style: normal;
+    }
+  }
+
+  .MpCoursesHero-sub {
+    margin: 4px 0 0;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-0);
+  }
+
+  // Os números do topo, como as estatísticas do perfil.
+  .MpCoursesHero-stats {
+    gap: var(--cn-space-6);
+  }
+
+  .MpCoursesHero-stat {
+    strong,
+    b {
+      font-size: var(--cn-font-up-2);
+      font-weight: 700;
+    }
+
+    small {
+      color: var(--cn-primary-high);
+      font-size: var(--cn-font-down-1);
+      font-weight: 400;
+      letter-spacing: normal;
+      text-transform: none;
+    }
+  }
+
+  .MpCourseCard,
+  .MpCourses-card {
+    .cn-mp-box();
+    overflow: hidden;
+
+    &:hover {
+      border-color: var(--cn-accent);
+      transform: none;
+    }
+  }
+
+  // A capa sem o degradê azul fixo: a cor de destaque, clara.
+  .MpCourseCard-cover,
+  .MpCourseCard-thumb,
+  .MpCourses-cardThumb {
+    background: var(--cn-accent-low) !important;
+    color: var(--cn-accent);
+  }
+
+  .MpCourseCard-title,
+  .MpCourses-cardBody h3 {
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+  }
+
+  .MpCourses-progressBar,
+  .MpCoursePlayer-progressBar {
+    background: var(--cn-primary-low);
+
+    > span,
+    > div {
+      background: var(--cn-accent);
+    }
+  }
+
+  // O player: o banner do curso como o título de um tópico.
+  .MpCoursePlayer-banner {
+    margin: 0 0 var(--cn-space-4);
+    padding: 0 0 var(--cn-space-4);
+    border: 0;
+    border-bottom: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+  }
+
+  [class*="MpCoursePlayer-video"],
+  .MpCoursePlayer-stage {
+    border-radius: var(--cn-radius-large);
+    overflow: hidden;
+  }
+
+  [class*="MpCoursePlayer-sidebar"],
+  [class*="MpCoursePlayer-lessons"] {
+    border-color: var(--cn-border);
+    border-radius: var(--cn-radius-large);
+    box-shadow: none;
+  }
+
+  [class*="MpCoursePlayer-lesson"]:not([class*="-lessons"]) {
+    border-radius: var(--cn-radius);
+
+    &.is-active,
+    &.active {
+      border-color: transparent;
+      background: var(--cn-selected);
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // Loja do vendedor, meus produtos, mensagens
+  // -------------------------------------------------------------------
+  // Os blocos do painel do vendedor: seções do cartão com a borda do tema.
+  // Os blocos do painel do vendedor: seções separadas por fios, sem caixa.
+  .MpStore-section,
+  .MpStore-card,
+  .MpStore [class*="-panel"],
+  .MpStore-analytics {
+    margin: 0;
+    padding: var(--cn-space-6) 0;
+    border: 0;
+    border-bottom: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  // Os números de venda: as estatísticas do resumo do perfil.
+  [class*="MpStore-stat"]:not([class*="-stats"]),
+  [class*="SellerAnalytics-stat"]:not([class*="-stats"]),
+  [class*="MpAnalytics-stat"]:not([class*="-stats"]) {
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+    box-shadow: none;
+  }
+
+  .MpMyProducts-row,
+  [class*="MpMyProducts-item"] {
+    .cn-mp-row();
+  }
+
+  .MpMessages-row {
+    .cn-mp-row();
+    padding: var(--cn-space-3) var(--cn-space-2);
+    color: var(--cn-primary);
+
+    &:hover {
+      background: var(--cn-primary-very-low);
+    }
+
+    &.is-unread [class*="-rowName"],
+    &.is-unread strong {
+      font-weight: 700;
+    }
+  }
+
+  .MpMessages-rowIcon {
+    .cn-mp-tile(40px);
+    border-radius: 50%;
+  }
+
+  .MpMessages-rowPreview,
+  .MpMessages-rowTime {
+    color: var(--cn-primary-high);
+    font-weight: 400;
+  }
+
+  .MpMessages-badge {
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-weight: 700;
+  }
+
+  // A conversa: os balões do chat do tema (cinza do outro, destaque meu).
+  [class*="MpConversation-thread"],
+  [class*="MpMessages-thread"] {
+    border: 0;
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-primary-very-low);
+  }
+
+  [class*="-bubble"]:not([class*="-bubbleText"]):not([class*="-bubbles"]) {
+    border-radius: var(--cn-radius-large);
+    box-shadow: none;
+    font-weight: 400;
+  }
+
+  // -------------------------------------------------------------------
+  // Convite
+  // -------------------------------------------------------------------
+  .MpInvitePage-card {
+    .cn-mp-box();
+    max-width: 560px;
+    margin: 0 auto;
+    padding: var(--cn-space-8) var(--cn-space-6);
+    text-align: center;
+  }
+
+  // -------------------------------------------------------------------
+  // Estados vazios: o ícone num círculo cinza, o texto e a ação, no meio
+  // do cartão (o "empty-state" do Discourse)
+  // -------------------------------------------------------------------
+  .MpEmpty,
+  .MarketplaceEmptyState,
+  [class*="Mp"][class*="-empty"]:not([class*="-emptyAuth"]):not(.MarketplaceCartDropdown-empty),
+  .MpWishlist-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cn-space-3);
+    padding: var(--cn-space-8) var(--cn-space-4);
+    border: 0;
+    border-radius: var(--cn-radius-large);
+    background: none;
+    color: var(--cn-primary-high);
+    font-size: 16px;
+    text-align: center;
+
+    > svg.icon,
+    > i,
+    > [class*="Icon"] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      padding: 18px;
+      box-sizing: border-box;
+      border-radius: 50%;
+      background: var(--cn-primary-very-low);
+      color: var(--cn-primary-medium);
+      font-size: 28px;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // Carregamento (skeleton.tsx): os blocos `.CanelaSkeleton` do tema nas
+  // mesmas posições do conteúdo pronto, sem caixa em volta.
+  // -------------------------------------------------------------------
+  .CanelaMpSkel {
+    pointer-events: none;
+  }
+
+  .CanelaMpSkel-b {
+    display: block;
+    flex: none;
+    max-width: 100%;
+    border-radius: var(--cn-radius-input);
+  }
+
+  .CanelaMpSkel-tile {
+    border-radius: var(--cn-radius);
+  }
+
+  .CanelaMpSkel-avatar {
+    border-radius: 50%;
+  }
+
+  .CanelaMpSkel-button,
+  .CanelaMpSkel-pill {
+    border-radius: var(--cn-button-radius, var(--cn-radius-pill));
+  }
+
+  .CanelaMpSkel-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .CanelaMpSkel-end {
+    margin-left: auto;
+  }
+
+  .CanelaMpSkel-pair {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cn-space-3);
+  }
+
+  // Vitrine: a caixa do produto com a borda dela; os blocos ocupam os
+  // containers do cartão pronto (o ícone sem o fundo tingido).
+  .CanelaMpSkel-card {
+    .MpShop-cardIcon {
+      background: none;
+    }
+
+    .MpShop-cardDesc {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      min-height: 64px;
+    }
+
+    .MpShop-cardFoot {
+      display: flex;
+      align-items: center;
+      min-height: 18px;
+    }
+  }
+
+  // Enquanto as etiquetas da vitrine carregam, a extensão reserva uma fileira
+  // de pílulas no conteúdo; as categorias do tema já estão no hero, e a fileira
+  // só confundia (e sumia ao carregar, quando a loja não tem etiquetas).
+  .MpShop-tags.MpSkel-mirror {
+    display: none;
+  }
+
+  // Listas: a linha da lista de discussões.
+  .CanelaMpSkel-list {
+    flex: 1 1 auto;
+    min-width: 0;
+    border-top: 1px solid var(--cn-border);
+  }
+
+  .CanelaMpSkel-row {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-4);
+    padding: var(--cn-space-4) 0;
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  // Produto: a capa e as duas colunas da ficha.
+  .CanelaMpSkel-product {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-6);
+
+    .CanelaMpSkel-cover {
+      height: clamp(~"160px, 22vw, 280px") !important;
+      border-radius: var(--cn-radius-large);
+    }
+  }
+
+  .CanelaMpSkel-main {
+    gap: 12px;
+  }
+
+  .CanelaMpSkel-tabs {
+    display: flex;
+    gap: var(--cn-space-6);
+    margin: var(--cn-space-3) 0;
+    padding-bottom: var(--cn-space-3);
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  .CanelaMpSkel-buy,
+  .CanelaMpSkel-summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-3);
+    padding: var(--cn-space-6);
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-primary-very-low);
+  }
+
+  // Carrinho, checkout e pedido: as duas colunas com o resumo à direita.
+  .CanelaMpSkel-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--cn-space-8);
+    align-items: start;
+  }
+
+  .CanelaMpSkel-form,
+  .CanelaMpSkel-store,
+  .CanelaMpSkel-order {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-6);
+  }
+
+  .CanelaMpSkel-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-3);
+    padding-bottom: var(--cn-space-6);
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  .CanelaMpSkel-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .CanelaMpSkel-orderHead {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--cn-space-4);
+    padding-bottom: var(--cn-space-4);
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  // Painel do vendedor: os números em linha, como os da página pronta.
+  .CanelaMpSkel-band {
+    justify-content: flex-start;
+  }
+
+  .CanelaMpSkel-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--cn-space-3);
+  }
+
+  .CanelaMpSkel-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: var(--cn-space-3);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+  }
+
+  // Os skeletons da extensão nas variantes que o tema não redesenha: a cor
+  // do tema, sem caixa com borda.
+  .MpSkel {
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-primary-low);
+    background-image: none;
+  }
+
+  .MpSkel-card {
+    border-color: transparent;
+    background: none;
+    box-shadow: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular
+// ---------------------------------------------------------------------
+@media @phone {
+  [data-theme] {
+    .CanelaMp-hero h1,
+    .MpCoursesHero-title {
+      font-size: 1.6rem;
+    }
+
+    // As ações do hero (Voltar, Configurar) descem para baixo do título.
+    .CanelaMp-hero > [class*="-header"] {
+      align-items: flex-start;
+    }
+
+    .CanelaMp-page [class*="-toolbar"] {
+      [class*="-searchWrap"] {
+        flex-basis: 100%;
+      }
+
+      [class*="-filters"] {
+        order: 3;
+        flex: 1 1 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      // "Ir à loja", "Carrinho": só o ícone não daria; o botão fica à direita.
+      a.MpBtn {
+        margin-left: auto;
+      }
+    }
+
+    // A vitrine em duas colunas estreitas no celular grande, uma no pequeno.
+    .MpShop-grid,
+    .MpWishlist-grid,
+    .MpCourses-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--cn-space-3);
+    }
+
+    .MpProduct-cols {
+      display: flex;
+      flex-direction: column;
+      gap: var(--cn-space-4);
+    }
+
+    .MpProduct-sidebar {
+      position: static;
+      width: 100%;
+    }
+
+    // A barra de compra fica presa embaixo da tela: o preço à esquerda e o
+    // botão principal à direita; denunciar e o rótulo do preço saem.
+    .MpProduct-sidebar .CanelaMpBuyBox {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      flex-wrap: nowrap;
+      margin: 0;
+      padding: var(--cn-space-3) var(--cn-space-4) calc(~"var(--cn-space-3) + env(safe-area-inset-bottom)");
+      border: 0;
+      border-top: 1px solid var(--cn-border);
+      border-radius: 0;
+      background: var(--cn-surface);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+
+      .MpProduct-priceBlock {
+        flex: 0 1 auto;
+        margin: 0;
+      }
+
+      .MpProduct-priceAmount {
+        font-size: 1.35rem;
+      }
+
+      .MpProduct-priceLabel,
+      .MpProduct-reportBtn {
+        display: none;
+      }
+
+      .MpProduct-buyBtn {
+        flex: 1 1 auto;
+        height: var(--cn-control-height-lg);
+      }
+    }
+
+    // Espaço para a barra fixa não cobrir o fim da página.
+    .MpProduct-cols {
+      padding-bottom: 88px;
+    }
+
+    .CanelaMpProduct-cover {
+      height: 160px;
+      margin-bottom: var(--cn-space-4);
+
+      .MpProduct-heroIcon {
+        width: 80px;
+        height: 80px;
+        font-size: 34px;
+      }
+    }
+
+    .CanelaMp-card > .CanelaMpGallery .MpProduct-gallery {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      height: auto;
+
+      .MpProduct-gallery-item {
+        aspect-ratio: ~"4 / 3";
+
+        &:first-child {
+          grid-column: ~"1 / -1";
+          grid-row: auto;
+          aspect-ratio: ~"16 / 10";
+        }
+      }
+    }
+
+    .MpProduct-title {
+      font-size: var(--cn-font-up-2);
+    }
+
+    .MpProduct-heroIcon {
+      .cn-mp-tile(48px);
+    }
+
+
+    .MpCart-summary,
+    .MpCheckout-summary {
+      position: static;
+    }
+
+    .CanelaMpSkel-split {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .MpDownloads-card,
+    .MpComposer-card {
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+    }
+
+    .MpDownloads-counter,
+    .MpComposer-license {
+      grid-column: ~"2 / -1";
+      grid-row: 3;
+    }
+
+    .MpDownloads-cardHead > .MpBtn,
+    .MpComposer-cardHead > .MpBtn {
+      grid-column: 3;
+    }
+
+    .MpOrders-items {
+      padding-left: var(--cn-space-2);
+    }
+  }
+}
+
+}

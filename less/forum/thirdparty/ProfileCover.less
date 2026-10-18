@@ -1,0 +1,34 @@
+// forumaker/profile-cover (js/src/forum/thirdparty/profileCover.tsx).
+//
+// A extensão pinta a capa no fundo do .UserCard inteiro (`--background-image`
+// no style, e `.UserCard`, `.UserHero` e `body.dark .UserPage .Hero` no CSS
+// dela). O tema já desenha essa mesma capa: a faixa .CanelaUserHero-cover no
+// perfil e o fundo com véu do cartão. Sem isto a foto sairia duas vezes no
+// perfil (atrás do avatar e dos nomes, sem véu) e o cartão perderia o véu que
+// mantém o texto legível. Os seletores são mais fortes que os da extensão,
+// que carrega depois do tema.
+
+// O perfil: a capa é só a faixa de cima.
+.UserPage .UserCard.CanelaUserHero,
+body.dark .UserPage .UserCard.CanelaUserHero.Hero {
+  background-image: none;
+}
+
+// O popover do core sem capa nenhuma no tema (a forumaker sem imagem, ou a
+// chave do admin desligada): nada de foto crua por baixo. Com capa, a regra
+// `.CanelaProfile--hasCardBg` do recurso de perfil põe a imagem com o véu.
+.UserCard.UserCard--popover:not(.CanelaProfile--hasCardBg) {
+  background-image: none;
+}
+
+// O modal de edição nas cores do tema: a prévia vazia no cinza das
+// superfícies e o controle de posição na cor de destaque.
+.Cover-modal {
+  .CoverEditor-cover {
+    background-color: var(--cn-primary-100);
+  }
+
+  .CoverEditor-positionSlider {
+    accent-color: var(--cn-accent);
+  }
+}

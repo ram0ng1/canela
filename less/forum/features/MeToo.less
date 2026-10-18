@@ -1,0 +1,83 @@
+// "Me too" do Discourse (o `.solved-shared-issue-row` do discourse-solved):
+// a pílula btn-default logo abaixo do texto do primeiro post, alinhada à
+// esquerda com ele, antes da barra de ações (que já desce 20px).
+//
+// Medidas do Meta: 38px de altura, 8px × 0.65em de respiro, ícone de 16px a
+// 0.45em do texto, 16px de fonte; fundo do cartão, borda cinza clara e texto
+// primary-high. No hover só o fundo, o texto e a borda escurecem — sem anel.
+// Marcado (`has-shared-issue`), a mão fica na cor de destaque (tertiary).
+
+.CanelaMeToo {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.CanelaMeToo-button.Button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 8px 0.65em;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-surface);
+  box-shadow: none;
+  color: var(--cn-primary-high);
+  font-size: 16px;
+  font-weight: normal;
+  line-height: normal;
+  text-decoration: none;
+  transition: none;
+
+  .Button-icon,
+  .CanelaIcon {
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    color: inherit;
+    font-size: 1em;
+  }
+
+  .Button-label {
+    margin: 0;
+  }
+
+  &:hover:not([disabled]),
+  &:focus-visible {
+    border-color: var(--cn-primary-low-mid);
+    background: var(--cn-primary-low);
+    box-shadow: none;
+    color: var(--cn-primary);
+  }
+
+  &.is-active {
+    .Button-icon,
+    .CanelaIcon {
+      color: var(--cn-accent);
+    }
+  }
+
+  // O `.btn[disabled]` do Discourse: o botão segue à vista (com a contagem),
+  // só apagado.
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// No escuro o Meta clareia tudo um degrau: texto quase branco, borda e
+// fundo do hover mais visíveis que os tokens do claro dariam.
+[data-theme^=dark] .CanelaMeToo-button.Button {
+  border-color: var(--cn-primary-low-mid);
+  color: var(--cn-primary-very-high);
+
+  &:hover:not([disabled]),
+  &:focus-visible {
+    border-color: var(--cn-primary-medium);
+    background: var(--cn-primary-200);
+    color: var(--cn-primary);
+  }
+}

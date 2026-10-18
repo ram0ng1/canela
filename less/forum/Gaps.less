@@ -1,0 +1,896 @@
+// =====================================================================
+// Recursos do Discourse que faltavam (js/src/forum/gaps): lightbox, botões
+// do código, âncoras dos títulos, tabelas, spoilers, leitura no tópico,
+// "Voltar" na linha do tempo, título editável, compartilhar, "último
+// acesso" e "Descartar" na lista, barra de tópicos novos do realtime.
+// Medidas do css-common.css do meta.discourse.org.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Lightbox (o PhotoSwipe do Discourse)
+// ---------------------------------------------------------------------
+html.CanelaLightbox-open {
+  overflow: hidden;
+}
+
+.CanelaLightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  animation: CanelaLightboxIn 0.2s ease-out;
+
+  &-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  &-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 var(--cn-space-2) 0 var(--cn-space-4);
+    background: linear-gradient(rgba(0, 0, 0, 0.45), transparent);
+  }
+
+  &-counter {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+
+  &-buttons {
+    display: flex;
+    margin-left: auto;
+  }
+
+  &-button,
+  &-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.85;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+
+  &-button {
+    width: 45px;
+    height: 60px;
+    font-size: 18px;
+  }
+
+  &-stage {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 60px var(--cn-space-8) 70px;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  &-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: zoom-in;
+    pointer-events: auto;
+    user-select: none;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+
+    &--error {
+      min-width: 200px;
+      min-height: 150px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  &--zoomed &-stage {
+    overflow: auto;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: auto;
+  }
+
+  &--zoomed &-image {
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    cursor: zoom-out;
+  }
+
+  &-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 70px;
+    height: 100px;
+    margin-top: -50px;
+    font-size: 26px;
+
+    &--prev {
+      left: 0;
+    }
+
+    &--next {
+      right: 0;
+    }
+  }
+
+  &-caption {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 1em calc(0.75em + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    color: #fff;
+    line-height: 1.25em;
+    text-align: center;
+  }
+}
+
+@keyframes CanelaLightboxIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion) {
+  .CanelaLightbox {
+    animation: none;
+  }
+}
+
+@media @phone {
+  .CanelaLightbox-arrow {
+    width: 48px;
+    font-size: 20px;
+  }
+
+  .CanelaLightbox-stage {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// As imagens dos posts mostram que abrem.
+.Post-body img:not(.emoji):not(.Avatar) {
+  cursor: zoom-in;
+}
+
+.Post-body a img {
+  cursor: pointer;
+}
+
+// ---------------------------------------------------------------------
+// Blocos de código: "copiar" e "tela cheia" (.codeblock-buttons)
+// ---------------------------------------------------------------------
+pre.CanelaCodeBlock {
+  position: relative;
+  overflow: visible;
+
+  > code {
+    padding-right: 4.5em;
+  }
+}
+
+.CanelaCodeBlock-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  font-family: var(--cn-font);
+  white-space: normal;
+}
+
+.CanelaCodeButton.Button {
+  min-height: 0;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-2);
+  opacity: 0.7;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+    color: var(--cn-primary);
+    opacity: 1;
+  }
+
+  .Button-icon {
+    margin: 0;
+    pointer-events: none;
+  }
+
+  &--done,
+  &--done:hover {
+    color: var(--cn-accent);
+    opacity: 1;
+    cursor: auto;
+  }
+}
+
+// No computador os botões só aparecem com o mouse sobre o bloco.
+@media @tablet-up {
+  .CanelaCodeButton:not(.CanelaCodeButton--done) {
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.2s;
+  }
+
+  pre.CanelaCodeBlock:hover .CanelaCodeButton,
+  pre.CanelaCodeBlock:focus-within .CanelaCodeButton {
+    visibility: visible;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Âncoras dos títulos (a.anchor)
+// ---------------------------------------------------------------------
+.Post-body {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    position: relative;
+    scroll-margin-top: calc(var(--cn-header-height, 52px) + 16px);
+  }
+}
+
+.CanelaAnchor {
+  position: absolute;
+  left: -1.1em;
+  top: 50%;
+  display: inline-flex;
+  width: 1em;
+  justify-content: center;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.25s;
+  text-decoration: none;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 0.7em;
+    height: 0.7em;
+    background: var(--cn-primary-medium);
+    // O mesmo ícone de corrente do Discourse, como máscara para seguir a cor.
+    -webkit-mask: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath d='M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath d='M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+
+    &::before {
+      background: var(--cn-primary);
+    }
+  }
+}
+
+.Post-body h1:hover,
+.Post-body h2:hover,
+.Post-body h3:hover,
+.Post-body h4:hover,
+.Post-body h5:hover,
+.Post-body h6:hover {
+  .CanelaAnchor {
+    opacity: 1;
+  }
+}
+
+// No celular não há hover: a âncora fica escondida (o Discourse faz igual).
+@media @phone {
+  .CanelaAnchor {
+    display: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Tabelas largas: "Expandir tabela"
+// ---------------------------------------------------------------------
+.CanelaTableExpand {
+  position: sticky;
+  left: 0;
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 var(--cn-space-1);
+
+  .CanelaTableExpand-button.Button {
+    display: inline-flex;
+    gap: 0.35em;
+    width: auto;
+    height: auto;
+    padding: 0.2em 0.6em;
+    border-radius: var(--cn-radius);
+    font-size: var(--cn-font-down-1);
+    opacity: 0;
+    visibility: visible;
+    transition: 0.25s ease-in-out opacity;
+  }
+}
+
+.Post-body table:hover .CanelaTableExpand-button,
+.CanelaTableExpand-button:focus-visible {
+  opacity: 1;
+}
+
+@media @phone {
+  .CanelaTableExpand .CanelaTableExpand-button.Button {
+    opacity: 1;
+  }
+}
+
+// No computador o botão flutua sobre a tabela (absoluto, como o
+// .fullscreen-table-wrapper__buttons do Discourse): invisível, não pode
+// empurrar a tabela para baixo e deixar um buraco acima dela.
+@media @tablet-up {
+  .CanelaTableExpand {
+    height: 0;
+    padding: 0;
+
+    .CanelaTableExpand-button.Button {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      z-index: 1;
+      // Por cima do cabeçalho da tabela: precisa de fundo (o botão herda o
+      // transparente dos botões de código), como o btn-default do Discourse.
+      border: 1px solid var(--cn-border);
+      background: var(--cn-surface);
+      color: var(--cn-primary-high);
+      box-shadow: var(--cn-shadow-dropdown);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-primary-low);
+        color: var(--cn-primary);
+      }
+    }
+  }
+}
+
+.CanelaFullscreenModal {
+  .Modal-dialog {
+    max-width: ~"min(1400px, 95vw)";
+  }
+
+  &-content {
+    max-height: 75vh;
+    overflow: auto;
+
+    pre {
+      margin: 0;
+    }
+
+    table {
+      display: table;
+      width: 100%;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Spoilers borrados (spoiler-alert)
+// ---------------------------------------------------------------------
+.CanelaSpoiler {
+  transform: translateZ(0);
+
+  // O spoiler do Litedown pinta um bloco escuro; o do Discourse é um borrão.
+  &.spoiler,
+  &.spoiler * {
+    background: none;
+    color: inherit;
+  }
+
+  &.spoiler img {
+    visibility: visible;
+  }
+
+  &--blurred {
+    cursor: pointer;
+    user-select: none;
+    filter: blur(0.5em);
+
+    a,
+    button,
+    details,
+    iframe,
+    img,
+    input,
+    video {
+      pointer-events: none;
+    }
+
+    img {
+      filter: blur(1em);
+    }
+
+    &:hover,
+    &:focus-visible {
+      filter: blur(0.18em);
+      outline: none;
+
+      img {
+        filter: blur(0.5em);
+      }
+    }
+  }
+}
+
+details.CanelaSpoiler {
+  padding: 0;
+  background: none;
+
+  > .CanelaSpoiler-summary {
+    display: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Leitura no tópico: o pontinho de não lido e a linha "último acesso"
+// ---------------------------------------------------------------------
+.Post-header li.item-canelaReadState {
+  // Os itens do cabeçalho do post têm `order` (área do tópico): o pontinho
+  // vai depois da data, no canto, como o .read-state do Discourse.
+  order: 99;
+  margin-left: 0.4em;
+}
+
+.CanelaReadState {
+  display: inline-flex;
+  align-items: center;
+  color: var(--cn-accent);
+  font-size: 0.571em;
+
+  &--read {
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      visibility 1s,
+      opacity ease-out 1s;
+  }
+}
+
+.CanelaVisitedLine {
+  position: relative;
+  z-index: 3;
+  margin: var(--cn-space-4) 0 -1px;
+  border-bottom: 1px solid var(--cn-danger);
+  line-height: 0;
+  text-align: center;
+  color: var(--cn-danger);
+  font-size: var(--cn-font-down-1);
+
+  &-message {
+    padding: 0 0.5em;
+    background: var(--cn-surface);
+  }
+}
+
+// O post selecionado com j/k (.topic-post.selected): a barra à esquerda.
+.PostStream-item.CanelaPostSelected > .Post,
+.PostStream-item.CanelaPostSelected > .CommentPost,
+.PostStream-item.CanelaPostSelected > .EventPost {
+  box-shadow: -3px 0 0 var(--cn-accent);
+}
+
+// ---------------------------------------------------------------------
+// Linha do tempo: o "Voltar" para o ponto lido (.timeline-last-read)
+// ---------------------------------------------------------------------
+.Scrubber-scrollbar {
+  position: relative;
+}
+
+.CanelaTimelineBack {
+  position: absolute;
+  left: -0.35em;
+  z-index: 3;
+  display: none;
+  transform: translateY(-50%);
+
+  &--visible {
+    display: block;
+  }
+
+  &-button.Button {
+    min-height: 0;
+    padding: 0.25em 0.65em;
+    font-size: var(--cn-font-down-1);
+    white-space: nowrap;
+  }
+}
+
+// A folha da linha do tempo do celular não tem lugar para o botão.
+@media @phone {
+  .CanelaTimelineBack {
+    display: none !important;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Título editável no cabeçalho do tópico (#topic-title .edit-topic-title)
+// ---------------------------------------------------------------------
+.CanelaTitleEditor-display {
+  display: inline;
+
+  .DiscussionHero-title {
+    display: inline;
+  }
+}
+
+.CanelaTitleEditor-edit.Button {
+  margin-left: 0.25em;
+  vertical-align: middle;
+  color: var(--cn-primary-medium);
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  .DiscussionHero:hover &,
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  &:hover {
+    color: var(--cn-primary);
+  }
+}
+
+@media (hover: none) {
+  .CanelaTitleEditor-edit.Button {
+    opacity: 1;
+  }
+}
+
+.CanelaTitleEditor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  width: 100%;
+
+  &-input.FormControl {
+    flex: 1 1 100%;
+    width: 100%;
+    font-size: var(--cn-font-up-2);
+    font-weight: 600;
+  }
+
+  &-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: center;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Compartilhar e "Pular para…"
+// ---------------------------------------------------------------------
+.CanelaShareModal {
+  &-instructions {
+    margin: 0 0 var(--cn-space-3);
+    color: var(--cn-primary-high);
+  }
+
+  &-link {
+    display: flex;
+    gap: var(--cn-space-2);
+
+    .FormControl {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &-copied {
+    margin: var(--cn-space-2) 0 0;
+    color: var(--cn-success);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-networks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cn-space-2);
+    margin-top: var(--cn-space-4);
+  }
+
+  &-network.Button {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    text-decoration: none;
+  }
+}
+
+.CanelaJumpModal {
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-3);
+
+    .FormControl {
+      width: 8em;
+    }
+  }
+
+  &-of {
+    color: var(--cn-primary-high);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Lista: "último acesso", "Descartar" e os tópicos novos do realtime
+// ---------------------------------------------------------------------
+.DiscussionList-discussions > li.CanelaLastVisit {
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--cn-danger);
+  line-height: 0;
+  text-align: center;
+  list-style: none;
+}
+
+.CanelaLastVisit-label {
+  position: relative;
+  padding: 0 var(--cn-space-2);
+  background: var(--cn-surface);
+  color: var(--cn-danger);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaDismiss {
+  display: flex;
+  justify-content: flex-end;
+
+  &--top {
+    margin-bottom: var(--cn-space-2);
+  }
+
+  &--bottom {
+    margin-top: var(--cn-space-4);
+  }
+}
+
+@media @phone {
+  // No celular o Discourse deixa o "Descartar" flutuando no pé da tela.
+  .CanelaDismiss--top {
+    position: fixed;
+    right: 50%;
+    bottom: calc(env(safe-area-inset-bottom) + var(--cn-space-4));
+    z-index: 2;
+    margin: 0;
+    transform: translateX(50%);
+
+    .Button {
+      box-shadow: var(--cn-shadow-dropdown);
+    }
+  }
+
+  .CanelaDismiss--bottom {
+    display: none;
+  }
+}
+
+// "Há N tópicos novos ou atualizados" (.show-more .alert.alert-info.clickable).
+.IndexPage .DiscussionList-update.Button {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto var(--cn-space-3);
+  padding: var(--cn-space-2) var(--cn-space-4);
+  border: 0;
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-accent-low);
+  color: var(--cn-accent);
+  font-size: var(--cn-font-down-1);
+  animation: CanelaFloatDown 250ms ease-in-out forwards;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-accent-low);
+    color: var(--cn-accent-hover);
+  }
+}
+
+@keyframes CanelaFloatDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion) {
+  .IndexPage .DiscussionList-update.Button {
+    animation: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Barra lateral: o número de sinalizações em "Revisar"
+// ---------------------------------------------------------------------
+.CanelaSidebar-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6em;
+  padding: 0 0.45em;
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-accent);
+  color: var(--cn-accent-text);
+  font-size: var(--cn-font-down-2);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+// A contagem presa à ponta direita do item, como no Discourse, sem mexer no
+// layout do rótulo (que corta o texto com reticências): o item reserva o
+// espaço dela à direita.
+.CanelaSidebar a:has(.CanelaSidebar-count) {
+  position: relative;
+  padding-right: 2.1em;
+
+  .CanelaSidebar-count {
+    position: absolute;
+    top: 50%;
+    right: 0.4em;
+    transform: translateY(-50%);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Datas locais ([date=…], discourse-local-dates)
+// ---------------------------------------------------------------------
+.CanelaLocalDate {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  padding: 0 0.25em;
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-link);
+  white-space: nowrap;
+  cursor: help;
+
+  .icon {
+    font-size: 0.85em;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Convites
+// ---------------------------------------------------------------------
+.CanelaShareModal-invite {
+  margin-top: var(--cn-space-4);
+  padding-top: var(--cn-space-4);
+  border-top: 1px solid var(--cn-border);
+}
+
+.CanelaInviteModal {
+  &-help,
+  &-warning {
+    margin: 0 0 var(--cn-space-3);
+    color: var(--cn-primary-high);
+  }
+
+  &-warning {
+    padding: var(--cn-space-2) var(--cn-space-3);
+    border-radius: var(--cn-radius);
+    background: var(--cn-highlight);
+    color: var(--cn-primary);
+  }
+
+  &-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cn-space-4);
+    margin-bottom: var(--cn-space-3);
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: var(--cn-space-1);
+      font-weight: 600;
+      font-size: var(--cn-font-down-1);
+    }
+
+    .FormControl {
+      width: 9em;
+    }
+  }
+
+  &-listTitle {
+    margin: var(--cn-space-6) 0 var(--cn-space-2);
+    font-size: var(--cn-font-up-1);
+  }
+
+  &-empty {
+    color: var(--cn-primary-medium);
+  }
+
+  &-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: var(--cn-space-2);
+      padding: var(--cn-space-2) 0;
+      border-bottom: 1px solid var(--cn-border);
+    }
+
+    .FormControl {
+      grid-column: 1;
+      min-width: 0;
+    }
+  }
+
+  &-meta {
+    grid-column: 1;
+    grid-row: 2;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  &-item--used {
+    opacity: 0.6;
+  }
+}
+
+// O sino da categoria (fof/follow-tags) na barra de navegação: redondo,
+// como o do tópico na linha do tempo.
+.CanelaNav .CanelaCategoryNotifications > .Dropdown-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+
+.CanelaCategoryNotifications.CanelaNotifications--watching > .Dropdown-toggle,
+.CanelaCategoryNotifications.CanelaNotifications--watching_first_post > .Dropdown-toggle {
+  color: var(--cn-accent);
+}

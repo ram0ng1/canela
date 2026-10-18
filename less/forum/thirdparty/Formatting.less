@@ -1,0 +1,35 @@
+// ---------------------------------------------------------------------
+// fof/formatting: listas de tarefas e vídeos embutidos no texto do post.
+// (Spoiler e details são do BBCode e ficam em Gaps.less/Posts.less; as
+// tabelas do PipeTables usam o estilo das tabelas do tema.)
+// ---------------------------------------------------------------------
+
+// Lista de tarefas: a caixinha do Discourse (`.chcklst-box`), sem marcador.
+.Post-body ul li[data-task-id] {
+  margin-left: 0;
+  list-style: none;
+
+  input[type="checkbox"] {
+    margin: 0 0.4em 0 -1.4em;
+    vertical-align: -0.1em;
+    accent-color: var(--cn-accent);
+  }
+}
+
+// Vídeos e players: até a largura do texto, cantos do tema.
+.Post-body {
+  video {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--cn-radius);
+  }
+
+  iframe[data-s9e-mediaembed] {
+    max-width: 100%;
+    border-radius: var(--cn-radius);
+  }
+
+  span[data-s9e-mediaembed] {
+    max-width: 100% !important;
+  }
+}

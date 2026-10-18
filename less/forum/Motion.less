@@ -1,0 +1,805 @@
+// =====================================================================
+// Movimento do Discourse: os @keyframes do núcleo (discourse.scss), a
+// barra de carregamento do topo, o spinner, o skeleton, as dicas
+// (fk-d-tooltip), os toasts (fk-d-toast), o fechamento dos menus
+// (fk-d-menu -closing), o "link copiado", as reticências de "digitando", o
+// aviso de tópicos novos e o link de pular para o conteúdo.
+//
+// Vem por último no forum.less: algumas regras ajustam as das outras áreas
+// (spinner, dicas, toasts) e precisam vencer na ordem.
+//
+// Tempos e curvas são os do Discourse; quem pede menos movimento recebe as
+// animações com duração zero (o mixin `d-animation`).
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Keyframes do núcleo que ainda não existiam no tema. Os outros já moram
+// nas áreas: cn-float-down/up (Components), cn-toast-opening (Components),
+// canela-fade-highlight (List), canelaHighlight e canelaHeartBump (Posts).
+// ---------------------------------------------------------------------
+@keyframes cn-dissolve-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes cn-rotate-forever {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cn-placeholder-shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1100px 0;
+  }
+}
+
+@keyframes cn-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes cn-wave {
+  0%,
+  60%,
+  100% {
+    transform: initial;
+  }
+  30% {
+    transform: translateY(-0.2em);
+  }
+}
+
+// O `float-down` do Discourse, para o aviso de tópicos novos.
+@keyframes cn-motion-float-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Barra de carregamento do topo (`.loading-indicator-container`): 3px no
+// alto da tela, trilho `--primary-low` e barra `--tertiary`. Cresce até 80%
+// no tempo médio (`--loading-duration`, posto pelo JS), segue até 90% em
+// 10s, completa em 0,4s e some em 0,4s depois de 0,4s.
+// ---------------------------------------------------------------------
+.CanelaLoadingSlider {
+  --loading-width: 0.8;
+  --still-loading-width: 0.9;
+  --still-loading-duration: 10s;
+  --done-duration: 0.4s;
+  --fade-out-duration: 0.4s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: calc(~"var(--zindex-header, 1000) + 1");
+  width: 100%;
+  height: 3px;
+  opacity: 0;
+  pointer-events: none;
+  background-color: var(--cn-primary-low);
+  transition: opacity var(--fade-out-duration) ease var(--done-duration);
+
+  .CanelaLoadingSlider-bar {
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background-color: var(--cn-link);
+  }
+
+  &.loading,
+  &.still-loading {
+    opacity: 1;
+    transition: opacity 0s;
+  }
+
+  &.loading .CanelaLoadingSlider-bar {
+    transition: transform var(--loading-duration, 0.3s) ease-in;
+    transform: scaleX(var(--loading-width));
+  }
+
+  &.still-loading .CanelaLoadingSlider-bar {
+    transition: transform var(--still-loading-duration) linear;
+    transform: scaleX(var(--still-loading-width));
+  }
+
+  &.done .CanelaLoadingSlider-bar {
+    transition: transform var(--done-duration) ease-out;
+    transform: scaleX(1);
+  }
+}
+
+[dir="rtl"] .CanelaLoadingSlider .CanelaLoadingSlider-bar {
+  transform-origin: right;
+}
+
+// ---------------------------------------------------------------------
+// Spinner (`.spinner`): anel de 30px com borda de 4px em `--primary-low-mid`,
+// aberto à direita, girando uma volta por segundo. Nos botões e nos
+// switches o anel pequeno segue a cor do texto.
+// ---------------------------------------------------------------------
+.LoadingIndicator {
+  --spin-time: 1s;
+  border-color: currentColor;
+  border-right-color: transparent;
+  animation-name: cn-rotate-forever;
+}
+
+.LoadingIndicator-container {
+  color: var(--cn-primary-low-mid);
+}
+
+// Os carregamentos de página e de lista: o `.spinner` com 20px acima e abaixo.
+.LoadingIndicator-container--block:not(.LoadingIndicator-container--small),
+.LoadingIndicator-container--large {
+  --size: 30px;
+  --thickness: 4px;
+}
+
+.LoadingIndicator-container--block:not(.LoadingIndicator-container--small) {
+  height: 70px;
+}
+
+.Button .LoadingIndicator-container,
+.Checkbox .LoadingIndicator-container,
+.Alert .LoadingIndicator-container {
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------
+// Skeleton (`.placeholder-animation`): o brilho que atravessa da esquerda
+// para a direita em 4s. Vale para o post que ainda carrega (LoadingPost do
+// core) e para quem usar `.CanelaSkeleton`.
+// ---------------------------------------------------------------------
+.CanelaSkeleton {
+  background: var(--cn-primary-low);
+  border-radius: var(--cn-radius);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .CanelaSkeleton,
+  .LoadingPost .fakeText,
+  .LoadingPost .Avatar,
+  .CanelaTopic .LoadingPost .fakeText {
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: cn-placeholder-shimmer;
+    animation-timing-function: linear;
+    background: linear-gradient(to right, var(--cn-primary-very-low) 10%, var(--cn-primary-low) 18%, var(--cn-primary-very-low) 33%);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Dicas (`.fk-d-tooltip__content`): o cartão branco de raio 8, borda e
+// `--shadow-dropdown`, 0,5rem de respiro, até 350px, a 10px do gatilho e a
+// seta arredondada (`tippy-rounded-arrow`) com contorno. Aparece em 0,15s
+// (ease-in) e some na hora.
+// ---------------------------------------------------------------------
+// A seta do Discourse, em duas camadas: o contorno e, 1px por dentro, o
+// preenchimento na cor do cartão.
+@cn-arrow-stroke: ~'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 6%27%3E%3Cpath d=%27M0 6s1.796-.013 4.67-3.615C5.851.9 6.93.006 8 0c1.07-.006 2.148.887 3.343 2.385C14.233 6.005 16 6 16 6H0z%27/%3E%3C/svg%3E")';
+@cn-arrow-fill: ~'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 6%27%3E%3Cpath d=%27m0 7s2 0 5-4c1-1 2-2 3-2 1 0 2 1 3 2 3 4 5 4 5 4h-16z%27/%3E%3C/svg%3E")';
+
+.tooltip {
+  --tooltip-arrow-width: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+  transition: opacity 0.15s ease-in;
+
+  // Some na hora (o fk-d-tooltip não anima ao fechar).
+  &:not(.in) {
+    transition: none;
+  }
+
+  &.top,
+  &.right,
+  &.bottom,
+  &.left {
+    margin: 0;
+  }
+}
+
+.tooltip-inner {
+  max-width: 350px;
+  padding: 0.5rem;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background-color: var(--cn-surface);
+  color: var(--cn-primary);
+  box-shadow: var(--cn-shadow-dropdown);
+  font-weight: 400;
+  text-align: left;
+  overflow-wrap: break-word;
+}
+
+.tooltip .tooltip-arrow,
+.tooltip.top .tooltip-arrow,
+.tooltip.right .tooltip-arrow,
+.tooltip.bottom .tooltip-arrow,
+.tooltip.left .tooltip-arrow {
+  z-index: 1;
+  width: 16px;
+  height: 6px;
+  margin: 0;
+  border: 0;
+  background: var(--cn-border);
+  -webkit-mask: ~"@{cn-arrow-stroke} no-repeat center / 100% 100%";
+  mask: ~"@{cn-arrow-stroke} no-repeat center / 100% 100%";
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--cn-surface);
+    -webkit-mask: ~"@{cn-arrow-fill} no-repeat center / 100% 100%";
+    mask: ~"@{cn-arrow-fill} no-repeat center / 100% 100%";
+  }
+}
+
+// A base da seta cobre 1px da borda do cartão, para os dois se fundirem.
+.tooltip.top .tooltip-arrow {
+  top: auto;
+  bottom: 5px;
+  left: 50%;
+  margin-left: -8px;
+  rotate: 180deg;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  top: 5px;
+  bottom: auto;
+  left: 50%;
+  margin-left: -8px;
+}
+
+.tooltip.right .tooltip-arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -3px;
+  rotate: -90deg;
+}
+
+.tooltip.left .tooltip-arrow {
+  top: 50%;
+  right: 0;
+  left: auto;
+  margin-top: -3px;
+  rotate: 90deg;
+}
+
+[data-theme^=dark] .tooltip-inner {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.45);
+}
+
+// ---------------------------------------------------------------------
+// Toasts (`.fk-d-toast` + `.fk-d-default-toast`): 0,5rem de respiro, o
+// ícone numa coluna de 32px × 2,3em, o texto em `--primary-high` (o título
+// em negrito) e o ✕ transparente à direita. Entram subindo 2vh em 0,3s
+// (Components.less) e saem esmaecendo em 0,5s.
+// ---------------------------------------------------------------------
+.AlertManager .Alert.CanelaToast {
+  padding: 0.5rem;
+  line-height: 1.4;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  will-change: transform;
+  touch-action: pan-x;
+
+  &:hover {
+    border-color: var(--cn-primary-300);
+  }
+
+  &.CanelaToast--fadeOut {
+    opacity: 0;
+  }
+
+  .Alert-container {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .Alert-content {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 0;
+    min-height: ~"calc(1em + (2 * 0.65em))";
+  }
+
+  // Sem ícone, o texto começa no respiro do cartão, como no `-default`.
+  .Alert-container:not(:has(> .CanelaToast-icon)) > .Alert-content {
+    padding-left: 0.25rem;
+  }
+
+  .Alert-title {
+    margin: 0;
+    font-weight: 700;
+    color: var(--cn-primary);
+  }
+
+  .Alert-body {
+    color: var(--cn-primary-high);
+  }
+
+  .Alert-controls {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    margin: 0;
+
+    > li {
+      display: flex;
+      align-items: center;
+      min-height: ~"calc(1em + (2 * 0.65em))";
+      margin: 0;
+
+      > .Button {
+        margin: 0;
+      }
+    }
+
+    > li + li {
+      margin-left: 0.5rem;
+    }
+  }
+
+  // O ✕ (`btn-transparent` com `xmark`): sem fundo, numa coluna de 32px.
+  .Alert-dismiss.Button {
+    width: ~"calc(40px - 0.5rem)";
+    height: ~"calc(1em + (2 * 0.65em))";
+    padding: 0;
+    border-radius: var(--cn-radius);
+    background: transparent;
+    color: var(--cn-primary-high);
+    box-shadow: none;
+
+    .Button-icon {
+      margin: 0;
+      color: inherit;
+      font-size: 1em;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: transparent;
+      color: var(--cn-primary);
+    }
+  }
+}
+
+.CanelaToast-icon {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: ~"calc(40px - 0.5rem)";
+  height: ~"calc(1em + (2 * 0.65em))";
+
+  .Alert--success & {
+    color: var(--cn-success);
+  }
+
+  .Alert--error & {
+    color: var(--cn-danger);
+  }
+
+  .Alert--warning & {
+    color: var(--cn-highlight);
+  }
+
+  .Alert--info & {
+    color: var(--cn-link);
+  }
+}
+
+// As notificações em tempo real do flarum-realtime: um cartão de toast com
+// a linha de notificação do menu do usuário dentro, na mesma coluna dos
+// avisos do sistema (`.fk-d-toasts`: alto à direita, 5px da borda, 5px entre
+// eles), logo abaixo deles (`--cn-toasts-offset`, motion/toasts.tsx). Sem o
+// fundo de "não lida" — no toast toda notificação é nova.
+.NotificationToasts {
+  top: ~"calc(var(--cn-header-height, 52px) + 0.33rem + var(--cn-toasts-offset, 0px))";
+  right: 5px;
+  bottom: auto;
+  left: auto;
+  z-index: 9999;
+  width: ~"min(380px, calc(100vw - 10px))";
+  gap: 5px;
+  transition: top 0.2s ease;
+
+  @media @phone {
+    top: ~"calc(var(--cn-header-height, 52px) + 0.33rem + var(--cn-toasts-offset, 0px))";
+    right: 5px;
+    bottom: auto;
+    left: 5px;
+    width: auto;
+  }
+}
+
+.NotificationToast {
+  position: relative;
+  max-width: none;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+  animation: cn-toast-opening 0.3s ease-in-out;
+  transition: border-color 0.15s;
+  will-change: transform;
+
+  &:hover {
+    border-color: var(--cn-primary-300);
+  }
+
+  // O tópico, em cinza, como o título da seção num menu.
+  &-context {
+    padding: 10px 12px 0;
+    border: 0;
+    background: none;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--cn-primary);
+      text-decoration: underline;
+    }
+  }
+
+  // A linha da notificação: avatar de 32px com o ícone do tipo no canto,
+  // o texto, a hora e o trecho em até duas linhas.
+  .Notification {
+    position: relative;
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: start;
+    margin: 0;
+    padding: 8px 12px 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+    color: var(--cn-primary);
+    text-decoration: none;
+
+    &::before {
+      display: none;
+    }
+
+    &:hover {
+      background: var(--cn-hover) !important;
+    }
+
+    > .Avatar {
+      grid-row: 1 / span 2;
+      .Avatar--size(32px);
+      margin: 0;
+    }
+
+    > .icon {
+      position: absolute;
+      top: 30px;
+      left: 34px;
+      width: 16px;
+      height: 16px;
+      padding: 2px;
+      border-radius: 50%;
+      background: var(--cn-surface);
+      color: var(--cn-primary-medium);
+      font-size: 11px;
+    }
+  }
+
+  .HeaderListItem-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 6px;
+    margin: 0;
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .HeaderListItem-content {
+    color: var(--cn-primary);
+
+    .username {
+      font-weight: 600;
+    }
+  }
+
+  .HeaderListItem-title-spring {
+    display: none;
+  }
+
+  .HeaderListItem-time {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+  }
+
+  .HeaderListItem-excerpt {
+    grid-column: 2;
+    margin-top: 2px;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // "Marcar como lida" não faz sentido num aviso que some sozinho.
+  .HeaderListItem-actions {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .NotificationToast {
+    animation: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Fechamento dos menus: o fantasma (motion/menus.ts) sobe esmaecendo em
+// 125ms (`dissolve-up`), ou desce se o menu abria para cima.
+// ---------------------------------------------------------------------
+.CanelaMenuGhost {
+  z-index: var(--zindex-dropdown, 1030);
+  pointer-events: none;
+
+  > .Dropdown-menu {
+    display: block;
+    animation: cn-dissolve-up 125ms ease forwards !important;
+  }
+}
+
+// ---------------------------------------------------------------------
+// "Link copiado!" (`post-action-feedback`): o certo verde se desenha no
+// canto do botão (20px, traço 4, 1s) e o aviso aparece 1,5rem acima.
+// ---------------------------------------------------------------------
+.CanelaFeedback {
+  position: relative;
+  overflow: visible;
+}
+
+.CanelaFeedback.CanelaFeedback--activated .Button-icon {
+  color: var(--cn-success);
+}
+
+.CanelaFeedback-check {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: block;
+  width: 20px;
+  height: 20px;
+  stroke: var(--cn-success);
+  opacity: 0;
+  pointer-events: none;
+
+  path {
+    stroke: var(--cn-success);
+    stroke-width: 4;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: cn-draw 1s forwards;
+  }
+}
+
+.CanelaFeedback-alert {
+  position: absolute;
+  top: -1.5rem;
+  left: 60%;
+  z-index: 2;
+  padding: 0.25rem 0.5rem;
+  transform: translateX(-50%);
+  color: var(--cn-success);
+  font-size: var(--cn-font-down-2);
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.CanelaFeedback--transition {
+  .CanelaFeedback-alert,
+  .CanelaFeedback-check {
+    transition: opacity 0.25s, color 0.25s;
+  }
+}
+
+.CanelaFeedback--activated {
+  .CanelaFeedback-alert,
+  .CanelaFeedback-check {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .CanelaFeedback-check path {
+    animation-duration: 0s;
+  }
+}
+
+// ---------------------------------------------------------------------
+// "Fulano está digitando..." com as reticências que ondulam
+// (`.presence-users .wave .dot`, 1,8s, defasadas de 0,2s).
+// ---------------------------------------------------------------------
+.CanelaWave {
+  display: inline-flex;
+  flex: 0 0 auto;
+
+  .CanelaWave-dot {
+    display: inline-block;
+  }
+
+  .CanelaWave-dot:nth-child(2) {
+    animation-delay: -1.6s;
+  }
+
+  .CanelaWave-dot:nth-child(3) {
+    animation-delay: -1.4s;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .CanelaWave .CanelaWave-dot {
+    animation: cn-wave 1.8s linear infinite;
+  }
+
+  .CanelaWave .CanelaWave-dot:nth-child(2) {
+    animation-delay: -1.6s;
+  }
+
+  .CanelaWave .CanelaWave-dot:nth-child(3) {
+    animation-delay: -1.4s;
+  }
+}
+
+// ---------------------------------------------------------------------
+// "Há N tópicos novos" na lista (o `.show-more.has-topics` do Discourse):
+// o aviso azul-claro (`alert-info clickable`) centrado sobre a lista, que
+// desce em 250ms.
+// ---------------------------------------------------------------------
+.DiscussionList-update.Button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto var(--cn-space-2);
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-accent-low);
+  color: var(--cn-link);
+  font-size: var(--cn-font-down-1);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: normal;
+  box-shadow: none;
+  animation: cn-motion-float-down 250ms ease-in-out forwards;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: var(--cn-accent-low);
+    color: var(--cn-link);
+    box-shadow: none;
+  }
+
+  .Button-icon {
+    color: inherit;
+  }
+
+  @media @phone {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0s;
+  }
+}
+
+// ---------------------------------------------------------------------
+// "Responder" (o único `fade-out` da barra do post): 70% de opacidade que
+// acende ao passar sobre o post, em 0,7s.
+// ---------------------------------------------------------------------
+.no-touch .CanelaPostAction--reply.Button {
+  opacity: 0.7;
+  transition: opacity 0.7s ease-in-out;
+}
+
+.no-touch .Post:hover .CanelaPostAction--reply.Button,
+.no-touch .Post:focus-within .CanelaPostAction--reply.Button {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .no-touch .CanelaPostAction--reply.Button {
+    transition: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// "Ir para o conteúdo" (`.skip-link`): escondido 75px acima da tela, desce
+// em 0,15s ao receber o foco e sobe em 0,3s ao perder.
+// ---------------------------------------------------------------------
+a.sr-only-focusable-custom {
+  position: fixed;
+  top: -75px;
+  left: 1rem;
+  z-index: 1001;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  overflow: visible;
+  clip: auto;
+  white-space: nowrap;
+  border: 0;
+  background: var(--cn-link);
+  color: var(--cn-surface);
+  transition: top 0.3s ease-out;
+
+  &:focus,
+  &:visited {
+    color: var(--cn-surface);
+  }
+
+  &:focus {
+    top: 0;
+    background: var(--cn-link);
+    transition: top 0.15s ease-in;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Menos movimento: o que sobrou de animação contínua (spinner, barra e
+// skeleton continuam, como no Discourse — são estado, não enfeite).
+// ---------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .CanelaMenuGhost > .Dropdown-menu {
+    animation-duration: 0s !important;
+  }
+
+  .tooltip {
+    transition: none;
+  }
+}

@@ -1,0 +1,1143 @@
+// =====================================================================
+// Mensagens pessoais do Discourse sobre o flarum/messages: a aba do perfil
+// com as caixas, a lista no formato da lista de tópicos, a conversa como
+// tópico de mensagem (`archetype-private_message`) e os campos do composer
+// de mensagem. Medidas do CSS compilado do meta.discourse.org.
+// =====================================================================
+
+// O `--tertiary-very-low` das mensagens (o fundo das minhas postagens).
+[data-theme^=light],
+[data-theme^=dark] {
+  --cn-pm-own-bg: ~"color-mix(in srgb, var(--cn-accent) 9%, var(--cn-surface))";
+  --cn-pm-padding: 20px;          // --pm-padding: var(--space-5)
+}
+
+[data-theme^=dark] {
+  --cn-pm-own-bg: ~"color-mix(in srgb, var(--cn-accent) 18%, var(--cn-surface))";
+}
+
+// ---------------------------------------------------------------------
+// Perfil → Mensagens: a linha das caixas (`.user-navigation-secondary`)
+// ---------------------------------------------------------------------
+.CanelaMessagesNav {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  gap: 0 0.5em;
+  border-bottom: 1px solid var(--cn-border);
+  font-size: var(--cn-font-down-1);
+}
+
+// As abas (`.messages-nav`, nav-pills): o desenho das abas do perfil.
+.CanelaMessagesNav-pillsWrap.CanelaUserNav {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  border-bottom: 0;
+
+  > ul {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  li {
+    flex: 1 0 auto;
+  }
+
+  li > a .Button-label {
+    text-overflow: clip;
+  }
+}
+
+// `.category-breadcrumb` e `.navigation-controls`: margem de --nav-space / 2.
+.CanelaMessagesNav-inbox,
+.CanelaMessagesNav-controls {
+  display: flex;
+  align-items: stretch;
+  flex: none;
+  margin: 6px 0;
+}
+
+.CanelaMessagesNav-controls:empty {
+  display: none;
+}
+
+.CanelaMessagesNav-dropdown {
+  display: flex;
+
+  > .Dropdown-toggle {
+    height: 100%;
+  }
+}
+
+// O `messages-dropdown-trigger` (btn-default) com o select-kit de 0.5em 1em.
+.CanelaMessagesNav-trigger.Button {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: ~"clamp(100px, 20vw, 200px)";
+  height: 100%;
+  padding: 0.5em 1em;
+  // No Horizon o seletor é uma pílula branca de borda fina.
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: 1em;
+
+  .Button-label {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .Button-caret {
+    margin: 0 0 0 0.45em;
+    font-size: 1em;
+  }
+}
+
+.CanelaMessagesNav-triggerLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// A bolinha de não lidas (`d-icon-d-unread`).
+.CanelaMessagesNav-unreadDot {
+  margin: 0 0.375rem;
+  font-size: var(--cn-font-down-4, 0.5745em);
+  color: var(--cn-link);
+}
+
+.CanelaMessagesNav-menu {
+  min-width: 160px;
+
+  .CanelaMessagesNav-option.is-selected {
+    background: var(--cn-selected);
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaMessagesNav-new.Button {
+  white-space: nowrap;
+}
+
+// No celular: o seletor e o botão na primeira linha, as abas embaixo.
+@media (max-width: 639px) {
+  .CanelaMessagesNav {
+    display: grid;
+    grid-template-areas:
+      "dropdown controls"
+      "pills pills";
+    grid-template-columns: 1fr auto;
+    gap: 0.5em;
+    font-size: var(--cn-font-up-1);
+  }
+
+  .CanelaMessagesNav-inbox {
+    grid-area: dropdown;
+  }
+
+  .CanelaMessagesNav-trigger.Button {
+    max-width: none;
+  }
+
+  .CanelaMessagesNav-pillsWrap.CanelaUserNav {
+    grid-area: pills;
+  }
+
+  .CanelaMessagesNav-controls {
+    grid-area: controls;
+    font-size: var(--cn-font-down-2);
+
+    .Button {
+      padding: 0.5em 1em;
+    }
+
+    .Button-label {
+      display: none;
+    }
+
+    .Button-icon {
+      margin: 0;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// A lista (a mesma tabela da lista de tópicos) e o estado vazio
+// ---------------------------------------------------------------------
+.CanelaUserMessages-content {
+  margin: 0;
+}
+
+.CanelaMessagesList {
+  // Sem coluna de visualizações e sem categoria: o título é a linha toda.
+  .CanelaTopic.DiscussionListItem-main {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// `.new-user-wrapper .empty-state { margin: 1em 0 }`; título --font-up-1 em negrito.
+.CanelaMessagesEmpty.empty-state {
+  margin: 1em 0;
+  color: var(--cn-primary);
+
+  .empty-state__title {
+    display: block;
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .empty-state__body {
+    margin-top: 0.75em;
+    max-width: 50em;
+    line-height: 1.5;
+
+    p {
+      margin: 0 0 1em;
+    }
+
+    .icon {
+      color: var(--cn-primary-high);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// A conversa como tópico de mensagem
+// ---------------------------------------------------------------------
+.CanelaDialogPage {
+  // O hero do flarum/messages sai; o título mora no cartão.
+  > .Page-main > .Page-hero:empty {
+    display: none;
+  }
+
+  .Page-sidebar:empty {
+    display: none;
+  }
+}
+
+.CanelaDialog {
+  min-width: 0;
+  padding: 0;
+}
+
+// O título (`#topic-title`) com o envelope à esquerda (`.private-message-glyph`).
+.DiscussionHero.CanelaTopicHero.CanelaDialogHero {
+  // A linha embaixo do título é a borda do primeiro post; numa mensagem as
+  // postagens são caixas, sem essa linha.
+  &::after {
+    display: none;
+  }
+}
+
+.CanelaDialogHero-title {
+  .private-message-glyph-wrapper {
+    margin-right: 0.25em;
+  }
+
+  // O envelope centrado na altura das letras do título (o 0.05em o subia
+  // acima da linha).
+  .private-message-glyph {
+    color: var(--cn-primary-medium);
+    font-size: 0.8em;
+    vertical-align: middle;
+  }
+}
+
+.CanelaDialogHero-notice {
+  margin: 0.5em 0 0;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+// O stream do flarum/messages era uma caixa com rolagem própria (um chat);
+// aqui ele rola com a página, como um tópico.
+.CanelaDialog .MessageStream {
+  max-height: none;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.CanelaDialog .MessageStream-item {
+  padding: 0;
+
+  &.flash .CanelaMessagePost .Post-main::before {
+    animation: canela-pm-flash 2s ease-out;
+  }
+}
+
+@keyframes canela-pm-flash {
+  0% {
+    background-color: var(--cn-accent-low);
+  }
+}
+
+// O Discourse não marca o começo da conversa (só os intervalos longos), nem
+// mostra o "ninguém está digitando" — só quem está.
+.CanelaDialog .MessageStream-log > .MessageStream-item:first-child > .PostStream-timeGap,
+.CanelaDialog .TypingUsersContainer:not(.TypingUsersContainer-active) {
+  display: none;
+}
+
+.CanelaDialog .MessageStream-loadNext,
+.CanelaDialog .MessageStream-loadPrev {
+  margin: 0 0 16px;
+}
+
+// A postagem de mensagem: o corpo numa caixa de borda fina e canto de 8px
+// (`.regular.contents`), que começa 20px antes do texto e passa por baixo do
+// avatar; as minhas, tingidas (`.current-user-post`). O nome e a data ficam
+// acima da caixa, ao lado do avatar.
+.CanelaTopic .CanelaMessagePost.Post {
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.CanelaDialog .MessageStream-log > .MessageStream-item:last-child .CanelaMessagePost.Post {
+  margin-bottom: 24px;
+}
+
+.CanelaMessagePost {
+  .Post-side {
+    position: relative;
+    z-index: 1;
+  }
+
+  // A foto cobre a borda da caixa (`.topic-avatar .avatar { background: secondary }`);
+  // o avatar de letra já tem a cor dele.
+  .Post-side img.Post-avatar {
+    background: var(--cn-surface);
+  }
+
+  .Post-main {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+
+    > .Post-header {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    > .Post-body {
+      grid-row: 2;
+      grid-column: 1;
+    }
+
+    > .Post-actions {
+      grid-row: 3;
+      grid-column: 1;
+    }
+
+    > .Post-footer {
+      grid-row: 4;
+      grid-column: 1;
+    }
+
+    &::before {
+      content: "";
+      grid-row: ~"2 / 5";
+      grid-column: 1;
+      z-index: -1;
+      margin-left: calc(var(--cn-pm-padding) * -1);
+      border: 1px solid var(--cn-border);
+      border-radius: var(--cn-radius);
+      background: var(--cn-surface);
+      pointer-events: none;
+    }
+  }
+
+  // `.cooked { margin-top: 4px; padding-right: 24px }` dentro da caixa.
+  .Post-body {
+    box-sizing: border-box;
+    padding-right: 24px;
+  }
+
+  // `.post-menu-area { margin: 8px 0 12px; padding-right: 12px }`.
+  .Post-actions {
+    margin: 8px 0 12px;
+    padding-right: 12px;
+  }
+
+  .Post-footer:empty,
+  .Post-footer:not(:has(li)) {
+    display: none;
+  }
+
+  &.current-user-post .Post-main::before {
+    background: var(--cn-pm-own-bg);
+    border-color: var(--cn-pm-own-bg);
+  }
+}
+
+@media @tablet-up {
+  .CanelaTopic .CanelaMessagePost .Post-body {
+    padding-top: 12px;
+  }
+}
+
+// O mapa do tópico de mensagem: uma caixa de borda fina com a contagem e os
+// avatares em cima e as pílulas dos participantes embaixo.
+.CanelaTopicMap.CanelaDialogMap {
+  display: grid;
+  grid-template-areas:
+    "contents"
+    "pm-map";
+  grid-template-columns: minmax(0, 1fr);
+  box-sizing: border-box;
+  max-width: calc(690px + 24px + 1.3em);
+  margin: 8px 0 16px calc(var(--cn-pm-padding) + 4px);
+  padding: 12px 12px 12px 32px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+}
+
+.CanelaDialogMap-contents {
+  grid-area: contents;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  min-width: 0;
+}
+
+.CanelaDialogMap-pm {
+  grid-area: pm-map;
+  padding: 8px var(--cn-pm-padding) 0 0;
+
+  .participants {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  // `.participants .user` (btn-default): avatar "tiny", nome e o ✕.
+  .user {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-100);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .user-link {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+    text-decoration: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-primary);
+      text-decoration: none;
+    }
+
+    .Avatar {
+      .Avatar--size(20px);
+      margin: 0 4px;
+    }
+  }
+
+  .username {
+    margin-right: 4px;
+    padding-block: 4px;
+  }
+
+  .remove-invited.Button {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 0 8px;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+
+    .Button-icon {
+      margin: 0;
+      color: inherit;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-primary-low);
+      color: var(--cn-primary);
+    }
+  }
+}
+
+// O rodapé (`topic-footer-buttons` de uma mensagem).
+.CanelaDialogFooter {
+  padding-top: 0;
+
+  .CanelaTopicFooter-main {
+    justify-content: space-between;
+  }
+
+  .CanelaTopicFooter-share.Button--icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular: a caixa vai de ponta a ponta, sem o recuo sob o avatar
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaMessagePost .Post-main::before {
+    margin-left: 0;
+  }
+
+  .CanelaMessagePost .Post-body,
+  .CanelaMessagePost .Post-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .CanelaTopicMap.CanelaDialogMap {
+    margin-left: 0;
+    padding-left: 12px;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Composer de mensagem: destinatários | (vazio), título, editor
+// ---------------------------------------------------------------------
+.CanelaComposer .ComposerBody-header {
+  > .item-recipients {
+    order: 1;
+    flex: 1 1 100%;
+  }
+
+  > .item-canelaMessageTitle {
+    order: 2;
+    flex: 1 1 100%;
+    border-bottom: 1px solid var(--cn-composer-border);
+
+    h3 {
+      margin: 0;
+      line-height: normal;
+    }
+  }
+}
+
+// O `.user-selector`: a metade esquerda da linha (o SelectKit do composer, com
+// o "+" à direita); a direita fica vazia, só com o traço no meio.
+.CanelaMessageFields-rest {
+  min-height: 44px;
+  background: var(--cn-surface);
+}
+
+.CanelaRecipients--idle .CanelaSelectKit-empty {
+  display: none;
+}
+
+// Sem linhas embaixo, a busca não precisa do traço da lista.
+.CanelaRecipients--idle .CanelaSelectKit-collection {
+  border: 0;
+}
+
+.CanelaRecipients .CanelaComposerFields-placeholder {
+  color: var(--cn-primary-high);
+}
+
+.CanelaRecipients-value {
+  gap: 0 0.75em;
+}
+
+.CanelaRecipients-headerUser {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--cn-primary);
+
+  .Avatar {
+    .Avatar--size(20px);
+    flex: none;
+  }
+}
+
+// As pílulas (`.selected-choice`) com o avatar "tiny".
+.CanelaRecipients-chip.CanelaSelectKit-chip .Avatar {
+  .Avatar--size(18px);
+  flex: none;
+  margin-left: -4px;
+}
+
+// A linha (`email-group-user-chooser-row`): avatar, nome de usuário e nome.
+.CanelaRecipients-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+
+  .Avatar {
+    .Avatar--size(20px);
+    flex: none;
+    margin: 0 0.5em 0 0;
+  }
+
+  &.is-unavailable {
+    opacity: 0.4;
+  }
+}
+
+.CanelaRecipients-identifier {
+  margin-right: 0.5em;
+  color: var(--cn-primary);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.CanelaRecipients-name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanelaRecipients-unavailable {
+  margin-left: auto;
+  padding-left: 0.5em;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-2);
+  white-space: nowrap;
+}
+
+// O título (`#reply-title`), igual ao do tópico novo.
+.CanelaComposer .ComposerBody-header input.CanelaMessageTitle-input {
+  &,
+  &:focus {
+    display: block;
+    width: 100%;
+    height: 48px;
+    margin: 0;
+    padding: 16px 12px 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    color: var(--cn-primary);
+    background: var(--cn-surface);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  &::placeholder {
+    color: var(--cn-primary-medium);
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 639px) {
+  // No celular o seletor ocupa a linha toda (`width: auto`).
+  .CanelaMessageFields-rest {
+    display: none;
+  }
+
+  .CanelaMessageFields .CanelaRecipients {
+    width: 100%;
+    border-right: 0;
+  }
+}
+
+// =====================================================================
+// Tópico de mensagem: colunas, linha do tempo, mapa, rodapé, eventos
+// =====================================================================
+
+// O cartão sem a grade do tópico (que deixaria a conversa na coluna de
+// 759px): a conversa monta as próprias duas colunas.
+.Canela .CanelaDialogPage .Page-container.container,
+.CanelaDialogPage .Page-container.container {
+  display: block;
+}
+
+.CanelaDialogPage .Page-container > .Page-content {
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
+
+.CanelaDialog-columns {
+  display: block;
+}
+
+.CanelaDialog-aside {
+  display: none;
+}
+
+@media (min-width: 925px) {
+  .CanelaDialog-columns {
+    display: grid;
+    grid-template-columns: minmax(0, var(--cn-topic-stream-max, 759px)) minmax(120px, 1fr);
+    column-gap: var(--cn-space-6);
+    align-items: stretch;
+  }
+
+  .CanelaDialog-aside {
+    display: block;
+    min-width: 0;
+  }
+}
+
+@media @desktop-up {
+  .CanelaDialog-columns {
+    column-gap: var(--cn-topic-timeline-gap, 66px);
+  }
+}
+
+// A linha do tempo (`.timeline-container`), grudada sob o cabeçalho.
+.CanelaDialogTimeline {
+  position: sticky;
+  top: var(--cn-topic-sticky-top, calc(var(--cn-header-height) + 24px));
+  padding-top: var(--cn-space-2);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaDialogTimeline-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 300px;
+  height: 45vh;
+  max-height: 450px;
+  margin: var(--cn-space-2) 0 0 var(--cn-space-2);
+  border-left: 1px solid var(--cn-timeline-rail);
+}
+
+// A alça no fim (a leitura está na última mensagem): a barra arredondada
+// de 0.35em e, ao lado, "n/n" e a data.
+.CanelaDialogTimeline-handle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 3.5em;
+  margin-left: -3.5px;
+  padding-left: calc(var(--cn-space-4) + 2px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0.5px;
+    top: 0;
+    bottom: 0;
+    width: 5.6px;
+    border-radius: 0.8em;
+    background: var(--cn-timeline-handle);
+  }
+}
+
+.CanelaDialogTimeline-count {
+  font-weight: 700;
+  color: var(--cn-primary);
+}
+
+.CanelaDialogTimeline-date--end {
+  margin-top: var(--cn-space-2);
+}
+
+.CanelaDialogTimeline-controls {
+  display: flex;
+  gap: var(--cn-space-2);
+  margin-top: var(--cn-space-4);
+
+  > .Button,
+  > .CanelaNotifications > .Dropdown-toggle {
+    .canela-round-button();
+  }
+}
+
+// O mapa: "N visualizações" e a linha de participantes.
+.CanelaDialogMap-views {
+  color: var(--cn-primary-high);
+  font-size: 16px;
+}
+
+.CanelaDialogMap-contents + .CanelaDialogMap-pm {
+  padding-top: 8px;
+}
+
+.CanelaDialogMap-pm {
+  .user {
+    min-height: 2.25em;
+    box-sizing: border-box;
+    border: 1px solid var(--cn-primary-300);
+    background: var(--cn-surface);
+  }
+
+  .user-link .Avatar {
+    .Avatar--size(1.6em);
+  }
+
+  .user-link,
+  .group-link {
+    font-size: 16px;
+  }
+
+  .group-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    color: var(--cn-primary-high);
+  }
+
+  .add-participant-btn.Button {
+    .canela-round-button();
+    width: 2.25em;
+    height: 2.25em;
+  }
+}
+
+// O rodapé do Horizon: botões redondos de ícone e pílulas de borda.
+.CanelaDialogFooter {
+  .CanelaTopicFooter-actions {
+    flex-wrap: wrap;
+  }
+
+  .CanelaTopicFooter-share.Button--icon {
+    .canela-round-button();
+  }
+
+  .CanelaDialogFooter-archive.Button,
+  .CanelaDialogFooter-defer.Button {
+    height: 38px;
+    padding: 8px 0.9em;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    font-size: 16px;
+
+    .Button-icon {
+      color: var(--cn-primary-high);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover);
+    }
+  }
+
+  .CanelaDialogFooter-defer .Button-icon {
+    color: var(--cn-primary-high);
+  }
+
+  .CanelaTopicFooter-reply.Button {
+    border-radius: var(--cn-radius-pill);
+  }
+
+  .CanelaNotifications > .Dropdown-toggle {
+    height: 38px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-surface);
+    font-size: 16px;
+  }
+}
+
+// O escudo da equipe ao lado do nome (`.poster-icon`).
+.CanelaStaffShield {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.25em;
+  color: var(--cn-primary-medium);
+  font-size: 0.85em;
+}
+
+// Os posts de ação pequena (`.small-action`): ícone na coluna do avatar,
+// avatar pequeno e o texto em cinza.
+.CanelaDialogEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 16px;
+}
+
+.CanelaDialogEvent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0.5em 0;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaDialogEvent-icon {
+  display: inline-flex;
+  justify-content: center;
+  width: var(--cn-post-avatar, 45px);
+  flex: none;
+  font-size: 1.1em;
+  color: var(--cn-primary-low-mid);
+}
+
+.CanelaDialogEvent-avatar .Avatar {
+  .Avatar--size(20px);
+}
+
+.CanelaDialogEvent-who {
+  color: var(--cn-primary-high);
+  font-weight: 600;
+}
+
+// O chip do grupo sob o título (`participant-group`) — na lista e no tópico.
+.CanelaParticipantGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--cn-border);
+  border-radius: 4px;
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+
+  .icon {
+    font-size: 0.9em;
+  }
+}
+
+.CanelaMessagesList .CanelaTopic.DiscussionListItem-main {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.CanelaMessagesItem-groups {
+  margin-top: 4px;
+}
+
+.CanelaDialogHero-groups {
+  margin-top: 6px;
+}
+
+// O modal "Convidar": texto em negrito cinza, o seletor como campo de borda
+// fina ("Selecionar…  +") e "✉ Enviar convite".
+.CanelaDialogInviteModal {
+  .Modal-body {
+    padding-top: 16px;
+  }
+
+  .CanelaDialogInviteModal-help {
+    margin: 0 0 12px;
+    color: var(--cn-primary-high);
+    font-weight: 700;
+  }
+
+  .CanelaDialogInviteModal-chooser {
+    width: 100%;
+  }
+
+  .CanelaDialogInviteModal-chooser .CanelaSelectKit-header {
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-surface);
+    font-weight: 400;
+  }
+
+  .CanelaDialogInviteModal-chooser.is-expanded .CanelaSelectKit-header {
+    border-color: var(--cn-accent);
+    outline: 1px solid var(--cn-accent);
+  }
+
+  .CanelaDialogInviteModal-chooser .CanelaComposerFields-placeholder {
+    color: var(--cn-primary-medium);
+  }
+
+  .CanelaDialogInviteModal-submit.Button[disabled] {
+    opacity: 0.45;
+  }
+}
+
+.CanelaRecipients-headerGroup .icon,
+.CanelaRecipients-row--group .icon {
+  margin-right: 0.5em;
+  color: var(--cn-primary-high);
+}
+
+.CanelaRecipients-chipLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// Uma aba só (a caixa do grupo) não se estica na linha toda.
+.CanelaMessagesNav-pillsWrap.CanelaUserNav li:only-child {
+  flex: 0 0 auto;
+}
+
+.CanelaMessagesNav-triggerIcon {
+  margin-right: 0.4em;
+}
+
+// O escudo vem logo depois do nome (o cabeçalho do post ordena os itens).
+.CanelaTopic .Post-header .item-canelaStaff {
+  order: 1;
+}
+
+.CanelaDialogInviteModal .CanelaDialogInviteModal-field {
+  margin-bottom: 16px;
+}
+
+// ---------------------------------------------------------------------
+// Reações nas mensagens: o desenho é o das reações dos posts
+// (thirdparty/Reactions.less); aqui só o que vale sem o fof/reactions (o
+// seletor escondido até o hover/clique) e o emoji Unicode da lista padrão.
+// ---------------------------------------------------------------------
+.CanelaMessageReact {
+  .Reactions--react {
+    position: relative;
+    display: inline-block;
+  }
+
+  .CommentPost--Reactions {
+    position: absolute;
+    bottom: 100%;
+    z-index: 1030;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 300ms, opacity 300ms;
+
+    ul {
+      list-style: none;
+    }
+  }
+
+  .Reactions--react:hover .CommentPost--Reactions,
+  .Reactions--react.is-open .CommentPost--Reactions,
+  .CommentPost--Reactions.mobile-show {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s linear 0s, opacity 300ms;
+  }
+
+  .Reactions--ShowReactions .Button-icon {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .CommentPost--Reactions li .Button.active {
+    background: var(--cn-selected);
+  }
+}
+
+.CanelaUnicodeEmoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-style: normal;
+  line-height: 1;
+}
+
+.CanelaMessageReactorsModal {
+  .CanelaMessageReactors-group + .CanelaMessageReactors-group {
+    margin-top: var(--cn-space-3);
+  }
+
+  .CanelaMessageReactors-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .CanelaMessageReactors-users {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .Avatar {
+      .Avatar--size(24px);
+    }
+  }
+}
+
+// O cabeçalho do seletor com vários destinatários ("RGJ, ondrej, joya +").
+.CanelaRecipients-headerNames {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--cn-primary);
+}
+
+// As pílulas dos escolhidos ("✕ nome", com borda).
+.CanelaRecipients-chip.CanelaSelectKit-chip {
+  gap: 6px;
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+}
+
+// O resumo de reações numa linha só (o rótulo do botão do core é bloco).
+.CanelaMessagePost .CanelaReactions .Button-label,
+.CanelaMessagePost .CanelaReactions .Button-labelText {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Os botões do rodapé da mensagem (compartilhar, arquivar, marcar não lido,
+// responder) com o mesmo respiro do rodapé do tópico.
+.CanelaDialogFooter .CanelaTopicFooter-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+}
+
+// Curtida/reação já feita: o emoji no mesmo tamanho do coração vazio, para o
+// botão não crescer ao curtir.
+.CanelaMessageReact .Reactions--ShowReactions.CanelaReactions-mine {
+  .emoji,
+  .icon,
+  .CanelaUnicodeEmoji {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    font-size: 18px !important;
+  }
+
+  .CanelaMessageReact-liked {
+    color: var(--cn-topic-love, #fa6c8d);
+    fill: currentColor;
+  }
+}

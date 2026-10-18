@@ -1,0 +1,378 @@
+// ---------------------------------------------------------------------
+// fof/reactions no jeito do discourse-reactions
+// (css-discourse-reactions.css do Meta)
+// ---------------------------------------------------------------------
+
+// O resumo à esquerda (`.discourse-reactions-counter`): até três emojis de
+// 1em, colados (gap .15em), e o total em cinza claro.
+.CanelaReactions {
+  &.Button.CanelaPostAction,
+  &.CanelaReactions--static {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    height: 34px;
+    padding: 1px 6px;
+  }
+
+  &.CanelaReactions--static {
+    cursor: default;
+  }
+
+  // O Button do core embrulha os filhos num rótulo: emojis e total na mesma linha.
+  .Button-label,
+  .Button-labelText {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+  }
+
+  // Sem fundo no hover (pedido do usuário): só o número escurece.
+  &.Button:hover,
+  &.Button:focus-visible,
+  &.Button.active {
+    background: none;
+    box-shadow: none;
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaReactions-list {
+  display: flex;
+  align-items: center;
+  gap: 0.15em;
+}
+
+.CanelaReactions-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2em 0;
+  border-radius: 100px;
+
+  .emoji,
+  .icon {
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    font-size: 1em;
+    line-height: 1;
+    vertical-align: 0;
+  }
+}
+
+.CanelaReactions-count {
+  margin-left: 0.5em;
+  padding: 8px 0;
+  color: var(--cn-primary-low-mid);
+}
+
+// Na barra: o resumo vem depois do de curtidas e antes de "N respostas"; o
+// último do grupo da esquerda empurra o resto para a direita.
+.Post-actions:has(.CanelaPostAction) {
+  .item-canelaReactions {
+    order: -15;
+  }
+
+  &:has(.item-canelaReactions) .item-canelaLikeCount {
+    margin-right: 0;
+  }
+
+  .item-canelaReactions:not(:has(~ .item-canelaReplies)) {
+    margin-right: auto;
+  }
+
+  .item-react {
+    order: 0;
+  }
+}
+
+// O botão de reagir da extensão no tamanho dos ícones do tema.
+.item-react .Reactions {
+  display: inline-flex;
+  align-items: center;
+}
+
+.Reactions .Reactions--ShowReactions.Button {
+  float: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38.78px;
+  height: 38px;
+  margin: 0;
+  padding: 8px 0;
+  border-radius: var(--cn-radius-pill);
+  color: var(--cn-primary-low-mid);
+  text-decoration: none;
+
+  .Button-label {
+    display: inline-flex;
+    margin: 0 !important;
+  }
+
+  // O SVG da extensão traz a cor fixa (#667c99): passa a seguir o texto.
+  .button-react {
+    width: 18px;
+    height: 18px;
+
+    #Combined-Shape,
+    #Group-15 {
+      fill: currentColor;
+    }
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-topic-love-low, var(--cn-hover));
+    color: var(--cn-topic-love, var(--cn-love));
+  }
+
+  // Já reagiu: o emoji escolhido no lugar do ícone (`has-reacted`).
+  &.CanelaReactions-mine {
+    .emoji,
+    .icon {
+      width: 1.25em;
+      height: 1.25em;
+      margin: 0;
+      font-size: 1.25em;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-primary-low);
+      color: var(--cn-primary);
+    }
+  }
+}
+
+// O seletor (`.discourse-reactions-picker`): cartão com a sombra do Discourse,
+// raio de 8px e os emojis em grade, crescendo 1,5× no hover.
+.Reactions .CommentPost--Reactions {
+  left: 50% !important;
+  transform: translateX(-50%);
+  max-width: none;
+  margin: 0 0 4px;
+  padding: 0;
+  border-radius: 8px;
+  background: var(--cn-secondary);
+  // O mesmo cartão do seletor dos posts (.CanelaReactPicker-container).
+  box-shadow: ~"0 2px 6px oklch(from var(--cn-accent) l c h / 0.24)";
+  color: var(--cn-primary);
+  font-size: 16px;
+  line-height: 1;
+
+  [data-theme^=dark] & {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  ul.Reactions--Ul {
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    gap: 0.25em;
+    width: max-content;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0.25em;
+
+    li {
+      display: block;
+      margin: 0;
+
+      .Button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0.25em;
+        padding: 0.25em;
+        border: 1px solid transparent;
+        border-radius: var(--cn-radius);
+        background: none;
+        transition: transform 0.15s;
+
+        &:hover,
+        &:focus-visible {
+          transform: scale(1.5);
+          background: none;
+        }
+      }
+
+      .emoji {
+        width: 1.2em;
+        height: 1.2em;
+        margin: 0;
+        pointer-events: none;
+      }
+
+      .icon {
+        margin: 0;
+        font-size: 1.2em;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+// Quem reagiu (ReactionsModal): os grupos como as abas do Discourse.
+.ReactionsModal {
+  &-groupHeader {
+    padding: var(--cn-space-2) var(--cn-space-3);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+  }
+
+  &-reactionCount {
+    background: var(--cn-primary-low);
+    color: var(--cn-primary-high);
+  }
+
+  &-users {
+    border-left: 1px solid var(--cn-primary-low);
+  }
+
+  &-user:hover {
+    background: var(--cn-hover);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Curtida + reações num botão só (`.discourse-reactions-actions`): o
+// coração da barra e, acima dele, o seletor (`.discourse-reactions-picker`).
+// ---------------------------------------------------------------------
+.CanelaReact {
+  position: relative;
+  display: flex;
+  touch-action: pan-y;
+}
+
+.CanelaReact-button.Button {
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+// Já reagiu com um emoji: ele no lugar do coração; o hover é o cinza de
+// "desfazer" (`has-reacted.can-toggle-reaction`).
+.CanelaReact-button--emoji.Button {
+  width: 38.78px;
+  padding: 8px 0;
+  justify-content: center;
+
+  .Button-label {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  .emoji,
+  .icon {
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    font-size: 1.15em;
+    vertical-align: 0;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+  }
+}
+
+// O cinza de "desfazer" também no coração já curtido, como no Meta.
+.CanelaReact.has-reacted .CanelaLike-toggle.Button:not([disabled]):hover {
+  background: var(--cn-primary-low);
+  color: var(--cn-primary-low-mid);
+}
+
+.CanelaReactPicker {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  z-index: 399;
+  width: max-content;
+  // Centrado no coração, ~14px acima dele (medido no Meta). O padding é a
+  // ponte invisível entre o botão e o cartão: o mouse atravessa sem fechar.
+  padding: 15px 0 10px;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(calc(-50% + var(--cn-react-shift, 0px)));
+  transition: visibility 0s linear 0.15s, opacity 0.15s;
+
+  .CanelaReact.is-open > & {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transition: visibility 0s, opacity 0.15s;
+  }
+}
+
+.CanelaReactPicker-container {
+  display: grid;
+  grid-template-columns: repeat(var(--cn-react-cols, 7), 1fr);
+  gap: 0.25em;
+  margin: 0.25em;
+  border-radius: 8px;
+  background: var(--cn-secondary);
+  // A sombra do cartão no Meta: 0 2px 6px na cor do tema, a 24%.
+  box-shadow: ~"0 2px 6px oklch(from var(--cn-accent) l c h / 0.24)";
+  font-size: 16px;
+  line-height: 1;
+
+  [data-theme^=dark] & {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.CanelaReactPicker-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25em;
+  padding: 0.25em;
+  border: 1px solid transparent;
+  border-radius: var(--cn-radius);
+  background: none;
+  font-size: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s;
+
+  // 1,2em da fonte do cartão (18px), como `.pickable-reaction .emoji`.
+  .emoji,
+  .icon {
+    width: 1.2em;
+    height: 1.2em;
+    margin: 0;
+    font-size: inherit;
+    pointer-events: none;
+  }
+
+  .icon {
+    font-size: 1.2em;
+    width: auto;
+    height: auto;
+  }
+
+  .no-touch &:hover,
+  &:focus-visible {
+    transform: scale(1.5);
+    border-color: transparent;
+    background: none;
+    outline: none;
+  }
+
+  &.is-used {
+    border-color: var(--cn-selected);
+    background: var(--cn-selected);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Reactions .CommentPost--Reactions ul.Reactions--Ul li .Button,
+  .CanelaReactPicker,
+  .CanelaReactPicker-item {
+    transition: none;
+  }
+}

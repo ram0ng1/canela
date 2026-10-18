@@ -1,0 +1,240 @@
+// =====================================================================
+// Celular (< 768px), como o meta.discourse.org no celular: o mesmo
+// cabeçalho de 52px (logo | Entrar · PT · busca · hambúrguer · avatar) e a
+// barra lateral num painel que desliza da esquerda por cima de tudo.
+//
+// A barra de navegação do core (.App-navigation, com o botão do drawer e o
+// título no meio) não existe no Discourse: o cabeçalho, que no core mora
+// dentro do drawer, vira a barra fixa do topo.
+// =====================================================================
+
+@media @phone {
+  :root {
+    --header-height-phone: var(--cn-header-height);
+  }
+
+  .Canela.App {
+    padding-top: var(--cn-header-height);
+  }
+
+  .Canela .App-navigation {
+    display: none;
+  }
+
+  // O drawer do core vira a barra fixa. !important: o core esconde e empurra
+  // o drawer para fora da tela com regras de mesma especificidade.
+  .Canela.App .App-drawer,
+  .Canela.App:not(.drawerOpen) .App-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: auto;
+    height: var(--cn-header-height);
+    transform: none !important;
+    visibility: visible;
+    overflow: visible;
+    background: var(--cn-surface);
+    box-shadow: 0 0 0 1px var(--cn-primary-low);
+    z-index: var(--zindex-header);
+  }
+
+  .Canela .App-header {
+    height: 100%;
+    padding: 0 var(--cn-header-pad);
+    box-sizing: border-box;
+    background: transparent;
+    border: 0;
+
+    > .container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+    }
+  }
+
+  // Os itens da direita entram na mesma fileira que a busca e o hambúrguer,
+  // na ordem do Discourse.
+  .Canela #header-secondary,
+  .Canela #header-secondary > .Header-controls {
+    display: contents;
+  }
+
+  .Canela .Header-title {
+    order: 0;
+    min-width: 0;
+    margin: 0 auto 0 0;
+    padding: 0;
+    font-size: 1.1305rem;
+    font-weight: 700;
+    text-align: left;
+
+    a {
+      display: flex;
+      align-items: center;
+      height: 2.4rem;
+      color: var(--cn-primary);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .Canela .Header-logo {
+    max-height: 2.4rem;
+    max-width: 25vw;
+    object-fit: contain;
+  }
+
+  .Canela #header-primary {
+    display: none;
+  }
+
+  .Canela .Header-secondary .Header-controls > li {
+    order: 4;
+    padding: 0;
+  }
+
+  .Canela .Header-secondary .Header-controls > li.item-signUp {
+    display: none;
+  }
+
+  .Canela .Header-secondary .Header-controls > li.item-logIn {
+    order: 1;
+  }
+
+  .Canela .Header-secondary .Header-controls > li.item-locale {
+    order: 2;
+  }
+
+  .Canela .CanelaHeader-search,
+  .Canela .Header-secondary .Header-controls > li.item-search {
+    order: 3;
+  }
+
+  .Canela .CanelaHeader-toggleSlot {
+    order: 5;
+    display: flex;
+  }
+
+  .Canela .Header-secondary .Header-controls > li.item-session {
+    order: 6;
+  }
+
+  // O core estica os botões do drawer na largura toda; na barra, não.
+  .Canela .Header-controls {
+    margin: 0;
+
+    .Button,
+    .FormControl,
+    .ButtonGroup {
+      width: auto;
+      justify-content: center;
+    }
+  }
+
+  // Busca: só a lupa, do tamanho dos outros ícones.
+  .Canela .CanelaHeader-search {
+    flex: 0 0 auto;
+    width: auto;
+
+    .Search-input.Button {
+      width: 2.55rem;
+      height: 2.55rem;
+      padding: 0;
+      justify-content: center;
+      border-color: transparent;
+      color: var(--cn-shell-icon);
+
+      .CanelaIcon {
+        width: 24px;
+        height: 24px;
+        color: inherit;
+      }
+
+      .Button-label {
+        display: none;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--cn-primary);
+      }
+    }
+
+    .Search-clear {
+      display: none !important;
+    }
+  }
+
+  // Os controles que o core encaixava na barra de navegação (título e
+  // "nova discussão" da página inicial) ficariam por cima do cabeçalho: a
+  // lista já tem os dela, e os das outras páginas voltam ao fluxo.
+  .Canela .Page-sidebar:has(.IndexPage-nav),
+  .Canela .IndexPage .Page-sidebar,
+  .Canela .TagsPage .Page-sidebar {
+    display: none;
+  }
+
+  .Canela .App-content .App-primaryControl {
+    position: static !important;
+  }
+
+  // O cartão no celular (#main-outlet do Discourse): 20px abaixo do
+  // cabeçalho, 0,67em das bordas, cantos de 16px.
+  .Canela .Page-hero:not(.Page-hero--inline) {
+    padding: 0 var(--cn-space-3);
+  }
+
+  .Canela .Page-container.container {
+    width: auto;
+    margin: 20px var(--cn-header-pad) 0;
+    padding: var(--cn-space-4);
+    box-sizing: border-box;
+  }
+
+  .Canela--card .Page-container.container {
+    background: var(--cn-surface);
+    border-radius: var(--cn-card-radius);
+    box-shadow: var(--cn-card-shadow);
+  }
+}
+
+// Celular e tablet: os controles do cabeçalho são só ícones, como no
+// Discourse — o core mostra o rótulo ("Notificações", "Posts Sinalizados")
+// porque no celular eles moravam no drawer. Entrar continua com o texto.
+@media (max-width: 1023.98px) {
+  .Canela .Header-secondary .Header-controls > li:not(.item-logIn):not(.item-signUp) {
+    > .Button .Button-label,
+    > .Dropdown > .Dropdown-toggle .Button-label,
+    > .Dropdown > .Dropdown-toggle .Button-caret {
+      display: none;
+    }
+
+    > .Button,
+    > .Dropdown > .Dropdown-toggle {
+      width: 2.55rem;
+      min-width: 0;
+      padding: 0;
+      justify-content: center;
+    }
+  }
+}
+
+// Com o título do tópico no cabeçalho, ele ganha o espaço do idioma.
+@media @phone {
+  .Canela .App-header:has(.CanelaHeaderTopic) .item-locale {
+    display: none;
+  }
+
+  .CanelaHeaderTopic-title {
+    font-size: var(--cn-font-0);
+  }
+
+  .CanelaHeaderTopic-badges {
+    font-size: var(--cn-font-down-2);
+  }
+}

@@ -1,0 +1,37 @@
+// ---------------------------------------------------------------------
+// fof/links na barra lateral (as seções personalizadas do Discourse)
+// ---------------------------------------------------------------------
+
+// Link sem ícone: o texto alinha com os que têm (coluna de 24px + gap).
+.CanelaSidebar-sectionContent > li > .LinksButton:not(.hasIcon) {
+  padding-left: calc(4px + 24px + var(--cn-space-2));
+}
+
+// Filhos de um link solto: um degrau para dentro.
+.CanelaSidebar-sectionContent > li > .CanelaSidebar-childLink {
+  padding-left: calc(4px + 24px);
+
+  &:not(.hasIcon) {
+    padding-left: calc(4px + 48px + var(--cn-space-2));
+  }
+}
+
+.CanelaSidebar .LinksButton-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Se o admin desligar a barra, os links voltam ao cabeçalho com o visual
+// dos botões do cabeçalho do tema.
+.Header-primary .LinksButton.Button {
+  border-radius: var(--cn-radius-pill);
+  color: var(--cn-primary-high);
+
+  &:hover,
+  &:focus-visible,
+  &.active {
+    background: var(--cn-hover);
+    color: var(--cn-primary);
+  }
+}

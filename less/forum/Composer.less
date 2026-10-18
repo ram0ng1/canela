@@ -1,0 +1,1563 @@
+// =====================================================================
+// Composer como o do Discourse (o redesenho que o meta.discourse.org usa,
+// `uc-enable-composer-redesign`), medido no próprio Meta a 1440×900:
+//
+//   alça (12px) · "✎ Criar tópico" ............ «  ⤢  —  ✕   (55px)
+//   categoria ▾              | 🏷 etiquetas opcionais ▾       (45px)
+//   Título (600)                                             (49px)
+//   texto (8px 16px)         | prévia (borda à esquerda)
+//   B I H 🔗 " </> … ............ Descartar [Criar tópico]   (55px)
+//
+// O JS (js/src/forum/composer) põe a classe `.CanelaComposer` e
+// `show-preview`/`hide-preview` na raiz, troca os itens do cabeçalho e do
+// rodapé; a disposição é toda daqui.
+//
+// O core calcula a altura do textarea (`.Composer-flexible`) descontando só
+// o padding-bottom dele; o jQuery soma padding e borda ao aplicar a altura.
+// Por isso o textarea não tem padding em cima nem borda: o respiro de cima
+// mora no contêiner.
+// =====================================================================
+
+.CanelaComposer {
+  --cn-composer-radius: calc(var(--cn-radius) * 2);
+  --cn-composer-border: var(--cn-primary-low);
+  --cn-composer-shadow: 0 -1px 40px rgba(0, 0, 0, 0.22);
+  color: var(--cn-primary);
+  font-size: 16px;
+}
+
+[data-theme^=dark] .CanelaComposer {
+  --cn-composer-shadow: 0 -1px 40px rgba(0, 0, 0, 0.6);
+}
+
+// ---------------------------------------------------------------------
+// Tablet e computador: a janela encaixada embaixo
+// ---------------------------------------------------------------------
+@media @tablet-up {
+  // O composer se posiciona sozinho pela largura da janela (como o
+  // #reply-control, que é `position: fixed` na tela toda).
+  .App-composer {
+    left: 0;
+    right: 0;
+
+    > .container {
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .Composer.CanelaComposer {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1475px;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--cn-surface);
+    border: 1px solid var(--cn-composer-border);
+    border-bottom: 0;
+    border-radius: var(--cn-composer-radius) var(--cn-composer-radius) 0 0;
+    box-shadow: var(--cn-composer-shadow);
+    // As do #reply-control. A altura em si é animada pelo core (jQuery,
+    // 200ms), igual à transição de 0.2s do Discourse.
+    transition: max-width 0.2s, margin 0.2s, background-color 0.2s;
+
+    // O core desenha um anel da cor primária quando o composer tem foco;
+    // o Discourse não.
+    &.active,
+    &.active:not(.fullScreen) {
+      background: var(--cn-surface);
+      box-shadow: var(--cn-composer-shadow);
+    }
+  }
+
+  // Sem a prévia, o composer fica alinhado à coluna do conteúdo, como no
+  // Discourse, mas mais largo que os 759px dele (a pedido do usuário: 960px).
+  .Composer.CanelaComposer.hide-preview:not(.fullScreen) {
+    max-width: 960px;
+    margin-left: 0.67em;
+    margin-right: 0;
+
+    @media (min-width: 1110px) {
+      margin-left: ~"calc((100% - var(--cn-main-max)) / 2 + 0.67em)";
+    }
+
+    @media (max-width: 990px) {
+      max-width: ~"calc(100% - 1.34em)";
+      margin-left: 0.67em;
+    }
+  }
+
+  // Com a prévia, a largura toda (até 1475px), por cima da barra lateral nas
+  // telas em que não cabe ao lado — como no Meta.
+  .Composer.CanelaComposer.show-preview:not(.fullScreen) {
+    max-width: 1475px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media @desktop-up {
+  .Canela--sidebarOpen .Composer.CanelaComposer.hide-preview:not(.fullScreen) {
+    margin-left: ~"calc(var(--cn-sidebar-width) + 2em)";
+
+    @media (min-width: 1390px) {
+      margin-left: ~"calc((100% - var(--cn-main-max) + var(--cn-sidebar-width)) / 2 + 2em)";
+    }
+
+    // Até onde os 960px não cabem ao lado da barra.
+    @media (max-width: 1250px) {
+      width: ~"calc(100% - var(--cn-sidebar-width) - 2em - 0.67em)";
+    }
+
+    @media (max-width: 1000px) {
+      margin-left: ~"calc(var(--cn-sidebar-width) + 1em)";
+    }
+  }
+
+  // Entre 1611 e 2019px a janela com a prévia começa depois da barra.
+  @media (min-width: 1611px) and (max-width: 2019px) {
+    .Canela--sidebarOpen .Composer.CanelaComposer.show-preview:not(.fullScreen) {
+      margin-left: ~"calc(var(--cn-sidebar-width) + 2em)";
+      width: auto;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Alça (grippie): 12px, o traço de 48 × 4px no meio
+// ---------------------------------------------------------------------
+@media @tablet-up {
+  .CanelaComposer .Composer-handle {
+    position: relative;
+    height: 12px;
+    margin: 0;
+    padding: 4px 0;
+    box-sizing: border-box;
+    cursor: ns-resize !important;
+    border-radius: var(--cn-composer-radius) var(--cn-composer-radius) 0 0;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 3em;
+      height: 4px;
+      margin: 0 auto;
+      border-radius: 3px;
+      background-color: var(--cn-primary-low-mid);
+      transition: background-color 0.15s ease;
+    }
+
+    &:hover::before {
+      background-color: var(--cn-primary-high);
+    }
+  }
+
+  .CanelaComposer.minimized .Composer-handle,
+  .CanelaComposer.fullScreen .Composer-handle {
+    display: none;
+  }
+
+  // O core dá 20px de respiro (e 900px no máximo em tela cheia); o Discourse
+  // encosta cada linha nas bordas.
+  .Composer.CanelaComposer .Composer-content,
+  .Composer.CanelaComposer.minimized .Composer-content,
+  .Composer.CanelaComposer.fullScreen .Composer-content {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------------
+// O corpo: sem avatar, o editor na largura toda
+// ---------------------------------------------------------------------
+.CanelaComposer {
+  .ComposerBody-avatar {
+    display: none;
+  }
+
+  .ComposerBody-content {
+    margin: 0;
+  }
+
+  .ComposerBody-header {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: block;
+      margin: 0;
+      min-width: 0;
+      // O que outras extensões põem no cabeçalho vai depois dos campos.
+      order: 5;
+    }
+
+    // A linha da ação (`.reply-to`): 8px 16px, separada por um traço. O
+    // espaço à direita é dos botões do canto (4 × 32px + 16px).
+    > .item-title {
+      order: 0;
+      flex: 1 1 100%;
+      display: flex;
+      align-items: center;
+      min-height: 54px;
+      padding: 8px 160px 8px 16px;
+      box-sizing: border-box;
+      border-bottom: 1px solid var(--cn-composer-border);
+      color: var(--cn-primary-high);
+    }
+
+    > .item-tags {
+      order: 1;
+      flex: 1 1 100%;
+    }
+
+    > .item-discussionTitle {
+      order: 2;
+      flex: 1 1 100%;
+    }
+  }
+
+  // O core esconde o título "Iniciar discussão" no tablet; aqui ele é a ação.
+  .ComposerBody--discussion .ComposerBody-header .item-title {
+    display: flex;
+  }
+}
+
+// ---------------------------------------------------------------------
+// A ação: "✎ Criar tópico", "⇪ Tópico ▾", "✎ Editando postagem" + 🔗 destino
+// ---------------------------------------------------------------------
+.CanelaComposerAction {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  // Sem `overflow: hidden`: o menu de ações abre a partir daqui.
+
+  > .CanelaComposerAction-menu {
+    flex: none;
+  }
+}
+
+.CanelaComposerAction-trigger,
+.CanelaComposerAction-menu .CanelaComposerAction-trigger.Button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: auto;
+  min-height: 38px;
+  padding: 8px 10.4px 8px 0;
+  border: 1px solid transparent;
+  border-radius: var(--cn-button-radius);
+  background: transparent;
+  color: var(--cn-primary-very-high);
+  font-size: 16px;
+  line-height: normal;
+  white-space: nowrap;
+
+  .icon {
+    margin-right: 0.45em;
+    color: var(--cn-primary-low-mid);
+    font-size: 16px;
+  }
+
+  .Button-label {
+    display: inline-flex;
+  }
+
+  .Button-caret {
+    margin: 0 0 0 0.45em;
+    color: var(--cn-primary-medium);
+    font-size: 14px;
+  }
+
+  &:hover {
+    background: transparent;
+    box-shadow: none;
+    color: var(--cn-primary);
+  }
+
+  &:focus-visible {
+    background: transparent;
+    box-shadow: none;
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -2px;
+  }
+}
+
+.CanelaComposerAction-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+// O menu de ações (`composer-actions-dropdown`): ícone, rótulo em negrito e
+// a descrição em cinza.
+.CanelaComposerAction-dropdown.Dropdown-menu {
+  min-width: 280px;
+  max-width: 400px;
+  z-index: 1100;
+
+  > li > .CanelaComposerAction-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75em;
+    width: 100%;
+    padding: 8px 12px;
+    white-space: normal;
+    text-align: left;
+
+    &[disabled] {
+      opacity: 1;
+      cursor: default;
+    }
+
+    // O Button do Flarum embrulha tudo em `.Button-label`.
+    justify-content: flex-start;
+
+    > .Button-label,
+    > .Button-label > .Button-labelText {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: 100%;
+      text-align: left;
+      gap: 0.75em;
+      min-width: 0;
+      white-space: normal;
+    }
+  }
+}
+
+// No celular o core transforma o dropdown numa folha presa ao rodapé, na
+// largura toda; o limite de 400px a deixava encolhida à esquerda, por cima
+// de "Descartar".
+@media @phone {
+  .CanelaComposerAction-dropdown.Dropdown-menu {
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+.CanelaComposerAction-btnIcon {
+  display: flex;
+  align-self: flex-start;
+  padding-top: 2px;
+  color: var(--cn-primary-high);
+}
+
+.CanelaComposerAction-btnTexts {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.CanelaComposerAction-btnLabel {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 1em;
+  color: var(--cn-primary);
+}
+
+.CanelaComposerAction-btnDescription {
+  margin-top: 2px;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+  white-space: normal;
+}
+
+// "🔗 título" (`composer-actions-reply-target-link`): botão transparente
+.CanelaComposerAction-target {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-width: 0;
+  padding: 8px 10.4px;
+  border-radius: var(--cn-button-radius);
+  color: var(--cn-primary-high);
+  font-size: 16px;
+  overflow: hidden;
+
+  .icon {
+    flex: none;
+    font-size: 14px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+.CanelaComposerAction-targetLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ---------------------------------------------------------------------
+// Botões do canto: «  ⤢  —  ✕ (`composer-controls`). Área de 32 × 32 com
+// ícone de 18px: no tamanho do Discourse (btn-small) eles ficavam miúdos
+// perto do título. `top` compensa a altura para o centro seguir alinhado com
+// "Iniciar Discussão ⌄".
+// ---------------------------------------------------------------------
+.CanelaComposer .Composer-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  top: 23px;
+  right: 14px;
+
+  > li {
+    display: block;
+    margin: 0;
+  }
+
+  .Button.Button--icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: var(--cn-radius);
+    color: var(--cn-primary-high);
+    background: transparent !important;
+
+    .Button-icon {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    // O mesmo hover da barra de formatação: fundo suave e ícone na cor de destaque.
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-accent);
+      background: var(--cn-hover) !important;
+    }
+  }
+
+  // O traço do core desce 5px (`.fa-minus.minimize`); aqui fica no meio.
+  .fa-minus {
+    vertical-align: middle;
+  }
+}
+
+// A seta « gira quando a prévia está escondida (`.toggle-preview.active`).
+.CanelaComposerPreview-toggle .Button-icon {
+  color: var(--cn-primary-medium);
+  transition: transform 0.33s ease-out;
+}
+
+.CanelaComposerPreview-toggle.active .Button-icon {
+  transform: rotate(180deg);
+}
+
+// ---------------------------------------------------------------------
+// Categoria | etiquetas (`.title-and-category`): duas metades com um
+// select-kit cada. O cabeçalho escurece aberto (seta ⌃); o corpo abre colado
+// embaixo da metade (ou em cima, se faltar espaço), com a busca "Pesquisar…",
+// a lista rolável de barra fina e o item em foco tingido.
+// ---------------------------------------------------------------------
+.CanelaComposerFields {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  border-bottom: 1px solid var(--cn-composer-border, var(--cn-primary-low));
+}
+
+.CanelaSelectKit {
+  position: relative;
+  min-width: 0;
+}
+
+.CanelaComposerFields-cell {
+  flex: 1 1 50%;
+  width: 50%;
+  box-sizing: border-box;
+
+  &:not(:last-child) {
+    border-right: 1px solid var(--cn-composer-border, var(--cn-primary-low));
+  }
+
+  &:only-child {
+    width: 100%;
+  }
+}
+
+.CanelaSelectKit-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 0;
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -2px;
+  }
+
+  .is-expanded > & {
+    background: var(--cn-primary-100);
+    outline: 0;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.CanelaSelectKit-headerContent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.CanelaSelectKit-caret {
+  flex: none;
+  margin-left: auto;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaComposerFields-value {
+  display: flex;
+  align-items: center;
+  gap: 0 0.5em;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanelaComposerFields-placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaComposerFields-tags {
+  .CanelaComposerFields-value {
+    display: block;
+    color: var(--cn-primary-medium);
+  }
+
+  &.has-selection .CanelaComposerFields-value {
+    color: var(--cn-primary-high);
+  }
+}
+
+.CanelaComposerFields-tagIcon {
+  flex: none;
+  color: var(--cn-primary-low-mid);
+  font-size: var(--cn-font-down-1);
+
+  .has-selection & {
+    color: var(--cn-accent);
+  }
+}
+
+// O badge "(símbolo) Nome", e "Pai ▪▪ Filha" nas subcategorias.
+.CanelaChooserBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.33em;
+  min-width: 0;
+  white-space: nowrap;
+
+  + .CanelaChooserBadge {
+    margin-left: 0.5em;
+  }
+}
+
+.CanelaChooserBadge-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CanelaCategorySymbol--split::before {
+  background: linear-gradient(90deg, var(--category-parent-color) 50%, var(--category-color) 50%);
+}
+
+// O corpo (`.select-kit-body`)
+.CanelaSelectKit-body {
+  position: absolute;
+  top: ~"calc(100% + 3px)";
+  left: 0;
+  z-index: 1001;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 100%;
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-primary-low);
+  border-radius: var(--cn-radius);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  .is-above > & {
+    top: auto;
+    bottom: ~"calc(100% + 3px)";
+  }
+
+  .CanelaComposerFields-category > & {
+    width: auto;
+    max-width: 450px;
+  }
+}
+
+[data-theme^=dark] .CanelaSelectKit-body {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.45);
+}
+
+.CanelaSelectKit-filter {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: 4px 8px;
+}
+
+.CanelaSelectKit-filterInput,
+.CanelaSelectKit-filterInput:focus {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--cn-primary);
+  font: inherit;
+  font-size: 16px;
+
+  &::placeholder {
+    color: var(--cn-primary-medium);
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+.CanelaSelectKit-filterIcon {
+  flex: none;
+  margin-left: 4px;
+  color: var(--cn-primary-medium);
+  font-size: 16px;
+}
+
+.CanelaSelectKit-collection {
+  flex: 1 1 auto;
+  max-height: 250px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  border-top: 1px solid var(--cn-primary-low);
+  scrollbar-width: thin;
+  scrollbar-color: var(--cn-primary-low) transparent;
+
+  .is-above & {
+    border-top: 0;
+    border-bottom: 1px solid var(--cn-primary-low);
+  }
+}
+
+.CanelaSelectKit-row {
+  padding: 8px;
+  cursor: pointer;
+  color: var(--cn-primary);
+
+  &.is-highlighted {
+    background: ~"color-mix(in srgb, var(--cn-accent) 15%, transparent)";
+  }
+}
+
+.CanelaSelectKit-empty {
+  padding: 8px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// As etiquetas já escolhidas, removíveis, entre a busca e a lista.
+.CanelaSelectKit-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 8px 8px;
+}
+
+.CanelaSelectKit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--cn-primary-low);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-high);
+  font: inherit;
+  font-size: var(--cn-font-down-1);
+  cursor: pointer;
+
+  .icon {
+    font-size: 11px;
+    color: var(--cn-primary-medium);
+  }
+
+  &:hover {
+    border-color: var(--cn-danger);
+
+    .icon {
+      color: var(--cn-danger);
+    }
+  }
+}
+
+// Linha de categoria (`.category-row`): badge, "× 20586" e a descrição em
+// duas linhas cinza.
+.CanelaCategoryRow-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.CanelaCategoryRow-count {
+  margin-left: -2px;
+  color: var(--cn-primary-medium);
+  font-size: 12.13px;
+}
+
+.CanelaCategoryRow-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+}
+
+.CanelaCategoryRow--none {
+  color: var(--cn-primary-medium);
+}
+
+// Linha de etiqueta (`.tag-row`): "ia x1026".
+.CanelaTagRow-name {
+  color: var(--cn-primary-high);
+}
+
+.CanelaTagRow-count {
+  margin-left: 5px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// Tag filha no seletor de secundárias: "Pai ▪ Filha", só as da primária
+// escolhida (regra `requireParentTag` do flarum/tags).
+.CanelaTagRow--child {
+  display: inline-flex;
+  align-items: center;
+
+  .CanelaTagRow-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0 8px;
+  }
+}
+
+// Aviso de limite dentro do seletor (máximo de tags primárias atingido).
+.CanelaSelectKit-note {
+  padding: 8px;
+  border-top: 1px solid var(--cn-primary-low);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// ---------------------------------------------------------------------
+// Título (`#reply-title`): sem moldura, 600, separado por um traço
+// ---------------------------------------------------------------------
+.CanelaComposer .ComposerBody-header > .item-discussionTitle {
+  border-bottom: 1px solid var(--cn-composer-border);
+
+  h3 {
+    margin: 0;
+    line-height: normal;
+  }
+}
+
+.CanelaComposer .ComposerBody-header h3 input.DiscussionComposer-title {
+  &,
+  &[disabled],
+  &:focus {
+    display: block;
+    width: 100%;
+    height: 48px;
+    margin: 0;
+    padding: 16px 12px 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    color: var(--cn-primary);
+    background: var(--cn-surface);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  &::placeholder {
+    color: var(--cn-primary-medium);
+    font-weight: 600;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Editor e prévia
+// ---------------------------------------------------------------------
+.CanelaComposer .TextEditor-editorContainer {
+  position: relative;
+  // O respiro de cima (o `padding: 8px 16px` do .d-editor-input) fica aqui;
+  // veja o comentário do topo.
+  padding: 8px 0 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--cn-surface);
+}
+
+.CanelaComposer .TextEditor .TextEditor-editor {
+  &,
+  &:focus,
+  &[disabled] {
+    display: block;
+    width: 100%;
+    padding: 0 16px 8px;
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--cn-primary);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  &::placeholder {
+    color: var(--cn-primary-medium);
+  }
+}
+
+// Prévia ao lado: a grade do Discourse ("editor preview" / rodapé embaixo
+// das duas). O TextEditor some da grade (`display: contents`) para o rodapé
+// dele ocupar a largura toda, debaixo da prévia também.
+.CanelaComposer .ComposerBody-editor.CanelaComposer-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: 0;
+
+  > .TextEditor {
+    display: contents;
+  }
+
+  .TextEditor-editorContainer {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .TextEditor-controls {
+    grid-column: ~"1 / -1";
+    grid-row: 2;
+  }
+
+  .CanelaComposerPreview {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Rodapé (`.composer-footer`): a barra à esquerda, Descartar + primário
+// ---------------------------------------------------------------------
+.CanelaComposer .TextEditor-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 16px;
+  border-top: 1px solid var(--cn-composer-border);
+  overflow: visible;
+  white-space: nowrap;
+
+  > li {
+    display: flex;
+    align-items: center;
+    flex: none;
+    margin: 0;
+  }
+
+  // A barra de formatação primeiro, ocupando o que sobra (rola se faltar).
+  > .TextEditor-toolbar {
+    order: -1;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-right: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  > .item-preview {
+    order: 1;
+  }
+
+  > .item-canelaDraft {
+    order: 2;
+  }
+
+  > .item-canelaCancel {
+    order: 3;
+  }
+
+  > .item-submit {
+    order: 4;
+  }
+}
+
+@media @tablet-up {
+  .CanelaComposer .TextEditor-controls,
+  .fullScreen .CanelaComposer .TextEditor-controls,
+  .CanelaComposer.fullScreen .TextEditor-controls {
+    margin: 0;
+    padding: 8px 16px;
+    border-top: 1px solid var(--cn-composer-border);
+  }
+}
+
+// A barra de formatação (`.d-editor-button-bar`): botões 30 × 28, ícones de
+// 16px em cinza, 8px entre eles. Um pouco maiores que no Discourse para
+// conversar com os 18px dos botões do canto (⤢ — ✕).
+.CanelaComposer .TextEditor-toolbar {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+
+  .MarkdownToolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .Button,
+  .Button--icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 30px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--cn-radius);
+    background: transparent !important;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+    // Sem transição, como todo `.btn` do Discourse.
+    transition: none;
+
+    .icon,
+    .Button-icon {
+      margin: 0;
+      color: inherit;
+      font-size: 16px;
+    }
+
+    .Button-label {
+      display: none;
+    }
+
+    &:hover {
+      background: var(--cn-hover) !important;
+      color: var(--cn-accent);
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--cn-accent);
+      outline-offset: -2px;
+      box-shadow: none;
+    }
+  }
+}
+
+// O alternador Markdown/"A" (`.composer-toggle-switch`, 52 × 26): a pílula
+// cinza com a bolinha tingida atrás do lado ativo.
+.CanelaComposer .TextEditor-toolbar .CanelaRichToggle {
+  --toggle-switch-width: 56px;
+  --toggle-switch-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: auto;
+  height: auto;
+  margin: 0 4px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+
+    .CanelaRichToggle-slider {
+      outline: 2px solid var(--cn-accent);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.CanelaRichToggle-slider {
+  position: relative;
+  display: inline-block;
+  width: var(--toggle-switch-width);
+  height: var(--toggle-switch-height);
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-low);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    display: block;
+    width: ~"calc(var(--toggle-switch-height) - 2px)";
+    height: ~"calc(var(--toggle-switch-height) - 4px)";
+    border-radius: var(--cn-radius);
+    background: ~"color-mix(in srgb, var(--cn-accent) 15%, var(--cn-surface))";
+    box-shadow: 0 1px 2px 1px ~"color-mix(in srgb, var(--cn-accent) 20%, transparent)";
+    transform: translateX(2px);
+    transition: transform 0.15s;
+  }
+
+  .--rte &::before {
+    transform: translateX(~"calc(var(--toggle-switch-width) - var(--toggle-switch-height))");
+  }
+
+  &:hover {
+    background: var(--cn-hover);
+  }
+}
+
+.CanelaRichToggle-left,
+.CanelaRichToggle-right {
+  position: absolute;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: ~"calc(var(--toggle-switch-height) - 2px)";
+  height: 100%;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+  font-weight: 500;
+}
+
+.CanelaRichToggle-left {
+  left: 2px;
+
+  .--markdown & {
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaRichToggle-right {
+  right: 2px;
+  font-size: 16px;
+
+  .--rte & {
+    color: var(--cn-primary);
+  }
+}
+
+// "N" e "Tт" em letras, como os botões de negrito e de tamanho do Discourse.
+.CanelaTextIcon {
+  display: inline-block;
+  font-style: normal;
+  line-height: 1;
+
+  &--bold::before {
+    content: var(--cn-bold-label, "N");
+    font-family: var(--cn-font);
+    font-size: 17px;
+    font-weight: 400;
+  }
+
+  &--heading::before {
+    content: "Tт";
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    letter-spacing: -0.5px;
+  }
+}
+
+// "›": aparece sobre o fim da barra quando ela não cabe.
+.CanelaComposer .TextEditor-toolbar {
+  position: relative;
+}
+
+.CanelaToolbarScroll {
+  display: none;
+  position: sticky;
+  right: 0;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: linear-gradient(to right, transparent, var(--cn-surface) 40%);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  cursor: pointer;
+
+  .has-overflow > &--right {
+    display: inline-flex;
+  }
+
+  // "‹": o mesmo, preso à esquerda, quando a barra já rolou.
+  &--left {
+    left: 0;
+    right: auto;
+    order: -1;
+    margin-left: 0;
+    margin-right: 0;
+    background: linear-gradient(to left, transparent, var(--cn-surface) 40%);
+  }
+
+  .has-overflow-left > &--left {
+    display: inline-flex;
+  }
+}
+
+// O menu ⊕, preso à tela, abrindo para cima.
+.CanelaMoreOptions-portal {
+  position: fixed;
+  z-index: 1101;
+}
+
+.CanelaMoreOptions-menu.Dropdown-menu {
+  display: block;
+  position: static;
+  min-width: 220px;
+  margin: 0;
+  animation: cn-float-up 250ms ease forwards;
+}
+
+.CanelaMoreOptions-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  color: var(--cn-primary);
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+
+  .icon {
+    width: 1.2em;
+    color: var(--cn-primary-high);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+  }
+
+  &.active .icon {
+    color: var(--cn-accent);
+  }
+}
+
+// O modo "A": a prévia no lugar do texto, ocupando as duas colunas.
+.CanelaComposer .ComposerBody-editor.CanelaComposer-rich {
+  .TextEditor-editorContainer {
+    visibility: hidden;
+  }
+}
+
+// "Descartar" (`.discard-button.btn-transparent`): texto, fica vermelho no hover.
+.CanelaComposer-cancel.Button {
+  height: auto;
+  min-height: 36px;
+  padding: 8px 10.4px;
+  border-radius: var(--cn-button-radius);
+  background: transparent !important;
+  color: var(--cn-primary);
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: color 250ms;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-danger);
+    text-decoration: none;
+  }
+}
+
+// O primário (`.btn-primary.create`): 38px, sem ícone.
+.CanelaComposer-submit.Button--primary {
+  height: auto;
+  min-height: 38px;
+  padding: 8px 10.4px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+  border: 1px solid transparent;
+  border-radius: var(--cn-button-radius);
+}
+
+.ComposerBody-loading {
+  border-radius: var(--cn-composer-radius, 16px) var(--cn-composer-radius, 16px) 0 0;
+  background: ~"color-mix(in srgb, var(--cn-surface) 70%, transparent)";
+}
+
+// ---------------------------------------------------------------------
+// Minimizado (`#reply-control.draft`): 45px na cor de destaque, texto branco
+// ---------------------------------------------------------------------
+@media @tablet-up {
+  .Composer.CanelaComposer.minimized {
+    height: 45px !important;
+    background: var(--cn-accent);
+    border-color: var(--cn-accent);
+    color: var(--cn-accent-text);
+    box-shadow: var(--cn-composer-shadow);
+    cursor: pointer;
+
+    .ComposerBody-header > li {
+      display: none;
+    }
+
+    .ComposerBody-header > .item-title {
+      display: flex;
+      min-height: 44px;
+      padding: 0 56px 0 16px;
+      border: 0;
+      color: var(--cn-accent-text);
+    }
+
+    .ComposerBody-editor {
+      display: none;
+    }
+
+    .Composer-controls {
+      top: 7px;
+      right: 8px;
+
+      .Button.Button--icon,
+      .Button.Button--icon:hover {
+        color: var(--cn-accent-text);
+      }
+    }
+  }
+}
+
+.CanelaComposerAction--draft {
+  gap: 0.45em;
+  color: inherit;
+  font-size: 16px;
+
+  .icon {
+    flex: none;
+  }
+}
+
+.CanelaComposerAction-draftText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// ---------------------------------------------------------------------
+// Tela cheia: a coluna de 740px no meio da tela branca (sem a prévia), ou a
+// largura toda com ela; o cabeçalho só com os botões do canto.
+// ---------------------------------------------------------------------
+@media @tablet-up {
+  .Composer.CanelaComposer.fullScreen {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: none;
+    margin: 0;
+
+    .ComposerBody-header > li:not(.item-title) {
+      display: none;
+    }
+
+    .ComposerBody-header > .item-title {
+      min-height: 46px;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom-color: var(--cn-composer-border);
+
+      .CanelaComposerAction {
+        visibility: hidden;
+      }
+    }
+
+    .Composer-controls {
+      top: 8px;
+    }
+
+    .CanelaComposerPreview {
+      margin-top: 1%;
+    }
+
+    .TextEditor .TextEditor-editor {
+      font-size: 16px;
+    }
+  }
+
+  // Sem a prévia, a coluna de 740px (`--composer-max-width--hide-preview`)
+  // no meio, sobre uma folha branca na tela toda (o `::before` do Discourse).
+  .Composer.CanelaComposer.fullScreen.hide-preview {
+    max-width: 740px;
+    margin: 0 auto;
+
+    &::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: var(--cn-surface);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular: a tela toda, como o composer móvel do Discourse — a linha da
+// ação no topo (com — e ✕), os campos, o texto, a barra de formatação e,
+// embaixo, "Descartar" e o primário só em texto.
+// ---------------------------------------------------------------------
+@media @phone {
+  // O composer do celular fica em 1100 (acima de tudo da página); com ele
+  // aberto, a pilha de modais, alertas e o seletor de emoji (que se medem por
+  // --zindex-modal) sobe junto — senão o aviso "Não foi possível salvar o
+  // rascunho" e o seletor de emoji abriam escondidos atrás do editor.
+  body:has(.Composer.CanelaComposer.visible:not(.minimized)) {
+    --zindex-modal-background: 1101;
+    --zindex-modal: 1102;
+    --zindex-alerts: 1112;
+  }
+
+  .Composer.CanelaComposer {
+    background: var(--cn-surface);
+    z-index: 1100;
+
+    &:not(.minimized) {
+      top: 0;
+      bottom: 0;
+      height: 100% !important;
+      max-height: none;
+      padding-top: 0;
+
+      &::before {
+        display: none;
+      }
+
+      .Composer-content {
+        height: 100%;
+      }
+
+      // — e ✕; tela cheia e a prévia não existem no celular.
+      .Composer-controls {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 2;
+
+        > li {
+          display: block;
+        }
+
+        > .item-fullScreen,
+        > .item-canelaPreview {
+          display: none;
+        }
+      }
+    }
+
+    &.minimized {
+      height: 45px;
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+      border-top: 0;
+
+      .ComposerBody-header > li {
+        display: none;
+      }
+
+      .ComposerBody-header > .item-title {
+        display: flex;
+        min-height: 45px;
+        padding: 0 56px 0 16px;
+        border: 0;
+        color: var(--cn-accent-text);
+      }
+
+      .ComposerBody-editor {
+        display: none;
+      }
+
+      .Composer-controls {
+        position: absolute;
+        top: 7px;
+        right: 8px;
+
+        .Button {
+          color: var(--cn-accent-text);
+        }
+      }
+    }
+
+    .ComposerBody-content {
+      margin: 0;
+    }
+
+    .ComposerBody-header > li,
+    .ComposerBody-header > li:first-child {
+      height: auto;
+      margin: 0;
+      padding: 0;
+      border-bottom: 0;
+      text-align: left;
+      white-space: normal;
+      justify-content: flex-start;
+      z-index: auto;
+    }
+
+    // `.reply-to` no celular: 4px 12px (e `li.` para vencer o `:first-child`)
+    .ComposerBody-header > li.item-title {
+      min-height: 46px;
+      padding: 4px 96px 4px 12px;
+      border-bottom: 1px solid var(--cn-composer-border);
+    }
+
+    .ComposerBody-header > .item-discussionTitle {
+      border-bottom: 1px solid var(--cn-composer-border);
+    }
+
+    .ComposerBody-editor {
+      padding: 0;
+    }
+
+    .TextEditor-controls {
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      padding: 0 0 max(env(safe-area-inset-bottom), 8px);
+      border-top: 0;
+
+      > .TextEditor-toolbar {
+        flex: 1 1 100%;
+        order: -1;
+        padding: 4px 8px;
+        border-top: 1px solid var(--cn-composer-border);
+        border-bottom: 1px solid var(--cn-composer-border);
+      }
+
+      > .item-preview {
+        margin-left: 8px;
+      }
+
+      > .item-canelaCancel {
+        margin-left: auto;
+      }
+
+      > .item-submit {
+        position: static !important;
+        margin-right: 8px;
+      }
+    }
+
+    // No celular o primário vira texto na cor de destaque, em negrito.
+    .CanelaComposer-submit.Button--primary {
+      background: transparent;
+      color: var(--cn-accent);
+      font-weight: bold;
+
+      &:hover,
+      &:focus-visible {
+        background: transparent;
+        color: var(--cn-accent-active);
+      }
+    }
+  }
+
+  .composer-backdrop {
+    background-color: var(--overlay-bg);
+  }
+}
+
+// Dentro de um modal, o seletor abre NO FLUXO e o modal cresce para caber
+// (como o select-kit do Discourse nos modais), em vez de flutuar e ser
+// cortado pela borda do modal.
+.Modal .CanelaSelectKit-body {
+  position: static;
+  margin-top: 3px;
+  box-shadow: none;
+}
+
+.Modal .CanelaSelectKit-collection {
+  max-height: 240px;
+}

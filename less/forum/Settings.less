@@ -1,0 +1,413 @@
+// =====================================================================
+// Preferências (abas do perfil) como as do Discourse: cada aba é um
+// formulário corrido, sem cartões — o `form-vertical` de 500px, rótulo em
+// negrito em cima, ajuda em cinza embaixo e 2em entre um grupo e outro.
+// As abas em si são a segunda linha da navegação do perfil (User.less).
+// =====================================================================
+
+.SettingsPage,
+.UserSecurityPage {
+  margin-top: 0;
+  max-width: 720px;
+  color: var(--cn-primary);
+
+  > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+      margin: 0;
+    }
+  }
+
+  .FieldSet {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  // O `control-label` do Discourse: o tamanho do texto, só em negrito.
+  .FieldSet-label {
+    margin: 0 0 0.25em;
+    padding: 0;
+    font-size: var(--cn-font-0);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--cn-primary);
+    text-transform: none;
+    letter-spacing: 0;
+    border: 0;
+  }
+
+  .FieldSet-description {
+    margin-top: calc(~"-1 * var(--cn-space-2)");
+  }
+
+  // Seções aninhadas (dentro de "Privacidade", por exemplo).
+  .FieldSet .FieldSet .FieldSet-label {
+    font-size: var(--cn-font-0);
+    font-weight: 600;
+  }
+
+  .FieldSet-items {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75em;
+  }
+
+  .FieldSet--col .FieldSet-items {
+    gap: var(--cn-space-2);
+  }
+
+  .helpText {
+    display: block;
+    margin: 0.25em 0 0;
+    font-size: var(--cn-font-down-1);
+    line-height: 1.5;
+    color: var(--cn-primary-medium);
+  }
+
+  // Switch com o rótulo à direita e a ajuda embaixo, como no Discourse.
+  .Checkbox--switch {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--cn-primary);
+
+    .helpText {
+      margin-top: 2px;
+    }
+  }
+
+  // Campos com a largura do formulário do Discourse.
+  .FormControl,
+  .Select {
+    max-width: 500px;
+  }
+
+  .Select {
+    width: auto;
+    min-width: 220px;
+  }
+
+  .Form-group {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  // Botões no tamanho do texto, à esquerda (o core estica os do FieldSet--col).
+  .FieldSet-items > .Button,
+  .FieldSet > .Button,
+  .UserSecurityPage-controls .Button {
+    width: auto;
+    align-self: flex-start;
+  }
+
+  // As miniaturas do esquema de cores lado a lado, não empilhadas.
+  .Settings-colorScheme .FieldSet-items {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--cn-space-3);
+  }
+}
+
+// O formulário do perfil (e os outros que têm botão próprio) termina com o
+// botão primário à esquerda, como o `save-controls` do Discourse.
+.CanelaPrefs .Settings-canelaProfile .Button--primary {
+  align-self: flex-start;
+}
+
+.CanelaPrefs-empty {
+  margin: 0;
+  padding: var(--cn-space-6) 0;
+  color: var(--cn-primary-medium);
+}
+
+// ---------------------------------------------------------------------
+// Grupos da aba Conta (`control-group`): rótulo, controles e ajuda
+// ---------------------------------------------------------------------
+.CanelaPrefs-account {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  width: 100%;
+}
+
+// "Conta" já é a aba: o título da seção repetiria o da navegação.
+.CanelaPrefs .Settings-account > .FieldSet-label {
+  display: none;
+}
+
+.CanelaPrefs-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35em;
+  max-width: 500px;
+}
+
+.CanelaPrefs-label {
+  font-weight: 700;
+  color: var(--cn-primary);
+}
+
+.CanelaPrefs-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cn-space-2);
+}
+
+.CanelaPrefs-static {
+  color: var(--cn-primary);
+  word-break: break-all;
+}
+
+.CanelaPrefs-help {
+  margin: 0;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.5;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaPrefs-extra > ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cn-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// A foto: 90px, como o `pref-avatar`; o clique ainda abre o menu do core.
+.CanelaPrefs-avatar .CanelaPrefs-controls {
+  gap: var(--cn-space-3);
+}
+
+.CanelaPrefs-avatarEditor {
+  margin: 0;
+
+  .Avatar {
+    --size: 90px;
+    width: 90px;
+    height: 90px;
+    font-size: 40px;
+    line-height: 90px;
+  }
+
+  width: 90px;
+  height: 90px;
+
+  // O core dá 4px de margem ao véu (pensado para o avatar do perfil, que
+  // tem borda): aqui ele cobre a foto exatamente, sem ficar torto.
+  > .Dropdown-toggle {
+    inset: 0;
+    width: 90px;
+    height: 90px;
+    margin: 0;
+    border-radius: 50%;
+  }
+}
+
+// Misturado com o texto: legível tanto no claro quanto no escuro.
+.CanelaPrefs-remove {
+  color: ~"color-mix(in oklch, var(--cn-danger) 80%, var(--cn-primary))" !important;
+}
+
+// E-mail com o estado em pílulas (principal, confirmado / não confirmado).
+.CanelaPrefs-emailRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em 0.5em;
+  margin-bottom: 0.25em;
+}
+
+.CanelaPrefs-emailAddress {
+  margin-right: 0.25em;
+  word-break: break-all;
+}
+
+.CanelaPrefs-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15em 0.6em;
+  border-radius: var(--cn-radius-pill);
+  font-size: var(--cn-font-down-2);
+  font-weight: 600;
+  line-height: 1.5;
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-high);
+
+  &--primary {
+    background: var(--cn-accent-low);
+    color: ~"color-mix(in oklch, var(--cn-link) 80%, var(--cn-primary))";
+  }
+
+  &--ok {
+    background: ~"color-mix(in oklch, var(--cn-success) 16%, transparent)";
+    color: ~"color-mix(in oklch, var(--cn-success) 75%, var(--cn-primary))";
+  }
+
+  &--warn {
+    background: ~"color-mix(in oklch, var(--cn-danger) 16%, transparent)";
+    color: ~"color-mix(in oklch, var(--cn-danger) 75%, var(--cn-primary))";
+  }
+}
+
+.CanelaPrefs-resend {
+  padding: 0 !important;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-link) !important;
+}
+
+// A seção "Barra lateral" (aba Menu de navegação).
+.Settings-canelaNavMenu .CanelaPrefs-group {
+  margin-top: var(--cn-space-2);
+}
+
+// ---------------------------------------------------------------------
+// Grade de notificações
+// ---------------------------------------------------------------------
+.NotificationGrid {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  border-collapse: separate;
+  overflow: hidden;
+
+  td,
+  th {
+    border-bottom: 1px solid var(--cn-border);
+    color: var(--cn-primary);
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  thead th {
+    padding: 12px 20px;
+    font-size: var(--cn-font-down-1);
+    font-weight: 600;
+    color: var(--cn-primary-high);
+    background: var(--cn-primary-very-low);
+
+    .icon {
+      color: var(--cn-link);
+      font-size: 16px;
+    }
+  }
+
+  .NotificationGrid-groupToggle {
+    font-size: 15px;
+    // "E-mail" não quebra no hífen na coluna estreita do celular.
+    white-space: nowrap;
+
+    .icon {
+      color: var(--cn-primary-high);
+    }
+
+    &:hover {
+      background: var(--cn-hover);
+    }
+  }
+
+  .NotificationGrid-checkbox {
+    .Checkbox:hover:not(.disabled) {
+      background: var(--cn-hover);
+    }
+
+    &.highlighted .Checkbox:not(.disabled) {
+      background: var(--cn-hover);
+    }
+  }
+
+  .Checkbox-display {
+    font-size: 16px;
+  }
+
+  .on .Checkbox-display {
+    color: var(--cn-link);
+  }
+
+  .off .Checkbox-display {
+    color: var(--cn-primary-low-mid);
+  }
+}
+
+// A grade ocupa a largura toda; no celular o texto quebra e, se ainda
+// assim não couber, ela rola de lado.
+.Settings-notifications .FieldSet-items {
+  align-items: stretch;
+}
+
+@media @phone {
+  .Settings-notifications .FieldSet-items {
+    overflow-x: auto;
+  }
+
+  .NotificationGrid-groupToggle:first-child,
+  .NotificationGrid td:first-child {
+    white-space: normal;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Segurança: tokens e sessões
+// ---------------------------------------------------------------------
+.AccessTokensList {
+  gap: 1px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-border);
+
+  &-item {
+    padding: 14px 16px 14px 0;
+    background-color: var(--cn-surface);
+    color: var(--cn-primary);
+
+    &-icon {
+      color: var(--cn-primary-medium);
+    }
+
+    &-title {
+      font-weight: 600;
+    }
+
+    &-title-sub {
+      color: var(--cn-primary-medium);
+      font-style: normal;
+    }
+
+    &--active .AccessTokensList-item-title-sub {
+      color: var(--cn-success);
+    }
+  }
+
+  &--empty {
+    padding: 14px 16px;
+    border: 1px dashed var(--cn-primary-300);
+    border-radius: var(--cn-radius);
+    color: var(--cn-primary-medium);
+    background: none;
+  }
+}
+
+@media @phone {
+  .CanelaPrefs-group,
+  .SettingsPage .Form-group,
+  .SettingsPage .FormControl {
+    max-width: none;
+  }
+}

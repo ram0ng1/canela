@@ -1,0 +1,2749 @@
+ramon-canela:
+  admin:
+    settings:
+      group_appearance: Aparência
+      group_sidebar: Barra lateral
+      group_header: Cabeçalho e atalhos
+      group_home: Página inicial
+      group_list: Lista de discussões
+      group_topic: Discussão
+      group_profile: Perfil
+      group_community: Comunidade
+      group_composer: Editor e busca
+      requires_tags: Precisa da extensão Tags, que está desligada.
+      requires_fof_drafts: Precisa da extensão FoF Drafts, que está desligada.
+      requires_sidebar: A barra lateral está desligada (card Barra lateral, acima).
+      section_colors: Cores
+      colors_help: 'O tema não tem cores próprias: a paleta inteira sai da cor primária do Flarum, como o Horizon do Discourse faz com a cor terciária. O fundo tingido, a seleção, os links e o anel de foco são derivados dela, no modo claro e no escuro.'
+      colors_link: Mudar a cor em Aparência
+      section_font: Fonte
+      font_label: Fonte do fórum
+      font_help: A família usada no fórum inteiro. Inter e Plus Jakarta Sans vêm com o tema e cobrem as letras latinas; a do sistema não baixa nada e cobre qualquer escrita.
+      font_inter: 'Inter: padrão do tema'
+      font_jakarta: Plus Jakarta Sans
+      font_system: Fonte do sistema
+      font_notice: Trocar a fonte recompila o CSS do fórum; a gravação leva alguns segundos.
+      section_surfaces: Fundo e cartão
+      tinted_background_label: Fundo tingido com a cor primária
+      tinted_background_help: O fundo atrás do conteúdo e da barra lateral ganha um toque leve da cor primária, como no Horizon. Desligado, fica num cinza neutro.
+      content_card_label: Conteúdo dentro de um cartão
+      content_card_help: A lista, a discussão e o perfil ficam num cartão de cantos arredondados sobre o fundo. Desligado, o conteúdo ocupa a área toda, sem moldura.
+      section_buttons: Botões
+      pill_buttons_label: Botões em pílula
+      pill_buttons_help: Botões com as pontas totalmente arredondadas, como no Horizon. Desligado, ficam com cantos levemente arredondados.
+      section_logo: Logo
+      show_title_with_logo_label: Mostrar o título do fórum ao lado do logo
+      show_title_with_logo_help: Com um logo enviado em Aparência, o título só aparece ao lado dele com esta opção ligada. Sem logo, o título aparece sempre.
+      section_sidebar: Barra lateral
+      sidebar_enabled_label: Mostrar a barra lateral
+      sidebar_enabled_help: A coluna à esquerda com a navegação e as tags, como no Discourse. Desligada, o fórum volta à navegação padrão do Flarum.
+      sidebar_open_default_label: Começar aberta
+      sidebar_open_default_help: Como a barra aparece para quem ainda não a abriu nem fechou pelo botão do cabeçalho. Depois disso vale a escolha de cada visitante, guardada no navegador.
+      sidebar_new_topic_label: Botão "Iniciar Discussão"
+      sidebar_new_topic_help: O botão no topo da barra que abre o editor de uma nova discussão.
+      sidebar_footer_label: Rodapé da barra
+      sidebar_footer_help: 'Os botões no fim da barra: tema claro ou escuro, nova discussão e atalhos de teclado.'
+      section_sidebar_tags: Tags
+      sidebar_categories_label: Seção Tags
+      sidebar_categories_help: As tags primárias, cada uma com a sua cor ou ícone, e o link para todas as tags.
+      sidebar_tags_label: Seção Tags secundárias
+      sidebar_tags_help: As tags secundárias, com o link para todas as tags.
+      sidebar_tags_limit_label: Tags secundárias na barra
+      sidebar_tags_limit_help: Quantas tags secundárias listar antes do link "Todas as tags", de {min} a {max}.
+      section_header_search: Busca no cabeçalho
+      header_search_label: Campo de busca no centro do cabeçalho
+      header_search_help: A pílula de busca no meio do cabeçalho, como no Discourse. Desligada, o cabeçalho volta à busca padrão do Flarum.
+      section_shortcuts: Atalhos de teclado
+      keyboard_shortcuts_label: Atalhos de teclado
+      keyboard_shortcuts_help: 'Os atalhos do Discourse: / busca, c nova discussão, r responder, j e k percorrem a lista, g h volta ao início, = abre ou fecha a barra lateral e ? mostra a lista completa. Não valem enquanto se digita num campo.'
+      section_welcome_banner: Banner de boas-vindas
+      welcome_banner_label: Mostrar o banner de boas-vindas
+      welcome_banner_help: O título e a mensagem de boas-vindas de Aparência num banner sobre o fundo tingido, como no Horizon. Desligado, a página começa direto na lista.
+      welcome_banner_guests_only_label: Só para visitantes
+      welcome_banner_guests_only_help: Quem já entrou na conta vai direto para a lista; o banner fica para quem chega pela primeira vez.
+      welcome_banner_search_label: Campo de busca no banner
+      welcome_banner_search_help: Uma busca grande no meio do banner, que abre a busca do fórum.
+      section_category_hero: Topo da tag
+      category_hero_label: Cabeçalho grande nas tags
+      category_hero_help: Na página de uma tag, um topo com o ícone, a cor, o nome e a descrição dela, antes da lista.
+      category_hero_children_label: Tags filhas em cartões
+      category_hero_children_help: Abaixo do topo, as tags filhas aparecem como cartões clicáveis.
+      section_nav: Abas da lista
+      nav_unread_label: Aba Não lidas
+      nav_unread_help: As discussões com respostas que a pessoa ainda não leu. Só aparece para quem entrou na conta.
+      nav_hot_label: Aba Em alta
+      nav_hot_help: As discussões com mais respostas entre as abertas nos últimos dias.
+      hot_days_label: Dias contados em Em alta
+      hot_days_help: O período considerado, de {min} a {max} dias.
+      section_nav_categories: Filtros por tag
+      nav_dropdowns_label: Menus de tags
+      nav_dropdowns_help: Os menus à esquerda das abas, para filtrar a lista por tag primária e por tag secundária, como no Discourse.
+      nav_categories_link_label: Aba Tags
+      nav_categories_link_help: Uma aba que leva à página com todas as tags.
+      section_list_columns: Colunas da lista
+      list_header_label: Cabeçalho das colunas
+      list_header_help: A linha com Discussão, Respostas, Visualizações e Atividade acima da lista.
+      list_posters_label: Avatares de quem participou
+      list_posters_help: Os avatares do autor e de quem respondeu por último ao lado de cada discussão, como a coluna de participantes do Discourse.
+      list_views_label: Coluna de visualizações
+      list_views_help: O número de visualizações de cada discussão, contado pelo card Visualizações de discussão.
+      list_heat_label: Destacar contagens altas
+      list_heat_help: Pinta as contagens em laranja ou vermelho quando estão bem acima das demais, como o mapa de calor do Discourse.
+      list_excerpts_label: Resumo das discussões fixadas
+      list_excerpts_help: Abaixo do título, o começo da primeira postagem das discussões fixadas.
+      section_categories_page: Página de tags
+      categories_layout_label: Formato
+      categories_layout_help: Como a página de todas as tags as apresenta.
+      categories_layout_boxes: 'Caixas: cartões com a cor, a descrição e as tags filhas'
+      categories_layout_list: 'Lista: uma tabela de tags com as discussões mais recentes'
+      section_topic_map: Mapa da discussão
+      topic_map_label: Mapa da discussão
+      topic_map_help: Abaixo da primeira postagem, um resumo com a data de criação, a última resposta, o número de respostas e quem participou.
+      section_topic_timeline: Linha do tempo
+      topic_timeline_label: Linha do tempo ao lado das postagens
+      topic_timeline_help: A barra à direita que mostra em que ponto da discussão se está e leva a qualquer postagem dela.
+      section_topic_footer: Rodapé da discussão
+      topic_footer_label: Botões no fim da discussão
+      topic_footer_help: Responder, compartilhar e acompanhar depois da última postagem, como no Discourse. Acompanhar precisa da extensão Subscriptions.
+      section_suggested: Discussões sugeridas
+      suggested_topics_label: Mostrar discussões sugeridas
+      suggested_topics_help: No fim da discussão, uma lista curta de outras discussões para continuar lendo, de preferência da mesma tag.
+      suggested_count_label: Quantidade
+      suggested_count_help: Quantas discussões sugerir, de {min} a {max}.
+      section_user_page: Página de perfil
+      user_cover_label: Capa no topo do perfil
+      user_cover_help: Uma faixa larga atrás do avatar grande e do nome, como no Discourse.
+      user_stats_label: Estatísticas
+      user_stats_help: Quando entrou, a última visita e os números de postagens e discussões, abaixo do nome. As curtidas só aparecem com a extensão Likes.
+      user_summary_label: Aba Resumo
+      user_summary_help: Uma aba inicial com os números do usuário e as suas discussões e respostas de destaque.
+      user_activity_read_label: Subaba Lidos
+      user_activity_read_help: Em Atividade, as discussões que a pessoa leu, da mais recente para a mais antiga. Só a própria pessoa e os administradores a veem.
+      user_activity_reactions_label: Subaba Reações
+      user_activity_reactions_help: Em Atividade, curtidas e reações que a pessoa deu numa lista só, no lugar de Curtidas, com o emoji e o trecho da postagem. As reações só aparecem para quem tem a permissão de ver quem reagiu.
+      user_activity_votes_label: Subaba Votos
+      user_activity_votes_help: Em Atividade, as postagens com enquetes em que a pessoa votou. Para os outros, só as enquetes que mostram os votantes.
+      user_activity_solved_label: Subaba Resolvido
+      user_activity_solved_help: Em Atividade, as respostas da pessoa escolhidas como melhor resposta.
+      section_user_card: Cartão de usuário
+      user_card_label: Cartão de usuário
+      user_card_help: Um cartão compacto com a foto, os números e o link para o perfil, aberto pelo avatar ou pelo nome de alguém, sem sair da página.
+      groups_aria: Grupos de configurações
+      search_placeholder: Buscar configurações…
+      search_clear: Limpar busca
+      search_empty: Nenhuma configuração encontrada.
+      palette_accent: Destaque
+      palette_background: Fundo tingido
+      palette_selected: Seleção
+      palette_accent_low: Destaque suave
+      palette_ring: Anel de foco
+      palette_link: Link
+      colors_current: Cor primária atual
+      palette_light: Claro
+      palette_dark: Escuro
+      shell:
+        group_navigation: Cabeçalho e barra lateral
+        group_people: Perfil e usuários
+        group_messages: Mensagens e chat
+        group_moderation: Moderação
+        group_integrations: Integrações
+        group_appearance_desc: Cores, fonte, superfícies, botões, ícones, banner e avisos.
+        group_navigation_desc: A busca e o menu do cabeçalho, o login, os atalhos de teclado e a barra lateral do Discourse.
+        group_list_desc: A página inicial, as abas, as colunas, as tags e os contadores da lista.
+        group_topic_desc: As postagens, a linha do tempo, o mapa, o rodapé e os recursos de leitura.
+        group_composer_desc: O editor do Discourse, os rascunhos, as hashtags e a busca avançada.
+        group_people_desc: A página de perfil, o cartão de usuário, os campos extras e a atividade.
+        group_messages_desc: As mensagens privadas e o chat em tempo real.
+        group_community_desc: Sobre, diretrizes, usuários, grupos, emblemas, níveis de confiança e convites.
+        group_moderation_desc: 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'
+        group_integrations_desc: O visual do Discourse para extensões de terceiros. Cada uma só vale com a extensão ligada.
+        group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
+        'on': Ativo
+        'off': Inativo
+        locked: Indisponível
+        saved: Salvo
+        saving: Salvando…
+        saved_all: Alterações salvas
+        save_error: Não foi possível salvar
+        autosave: Tudo salva sozinho
+        requires_extension: Precisa da extensão {name}
+        extension_disabled: Precisa da extensão {name}, que está instalada mas desligada.
+        extension_missing: Precisa da extensão {name}, que não está instalada.
+        open_extension: Abrir a extensão
+        depends_on: Depende de "{name}", que está desligado.
+        go_enable: Ir para lá
+        hidden_title: Ocultos porque dependem de algo desligado
+        needs: precisa de "{name}"
+        active_count: '{active} de {total} recursos ativos'
+        search_results: Resultados para "{query}"
+        auth_backend_off: 'As páginas /login e /signup (extend/auth.php) ainda não estão carregadas no servidor: os botões continuam abrindo os modais.'
+      logo_colored_label: Pintar o logo
+      logo_colored_help: O logo enviado vira só a forma, pintado na cor de destaque (e na cor da tag nas páginas de tag e discussões). Funciona melhor com SVG ou PNG com fundo transparente.
+      loading_slider_label: Barra de carregamento no topo
+      loading_slider_help: Na troca de página, uma barrinha fina corre no topo da tela até a página chegar, como no Discourse, no lugar do aviso "Carregando…" do Flarum.
+      toast_auto_close_label: Avisos que fecham sozinhos
+      toast_auto_close_help: Os avisos do canto da tela ("Salvo", "Link copiado"…) somem sozinhos depois de alguns segundos, com a barrinha de tempo, como os toasts do Discourse. Desligado, ficam até alguém fechar.
+      user_menu_label: Menu do usuário do Discourse
+      user_menu_help: O avatar do cabeçalho abre o painel com as abas de notificações, respostas, curtidas, mensagens, marcadores, chat, revisão e perfil (no lugar do sino e do menu da sessão do Flarum).
+      nav_sticky_label: Abas grudadas no topo
+      nav_sticky_help: Ao rolar a lista, a barra das abas fica presa embaixo do cabeçalho, como no Horizon. O meta.discourse.org não gruda.
+      list_infinite_scroll_label: Rolagem infinita
+      list_infinite_scroll_help: A próxima página da lista carrega sozinha quando o fim chega perto da tela, como no Discourse. Desligada, fica o botão "Carregar mais" do Flarum.
+      post_actions_label: Barra de ações do Discourse
+      post_actions_help: Curtir, copiar o link, marcar, responder e o "…" que expande o resto, na barra de cada postagem, como no Discourse. Desligada, volta o menu de controles do Flarum.
+      embedded_replies_label: Respostas embutidas
+      embedded_replies_help: O "N respostas" de cada postagem abre as respostas ali mesmo, embaixo dela, e a postagem citada aparece acima, como no Discourse.
+      new_replies_bar_label: Aviso de respostas novas
+      new_replies_bar_help: Quem está no meio da discussão quando chegam respostas em tempo real vê a barra "Há N novas respostas", que leva até elas, como no Discourse.
+      topic_event_posts_label: Posts de evento
+      topic_event_posts_help: Mostra na discussão os avisos do Flarum como "trancou a discussão" e "fixou a discussão". O Discourse não os mostra assim.
+      badges:
+        section_manager: Gerenciar emblemas
+        section_main: Emblemas e níveis de confiança
+        badges_enabled_label: Emblemas
+        badges_enabled_help: Os emblemas automáticos do Discourse (Primeira curtida, Resposta interessante, Aniversário…), a página /badges, a aba Emblemas do perfil e a notificação "Ganhou …". Desligados, nada disso aparece e a API responde 404.
+        badges_user_card_label: Emblemas no cartão do usuário
+        badges_user_card_help: Até três emblemas de destaque (ouro, prata, bronze) no cartão que abre ao clicar num avatar.
+        badges_summary_label: Melhores emblemas no Resumo
+        badges_summary_help: A seção de emblemas na aba Resumo do perfil.
+        badges_max_likes_per_day_label: Curtidas por dia dos emblemas "Por amor"
+        badges_max_likes_per_day_help: O Flarum não limita curtidas; os emblemas Por amor, Amor maior e Apaixonado(a) contam os dias em que a pessoa deu pelo menos este número de curtidas (o padrão do Discourse é 50).
+        run_now: Conceder emblemas agora
+        run_done: Pronto.
+        run_help: O comando canela:badges roda uma vez por dia pelo agendador do Flarum (php flarum schedule:run no cron). A primeira carga concede o histórico do fórum sem notificar ninguém. Este botão roda só a parte dos emblemas, agora.
+        trust_levels_enabled_label: Níveis de confiança
+        trust_levels_enabled_help: 'Novo, Básico, Membro, Regular e Líder, calculados pelos requisitos do card abaixo. O nível aparece no perfil e rende os emblemas de nível. O Líder só é dado à mão: no perfil, menu de moderação, "Alterar nível de confiança…".'
+        requires_badges: Os emblemas estão desligados (card Emblemas e níveis, acima).
+        requires_trust_levels: Os níveis de confiança estão desligados (card Emblemas e níveis, acima).
+        section_requirements: Requisitos dos níveis de confiança
+        source_stats: 'Leitura medida pelas estatísticas do tema: dias visitados, tempo de leitura, discussões vistas e postagens lidas são os de verdade, como no Discourse.'
+        source_core: Sem as estatísticas do tema, a leitura vem do estado de leitura do Flarum (até onde cada pessoa leu cada discussão), os dias visitados viram dias desde o cadastro e o tempo de leitura não conta.
+        no_likes: Sem o flarum/likes, os requisitos de curtidas não contam.
+        level_1: 1 · Básico
+        level_2: 2 · Membro
+        level_3: 3 · Regular
+        level_4: 4 · Líder
+        level_4_help: 'Nunca automático: só a administração concede, pelo menu de moderação do perfil. Escolher um nível à mão também o fixa (o sistema não promove nem rebaixa).'
+        unit_minutes: min
+        unit_days: dias
+        unit_percent: '%'
+        tl1_requires_topics_entered_label: Discussões vistas
+        tl1_requires_read_posts_label: Postagens lidas
+        tl1_requires_time_spent_mins_label: Tempo de leitura
+        tl2_requires_topics_entered_label: Discussões vistas
+        tl2_requires_read_posts_label: Postagens lidas
+        tl2_requires_time_spent_mins_label: Tempo de leitura
+        tl2_requires_days_visited_label: Dias visitados
+        tl2_requires_likes_received_label: Curtidas recebidas
+        tl2_requires_likes_given_label: Curtidas dadas
+        tl2_requires_topic_reply_count_label: Discussões de outras pessoas respondidas
+        tl3_time_period_label: Janela de avaliação
+        tl3_requires_days_visited_label: Dias visitados na janela
+        tl3_requires_topics_replied_to_label: Discussões respondidas na janela
+        tl3_requires_topics_viewed_label: Discussões vistas (das criadas na janela)
+        tl3_requires_topics_viewed_cap_label: Teto de discussões vistas
+        tl3_requires_posts_read_label: Postagens lidas (das criadas na janela)
+        tl3_requires_posts_read_cap_label: Teto de postagens lidas
+        tl3_requires_topics_viewed_all_time_label: Discussões vistas desde o início
+        tl3_requires_posts_read_all_time_label: Postagens lidas desde o início
+        tl3_requires_max_flagged_label: Máximo de postagens sinalizadas
+        tl3_requires_likes_given_label: Curtidas dadas na janela
+        tl3_requires_likes_received_label: Curtidas recebidas na janela
+        tl3_promotion_min_duration_label: Carência antes de perder o nível
+        table_help: Desligar um emblema o tira da página /badges e dos perfis e para as concessões novas; as já feitas continuam guardadas e voltam se ele for religado.
+        table_failed: Não deu para carregar os emblemas. As migrações do tema já rodaram?
+        col_badge: Emblema
+        col_granted: Concedidos
+        col_enabled: Ligado
+        unavailable: Este fórum não tem o que a regra mede (extensão desligada ou recurso do tema ausente).
+        section_table: Emblemas
+        new_badge: Novo emblema
+        grant_badge: Conceder emblema
+        restore_system: Restaurar emblemas do sistema
+        restore_confirm: Recriar os emblemas do sistema que foram removidos? Os que existem (editados ou não) ficam como estão.
+        restored: '{count, plural, =0 {Nenhum emblema do sistema faltava.} one {# emblema do sistema restaurado.} other {# emblemas do sistema restaurados.}}'
+        needs_migration: Imagem, "pode ser título", concessão manual opcional e o motivo da concessão aparecem depois de rodar php flarum migrate.
+        request_failed: Não deu certo. Tente de novo.
+        col_type: Tipo
+        tag_system: Sistema
+        tag_custom: Personalizado
+        tag_unlisted: Fora da página
+        tag_manual: Manual
+        view_grants: Ver concessões
+        edit: Editar
+        remove: Remover
+        removed: Emblema removido.
+        remove_system_confirm: Remover o emblema do sistema "{badge}"? As {count} concessões são apagadas. Ele só volta com "Restaurar emblemas do sistema" (sem as concessões antigas, que a regra refaz na próxima carga).
+        remove_custom_confirm: Apagar o emblema "{badge}" e as {count} concessões dele? Não dá para desfazer.
+        type_gold: Ouro
+        type_silver: Prata
+        type_bronze: Bronze
+        grouping_getting_started: Primeiros passos
+        grouping_community: Comunidade
+        grouping_posting: Postando
+        grouping_trust_level: Nível de confiança
+        grouping_other: Outros
+        edit_title: Editar emblema
+        new_title: Novo emblema
+        name_placeholder: Nome do emblema
+        system_notice: 'Emblema do sistema: a regra automática continua valendo depois de editar.'
+        field_name: Nome
+        field_description: Descrição
+        field_long_description: Descrição longa
+        field_icon: Ícone (Font Awesome)
+        field_icon_help: Estilo e nome, como "fas fa-star" ou "far fa-heart".
+        field_image: Imagem (URL)
+        field_image_help: 'Opcional: no lugar do ícone. Endereço http(s) de uma imagem quadrada.'
+        field_type: Tipo
+        field_grouping: Agrupamento
+        field_enabled: Ligado
+        field_enabled_help: Desligado, some do fórum, deixa de ser concedido e as concessões feitas ficam ocultas.
+        field_listable: Aparece na página de emblemas
+        field_allow_title: Pode ser usado como título
+        field_multiple: Pode ser concedido várias vezes à mesma pessoa
+        field_manual: Concedido manualmente pela administração
+        save: Salvar
+        create: Criar emblema
+        grant_title: Conceder emblema
+        grant_none: Nenhum emblema aceita concessão manual. Crie um emblema personalizado com essa opção.
+        field_badge: Emblema
+        field_user: Usuário
+        field_user_placeholder: Nome de usuário
+        field_reason: Motivo (opcional)
+        field_reason_placeholder: Um texto curto ou o link de uma postagem
+        grant_submit: Conceder
+        grant_done: Concedido a {username}.
+        grants_title: Concessões de "{badge}"
+        grants_none: Ninguém tem este emblema.
+        load_more: Carregar mais
+        revoke: Revogar
+        revoke_confirm: Revogar o emblema de {username}?
+      chat:
+        channels_only_title: Canais do chat
+        title: Chat
+        channels_title: Canais e mensagens diretas
+        limits_title: Mensagens, anexos e retenção
+        needs_chat: Ligue o chat para configurar.
+        admins_always: Os administradores sempre podem.
+        realtime_on: As mensagens chegam em tempo real pelo websocket do flarum/realtime ("php flarum realtime:serve" precisa estar rodando). Se ele cair, o chat passa sozinho a perguntar ao servidor a cada poucos segundos.
+        realtime_off: Sem o flarum/realtime, o chat pergunta ao servidor a cada poucos segundos se há mensagens novas. Funciona, mas com um pequeno atraso e mais requisições. Para tempo real, ative o flarum/realtime e rode "php flarum realtime:serve".
+        retention_notice: A limpeza roda pelo agendador do Flarum ("php flarum schedule:run" no cron a cada minuto) e também apaga as imagens enviadas que nunca viraram mensagem.
+        chars: caracteres
+        days: dias
+        chat_enabled_label: Chat
+        chat_enabled_help: 'O chat do Discourse: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse; as mensagens ficam guardadas.'
+        replaced_by_ramon_chat: "O ramon/chat está habilitado: ele substitui o chat do tema, que fica desligado. O tema adapta o visual e a barra lateral dele."
+        chat_allowed_groups_label: Quem pode usar o chat
+        chat_allowed_groups_help: Os grupos que veem o chat. Cada pessoa ainda pode desligá-lo nas próprias configurações.
+        chat_sidebar_label: Seções na barra lateral
+        chat_sidebar_help: As seções "Canais" e "Mensagens diretas" na barra lateral, abaixo das tags, com as não lidas e as menções.
+        chat_create_channel_groups_label: Quem cria canais públicos
+        chat_create_channel_groups_help: Além dos administradores. Um canal pode ficar ligado a uma tag, e aí só quem enxerga a tag enxerga o canal.
+        chat_moderator_groups_label: Quem modera o chat
+        chat_moderator_groups_help: Apagam e restauram mensagens dos outros, fixam mensagens e fecham, arquivam ou excluem canais. As mensagens diretas não têm moderação, ninguém lê as conversas dos outros.
+        chat_dm_enabled_label: Mensagens diretas
+        chat_dm_enabled_help: Conversas privadas entre duas pessoas ou em grupo, abertas por "Nova mensagem" ou pelo botão "Chat" do perfil.
+        chat_dm_groups_label: Quem pode abrir mensagens diretas
+        chat_dm_groups_help: O "direct_message_enabled_groups" do Discourse.
+        chat_dm_max_users_label: Participantes por conversa
+        chat_dm_max_users_help: O máximo de pessoas num chat em grupo, contando quem cria.
+        chat_threads_enabled_label: Fios
+        chat_threads_enabled_help: Responder a uma mensagem abre uma conversa à parte, no painel ao lado. Cada canal ainda liga ou desliga os fios nas configurações dele.
+        chat_pins_enabled_label: Mensagens fixadas
+        chat_pins_enabled_help: A moderação fixa até 20 mensagens por canal (numa MD, qualquer participante), que aparecem na faixa do topo da conversa.
+        chat_max_message_length_label: Tamanho máximo da mensagem
+        chat_max_message_length_help: Em caracteres. O padrão do Discourse é 6000.
+        chat_uploads_enabled_label: Imagens nas mensagens
+        chat_uploads_enabled_help: O "+" do composer, colar e arrastar imagens (JPG, PNG, GIF e WebP), com a mesma validação do avatar. Ficam em public/assets/canela-chat.
+        chat_upload_max_kb_label: Tamanho máximo da imagem
+        chat_upload_max_kb_help: Por arquivo.
+        chat_retention_days_label: Retenção dos canais
+        chat_retention_days_help: Mensagens dos canais públicos mais velhas que isso são apagadas de vez, uma vez por dia. 0 guarda para sempre.
+        chat_dm_retention_days_label: Retenção das mensagens diretas
+        chat_dm_retention_days_help: O mesmo para as MDs. 0 guarda para sempre.
+        chat_poll_seconds_label: Intervalo sem tempo real
+        chat_poll_seconds_help: Sem o websocket, de quantos em quantos segundos a conversa aberta pergunta por mensagens novas.
+      community:
+        section_legal_links: Termos e privacidade
+        view_page: Ver a página no fórum
+        section_about: Página Sobre
+        about_enabled_label: Página Sobre (/about)
+        about_enabled_help: A página do Discourse com a descrição do fórum, um texto seu, o contato, a equipe e os números do site. Ganha um link no menu "Mais" da barra lateral.
+        about_text_label: Texto sobre o fórum
+        about_text_help: Aparece abaixo do título. Aceita Markdown e BBCode (os que o fórum tiver ligados); se o texto tiver tags HTML, ele vai como HTML, sem formatação.
+        about_contact_email_label: E-mail de contato
+        about_contact_email_help: 'Mostrado na caixa "Fale conosco". Fica público: use um endereço da equipe.'
+        about_contact_url_label: Página de contato
+        about_contact_url_help: Um endereço completo (https://…) para um formulário ou página de contato.
+        about_show_staff_label: Mostrar a equipe
+        about_show_staff_help: As listas "Nossos administradores" e "Nossos moderadores". Grupos ocultos ficam de fora para quem não pode vê-los.
+        about_show_stats_label: Mostrar as estatísticas do site
+        about_show_stats_help: Discussões, postagens, cadastros, usuários ativos e curtidas nas últimas 24 horas, 7 dias, 30 dias e desde sempre.
+        stats_notice: Os números contam só o que é público e são recalculados a cada 30 minutos.
+        section_legal: Diretrizes, termos e privacidade
+        guidelines_enabled_label: Página Diretrizes (/guidelines)
+        guidelines_enabled_help: As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse.
+        guidelines_text_label: Texto das diretrizes
+        guidelines_text_help: Deixe vazio para usar o texto padrão do tema, inspirado nas diretrizes do Discourse. Aceita Markdown e BBCode; com tags HTML, vai como HTML.
+        tos_url_label: Endereço dos Termos de Serviço
+        tos_url_help: A aba "Termos de Serviço" e o endereço /tos levam para cá. Uma política do FoF Terms com "termos" no nome tem preferência.
+        privacy_url_label: Endereço da Política de Privacidade
+        privacy_url_help: A aba "Política de Privacidade" e o endereço /privacy levam para cá. Uma política do FoF Terms com "privacidade" no nome tem preferência.
+        legal_notice: Sem endereço (aqui ou no FoF Terms), a aba não aparece. As outras políticas do FoF Terms entram como abas com o próprio nome.
+        section_directory: Diretório de usuários
+        directory_enabled_label: Página Usuários (/u)
+        directory_enabled_help: A tabela do Discourse com curtidas recebidas e dadas, discussões, respostas e último acesso de cada pessoa, por período, ordenável por coluna.
+        directory_guests_label: Visitantes também podem ver
+        directory_guests_help: Por padrão, só quem tem a permissão "Ver a lista de usuários" (em Permissões) vê o diretório e os membros dos grupos. Ligado, visitantes sem conta também veem, menos num fórum fechado.
+        directory_notice: As colunas de curtidas aparecem com a extensão Likes ligada; Visitas e Postagens lidas, com as estatísticas do tema. Ordenar por último acesso segue a permissão do core de ver quando cada um esteve online.
+        section_groups: Grupos
+        groups_enabled_label: Páginas de grupos (/g)
+        groups_enabled_help: Um cartão por grupo, com ícone, cor e número de membros, e uma página para cada um com os membros. Grupos ocultos só aparecem para quem pode vê-los.
+        groups_activity_label: Aba Atividade
+        groups_activity_help: As postagens recentes dos membros na página do grupo.
+        groups_profile_links_label: Grupos do perfil levam à página do grupo
+        groups_profile_links_help: As pílulas de grupo no cartão do perfil viram links para /g/nome-do-grupo.
+      gaps:
+        notifications_title: Avisos ao autor
+        mention_cards_help: Clicar numa menção @fulano abre o cartão de usuário em vez de ir ao perfil.
+      integrations:
+        messages_label: Mensagens privadas do Discourse
+        messages_help: 'Sobre o flarum/messages: as caixas do perfil (Últimos, Enviadas, Novo, Não lidos, Arquivo), o arquivo por pessoa, o título da mensagem, as reações e o "sair da mensagem", como no Discourse.'
+        solved_label: Solução aceita
+        solved_help: O "✓ Solução" na barra da postagem e a resposta aceita logo abaixo do primeiro post, como o discourse-solved.
+        reactions_label: Reações
+        reactions_help: O resumo dos emoji na barra da postagem, como o discourse-reactions.
+        polls_label: Enquetes
+        polls_help: 'As enquetes com a grade do poll do Discourse: as barras de resultado e a contagem grande de votos ao lado.'
+        links_sidebar_label: Links na barra lateral
+        links_sidebar_help: Os links do FoF Links saem do cabeçalho e vão para uma seção da barra lateral, como os links personalizados do Discourse.
+        upload_progress_label: Progresso do envio
+        upload_progress_help: A barra "Enviando…" no editor enquanto um arquivo do FoF Upload sobe, como no Discourse.
+        profile_cover_label: Capa do perfil (forumaker/profile-cover)
+        profile_cover_help: 'A capa da extensão no lugar da capa interna do tema: na faixa do perfil, no fundo do cartão do usuário (na miniatura, quando existe) e na posição escolhida no editor dela, que abre pelo menu "…" do perfil e pelas Configurações. As imagens internas ficam guardadas e voltam se esta chave for desligada.'
+        thumbnails_label: Miniaturas na lista
+        thumbnails_help: A miniatura do FoF Discussion Thumbnail ao lado do título na lista de discussões, no lugar onde o Discourse mostra a dele.
+        verified_label: Selo de verificado
+        verified_help: 'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como os ícones de usuário do Discourse: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
+        wiki_label: 'Wiki no padrão do tema'
+        wiki_help: 'A wiki da linkrobins/wiki com a cara do Discourse: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever (com rascunho, opções avançadas e perguntas frequentes) e o link "Wiki" na seção da comunidade da barra lateral.'
+        ramon_chat_label: Chat (ramon/chat) no visual do Discourse
+        ramon_chat_help: 'O chat da extensão ramon/chat com a cara do chat do Discourse: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
+        ramon_chat_sidebar_label: Canais na barra lateral
+        ramon_chat_sidebar_help: As seções "Canais" e "Mensagens diretas" (com "Meus fios", "Pesquisar" e "Salvos") na barra lateral do tema; a página do chat perde a coluna de canais dela.
+        ramon_chat_notifications_label: 'Aba "Chat" no menu do usuário'
+        ramon_chat_notifications_help: As notificações do chat (convites, menções, moderação) numa aba própria do menu do usuário.
+        ramon_chat_user_button_label: 'Botão "Chat" no cartão e no perfil'
+        ramon_chat_user_button_help: 'Abrir a conversa direta pelo botão "Chat" no cartão e no perfil, em vez do item no menu "…". Sem efeito com o flarum/messages ligado: aí a conversa privada é a "Mensagem" dele.'
+        marketplace_label: Loja (ramon/marketplace) no visual do tema
+        marketplace_help: 'As páginas da loja (vitrine, produto, carrinho, checkout, pedidos, downloads, painel do vendedor, cursos e planos) no cartão do tema, com o título como os heros, os botões, campos, abas e modais do tema, as cores derivadas da cor primária e os ícones Lucide.'
+        marketplace_sidebar_label: 'Seção "Loja" na barra lateral'
+        marketplace_sidebar_help: 'Os links da loja (Marketplace, Carrinho, Pedidos, Downloads, Lista de desejos…) numa seção recolhível da barra lateral, no lugar do menu que abria ao passar o mouse em "Loja".'
+      group_ai: IA
+      ai:
+        translation_enabled_label: Tradução automática
+        translation_enabled_help: Postagens e títulos escritos num idioma diferente do de quem lê são traduzidos pela IA na primeira leitura e guardados para todos. O 文A ao lado da data alterna entre a tradução e o original. Cada postagem traduzida é uma chamada ao modelo rápido.
+        translation_locales_label: Idiomas para os quais traduzir
+        translation_locales_help: O idioma de quem lê é o escolhido nas preferências (ou o do fórum, para visitantes). Quem lê num idioma desmarcado vê sempre o original.
+        translation_titles_label: Traduzir os títulos
+        translation_titles_help: Os títulos das discussões também, na lista e na discussão, numa chamada só para a página toda.
+        translation_public_only_label: Só conteúdo público
+        translation_public_only_help: Traduz só o que um visitante também veria. Desligado, as tags restritas também passam pelo modelo (nunca as mensagens privadas nem as postagens ocultas).
+        translation_daily_limit_label: Chamadas por dia (fórum todo)
+        translation_daily_limit_help: Cada postagem traduzida, cada lote de títulos e cada lote de detecção de idioma conta uma. Esgotado, o fórum mostra o original até o dia seguinte. 0 = sem limite.
+        requires_provider: Configure o provedor e a chave no card "Provedor e modelos" antes.
+        key_saved: •••••••• (chave gravada; digite para trocar)
+        key_clear: Apagar a chave gravada
+        test_button: Testar conexão
+        persona_off: desligada
+        persona_name: Nome
+        persona_id: Identificador (letras, números, _ e -)
+        persona_description: Descrição (aparece no seletor)
+        persona_prompt: Prompt de sistema
+        persona_enabled: Ligada
+        persona_search: Pode buscar no fórum
+        persona_read: Pode ler discussões
+        persona_web: Pode pesquisar na web (só Anthropic; cobrado por busca)
+        persona_remove: Remover persona
+        persona_add: Nova persona
+        persona_restore: Restaurar as padrões
+        default_persona_label: Persona padrão
+        default_persona_help: A que vem escolhida na "Nova pergunta" e no "Perguntar à IA" da busca.
+        persona_new_name: Nova persona
+        schema_missing: 'As tabelas da IA ainda não foram criadas: rode "php flarum migrate". Até lá os recursos ficam escondidos.'
+        not_configured: Sem chave de API configurada, os recursos de IA ficam escondidos no fórum. Configure o provedor abaixo e use "Testar conexão".
+        provider_title: Provedor e modelos
+        provider_label: Provedor
+        provider_help: A Anthropic (Claude) é o padrão. "Compatível com OpenAI" serve para a OpenAI e para qualquer serviço com a mesma API (OpenRouter, Groq, Mistral, DeepSeek, Ollama, LM Studio…).
+        provider_anthropic: Anthropic (Claude)
+        provider_openai: Compatível com OpenAI
+        anthropic_key_label: Chave da API da Anthropic
+        anthropic_key_help: Crie em console.anthropic.com → API Keys. Fica só no servidor; o fórum nunca a recebe.
+        model_label: Modelo principal
+        anthropic_model_help: Usado no bot, nos resumos e nos modos do ajudante que reescrevem (explicar, prompt personalizado). O Sonnet equilibra qualidade e custo; o Opus é o mais capaz.
+        fast_model_label: Modelo rápido
+        fast_model_help: 'Para as tarefas curtas: títulos das conversas, revisão, tradução, sugestão de título e de tags, resumos curtos da lista.'
+        openai_url_label: URL base da API
+        openai_url_help: 'O endereço até o /v1; o tema acrescenta /chat/completions. Ex.: https://api.openai.com/v1, https://openrouter.ai/api/v1, http://localhost:11434/v1.'
+        openai_key_label: Chave da API
+        openai_key_help: 'Enviada como "Authorization: Bearer". Um servidor local pode dispensar a chave.'
+        openai_fast_help: Vazio usa o principal.
+        features_title: Recursos
+        summary_min_posts_label: Mínimo de postagens para resumir
+        summary_min_posts_help: Discussões menores não mostram o botão.
+        personas_title: Personas
+        personas_help: Cada persona tem nome, descrição, o prompt de sistema e as ferramentas que pode usar. Quem conversa escolhe a persona embaixo do campo de pergunta.
+        access_title: Acesso e limites
+        allowed_groups_label: Quem pode usar o bot, o ajudante e o "Perguntar à IA"
+        allowed_groups_help: '"Membros" é todo usuário com o e-mail confirmado. Administradores sempre podem.'
+        summary_groups_label: Quem pode gerar resumos de discussões
+        summary_groups_help: Ler um resumo pronto, qualquer um que veja a discussão pode, inclusive visitantes.
+        daily_limit_label: Pedidos por pessoa por dia
+        daily_limit_help: Cada pergunta ao bot, cada uso do ajudante e cada resumo gerado conta um. 0 = sem limite. Administradores não têm limite.
+        embeddings_title: Embeddings
+        requires_related: Ligue "Discussões relacionadas" no card Recursos.
+        embeddings_help: 'A Anthropic não tem API de embeddings: use uma compatível com a da OpenAI (OpenAI, Voyage, Mistral, Ollama…). Para gerar todos de uma vez: "php flarum canela:ai-embeddings --all".'
+        embeddings_url_label: URL da API de embeddings
+        embeddings_key_label: Chave da API
+        embeddings_model_label: Modelo
+        enabled_label: Ligar a IA
+        enabled_help: Desligada, nenhum recurso de IA aparece no fórum e a API da IA responde 404.
+        bot_enabled_label: Bot de IA (conversas)
+        bot_enabled_help: 'A página /ai/conversations: perguntas à IA, com a lista de conversas na barra lateral, personas e respostas em streaming. Com as personas que podem, a IA busca e lê o fórum (só o que a pessoa pode ver) e cita as discussões.'
+        bot_header_icon_label: Ícone do robô no cabeçalho
+        bot_header_icon_help: Abre as conversas; dentro delas, volta para onde a pessoa estava.
+        bot_sidebar_link_label: Link "Bot de IA" na barra lateral
+        bot_sidebar_link_help: Na seção da comunidade.
+        search_enabled_label: Perguntar à IA na busca
+        search_enabled_help: 'O campo de busca vira "Pesquisar ou perguntar à IA", e o modal de busca oferece "Perguntar à IA: <consulta>", que abre a conversa.'
+        helper_enabled_label: Ajudante de IA no editor
+        helper_enabled_help: 'O botão ✨ da barra do editor: revisar, traduzir, simplificar, explicar, gerar tabela, prompt personalizado, sugerir título e sugerir tags, com a prévia das mudanças e "Confirmar/Descartar".'
+        summary_enabled_label: Resumo da discussão
+        summary_enabled_help: O botão "Resumir" no mapa da discussão abre o painel com o resumo em streaming. O resumo fica guardado, e todos que veem a discussão podem lê-lo; quando a discussão ganha respostas, ele aparece como desatualizado, com "Gerar novamente".
+        gists_enabled_label: Resumos curtos na lista
+        gists_enabled_help: Uma frase gerada pela IA no lugar do excerto, nas discussões mais ativas. Gerados de hora em hora pelo agendador ("php flarum schedule:run" no cron), até 20 por rodada, cada um é uma chamada ao modelo rápido.
+        related_enabled_label: Discussões relacionadas (embeddings)
+        related_enabled_help: No fim da discussão, as discussões mais parecidas no significado. Precisa da API de embeddings (configurada aqui, com o recurso ligado); os vetores são gerados de hora em hora e na primeira visita a cada discussão.
+      auth:
+        pages_label: Entrar e cadastrar em página própria
+        pages_help: Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup, como no Discourse. Desligada, eles abrem os modais.
+      bookmarks:
+        title: Marcadores
+        bookmarks_enabled_label: Marcadores
+        bookmarks_enabled_help: Cada usuário marca posts para voltar depois, com um nome e um lembrete opcionais, e encontra todos na aba "Marcadores" do próprio perfil. Desligado, os botões somem e a API responde como se o recurso não existisse, os marcadores já criados ficam guardados.
+        bookmarks_topic_button_label: Marcar discussão
+        bookmarks_topic_button_help: Acrescenta "Marcar discussão" aos controles da discussão (o menu "…" do rodapé). Marca o primeiro post, como o Discourse.
+        bookmarks_user_menu_label: Item no menu do usuário
+        bookmarks_user_menu_help: Um atalho "Marcadores" no menu do avatar, logo abaixo de "Perfil".
+        reminders_notice: Os lembretes saem pelo agendador do Flarum, a cada cinco minutos, o servidor precisa rodar "php flarum schedule:run" pelo cron a cada minuto. Sem o cron, os marcadores funcionam, mas nenhum lembrete é enviado.
+      composer:
+        section_editor: Editor do Discourse
+        enabled_label: Recursos do editor do Discourse
+        enabled_help: 'A chave geral: desligada, o composer volta a ser o do Flarum, sem nenhum dos recursos abaixo.'
+        emoji_label: Seletor de emoji
+        emoji_help: O botão de emoji da barra abre o seletor com busca, categorias, usados recentemente e tom de pele. Com a extensão Emoji, os emoji aparecem como as imagens dela.
+        emoji_notice: 'A extensão Emoji está desligada: o seletor usa os emoji do sistema e o tema oferece o autocompletar ":nome".'
+        preview_label: Pré-visualização lado a lado
+        preview_help: No computador, o texto formatado aparece à direita do editor. Cada pessoa pode escondê-la pelo botão « no canto do editor.
+        similar_label: Discussões semelhantes
+        similar_help: Ao escrever o título de uma discussão nova (três palavras ou mais), mostra "Sua discussão é semelhante a…" com até cinco discussões parecidas.
+        linked_topic_label: Responder como discussão vinculada
+        linked_topic_help: No composer de resposta, o menu "↩ ▾" troca a resposta por uma discussão nova com o mesmo texto, um link de volta e as mesmas tags.
+        section_drafts: Rascunhos
+        drafts_label: Rascunhos (fof/drafts)
+        drafts_help: 'Com a extensão FoF Drafts, o tema mostra os rascunhos como o Discourse: a discussão nova e a resposta são salvas sozinhas dois segundos depois de parar de escrever, responder numa discussão retoma o rascunho dela, fechar com texto pergunta se descarta ou guarda, e o botão Iniciar Discussão ganha o ⌄ com a lista. Também ficam no menu do usuário e na aba Rascunhos do perfil.'
+        drafts_note: Os rascunhos são guardados pelo fof/drafts (tabela drafts), que também cuida das permissões e do agendamento. Edições de postagens não têm rascunho.
+        section_hashtags: '#tag'
+        hashtags_label: Hashtags de tags
+        hashtags_help: 'Digitar # no editor sugere as tags e insere um link para elas; nos posts, esses links (e as menções de tag da extensão Menções) viram a pílula com o símbolo da tag.'
+        hashtags_mentions_notice: 'Com a extensão Menções ligada, o # do editor é dela (menção de tag); o tema só desenha as menções como hashtags do Discourse.'
+        requires_composer: Os recursos do editor estão desligados (card Editor do Discourse, acima).
+      extras:
+        search_title: Página de busca
+        search_page_enabled_label: Página de busca avançada
+        search_page_enabled_help: 'A página /search do Discourse: abas de discussões, postagens, tags e usuários, filtros avançados (autor, tag primária, tags, só no título, curtidos, status, datas, mínimo de postagens) e ordenação. O modal de busca ganha o link “Busca avançada”.'
+        search_notice: 'Os filtros também viram atalhos que se digitam na busca: em:título, em:curtidos, em:marcadores e mín-postagens:5, ao lado dos do Flarum (autor:, tag:, é:trancada…).'
+        bulk_title: Seleção em massa
+        bulk_select_enabled_label: Seleção em massa para a moderação
+        bulk_select_enabled_help: 'Um botão na barra da lista liga caixas de seleção em cada discussão e uma barra de ações: marcar como lida, fixar, trancar, alterar tags, ocultar e excluir. Só aparece para quem pode moderar alguma discussão da lista, e cada ação só vale onde a pessoa tem permissão.'
+        top_periods_title: Melhores por período
+        top_periods_enabled_label: Seletor de período na aba Melhores
+        top_periods_enabled_help: Na aba Melhores aparece “Todo o período / Ano / Trimestre / Mês / Semana / Hoje”, que limita a lista às discussões criadas no intervalo.
+        text_size_title: Tamanho do texto
+        text_size_enabled_label: Escolha do tamanho do texto
+        text_size_enabled_help: Em Configurações, cada pessoa escolhe Menor, Normal, Maior ou Máximo. A escolha vale para o aparelho (fica no navegador), como no Discourse.
+        banner_title: Banner de anúncio
+        banner_enabled_label: Mostrar o banner
+        banner_enabled_help: Uma faixa acima do conteúdo, em todas as páginas, com um botão de fechar. Quem fecha não vê de novo, até o texto mudar.
+        banner_text_label: Texto do banner
+        banner_text_help: Markdown, BBCode e emoji, como numa postagem. Para HTML, comece o texto com uma tag HTML (p, div…). Vazio, o banner não aparece.
+        banner_reshow: Mostrar de novo para quem fechou
+        banner_reshow_done: O banner vai aparecer de novo para todos.
+        print_title: Imprimir discussão
+        print_topic_enabled_label: Item “Imprimir” nos controles da discussão
+        print_topic_enabled_help: Carrega todas as postagens numa visão limpa (sem barra lateral, cabeçalho nem linha do tempo) e abre a impressão do navegador, que também salva em PDF.
+        history_title: Histórico de edições
+        post_history_enabled_label: Guardar e mostrar o histórico de edições
+        post_history_enabled_help: Cada edição guarda o texto anterior. O “Editado” do post vira um lápis com o número de revisões, que abre a comparação entre as versões (no texto ou lado a lado).
+        history_notice: Só as edições feitas com o recurso ligado entram no histórico. Desligado, nada novo é guardado e o histórico some do fórum, o que já foi guardado fica no banco. O texto das versões de um post oculto só aparece para quem pode editá-lo.
+      section_icons: Ícones
+      lucide_icons_label: Ícones do Discourse (Lucide)
+      lucide_icons_help: Os ícones de interface (busca, sino, responder, curtir, menus…) com o traço fino do Lucide, como no meta.discourse.org. Desligado, voltam os ícones sólidos do Font Awesome. Os que o Meta não troca (marcas e parte dos escolhidos para tags e grupos) continuam no Font Awesome.
+      metoo:
+        title: Eu também (Me too)
+        enabled_label: Botão "Eu também" no primeiro post
+        enabled_help: 'A pílula "✋ Eu também" abaixo do primeiro post, como no Meta do Discourse: quem tem o mesmo problema clica, a contagem aparece entre parênteses e a pessoa passa a acompanhar a discussão. O autor e as discussões trancadas veem o botão só para leitura; visitantes são levados ao login. Desligado, o botão some e a API responde 404; as marcações ficam guardadas.'
+        tags_label: Onde o botão aparece
+        tags_help: 'Marque as tags de suporte (no Meta do Discourse: Support, Bug…). Nenhuma marcada vale para todas as discussões. Marcar uma tag pai inclui as filhas.'
+        tags_loading: Carregando as tags…
+        tags_some: '{count, plural, one {# selecionada} other {# selecionadas}}'
+        tags_all: Todas as tags
+        tags_clear: Limpar (todas)
+        hide_solved_label: Esconder quando a discussão tiver solução
+        hide_solved_help: Com a melhor resposta escolhida (FoF Best Answer), o botão some, e volta se a solução for retirada, o padrão do Discourse. Desligado, continua na discussão resolvida (o "várias soluções" do plugin).
+        follow_label: Quem marca passa a seguir a discussão
+        follow_help: Ao clicar em "Eu também", a pessoa passa a seguir a discussão (extensão Inscrições) para saber da solução, como o "Acompanhando" do Discourse. Quem já segue continua igual; desmarcar não deixa de seguir.
+        no_best_answer_notice: 'Sem a extensão FoF Best Answer, nenhuma discussão conta como resolvida: o botão fica em todas as discussões escolhidas.'
+      profile:
+        blocked_by_master: Ligue os campos extras no card "Perfil estendido".
+        characters_suffix: caracteres
+        section_main: Perfil estendido
+        profile_enabled_label: Campos extras no perfil
+        profile_enabled_help: 'Os campos do Discourse: cada pessoa conta quem é, onde está e o que anda fazendo. Desligado, os campos somem do fórum e da API, mas o que já foi preenchido fica guardado.'
+        profile_bio_label: Sobre mim (bio)
+        profile_bio_help: Texto curto no perfil e no cartão de usuário. Aceita links, **negrito**, *itálico* e `código`; nenhum HTML.
+        profile_bio_max_length_label: Tamanho máximo da bio
+        profile_bio_max_length_help: De {min} a {max} caracteres.
+        profile_location_label: Localização
+        profile_location_help: Cidade ou região, com um ícone de mapa no perfil.
+        profile_website_label: Site
+        profile_website_help: Um endereço http ou https, que abre em outra aba e não passa autoridade de busca (nofollow).
+        profile_birthday_label: Aniversário
+        profile_birthday_help: Data de nascimento opcional. Os outros veem só o dia e o mês, a menos que a pessoa escolha mostrar o ano.
+        section_title: Título do usuário
+        profile_title_label: Título abaixo do nome
+        profile_title_help: Um título curto (até 60 caracteres) no perfil, no cartão e ao lado do nome nos posts.
+        profile_title_self_label: Cada pessoa escolhe o próprio título
+        profile_title_self_help: Desligado, só quem pode editar usuários (a moderação) define títulos, como uma distinção dada pela equipe.
+        section_status: Status do usuário
+        profile_status_label: Status com emoji
+        profile_status_help: Um emoji e uma frase ("🌴 De férias até sexta") ao lado do nome nos posts, no cartão e no avatar do cabeçalho. A pessoa escolhe quando o status some sozinho.
+        section_cover: Capa e fundo do cartão
+        profile_cover_label: Imagens do perfil
+        profile_cover_help: Uma capa larga no topo do perfil e um fundo para o cartão de usuário, como no Discourse. Sem imagem, a capa usa a cor do usuário.
+        profile_cover_upload_label: Permitir envio de imagem
+        profile_cover_upload_help: As imagens são reduzidas (a capa a 2000px, o cartão a 900px), convertidas para WebP e guardadas em assets/canela-covers. Desligado, só se aceita o endereço https de uma imagem.
+        cover_notice: Endereços externos precisam ser https. O navegador de quem visita o perfil busca a imagem direto no outro site.
+        cover_forumaker_notice: 'A forumaker/profile-cover está ativa: a capa e o fundo do cartão vêm dela (Integrações → Capa do perfil). As imagens enviadas aqui ficam guardadas, mas não aparecem nem podem ser trocadas enquanto ela mandar.'
+      stats:
+        section_links: Cliques em links
+        stats_links_enabled_label: Contar cliques em links
+        stats_links_enabled_help: 'Cada clique num link externo de uma postagem é contado, como no Discourse: o número aparece ao lado do link, os "Links populares" no mapa da discussão e os "Melhores links" no resumo do perfil.'
+        links_notice: Um clique por link por pessoa (ou IP, para visitantes) a cada 24 horas; robôs não contam. Só links externos que estão na postagem.
+        section_views: Visualizações de discussão
+        stats_views_enabled_label: Contar visualizações
+        stats_views_enabled_help: Cada discussão conta quantas vezes foi aberta, como no Discourse. O número aparece na coluna Visualizações da lista e permite ordenar por mais vistas.
+        stats_view_window_hours_label: Horas até contar a mesma pessoa de novo
+        stats_view_window_hours_help: Conte uma nova visualização de discussão uma vez por IP/usuário(a) a cada N horas, e sempre de novo num dia novo, como no Discourse (topic_view_duration_hours). De {min} a {max} horas; o Discourse usa 8.
+        hours_suffix: horas
+        views_notice: 'Como no Discourse: uma visualização por discussão por dia para cada conta (ou IP, para visitantes), travada pelas horas acima; só conta quem pode ver a discussão, e robôs não contam. O IP de quem está na conta não é guardado, e o de visitantes fica só como um código com sal, nunca o IP em si. Cada dia fica guardado para o gráfico "Visualizações recentes" do mapa da discussão.'
+        heat_title: Realce da coluna Visualizações
+        heat_help: As cores de calor da coluna Visualizações da lista (heatmap do Discourse). Valem quando "Destacar contagens altas" está ligado na Lista de discussões.
+        topic_views_heat_low_label: Realce leve a partir de
+        topic_views_heat_low_help: Após uma quantidade de visualizações, o campo de visualizações é levemente realçado. O Discourse usa 1000.
+        topic_views_heat_medium_label: Realce moderado a partir de
+        topic_views_heat_medium_help: Após esta quantidade de visualizações, o campo de visualizações é moderadamente realçado. O Discourse usa 2000.
+        topic_views_heat_high_label: Realce forte a partir de
+        topic_views_heat_high_help: Após esta quantidade de visualizações, o campo de visualizações é fortemente realçado. O Discourse usa 3500.
+        views_suffix: visualizações
+        section_counts: Contagem de novos e não lidos
+        stats_counts_enabled_label: Mostrar as contagens
+        stats_counts_enabled_help: 'Para quem entrou na conta: "Novos (3)" e "Não lidos (2)" nas abas da lista, e um ponto ao lado de Todas as Discussões na barra lateral quando há novidade.'
+        stats_new_days_label: Dias em que uma discussão é nova
+        stats_new_days_help: Discussões criadas nesse período que a pessoa ainda não abriu. 0 conta tudo desde o cadastro ou o último "marcar tudo como lido". De {min} a {max}; o Discourse usa 2.
+        days_suffix: dias
+        section_activity: Atividade no perfil
+        stats_activity_enabled_label: Registrar a atividade
+        stats_activity_enabled_help: Dias visitados, tempo de leitura (total e dos últimos 60 dias), postagens lidas, discussões vistas e curtidas dadas e recebidas, no resumo do perfil, como no Discourse.
+        activity_notice: O tempo de leitura só conta com a aba visível e alguém mexendo na página. Os números começam do zero no dia em que o recurso é ligado; discussões vistas dependem de Visualizações ligado.
+      ramon_chat_features:
+        group_moderation: "Moderação"
+        review_flags_label: "Denúncias do chat em \"Revisar\""
+        review_flags_help: "As mensagens do chat denunciadas entram na fila de revisão do tema (página, barra lateral e menu do usuário), junto com as postagens e na ordem das datas, para quem vê as sinalizações ou modera o chat."
+        title: "Recursos extras do chat (ramon/chat)"
+        description: "O que o chat do Discourse tem e o ramon/chat não: avisos no sino, reações de um clique, \"Nova mensagem\", favoritos, link da mensagem, \"está digitando\" sem websocket e mais: sem mudar a extensão."
+        backend_off: "O recurso \"ramonchat\" do tema não está ligado (extend/.enabled)."
+        group_reader: "Para o leitor"
+        group_messages: "Mensagens"
+        group_channels: "Canais e MDs"
+        dm_max_label: "Participantes por MD"
+        dm_max_help: "Contando quem começa a conversa. O ramon/chat aceita no máximo 20."
+        preferences_label: "Seção \"Chat\" nas Configurações"
+        preferences_help: "Ativar o chat, som, indicador do cabeçalho, tecla de enviar, reações de um clique, gaveta, e-mail de menções e \"Ignorar menções em todo o canal\"."
+        header_indicator_label: "Indicador do cabeçalho configurável"
+        header_indicator_help: "O leitor escolhe o que o botão do chat conta: todas as novas, MDs e menções, só menções ou nada."
+        drawer_shortcut_label: "Atalho \"-\" para a gaveta"
+        drawer_shortcut_help: "Abre e fecha a gaveta do chat, como no Discourse."
+        bell_label: "Avisos no sino"
+        bell_help: "Menções (@here só para quem esteve ativo nos últimos 5 minutos) e mensagens novas nos canais acompanhados viram notificações; ler o canal as marca como lidas."
+        quick_reactions_label: "Reações de um clique"
+        quick_reactions_help: "As três reações mais usadas pelo leitor (ou as que ele escolher) ao lado do 👍."
+        permalink_label: "Link da mensagem"
+        permalink_help: "\"Copiar link\" nas ações e o endereço que abre a conversa na mensagem."
+        restore_label: "Restaurar mensagem excluída"
+        restore_help: "O botão no aviso de mensagem excluída, para quem pode restaurá-la."
+        long_press_label: "Ações por toque longo no celular"
+        long_press_help: "Segurar a mensagem abre a folha de ações que sobe de baixo."
+        collapse_deleted_label: "Agrupar excluídas em sequência"
+        collapse_deleted_help: "\"N mensagens foram excluídas\" numa linha só, com \"ver todas\"."
+        paste_upload_label: "Colar e arrastar imagens"
+        paste_upload_help: "Imagens e arquivos colados ou soltos no compositor são enviados como anexo."
+        mention_warning_label: "Aviso de quem não participa"
+        mention_warning_help: "No @ do compositor, quem não está no canal aparece com \"não participa do canal\"."
+        typing_poll_label: "\"Está digitando\" sem websocket"
+        typing_poll_help: "Sem o flarum/realtime, quem está com a conversa aberta pergunta ao servidor a cada 3 segundos."
+        new_message_label: "\"Nova mensagem\""
+        new_message_help: "O modal de MD e MD em grupo (busca de pessoas, contador, nome do grupo) e o \"+\" das Mensagens diretas."
+        self_dm_label: "MD consigo mesmo (\"Anotar algo\")"
+        self_dm_help: "Uma conversa só sua, para anotações."
+        group_name_label: "Nome do chat em grupo"
+        group_name_help: "Qualquer participante muda o nome da conversa em grupo."
+        starred_label: "Canais favoritos"
+        starred_help: "A estrela no cabeçalho e nas Informações do canal; os favoritos vão para o topo da barra lateral."
+        pin_indicator_label: "Fixadas não vistas"
+        pin_indicator_help: "Um ponto na faixa da mensagem fixada quando há fixada que o leitor ainda não abriu."
+        retention_label: "Lembrete de retenção"
+        retention_help: "Por quanto tempo as mensagens ficam guardadas, nas Informações do canal."
+        delete_confirm_label: "Excluir canal digitando o nome"
+        delete_confirm_help: "Excluir um canal pede o nome dele digitado, em vez de um \"OK\"."
+        auto_join_label: "Entrar sozinho nos canais automáticos"
+        auto_join_help: "Quem ganhou acesso depois entra nos canais com \"Adicionar usuários automaticamente\" (no máximo uma vez por dia por pessoa)."
+        tag_cleanup_label: Apagar os canais da tag apagada
+        tag_cleanup_help: Ao apagar uma tag, os canais dela são excluídos.
+        dm_guard_label: "Regras das MDs"
+        dm_guard_help: "Recusa MD com quem não pode usar o chat ou o desligou, e aplica o limite de participantes abaixo."
+  forum:
+    ai:
+      translation:
+        original_language: Esta postagem foi originalmente escrita em {language}.
+        title_original_language: Este título foi originalmente escrito em {language}.
+        click_to_show_original: Clique para mostrar o original.
+        click_to_show_translation: Clique para mostrar a tradução.
+        disclaimer: Traduções geradas por IA podem ser imprecisas.
+        show_original_all: Mostrar o conteúdo original
+        show_translated_all: Mostrar o conteúdo traduzido
+      errors:
+        generic: A IA não conseguiu responder agora. Tente de novo.
+      tools:
+        searched: 'Pesquisou por "{query}": {count, plural, =0 {nenhum resultado} one {# resultado} other {# resultados}}'
+        read: Leu a discussão
+        read_missing: Tentou ler uma discussão que não está disponível
+      bot:
+        page_title: Conversas com IA
+        title: Bot de IA
+        header: Como posso ajudar?
+        placeholder: Faça uma pergunta...
+        submit: Enviar pergunta
+        disclaimer: A IA generativa pode cometer erros. Confira as informações principais.
+        new: Nova pergunta
+        persona_label: 'Agente:'
+        remaining: '{count, plural, =0 {Você usou todos os pedidos de hoje.} one {Resta # pedido hoje.} other {Restam # pedidos hoje.}}'
+        untitled: Conversa com IA
+        scroll_to_bottom: Rolar para a parte inferior
+        cancel_streaming: Parar resposta
+        shortcut_title: Iniciar uma conversa com o bot de IA
+        shortcut_link: Bot de IA
+        exit: sair do bot de IA
+        back_to_forum: Voltar ao fórum
+        sidebar_empty: O histórico de conversas do bot será exibido aqui.
+        load_more: Carregar mais
+        conversation_menu: Opções da conversa
+        rename: Renomear
+        rename_prompt: 'Novo nome da conversa:'
+        delete: Excluir
+        delete_confirm: Excluir esta conversa? Não dá para desfazer.
+        today: Hoje
+        last_7_days: Últimos sete dias
+        last_30_days: Últimos 30 dias
+        not_allowed: Você não tem acesso ao bot de IA.
+        log_in: Entre para conversar com o bot de IA.
+      search:
+        placeholder: Pesquisar ou perguntar à IA
+        ask_prefix: 'Perguntar à IA:'
+        badge: IA
+      summary:
+        title: Resumo da discussão
+        close: Fechar painel de resumo
+        generate: Resumir
+        regenerate: Gerar novamente
+        in_progress: Resumindo a discussão usando IA
+        summarized_on: Resumo feito com a IA em {date}
+        model_used: 'IA usada: {model}'
+        outdated: O resumo está desatualizado
+        outdated_posts: '{count, plural, one {(# postagem faltando)} other {(# postagens faltando)}}'
+        empty: Ainda não há resumo desta discussão.
+      helper:
+        trigger: Perguntar à IA
+        changes: Edições sugeridas
+        explain_title: Explicação da IA
+        loading: A IA está gerando conteúdo
+        confirm: Confirmar
+        discard: Descartar
+        regen: Tentar novamente
+        copy: Copiar
+        copied: Copiou!
+        no_content_error: Primeiro adicione conteúdo para realizar ações de IA nele
+        custom_prompt_placeholder: Insira um prompt personalizado...
+        custom_prompt_submit: Enviar prompt
+        translate: Traduzir para {language}
+        proofread: Revisar texto
+        simplify: Simplificar
+        explain: Explicar
+        markdown_table: Gerar tabela de Markdown
+        generate_titles: Sugerir título da discussão
+        suggest_tags: Sugerir tags
+        no_suggestions: Sem sugestões disponíveis
+      related:
+        title: Discussões relacionadas
+        topic: Discussão
+        replies: Respostas
+        activity: Atividade
+    auth:
+      login_page_title: Entrar
+      signup_page_title: Cadastrar-se
+      forgot_heading: Redefinir senha
+      back_to_login: Voltar para entrar
+      reset_heading: Redefinir senha
+      reset_help: Escolha uma nova senha para a sua conta (pelo menos 8 caracteres).
+      reset_new_password: Nova senha
+      reset_confirm_password: Confirme a nova senha
+      reset_submit: Salvar nova senha
+      forgot_page_title: Redefinir senha
+    badges:
+      page_title: Emblemas
+      nav: Emblemas
+      unavailable: Os emblemas estão desligados neste fórum.
+      none: Nenhum emblema por aqui ainda.
+      not_found: Este emblema não existe ou foi desligado.
+      all_badges: Todos os emblemas
+      recipients: Quem ganhou
+      no_recipients: Ninguém ganhou este emblema ainda.
+      load_more: Carregar mais
+      owned: Você tem este emblema
+      granted_ago: Concedido em {ago}
+      granted_on: Concedido em {date}
+      awarded: '{count, plural, one {{number} concedido} other {{number} concedidos}}'
+      multiple_grant: Pode ser ganho várias vezes
+      more: +{count}
+      more_badges: Mais emblemas
+      summary_heading: Melhores emblemas
+      user_none: '{username} ainda não ganhou nenhum emblema.'
+      trust_level_label: 'Nível de confiança: {level}'
+      trust_level: Nível de confiança
+      notification: Ganhou "{badge}"
+      notification_setting: Quando eu ganhar um emblema
+      types:
+        gold: Ouro
+        silver: Prata
+        bronze: Bronze
+      groupings:
+        getting_started: Primeiros passos
+        community: Comunidade
+        posting: Postando
+        trust_level: Nível de confiança
+        other: Outros
+      trust_levels:
+        newuser: usuário(a) novo(a)
+        basic: usuário(a) básico(a)
+        member: membro
+        regular: regular
+        leader: líder
+      trust_level_modal:
+        control: Alterar nível de confiança…
+        title: Nível de confiança de {username}
+        level_label: Nível
+        locked_label: Bloquear nível de confiança
+        locked_help: 'O nível está bloqueado: o sistema não vai promover nem rebaixar.'
+        unlocked_help: 'O nível está desbloqueado: o sistema pode promover ou rebaixar conforme os requisitos.'
+        submit: Salvar
+    bookmarks:
+      post:
+        add: Marcar este post
+        edit: Editar marcador
+        reminder: 'lembrete: {date}'
+      topic:
+        add: Marcar discussão
+        edit: Editar marcador da discussão
+      alerts:
+        added: Post marcado.
+        removed: Marcador excluído.
+        set_reminder: Definir lembrete
+      modal:
+        create_title: Criar marcador
+        edit_title: Editar marcador
+        name_label: Nome
+        name_placeholder: Dê um nome a este marcador para lembrar do que se trata
+        reminder_label: Lembre-me
+        existing_reminder: Você será lembrado(a) deste marcador em {date}.
+        custom_date: Data do lembrete
+        custom_time: Hora do lembrete
+        invalid_date: Escolha uma data e uma hora no futuro.
+        save: Salvar
+        cancel: Cancelar
+        delete: Excluir
+      presets:
+        later_today: Mais tarde hoje
+        tomorrow: Amanhã
+        next_week: Próxima semana
+        next_month: Próximo mês
+        custom: Escolher data e hora
+        none: Sem lembrete
+      page:
+        nav: Marcadores
+        title: Marcadores
+        private: Os marcadores são pessoais, só o dono do perfil vê os dele.
+        search_placeholder: Pesquisar marcadores…
+        column_topic: Discussão
+        column_date: Marcado
+        empty: Você ainda não tem marcadores.
+        empty_help: Use o ícone de marcador de qualquer post para guardá-lo aqui, com um nome e um lembrete, se quiser.
+        no_results: Nenhum marcador encontrado para “{query}”.
+        load_more: Carregar mais
+        reminder_future: 'Lembrete: {date}'
+        reminder_past: 'Lembrete enviado: {date}'
+        actions: Ações do marcador
+        edit: Editar
+        clear_reminder: Tirar o lembrete
+        delete: Excluir
+        delete_confirm: Este marcador tem um lembrete marcado. Excluir mesmo assim?
+      notification:
+        text: 'Lembrete do marcador: {title}'
+      settings:
+        notify_reminder_label: Me lembrar dos marcadores no horário que eu escolher
+    chat:
+      title_capitalized: Chat
+      heading: Chat
+      open: Abrir chat
+      open_full_page: Abrir chat em tela cheia
+      close_full_page: Fechar chat em tela cheia
+      close: Fechar
+      collapse: Recolher gaveta de chat
+      expand: Expandir Chat
+      chat_channels: Canais
+      browse_all_channels: Navegar por todos os canais
+      deleted_chat_username: excluído(a)
+      deleted_message: Mensagem excluída
+      all_loaded: Mostrando todas as mensagens
+      last_visit: último acesso
+      edited: editou
+      you: você
+      join: Participar
+      cancel: Cancelar
+      cancel_reply: Cancelar resposta
+      save: Salvar
+      delete: Excluir
+      restore: Restaurar mensagem excluída
+      edit: Editar
+      reply: Responder
+      react: Reagir com emoji
+      emoji: Inserir emoji
+      upload: Anexar arquivo
+      upload_to_channel: Enviar para {title}
+      remove_upload: Remover arquivo
+      copy_link: Copiar link
+      copy_text: Copiar texto
+      link_copied: Link copiado para área de transferência
+      text_copied: Texto copiado para área de transferência
+      pin_message: Fixar mensagem
+      unpin_message: Desafixar mensagem
+      pinned: Fixada
+      message_actions: Ações da mensagem
+      more_message_actions: Mais ações
+      scroll_to_bottom: Rolar para a parte inferior
+      scroll_to_new_messages: Ver novas mensagens
+      invalid_access: Você não tem acesso para ver este canal de chat
+      load_more: Carregar mais
+      enable: Ativar chat
+      disabled_for_you: O chat está desativado para você. Ative-o em Configurações → Chat.
+      log_in_to_chat: Entre para usar o chat.
+      no_pinned_messages: Não há mensagens fixadas neste canal.
+      no_public_channels: Você ainda não entrou em nenhum canal!
+      no_public_channels_cta: Explorar canais
+      no_direct_message_channels: Você ainda não entrou em nenhum canal de mensagem direta!
+      no_direct_message_channels_cta: Iniciar uma conversa
+      message_too_long: A mensagem é muito longa. As mensagens devem ter no máximo {count} caracteres.
+      mention_here: notificar quem está ativo agora
+      mention_all: notificar todos do canal
+      deleted: '{count, plural, one {Uma mensagem foi excluída. [ver]} other {# mensagens foram excluídas. [ver todas]}}'
+      deleted_by: Excluída por {username} às {time}
+      placeholder_self: Anotar algo
+      placeholder_channel: Converse em {channelName}
+      placeholder_thread: Conversar no fio
+      placeholder_users: Conversar com {commaSeparatedNames}
+      placeholder_group: Chat em grupo
+      placeholder_silenced: Você não pode enviar mensagens neste momento.
+      placeholder_new_message_disallowed:
+        archived: Canal arquivado, não é possível enviar novas mensagens no momento.
+        closed: Canal fechado, não é possível enviar novas mensagens no momento.
+        read_only: Canal somente para leitura, não é possível enviar novas mensagens no momento.
+      retry_staged_message:
+        title: Erro de rede
+        action: Enviar novamente?
+      upload_errors:
+        too_large: grande demais
+        failed: falhou
+      aria_roles:
+        composer: Compositor de chat
+      composer:
+        send: Enviar
+        toggle_toolbar: Ativar/desativar barra de ferramentas
+      chat_message_separator:
+        today: Hoje
+        yesterday: Ontem
+      ago:
+        now: agora
+        minutes: '{count} min'
+        hours: '{count} h'
+        days: '{count} d'
+      replying_indicator:
+        single_user: '{username} está digitando'
+        multiple_users: '{commaSeparatedUsernames} e {lastUsername} estão digitando'
+        many_users: '{commaSeparatedUsernames} e mais {count} estão digitando'
+      reactions:
+        add: Reaja com {emoji}
+        remove: Remova sua reação {emoji}
+        counted: '{count, plural, one {Reação {emoji}, # pessoa} other {Reação {emoji}, # pessoas}}'
+        only_you: Você reagiu com {emoji}
+        you_and_single_user: Você e {username} reagiram com {emoji}
+        you_and_multiple_users: Você, {commaSeparatedUsernames} e {username} reagiram com {emoji}
+        you_multiple_users_and_more: '{count, plural, one {Você, {commaSeparatedUsernames} e mais # pessoa reagiram com {emoji}} other {Você, {commaSeparatedUsernames} e mais # pessoas reagiram com {emoji}}}'
+        single_user: '{username} reagiu com {emoji}'
+        multiple_users: '{commaSeparatedUsernames} e {username} reagiram com {emoji}'
+        multiple_users_and_more: '{count, plural, one {{commaSeparatedUsernames} e mais # pessoa reagiram com {emoji}} other {{commaSeparatedUsernames} e mais # pessoas reagiram com {emoji}}}'
+      mention_warning:
+        not_member: não participa do canal
+        invitations_sent: '{count, plural, one {Convite enviado} other {Convites enviados}}'
+      pinned_bar:
+        title: Fixada
+      pinned_messages:
+        title: Mensagens fixadas
+        pinned_by_you: Fixada por você
+        pinned_by_user: Fixada por {username}
+      channel_list:
+        title: Canais
+      direct_messages:
+        title: MDs
+        sidebar_title: Mensagens diretas
+        new_group: Iniciar uma conversa
+        close: Fechar canal
+      my_threads:
+        title: Meus fios
+      search:
+        short_title: Pesquisar
+        title: Pesquisar no chat
+        no_results: Nenhum resultado encontrado
+        sort:
+          relevance: Relevância
+          latest: Últimos
+      search_view:
+        filter_placeholder: Pesquisar mensagens
+        results_list_label: Resultados da pesquisa de mensagens de chat
+      empty_state:
+        title: Nenhum canal encontrado
+        my_threads: Você ainda não tem nenhum fio. Os fios de que você participa serão exibidos aqui.
+      browse:
+        title: Canais
+        filter_all: Tudo
+        filter_open: Aberto
+        filter_closed: Fechados
+        filter_archived: Arquivados
+        filter_input_placeholder: Pesquisar canal por nome
+      channel:
+        no_memberships: Este canal não tem membros
+        no_memberships_found: Nenhum membro encontrado
+        memberships_count: '{count, plural, one {# membro} other {# membros}}'
+        empty_state:
+          title: Este é o começo de {channelName}
+          direct_message_title: Comece a conversa com {name}
+          joined_tip: Seja a primeira pessoa a escrever e comece a conversa.
+          members_here: '{count, plural, one {# membro aqui} other {# membros aqui}}'
+        preview_card:
+          guest_title: Entre em {channelName} para começar a conversar
+          join_body: Você vai poder escrever e responder, e o canal aparece na sua lista de canais.
+          no_access_title: Você não pode entrar em {channelName}
+          no_access_body: Este canal não está aberto a novos membros no momento.
+      channel_status:
+        read_only_header: O canal é somente para leitura
+        archived_header: O canal está arquivado
+        closed_header: Canal fechado
+        open_header: Canal aberto
+      channel_info:
+        back_to_channel: Voltar
+        tabs:
+          members: Membros
+          settings: Configurações
+      about_view:
+        associated_category: Tag vinculada
+        name: Nome
+        description: Descrição
+      members_view:
+        filter_placeholder: Encontrar membros
+        add_member: Adicionar membro
+        back_to_settings: Voltar para as configurações
+      channel_settings:
+        edit: Editar
+        star_channel: Adicionar canal aos favoritos
+        close_channel: Fechar canal
+        open_channel: Abrir canal
+        archive_channel: Arquivar canal
+        delete_channel: Excluir canal
+        leave_channel: Sair do canal
+        leave_groupchat_info: Ao sair do chat em grupo, você não terá mais acesso a ele nem receberá as notificações relacionadas. Para entrar novamente, você precisa ser convidado(a) novamente por um membro do chat em grupo.
+        join: Participar
+        leave: Sair
+      channel_archive:
+        confirm: 'Arquivar o canal {channelTitle}? Ele fica somente para leitura: nenhuma mensagem nova, e as existentes não podem mais ser editadas nem excluídas.'
+        instructions_plain: O arquivamento coloca o canal em modo somente leitura. Nenhuma mensagem nova pode ser enviada e nenhuma mensagem existente pode ser editada ou excluída.
+      channel_open:
+        instructions: Reabre o canal, todos(as) os(as) usuários(as) poderão enviar mensagens e editar suas mensagens existentes.
+      channel_close:
+        instructions: Fechar o canal impede que usuários(as) não funcionários(as) enviem novas mensagens ou editem mensagens existentes.
+      channel_delete:
+        title: Excluir canal
+        instructions: Exclui o canal e o histórico de chat de {name}. Todas as mensagens e dados relacionados, como as reações e uploads, serão permanentemente excluídos. Se você deseja preservar o histórico do canal e apenas desativá-lo, talvez seja melhor arquivá-lo. Para confirmar, escreva o nome do canal no campo abaixo.
+        confirm: Eu entendo as consequências, exclua o canal
+        confirm_channel_name: Digite o nome do canal
+        process_started: O canal foi excluído.
+      channel_edit_name_slug_modal:
+        input_placeholder: Adicionar um nome
+        slug_label: Slug
+        slug_description: Um slug de canal é usado na URL em vez do nome do canal
+      channel_edit_description_modal:
+        input_placeholder: Adicione uma descrição
+        description: Diga às pessoas do que se trata este canal
+      create_channel:
+        title: Novo canal
+        create: Criar canal
+        name: Nome do canal
+        description: Descrição
+        threading:
+          label: Ativar fios
+        choose_category:
+          label: Escolha uma tag
+          none: selecionar um...
+          hint: Opcional. Com uma tag, só quem enxerga a tag enxerga o canal.
+      direct_message_creator:
+        title: Novas mensagens
+        add_to_channel: Adicionar ao canal
+        selected_user_title: Desmarcar {username}
+      new_message_modal:
+        add_user_long: 'Shift + clique ou Shift + Enter: adicionar @{username}'
+        default_search_placeholder: '#um-canal, @alguém ou alguma coisa'
+        user_search_placeholder: '... incluir mais membros'
+        no_items: Nenhum item
+        create_group_placeholder: Nome do chat em grupo (opcional)
+        participants_counter: '{selection_count}/{max} participantes'
+        new_group_chat: Novo chat em grupo
+        create_new_group_chat: Criar chat em grupo
+      notification_levels:
+        never: Nunca
+        mention: Apenas para menções
+        always: Para todas as atividades
+      settings:
+        info_title: Informações do canal
+        settings_title: Configurações
+        admin_title: Administração
+        history_label: Histórico
+        mute: Silenciar canal
+        notification_level: Enviar notificações
+        saved: Salvou
+        channel_wide_mentions_label: Permitir menções @all e @here
+        channel_wide_mentions_description: 'Permitir que os usuários notifiquem todos os membros de #{channel} com @all ou apenas aqueles que estão ativos no momento com @here'
+        channel_threading_label: Fios
+        channel_threading_description: Com os fios ativados, as respostas a uma mensagem de chat criarão uma conversa separada, que existirá junto com o canal principal.
+        auto_join_users_label: Adicionar usuários(as) automaticamente
+        auto_join_users_info: Quem tem acesso à tag {category} entra no canal sozinho, ao abrir o fórum.
+        auto_join_users_info_no_category: Quem tem acesso ao canal entra nele sozinho, ao abrir o fórum.
+      retention_reminders:
+        indefinitely_long_plain: As mensagens deste canal são mantidas indefinidamente.
+        long: '{count, plural, one {As mensagens deste canal são mantidas por # dia.} other {As mensagens deste canal são mantidas por # dias.}}'
+      thread:
+        label: Fio
+        close: Fechar fio
+        settings: Configurações
+        replies: '{count, plural, one {# resposta} other {# respostas}}'
+        participants_other_count: +{count}
+        notifications:
+          regular:
+            title: Normal
+            description: Receba uma notificação quando você for mencionado(a) neste fio.
+          tracking:
+            title: Monitorando
+            description: Receba uma notificação quando você for mencionado(a) neste fio e veja a quantidade de respostas novas na lista de fios.
+          watching:
+            title: Acompanhando
+            description: Receba uma notificação sobre todas as respostas neste fio e veja a quantidade de respostas novas na lista de fios.
+      threads:
+        open: Abrir fio
+        list: Fios
+        none: Você não está participando de nenhum fio neste canal.
+      sound:
+        title: Som de notificação do chat
+      sounds:
+        none: Nenhum
+        bell: Sino
+        ding: Ding
+      header_indicator_preference:
+        title: Mostrar indicador de atividade no cabeçalho
+        all_new: Todas as Novas Mensagens
+        dm_and_mentions: Mensagens diretas, menções e fios acompanhados
+        only_mentions: Apenas menções
+        never: Nunca
+      send_shortcut:
+        title: Enviar mensagens com
+        enter: Enter (Shift + Enter para nova linha)
+        meta_enter: Ctrl/⌘ + Enter (Enter para nova linha)
+      quick_reaction_type:
+        title: Reações de um clique no chat
+        options:
+          frequent: Reações usadas com mais frequência no chat
+          custom: Reações personalizadas
+      ignore_channel_wide_mention:
+        title: Ignorar menções em todo o canal
+        description: As menções @here e @all não notificam você.
+      notifications:
+        mention: '{username} mencionou você em {channel}'
+        mention_here: '{username} usou @here em {channel}'
+        mention_all: '{username} usou @all em {channel}'
+        direct_message: uma mensagem direta
+        direct_message_from: '{username} enviou uma mensagem direta'
+        message_in: '{username} escreveu em {channel}'
+        settings_mention: Alguém me menciona no chat
+        settings_message: Recebo uma mensagem direta no chat
+      errors:
+        too_fast: Você está enviando mensagens rápido demais. Espere alguns segundos.
+        message_empty: A mensagem está vazia.
+        message_too_long: A mensagem é muito longa. As mensagens devem ter no máximo {count} caracteres.
+        reply_not_found: A mensagem respondida não existe mais.
+        thread_not_found: Este fio não existe mais.
+        invalid_emoji: Reação inválida.
+        too_many_reactions: Uma mensagem aceita no máximo {count} reações diferentes.
+        too_many_pins: Um canal aceita no máximo {count} mensagens fixadas.
+        tag_not_found: Tag não encontrada.
+        invalid_status: Este canal não pode voltar a esse estado.
+        name_required: Dê um nome ao canal.
+        name_too_long: O nome pode ter no máximo {count} caracteres.
+        slug_taken: Já existe um canal com esse slug.
+        description_too_long: A descrição pode ter no máximo {count} caracteres.
+        cannot_dm: Desculpe, você não pode enviar mensagens diretas.
+        too_many_users: Uma conversa aceita no máximo {count} participantes.
+        user_not_found: Usuário(a) não encontrado(a).
+        user_cannot_chat: '{username} desativou o chat'
+    community:
+      unavailable: Esta página não está disponível.
+      load_error: Não foi possível carregar esta página. Tente de novo em instantes.
+      load_more: Carregar mais
+      about:
+        title: Sobre
+        members: '{count, plural, =0 {Nenhum membro} =1 {# Membro} other {# Membros}}'
+        admin_count: '{count, plural, =1 {# Administrador(a)} other {# Administradores(as)}}'
+        moderator_count: '{count, plural, =1 {# Moderador(a)} other {# Moderadores(as)}}'
+        created_ago: Criado(a) {ago}
+        created: Criado em {date}
+        our_admins: Nossos administradores
+        our_moderators: Nossos moderadores
+        contact_title: Fale conosco
+        contact_text: 'Para assuntos urgentes ou que envolvam este fórum, fale com a equipe:'
+        activity_title: Atividade do site
+        activity:
+          topics: '{count, plural, one {{formatted} discussão} other {{formatted} discussões}}'
+          posts: '{count, plural, one {{formatted} postagem} other {{formatted} postagens}}'
+          users: '{count, plural, one {{formatted} cadastro} other {{formatted} cadastros}}'
+          activeUsers: '{count, plural, one {{formatted} usuário ativo} other {{formatted} usuários ativos}}'
+          likes: '{count, plural, one {{formatted} curtida} other {{formatted} curtidas}}'
+        last_7_days: nos últimos 7 dias
+        stats_title: Estatísticas do site
+        period:
+          day: Últimas 24 horas
+          week: Últimos 7 dias
+          month: Últimos 30 dias
+          all: Desde sempre
+        stat:
+          topics: Discussões
+          posts: Postagens
+          users: Usuários
+          activeUsers: Usuários ativos
+          likes: Curtidas
+      guidelines:
+        title: Diretrizes
+      legal:
+        tos: Termos de Serviço
+        privacy: Política de Privacidade
+      users:
+        title: Usuários
+        empty: Ainda não há usuários para mostrar.
+        no_results: Ninguém encontrado com esse nome.
+        forbidden: Você não tem permissão para ver a lista de usuários.
+        login_required: Entre na sua conta para ver a lista de usuários.
+        period_label: Período
+        search_placeholder: Filtrar por nome de usuário
+        total: '{count, plural, one {# usuário} other {# usuários}}'
+        period:
+          all: Desde sempre
+          yearly: Ano
+          quarterly: Trimestre
+          monthly: Mês
+          weekly: Semana
+          daily: Hoje
+        column:
+          username: Nome de usuário
+          likesReceived: Recebidas
+          likesGiven: Dadas
+          topicCount: Discussões criadas
+          postCount: Respostas
+          daysVisited: Visitas
+          postsRead: Lidas
+          lastSeenAt: Último acesso
+      groups:
+        title: Grupos
+        empty: Nenhum grupo para mostrar.
+        members: '{count, plural, =0 {nenhum membro} one {# membro} other {# membros}}'
+        closed: Fechado
+        filter_placeholder: Todos os grupos
+        hidden: Oculto
+        not_found: Este grupo não existe ou você não pode vê-lo.
+        back: Todos os grupos
+        tabs_label: Seções do grupo
+        tab_members: Membros
+        tab_activity: Atividade
+        members_forbidden: Você não tem permissão para ver os membros dos grupos.
+        members_login: Entre na sua conta para ver os membros deste grupo.
+        no_members: Este grupo ainda não tem membros.
+        no_activity: Os membros deste grupo ainda não postaram nada.
+    composer:
+      emoji:
+        button: Emoji
+        title: Seletor de emoji
+        search_placeholder: Buscar emoji…
+        close: Fechar
+        hint: Escolha um emoji
+        no_results: Nenhum emoji encontrado.
+        autocomplete_header: Digite para buscar emoji
+        tone_label: Tom de pele
+        groups:
+          recent: Usados recentemente
+          smileys: Carinhas e emoções
+          people: Pessoas
+          nature: Animais e natureza
+          food: Comida e bebida
+          activities: Atividades
+          travel: Viagens e lugares
+          objects: Objetos
+          symbols: Símbolos
+          flags: Bandeiras
+        tones:
+          '0': Padrão
+          '1': Pele clara
+          '2': Pele morena clara
+          '3': Pele morena
+          '4': Pele morena escura
+          '5': Pele escura
+      hashtags:
+        autocomplete_header: Tags
+      similar:
+        title: Sua discussão é semelhante a…
+        close: Fechar
+      linked_topic:
+        menu_label: Ações da resposta
+        reply: Responder à discussão
+        new_topic: Responder como discussão vinculada
+        continuation: Continuação da discussão de {link}
+      drafts:
+        nav: Rascunhos
+        sidebar: Meus rascunhos
+        status_saving: Salvando…
+        status_saved: Rascunho salvo
+        status_error: Não foi possível salvar o rascunho
+        close_title: O que deseja fazer com a sua postagem?
+        close_text: O texto que você escreveu pode ficar guardado como rascunho para continuar depois, neste ou em outro aparelho.
+        discard: Descartar
+        save_for_later: Salvar rascunho para depois
+        keep_editing: Continuar editando
+        empty: Você não tem rascunhos.
+        untitled: (sem título)
+        unavailable: Discussão indisponível
+        reply_title: 'RE: {title}'
+        type_new_topic: Nova discussão
+        type_reply: Resposta
+        type_message: Mensagem
+        resume: Continuar
+        delete: Excluir rascunho
+        load_more: Carregar mais
+        menu_label: Abrir rascunhos
+        view_all: Ver todos ({count})
+      preview:
+        label: Pré-visualização
+        show: Mostrar a pré-visualização
+        hide: Esconder a pré-visualização
+      shell:
+        or: ou
+        body_placeholder_formats: Digite aqui. Use {formats} para formatar.
+        drag_images: Arraste ou cole imagens.
+        action_new_topic: Iniciar Discussão
+        action_reply: Discussão
+        action_edit: Editando postagem
+        reply_to_topic_desc: Responder à discussão, não a uma postagem específica
+        reply_as_new_topic_desc: Criar uma nova discussão relacionada a esta discussão
+        saved_draft: Rascunho de postagem em andamento. Toque para retomar.
+        category_placeholder: Tag primária…
+        tags_placeholder: Tags opcionais…
+        title_placeholder: Digite um título, ou cole um link aqui
+        body_placeholder: Digite aqui.
+        body_placeholder_markdown: Digite aqui. Use a barra de ferramentas ou Markdown para formatar.
+        body_placeholder_bbcode: Digite aqui. Use BBCode para formatar.
+        body_placeholder_markdown_bbcode: Digite aqui. Use Markdown ou BBCode para formatar.
+        submit_new_topic: Publicar Discussão
+        submit_reply: Responder
+        submit_edit: Salvar edição
+        discard: Descartar
+        cancel_edit: Cancelar edição
+        save_and_close: Salvar e fechar
+        body_placeholder_markdown_upload: Digite aqui. Use a barra de ferramentas ou Markdown para formatar. Arraste ou cole imagens.
+        body_placeholder_upload: Digite aqui. Arraste ou cole imagens.
+        search_placeholder: Pesquisar…
+        no_results: Nenhum resultado encontrado.
+        no_tags: Nenhuma tag disponível.
+        no_category: (sem tag)
+        remove_tag: Remover tag
+        max_primary_tags: "{count, plural, one {Limite de 1 tag primária atingido. Remova a escolhida para trocar.} other {Limite de # tags primárias atingido. Remova uma para escolher outra.}}"
+        max_secondary_tags: "{count, plural, one {Limite de 1 tag secundária atingido (as tags filhas também contam).} other {Limite de # tags secundárias atingido (as tags filhas também contam).}}"
+        bold_label: N
+        switch_to_markdown: Mudar para o editor Markdown
+        switch_to_rich: Mostrar o texto formatado
+        more_options: Opções
+        toggle_direction: Alternar direção
+        add_poll: Criar enquete
+        edit_poll: Editar enquete
+        action_create_topic: Iniciar Discussão
+        create_topic_desc: Criar uma nova discussão
+    modals:
+      login_title: Boas-vindas outra vez
+      signup_title: Criar sua conta
+      identification: E-mail/nome do(a) usuário(a)
+      forgot_password: Esqueci minha senha
+      no_account: Não tem uma conta?
+      sign_up: Cadastrar-se
+      forgot_title: Redefinição de senha
+      forgot_submit: Redefinir senha
+      flag_title: Obrigado por ajudar a manter a nossa comunidade civilizada!
+      flag_off_topic: Fora do tópico
+      flag_other: Algo mais
+      flag_submit: Sinalizar postagem
+    extras:
+      gambits:
+        in_group: em
+        title_key: título
+        likes_key: curtidos
+        bookmarks_key: marcadores
+        min_posts_key: mín-postagens
+        min_posts_hint: número mínimo de postagens da discussão
+      search:
+        title: Pesquisar
+        meta_title: Pesquisar
+        meta_title_query: 'Pesquisar: {query}'
+        tabs_label: O que pesquisar
+        tab_topics: Discussões
+        tab_posts: Postagens
+        tab_categories: Tags
+        tab_users: Usuários(as)
+        input_label: Termo de pesquisa
+        input_placeholder: Pesquisar
+        clear: Limpar a pesquisa
+        submit: Pesquisar
+        advanced: Filtros avançados
+        sort_by: Ordenar por
+        sort_relevance: Relevância
+        sort_latest_post: Postagem mais recente
+        sort_latest_topic: Discussão mais recente
+        sort_likes: Mais curtidos
+        sort_views: Mais vistos
+        result_count: '{count}{more} {count, plural, one {resultado} other {resultados}}'
+        result_for: para
+        no_results: Nenhum resultado encontrado.
+        failed: Não foi possível concluir a pesquisa. Tente de novo em instantes.
+        start: Digite o que procura, ou abra os filtros avançados.
+        need_more: Digite um termo de pesquisa.
+        load_more: Mais resultados
+        modal_link: Busca avançada →
+        posts_filters_note: Na busca de postagens valem só o autor, uma tag, as curtidas e os marcadores; os outros filtros são para discussões.
+        filter_author: Postado por
+        filter_author_placeholder: nome de usuário
+        filter_category: Na tag primária
+        filter_category_any: Qualquer tag primária
+        filter_tags: Com as tags
+        filter_tags_add: Adicionar tag…
+        filter_tag_remove: Remover a tag {name}
+        filter_where: Onde
+        filter_in_title: Só no título
+        filter_mine: Postados por mim
+        filter_liked: Curtidos por mim
+        filter_bookmarked: Marcados por mim
+        filter_unread: Não lidos
+        filter_status: Status
+        status_any: Qualquer
+        status_open: Abertos
+        status_closed: Fechados
+        status_sticky: Fixados
+        filter_posted: Postado
+        filter_after: depois de
+        filter_before: antes de
+        filter_min_posts: Mínimo de postagens
+      bulk:
+        toggle_on: Selecionar discussões
+        toggle_off: Sair da seleção
+        bar_label: Ações para as discussões selecionadas
+        selected: '{count, plural, =0 {Nenhuma discussão selecionada} one {# selecionada} other {# selecionadas}}'
+        select_all: Selecionar todos ({count})
+        select_one: Selecionar “{title}”
+        clear: Limpar
+        hint: Marque as discussões (shift+clique seleciona um intervalo).
+        mark_read: Marcar como lido
+        sticky: Fixar
+        unsticky: Desafixar
+        lock: Fechar
+        unlock: Abrir
+        tags: Alterar tags
+        hide: Excluir
+        restore: Restaurar
+        delete: Excluir para sempre
+        hide_confirm: '{count, plural, one {Excluir # discussão?} other {Excluir # discussões?}} Dá para restaurar depois.'
+        delete_confirm: '{count, plural, one {Excluir # discussão para sempre?} other {Excluir # discussões para sempre?}} Não dá para desfazer.'
+        done: '{count, plural, =0 {Nenhuma discussão alterada.} one {# discussão alterada.} other {# discussões alteradas.}}'
+        skipped: '{count, plural, one {# ignorado (sem permissão ou já estava assim).} other {# ignorados (sem permissão ou já estavam assim).}}'
+        failed: '{count, plural, one {# falhou.} other {# falharam.}}'
+      top_periods:
+        label: Período
+        all: Todo o período
+        yearly: Ano
+        quarterly: Trimestre
+        monthly: Mês
+        weekly: Semana
+        daily: Hoje
+      text_size:
+        heading: Interface
+        label: Tamanho do texto
+        help: Vale só para este aparelho.
+        smaller: Menor
+        normal: Normal
+        larger: Maior
+        largest: Máximo
+      banner:
+        label: Anúncio
+        dismiss: Fechar o anúncio
+      print:
+        button: Imprimir
+        preparing: Preparando a discussão para impressão…
+        print_again: Imprimir
+        close: Fechar
+      history:
+        title: Histórico
+        open: '{count, plural, one {# revisão} other {# revisões}}: ver o histórico'
+        failed: Não foi possível carregar o histórico desta postagem.
+        content_hidden: Esta postagem está oculta; o texto das versões só aparece para quem pode editá-la.
+        pager_label: Navegar entre as revisões
+        first: Primeira versão
+        previous: Revisão anterior
+        next: Próxima revisão
+        last: Versão atual
+        position: Versão {from} → {to} (de {total})
+        original: Versão original (de {total})
+        edited_by: Editado por {name} em {date}
+        created_by: Escrito por {name} em {date}
+        deleted_user: usuário excluído
+        mode_label: Modo de comparação
+        mode_inline: No texto
+        mode_side: Lado a lado
+        added: '{count, plural, one {+# palavra} other {+# palavras}}'
+        removed: '{count, plural, one {−# palavra} other {−# palavras}}'
+        before: Versão anterior
+        after: Esta versão
+    shortcuts:
+      groups:
+        actions: Ações
+        jump_to: Pular para
+        navigation: Navegação
+        application: Solicitação
+      actions:
+        new: Novos
+        unread: Não lidos
+        bookmarks: Marcadores
+        messages: Mensagens
+        drafts: Rascunhos
+        next_prev_topic_jump: Próxima / anterior discussão da lista
+        suggested: Primeira discussão sugerida
+        jump_to_post: Pular para a postagem nº…
+        first_last_post: Primeira / última postagem
+        first_unread: Primeira postagem não lida
+        next_prev_section: Próxima / anterior seção
+        show_incoming: Mostrar as discussões novas ou atualizadas
+        user_menu: Abrir o menu do usuário
+        focus_composer: Voltar ao editor
+        search_global: Pesquisar (até digitando)
+        log_out: Sair
+        bookmark_topic: Marcar a discussão
+        pin_topic: Fixar / desafixar a discussão
+        share_topic: Compartilhar a discussão
+        reply_topic: Responder à discussão
+        reply_post: Responder à postagem
+        quote_post: Citar a postagem
+        reply_linked: Responder como discussão vinculada
+        like_post: Curtir a postagem
+        bookmark_post: Marcar a postagem
+        share_post: Compartilhar a postagem
+        edit_post: Editar a postagem
+        delete_post: Excluir a postagem
+        flag_post: Sinalizar a postagem
+        topic_menu: Abrir o menu da discussão
+        print: Imprimir a discussão
+        watch_topic: Acompanhar a discussão
+        regular_topic: Notificações normais na discussão
+        mute_topic: Silenciar a discussão
+        bulk_item: Selecionar a discussão (seleção em massa)
+        bulk_toggle: Ligar / desligar a seleção em massa
+        dismiss: Descartar novos ou não lidos
+        home: Início
+        latest: Recentes
+        top: Melhores
+        categories: Tags
+        notifications: Notificações
+        profile: Perfil
+        settings: Configurações
+        next_prev_topic: Próxima / anterior discussão
+        open_topic: Abrir a discussão selecionada
+        back: Voltar
+        sidebar: Abrir ou fechar a barra lateral
+        create: Iniciar uma discussão
+        reply: Responder à discussão
+        search: Pesquisar
+        help: Mostrar os atalhos de teclado
+      title: Atalhos do teclado
+      or: ou
+      search_placeholder: Pesquisar atalho por combinação de chaves ou descrição
+      no_results: Nenhum atalho encontrado.
+    gaps:
+      lightbox:
+        title: Imagem
+        counter: '{current} de {total}'
+        zoom: Zoom (tecla Z)
+        open: Imagem original
+        download: Baixar
+        close: Fechar (Esc)
+        previous: Anterior (seta para a esquerda)
+        next: Próximo (seta para a direita)
+      code:
+        copy: copiar código para a área de transferência
+        copied: copiado!
+        fullscreen: exibir código em tela cheia
+        view_code: Visualizar código
+      table:
+        expand: Expandir tabela
+        view_table: Visualizar tabela
+      heading_anchor: Link do cabeçalho
+      spoiler:
+        reveal: 'Spoiler: clique para revelar'
+      read_state:
+        unread: Postagem não lida
+        last_visit: último acesso
+      timeline:
+        back: Voltar
+        back_description: Voltar para a sua última postagem não lida
+      jump:
+        title: Pular para…
+        post_label: Postagem nº
+        of: de {count, plural, one {# postagem} other {# postagens}}
+        submit: Ir
+      title_editor:
+        edit: Editar o título
+        label: Título da discussão
+        tags: Tags
+        save: Salvar
+        cancel: Cancelar
+      share:
+        title: Compartilhar discussão
+        post_title: Compartilhar postagem nº{number}
+        instructions: 'Compartilhar um link para esta discussão:'
+        post_instructions: 'Compartilhar o link desta postagem:'
+        link_label: Link
+        copy: Copiar
+        copied: Link copiado.
+        networks:
+          x: Compartilhar no X
+          facebook: Compartilhar no Facebook
+          linkedin: Compartilhar no LinkedIn
+          whatsapp: Compartilhar no WhatsApp
+          telegram: Compartilhar no Telegram
+          reddit: Compartilhar no Reddit
+          email: Enviar por e-mail
+      last_visit: último acesso
+      dismiss:
+        unread: Descartar
+        new: Descartar
+        confirm_unread: Marcar como lidas todas as discussões desta lista?
+        confirm_new: Marcar como lidas as discussões novas desta lista?
+      notifications:
+        post_edited: '{username} editou sua postagem'
+        post_edited_setting: Alguém editou uma postagem minha
+        topic_linked: '{username} vinculou sua discussão'
+        topic_linked_setting: Alguém pôs um link para uma discussão minha
+        invite_accepted: '{username} aceitou seu convite'
+        invite_accepted_setting: Alguém entrou por um convite meu
+      invites:
+        title: Convidar para o fórum
+        help: Gere um link e mande para quem você quer trazer. Quem se cadastrar por ele aparece como convidado por você, e você recebe um aviso.
+        sign_up_closed: O cadastro está fechado neste fórum; o link só funciona quando a administração abrir o cadastro.
+        max_redemptions: Quantas pessoas podem usar
+        expires_days: Válido por quantos dias
+        create: Gerar link (e copiar)
+        yours: Seus convites
+        none: Você ainda não gerou convites.
+        uses: '{used} de {max} usos'
+        expires: vale até {date}
+        delete: Apagar o convite
+        sidebar: Convidar
+        share_button: Convidar
+        invited_by: '{username} convidou você para o fórum.'
+      category_notifications:
+        toggle: 'Notificações da tag: {level}'
+        watching: Acompanhando
+        watching_description: Você vai acompanhar automaticamente todas as discussões desta tag e será notificado de cada nova postagem.
+        watching_first_post: Acompanhando a primeira postagem
+        watching_first_post_description: Você será notificado da primeira postagem de cada nova discussão desta tag.
+        normal: Normal
+        normal_description: Você será notificado se alguém mencionar o seu @nome ou responder a você.
+        muted: Silenciado
+        muted_description: Você nunca será notificado sobre as discussões desta tag.
+        hidden: Silenciado e oculto
+        hidden_description: Além de não notificar, as discussões desta tag somem da lista de Recentes.
+      sidebar:
+        home: Início
+        my_messages: Minhas mensagens
+        new_in_category: Há discussões novas ou não lidas nesta tag
+        review: Revisar
+        faq: Perguntas frequentes
+        tos: Termos de serviço
+        privacy: Privacidade
+        custom_title: Links
+    list:
+      topic: Discussão
+      replies: Respostas
+      views: Visualizações
+      activity: Atividade
+      new_topic: Nova discussão
+      unread_count: '{count, plural, one {# resposta não lida} other {# respostas não lidas}}'
+      mark_read: clique para marcar como lido
+      original_poster: Autor original
+      relevant_poster: Postagem mais relevante
+      most_recent_poster: Postador mais recente
+      replies_a11y: '{count, plural, one {# resposta} other {# respostas}}'
+      views_a11y: '{count, plural, one {# visualização} other {# visualizações}}'
+      created_at: 'Criado em: {date}'
+      last_reply_at: 'Última resposta: {date}'
+      read_more: ler mais
+    nav:
+      label: Navegação da lista de discussões
+      latest: Recentes
+      hot: Em alta
+      newest: Novos
+      unread: Não lidos
+      top: Melhores
+      categories_link: Tags
+      more: Mais ordenações
+      sort_label: Escolher a lista
+      categories: tags
+      subcategories: tags filhas
+      tags: tags secundárias
+      all_categories: Todas as tags
+      all_subcategories: Tudo em {name}
+      all_tags: Todas as tags secundárias
+      new_topic: Iniciar Discussão
+      remove_filter: remover filtro
+      no_subcategory: nenhuma tag filha
+      no_tags: sem tags secundárias
+      search_placeholder: Pesquisar...
+      no_results: Nenhum resultado encontrado.
+      filter_for_more: Filtre para ver mais...
+    hero:
+      subcategories: Tags filhas
+    categories:
+      category: Tag
+      topics: Discussões
+      latest: Último
+      tags_title: Tags secundárias
+      tags_sort_by: Ordenar por
+      tags_sort_count: contagem
+      tags_sort_name: nome
+      tags_all: Todas as tags
+      tags_none: Nenhuma tag secundária ainda.
+    messages:
+      reactions:
+        react: Reagir
+        unreact: Desfazer reação
+        reactors_title: Reações
+        notification: '{username} reagiu à sua mensagem'
+      untitled: Mensagem
+      page:
+        title: Mensagens
+        nav: Mensagens
+      nav:
+        label: Caixas de mensagens
+        inbox_box: Caixa de entrada
+        all: todas as caixas de entrada
+        inbox: Últimos
+        sent: Enviadas
+        new: Novo
+        new_with_count: '{count, plural, one {Novo (#)} other {Novos (#)}}'
+        unread: Não lidas
+        unread_with_count: '{count, plural, one {Não lido (#)} other {Não lidos (#)}}'
+        archive: Arquivo
+        new_message: Nova mensagem
+      list:
+        new_message: Mensagem nova
+        unread_count: '{count, plural, one {# mensagem não lida} other {# mensagens não lidas}}'
+      empty:
+        title: Você não tem mensagens
+        body_1: Precisa ter uma conversa pessoal direta, fora do fluxo de conversa normal? Envie uma mensagem ao selecionar o seu avatar e usar o botão de mensagem {icon}.
+        body_2: Se precisar de ajuda, envie uma <a>mensagem a um membro da equipe</a>.
+      topic:
+        glyph: Esta é uma mensagem pessoal
+        map_label: Participantes da mensagem
+        replies: '{count, plural, one {resposta} other {respostas}}'
+        leave: Sair
+        leave_confirm: Tem certeza de que quer sair desta mensagem?
+        footer_label: Ações da mensagem
+        share: Compartilhar um link desta discussão
+        copy_link: copiar um link desta postagem para a área de transferência
+        archive: Arquivar
+        archive_help: Mover mensagem para o seu arquivo
+        move_to_inbox: Mover para caixa de entrada
+        move_to_inbox_help: Mover mensagem de volta para caixa de entrada
+        reply: Responder
+        views: '{count, plural, one {# visualização} other {# visualizações}}'
+        remove_user: Remover usuário
+        remove_confirm: Tem certeza de que quer remover {name} desta mensagem?
+        defer: Marcar não lido
+        defer_help: Marcar como não lido
+      composer:
+        action_new: Criar mensagem
+        action_new_desc: Criar uma nova mensagem pessoal
+        action_topic: Iniciar Discussão
+        action_topic_desc: Criar uma nova discussão
+        action_reply: Mensagem
+        actions_label: Ações do composer
+        users_placeholder: Adicionar usuários(as) ou grupos
+        remove_recipient: Remover {username}
+        searching: Pesquisando…
+        no_results: Nenhum resultado encontrado
+        type_to_search: Digite para pesquisar
+        title_placeholder: Título
+        submit: Enviar mensagem
+        submit_reply: Responder
+        recipients_missing: Adicione pelo menos um destinatário.
+        staff_keyword: equipe
+        reply_as_message: Responder como mensagem privada
+        reply_as_message_desc: Criar uma nova mensagem pessoal para o autor da discussão
+      sidebar:
+        my_messages: Minhas mensagens
+        unread: '{count, plural, one {# mensagem nova ou não lida} other {# mensagens novas ou não lidas}}'
+      user:
+        message: Mensagem
+      invite:
+        title: Convidar
+        help: Digite o nome do(a) usuário(a) da pessoa que você gostaria de convidar para esta discussão.
+        placeholder: Selecionar…
+        submit: Enviar convite
+        success: Convidamos esse usuário(a) para participar desta mensagem privada.
+        success_group: Convidamos esse grupo para participar desta mensagem privada.
+      notifications:
+        watching: Acompanhando
+        watching_description: Você será notificado(a) sobre cada resposta nova nesta mensagem. Um contador de respostas novas será exibido.
+        watching_reason: Você receberá notificações porque você está acompanhando esta discussão.
+        tracking: Monitorando
+        tracking_description: Um contador de respostas novas será exibido para esta mensagem. Você será notificado(a) se alguém mencionar seu @nome ou responder às suas mensagens.
+        tracking_reason: Você verá uma contagem de respostas novas porque está monitorando esta discussão.
+        regular: Normal
+        regular_description: Você será notificado(a) se alguém mencionar seu @nome ou responder às suas mensagens.
+        regular_reason: Você será notificado(a) se alguém mencionar seu @nome ou responder às suas mensagens.
+        muted: Silenciado(a)
+        muted_description: Você nunca receberá nenhuma notificação sobre esta mensagem.
+        muted_reason: Você está ignorando todas as notificações desta discussão.
+      events:
+        invited_user: Convidou {who} {when}
+        invited_group: Convidou {who} {when}
+        removed_user: Removeu {who} {when}
+        user_left: '{who} se removeram desta mensagem {when}'
+    metoo:
+      label: Eu também
+      label_with_count: '{label} ({count})'
+      title: Também estou com este problema
+      author_title: Você começou esta discussão
+      closed_title: Esta discussão está fechada
+    motion:
+      link_copied: Link copiado!
+    profile:
+      status:
+        label: Status
+        until: até {when}
+        choose_emoji: Escolher emoji
+        custom_emoji: Outro emoji
+        no_emoji: Sem emoji
+        clear_never: Não limpar
+        clear_30m: Daqui a 30 minutos
+        clear_1h: Daqui a 1 hora
+        clear_4h: Daqui a 4 horas
+        clear_today: Hoje
+        clear_week: Esta semana
+        clear_custom: Escolher data e hora
+      birthday:
+        today: Faz aniversário hoje!
+      settings:
+        heading: Perfil
+        save: Salvar perfil
+        discard: Descartar alterações
+        saved: Seu perfil foi salvo.
+        title_label: Título
+        title_placeholder: 'Ex.: Moderadora, Fotógrafo, Desenvolvedora'
+        title_help: Aparece abaixo do seu nome no perfil e ao lado dele nos posts.
+        title_locked: O título é definido pela moderação.
+        bio_label: Sobre mim
+        bio_placeholder: Conte um pouco sobre você.
+        bio_help: Aceita links, **negrito**, *itálico* e `código`.
+        location_label: Localização
+        location_placeholder: 'Ex.: São Paulo, Brasil'
+        website_label: Site
+        birthday_label: Aniversário
+        birthday_show_year: Mostrar o ano (e, com ele, a idade)
+        birthday_help: Os outros veem só o dia e o mês, a menos que você mostre o ano.
+        status_label: Status
+        status_placeholder: 'Ex.: De férias, Em reunião, Respondendo devagar'
+        status_clear: Limpar status
+        status_clear_after: Limpar depois de
+        status_custom_required: Escolha a data e a hora em que o status deve sumir.
+        cover_label: Capa do perfil
+        cover_help: Uma imagem larga no topo do seu perfil. Envie um arquivo ou cole o endereço https de uma imagem.
+        card_label: Fundo do cartão de usuário
+        card_help: Aparece atrás do seu nome no cartão que abre ao clicar no seu avatar.
+        cover_edit: Editar capa
+        cover_forumaker_help: Uma imagem larga no topo do seu perfil, que também aparece no fundo do seu cartão de usuário. No editor dá para enviar, remover e escolher a parte da imagem que fica à mostra.
+        no_image: Nenhuma imagem
+        upload: Enviar imagem
+        remove_image: Remover imagem
+        image_too_large: A imagem passa de {max}. Escolha uma menor.
+      moderation:
+        clear_status: Limpar o status
+        clear_images: Remover a capa e o fundo do cartão
+    review:
+      title: Revisar
+      empty: Nada a revisar.
+      load_more: Carregar mais
+      filter_label: Tipo
+      filter_all: Todos
+      filter_flagged: Postagens sinalizadas
+      filter_queued: Postagens na fila
+      type_flagged: Postagem sinalizada
+      type_queued: Postagem na fila
+      status_pending: Pendente
+      hidden_label: Oculta
+      view_post: ver postagem
+      show_more: Mostrar mais
+      show_less: Mostrar menos
+      flagged_by: Sinalizado por
+      flag_type: Motivo
+      flag_date: Quando
+      reason_off_topic: Fora do tópico
+      reason_inappropriate: Inadequado
+      reason_spam: Spam
+      reason_other: Algo mais
+      queued_reason: Esta postagem aguarda a aprovação de um moderador antes de aparecer para todos.
+      agree: Concordar…
+      agree_and_hide: Concordar e ocultar postagem
+      agree_and_keep: Concordar e manter postagem
+      agree_and_keep_hidden: Concordar e manter oculta
+      disagree: Discordar
+      disagree_and_restore: Discordar e restaurar postagem
+      ignore: Ignorar
+      delete_post: Excluir postagem
+      delete_confirm: Excluir esta postagem? Não é possível desfazer.
+      approve_post: Aprovar postagem
+      reject_post: Rejeitar postagem
+      reject_confirm: Rejeitar esta postagem? Ela será excluída.
+      done_agreed: Sinalizações aceitas. A postagem foi mantida.
+      done_agreed_hidden: Sinalizações aceitas. A postagem foi ocultada.
+      done_disagreed: Sinalizações recusadas.
+      done_ignored: Sinalizações ignoradas.
+      done_deleted: Postagem excluída.
+      done_approved: Postagem aprovada.
+      done_rejected: Postagem rejeitada.
+    search_menu:
+      title: Pesquisar
+      in: em
+      in_topics_posts: em todas as discussões e postagens
+      enter_hint: ou pressione Enter
+      mobile_enter_hint: ou toque em Pesquisar
+      too_short: Seu termo de pesquisa é muito curto.
+      no_results: Nenhum resultado encontrado.
+      open_advanced: Abrir pesquisa avançada
+      clear_search: Limpar pesquisa
+      clear_recent: Remover pesquisas recentes
+      close: Fechar pesquisa
+      more: Mais
+      results: resultados
+      tips:
+        category_tag: filtros por tag
+        author: filtros por autor(a) de postagem
+        in: 'filtros por metadados (por exemplo: {examples})'
+        full_search: inicia pesquisa de página inteira
+    header:
+      language: 'Idioma: {name}'
+      advanced_search: Abrir pesquisa avançada
+    sidebar:
+      label: Barra lateral
+      toggle: Abrir ou fechar a barra lateral
+      new_topic: Iniciar Discussão
+      topics: Todas as Discussões
+      my_posts: Minhas postagens
+      my_messages: Minhas mensagens
+      admin: Administração
+      more: Mais
+      categories: Tags
+      tags: Tags secundárias
+      all_categories: Todas as tags
+      all_tags: Todas as tags
+      notifications: Notificações
+      settings: Configurações
+      customize_categories: Personalizar tags
+      customize_tags: Personalizar tags secundárias
+      customize_filter: Filtrar…
+      customize_save: Salvar
+      customize_reset: Restaurar o padrão
+      keyboard_shortcuts: Atalhos de teclado
+      palette:
+        title: Paleta de cores
+        default: Padrão
+        high_contrast: Alto contraste
+      theme:
+        title: Tema
+        save_failed: Não foi possível trocar o tema. Tente de novo.
+      color_mode:
+        title: Modo de cor
+        light: Claro
+        dark: Escuro
+        auto: Automático
+    age:
+      now: agora
+      minutes: '{count} min'
+      hours: '{count} h'
+      days: '{count} d'
+    stats:
+      views:
+        views_long: '{count, plural, one {esta discussão foi vista {number} vez} other {esta discussão foi vista {number} vezes}}'
+        views_lowercase: '{count, plural, one {visualização} other {visualizações}}'
+        short_thousands: '{number}k'
+        short_millions: '{number}M'
+        menu_title: Visualizações recentes
+        view_explainer: Uma visualização por visitante exclusivo(a) a cada {hours} horas.
+        no_views: Sem estatísticas de visualização por enquanto, volte mais tarde.
+        chart_error: Erro ao renderizar gráfico, tente novamente.
+        views: Visualizações
+        predicted_views: Visualizações previstas
+      views_sort: Mais vistos
+      new_count: '{count, plural, one {# discussão nova} other {# discussões novas}}'
+      unread_count: '{count, plural, one {# discussão com respostas não lidas} other {# discussões com respostas não lidas}}'
+      sidebar_dot: 'Há novidades: {new} novos e {unread} não lidos'
+      activity:
+        days_visited: Dias visitados
+        time_read: Tempo de leitura
+        posts_read: Postagens lidas
+        topics_viewed: Discussões vistas
+        likes_given: Curtidas dadas
+        likes_received: Curtidas recebidas
+      duration:
+        seconds: '{count} s'
+        minutes: '{count} min'
+        hours: '{count} h'
+        days: '{count} d'
+    links:
+      clicks: '{count, plural, one {# clique} other {# cliques}}'
+    ramon_chat:
+      review:
+        type: "Mensagem de chat denunciada"
+        view_in_chat: "Ver no chat"
+        message_deleted: "A mensagem foi excluída."
+        dismiss: "Descartar denúncia"
+        done_dismissed: "Denúncia descartada."
+        delete_message: "Excluir mensagem"
+        delete_confirm: "Excluir esta mensagem do chat? As denúncias dela também saem da fila."
+        done_deleted: "Mensagem excluída."
+        filter_chat: "Chat"
+      preferences:
+        sound_default: "Som do fórum"
+        quick_custom_help: "Os nomes dos emoji separados por espaço (heart, tada, eyes…). O 👍 já tem o botão dele."
+        open_in_drawer: "Abrir o chat na gaveta"
+        open_in_drawer_help: "Desligado, o botão do chat abre a página cheia."
+        email_mentions: "Receber e-mail quando me mencionarem no chat"
+      notifications:
+        settings_message: "Uma conversa que acompanho no chat recebe mensagem nova"
+      new_message:
+        search_placeholder: "Buscar pessoas"
+        open: "Abrir conversa"
+      group_name:
+        help: "Todos os participantes veem o novo nome. Vazio, a conversa volta a usar os nomes das pessoas."
+      star:
+        remove: "Remover canal dos favoritos"
+      pins:
+        unseen: "Há mensagem fixada que você ainda não viu"
+    marketplace:
+      categories: Categorias da loja
+      all: Todas
+      shop_messages: Mensagens da loja
+    thirdparty:
+      ramon_chat:
+        continue_in: Continuar em
+      solved:
+        accepted_bar: "Solução"
+        title: Solução
+        accepted: Solução
+        accepted_title: Marcada como solução
+        accepted_by: Marcada como solução por {username} {ago}
+        mark: Marcar como solução
+        unmark: clique para desmarcar
+        jump: Ir para a resposta
+        expand: Mostrar a resposta inteira
+        collapse: Recolher a resposta
+      reactions:
+        summary: '{count, plural, one {# reação: ver quem reagiu} other {# reações: ver quem reagiu}}'
+        picker: Escolha uma reação
+        react_with: Reagir com {reaction}
+        remove: Remover a sua reação
+        like_reaction: Curtir
+      polls:
+        votes: '{count, plural, =0 {votos} one {voto} other {votos}}'
+      upload:
+        uploading: '{count, plural, one {Enviando o arquivo…} other {Enviando # arquivos…}}'
+      wiki:
+        column_article: 'Artigo'
+        categories: 'categorias'
+        all_categories: 'Todas as categorias'
+        category_placeholder: 'Categoria…'
+        see_all: 'Ver todos'
+        edited_by: 'editado por {name}'
+        edits_title: 'Editado pela última vez em {date}'
+        history_title: 'Histórico de revisões'
+        close: 'Fechar'
+        more: 'Mais ações'
+        created: 'criado'
+        updated: 'atualizado'
+        revisions: '{count, plural, one {revisão} other {revisões}}'
+        advanced: 'Opções avançadas'
+        comment_action: 'Comentário'
+        comment_edit: 'Editando comentário'
+        share: 'Compartilhar artigo'
+        hero_description: 'Guias, referências e respostas escritas e mantidas pela comunidade.'
+        hero_articles: '{count, plural, one {# artigo} other {# artigos}}'
+        hero_categories: '{count, plural, one {# categoria} other {# categorias}}'
+        empty_title: 'Nenhum artigo por aqui'
+        empty_error: 'Verifique a conexão e tente de novo.'
+        retry: 'Tentar de novo'
+        empty_search: 'Tente outras palavras ou procure pela categoria.'
+        clear_search: 'Limpar a busca'
+        empty_category: 'Esta categoria ainda não tem artigos'
+        not_found: 'Artigo indisponível'
+        back_to_wiki: 'Voltar para a wiki'
+        previous: 'Anterior'
+        next: 'Próximo'
+        pager_label: 'Artigos da mesma categoria'
+    topic:
+      link_copied: Link copiado para a área de transferência.
+      new_replies: '{count, plural, one {Há # nova resposta} other {Há # novas respostas}}'
+      embedded:
+        go_to_post: Ir para o post
+      post:
+        mention_unavailable: "postagem indisponível"
+        in_reply_to: 'Em resposta a: clique para ver o post'
+        replies: '{count, plural, one {# resposta} other {# respostas}}'
+        more_replies: '{count, plural, one {Ver mais # resposta} other {Ver mais # respostas}}'
+        like: Curtir este post
+        unlike: Desfazer a curtida
+        cannot_like: Você não pode curtir este post
+        like_guest: Cadastre-se ou entre para curtir este post
+        go_to_quoted: Ir para o post citado
+        who_liked: Quem curtiu
+        reply: Responder
+        show_more: Mostrar mais
+        show_less: Mostrar menos
+        show_hidden: Ver o conteúdo do post excluído
+        hide_hidden: Esconder o conteúdo do post excluído
+        share: Copiar um link deste post para a área de transferência
+      notifications:
+        toggle: 'Notificações da discussão: {level}'
+        watching: Acompanhando
+        watching_description: Você será notificado(a) sobre cada nova resposta nesta discussão, e uma contagem de novas respostas será mostrada.
+        watching_reason: Você receberá notificações porque está acompanhando esta discussão.
+        normal: Normal
+        normal_description: Você será notificado(a) se alguém mencionar o seu @nome ou responder a você.
+        normal_reason: Você será notificado(a) se alguém mencionar seu @nome ou responder às suas mensagens.
+        muted: Silenciado
+        muted_description: Você nunca será notificado(a) de nada sobre esta discussão, e ela não aparecerá nas mais recentes.
+        muted_reason: Você nunca será notificado(a) de nada sobre esta discussão.
+      author_filter:
+        showing: Mostrando {count, plural, one {# postagem} other {# postagens}} de @{username}
+        show_all: Ver tudo
+      footer:
+        aria_label: Ações da discussão
+        share: Compartilhar
+        bookmark: Favorito
+        bookmarked: Favoritado
+        flag: Sinalizar
+        mark_unread: Marcar não lido
+        more: Mais ações da discussão
+        reply: Responder
+      suggested:
+        title: Discussões sugeridas
+        topic: Discussão
+        replies: Respostas
+        activity: Atividade
+        views: Visualizações
+        related_title: Discussões relacionadas
+        tab_suggested: Sugestões
+        tab_related: Relacionado(a)
+      map:
+        aria_label: Resumo da discussão
+        replies: '{count, plural, one {resposta} other {respostas}}'
+        views: '{count, plural, one {visualização} other {visualizações}}'
+        users: '{count, plural, one {usuário(a)} other {usuários(as)}}'
+        likes: '{count, plural, one {curtida} other {curtidas}}'
+        frequent_posters: Autores frequentes
+        most_liked: Respostas mais curtidas
+        links: '{count, plural, one {link} other {links}}'
+        popular_links: Links populares
+        show_more_links: Mostrar mais
+        posts: '{count, plural, one {# post} other {# posts}}'
+      timeline:
+        ago: '{age} atrás'
+        unread: '{count, plural, one {# não lida} other {# não lidas}}'
+      user_card:
+        read: Lido
+        read_recently: '{time} recentemente'
+        likes_received: Saudações
+        solutions: Soluções
+        posts_in_topic: '{count, plural, one {# postagem na discussão} other {# postagens na discussão}}'
+        view_profile: Ver perfil
+        more: Mais ações
+        online: Online agora
+        last_seen: Visto
+        joined: Ingressou
+        posts: Posts
+        discussions: Discussões
+    user:
+      age_ago:
+        now: agora mesmo
+        minutes: '{count, plural, one {# minuto atrás} other {# minutos atrás}}'
+        hours: '{count, plural, one {# hora atrás} other {# horas atrás}}'
+        days: '{count, plural, one {# dia atrás} other {# dias atrás}}'
+      stats:
+        joined: Ingressou
+        last_post: Última postagem
+        seen: Visto(a)
+        online: online agora
+        posts: Postagens
+        topics: Discussões
+        groups: Grupos
+      nav:
+        activity: Atividade
+        posts: Postagens
+        discussions: Discussões
+        read: Lidos
+        reactions: Reações
+        votes: Votos
+        solved: Resolvido
+        scroll_left: Rolar as abas para a esquerda
+        scroll_right: Rolar as abas para a direita
+        reactions_empty: Nenhuma reação ainda.
+      summary:
+        nav: Resumo
+        stats_heading: Estatísticas
+        days_visited: '{count, plural, one {dia acessado} other {dias acessados}}'
+        time_read: tempo de leitura
+        topics_viewed: discussões visualizadas
+        posts_read: postagens lidas
+        likes_received_short: recebidos
+        solutions: soluções
+        most_replied_to: Mais respondidos(as)
+        empty_links: "Nenhum link clicado ainda."
+        empty_replied: "Nenhuma resposta ainda."
+        empty_likes: "Nenhuma curtida ainda."
+        most_liked_by: Mais curtido por
+        most_liked: Com mais curtidas
+        top_categories: Melhores tags
+        top_links: Melhores links
+        recent_time_read: tempo de leitura recente
+        topics: Discussões
+        replies_column: Respostas
+        days_member: '{count, plural, one {dia de casa} other {dias de casa}}'
+        topics_created: discussões criadas
+        posts_created: postagens criadas
+        likes_given_short: dados
+        top_replies_heading: Melhores respostas
+        top_topics_heading: Melhores discussões
+        no_replies: Nenhuma resposta ainda.
+        no_topics: Nenhuma discussão ainda.
+        more_replies: Mais respostas
+        more_topics: Mais discussões
+        replies: '{count, plural, =0 {sem respostas} one {# resposta} other {# respostas}}'
+      preferences:
+        nav: Preferências
+        tabs:
+          account: Conta
+          security: Segurança
+          profile: Perfil
+          notifications: Notificações
+          tracking: Acompanhamento
+          users: Usuários ignorados
+          interface: Interface
+          navigation-menu: Menu de navegação
+          chat: Chat
+          other: Outros
+        empty: Nada para ajustar nesta aba por enquanto.
+        username: Nome de usuário
+        username_help: 'É o nome que aparece no endereço do seu perfil; para chamar você numa postagem, escrevem @{username}.'
+        avatar: Foto do perfil
+        avatar_change: Trocar foto
+        avatar_help: Uma imagem quadrada fica melhor. Você também pode arrastar o arquivo até a foto.
+        email: E-mail
+        email_primary: principal
+        email_confirmed: confirmado
+        email_unconfirmed: não confirmado
+        email_resend: Reenviar confirmação
+        email_resent: Confirmação enviada
+        email_help: Fica só entre você e a equipe; nunca aparece no seu perfil.
+        password_heading: Senha
+        password_help: Você recebe um e-mail com o link para escolher a senha nova.
+        auto_track_heading: Acompanhamento automático
+        nav_menu_heading: Barra lateral
+        nav_menu_help: Escolha quais tags aparecem na sua barra lateral. Vale só para este aparelho.
+        nav_menu_default: Padrão do fórum
+        nav_menu_picked: '{count, plural, one {# escolhida} other {# escolhidas}}'
+        nav_menu_edit: Personalizar
+    usermenu:
+      toggle: Menu do usuário
+      sr_menu_tabs: Abas do menu de usuário
+      view_all_notifications: ver todas as notificações
+      view_all_bookmarks: ver todos os marcadores
+      view_all_messages: ver todas as mensagens pessoais
+      view_all_reviewables: ver todos os itens de revisão
+      view_all: Ver tudo
+      dismiss: Descartar
+      dismiss_notifications_tooltip: Marcar todas as notificações não lidas como lidas
+      dismiss_bookmarks_tooltip: Marcar todos os lembretes de marcadores não lidos como lidos
+      dismiss_messages_tooltip: Marcar todas as notificações de mensagens pessoais não lidas como lidas
+      badge:
+        new_messages: '{count, plural, one {# nova mensagem pessoal} other {# novas mensagens pessoais}}'
+        new_reviewables: '{count, plural, one {# novo item para revisar} other {# novos itens para revisar}}'
+        unread: '{count, plural, one {# item não lido} other {# itens não lidos}}'
+      tabs:
+        all_notifications: Todas as notificações
+        replies: Respostas
+        replies_with_unread: '{count, plural, one {Respostas - # resposta não lida} other {Respostas - # respostas não lidas}}'
+        likes: Curtidas
+        likes_with_unread: '{count, plural, one {Curtidas - # curtida não lida} other {Curtidas - # curtidas não lidas}}'
+        messages: Mensagens pessoais
+        messages_with_unread: '{count, plural, one {Mensagens pessoais - # mensagem não lida} other {Mensagens pessoais - # mensagens não lidas}}'
+        bookmarks: Marcadores
+        bookmarks_with_unread: '{count, plural, one {Marcadores - # marcador não lido} other {Marcadores - # marcadores não lidos}}'
+        chat_notifications: Notificações do chat
+        chat_notifications_with_unread: '{count, plural, one {Notificações do chat - # notificação não lida} other {Notificações do chat - # notificações não lidas}}'
+        review_queue: Fila de revisão
+        review_queue_with_unread: '{count, plural, one {Fila de revisão - # item precisa de revisão} other {Fila de revisão - # itens precisam de revisão}}'
+        other_notifications: Outras notificações
+        other_notifications_with_unread: '{count, plural, one {Outras notificações - # notificação não lida} other {Outras notificações - # notificações não lidas}}'
+        profile: Perfil
+      profile:
+        set_custom_status: Definir status personalizado
+        summary: Resumo
+        activity: Atividade
+        messages: Mensagens
+        dark_mode: Modo escuro
+        light_mode: Modo claro
+      empty:
+        generic: Não há itens nesta lista.
+        notifications_title: Você ainda não tem nenhuma notificação
+        notifications_body_1: Neste painel, você receberá notificações sobre atividades relevantes, inclusive respostas às suas discussões e postagens, quando você for citado(a) ou mencionado(a) (<b>@mentions</b>) por alguém e quando as discussões que você estiver acompanhando receberem respostas. As notificações também serão enviadas por e-mail quando você passar algum tempo sem entrar com a conta.
+        notifications_body_2: Procure por {icon} para decidir sobre quais discussões e tags específicas você quer receber notificações. Para obter mais informações, verifique suas <a>preferências de notificações</a>.
+        page_title: Você ainda não tem nenhuma notificação
+        page_body_1: Você receberá notificações sobre atividades relevantes, inclusive respostas às suas discussões e postagens, quando você for citado(a) ou mencionado(a) (<b>@mentions</b>) por alguém e quando as discussões que você estiver acompanhando receberem respostas. As notificações também serão enviadas por e-mail quando você passar algum tempo sem entrar com a conta.
+        likes_title: Você ainda não recebeu nenhuma curtida
+        likes_body_1: Você receberá uma notificação aqui sempre que alguém curtir uma de suas postagens, para que possa saber o que os outros estão achando valioso. Outros também verão o mesmo quando você curtir as postagens deles!
+        likes_body_2: Notificações de curtidas nunca são enviadas para seu e-mail, mas você pode configurar a forma de receber notificações sobre curtidas no site ajustando suas <a>preferências de notificação</a>.
+        messages_title: Você não tem mensagens
+        messages_body_1: Precisa ter uma conversa pessoal direta, fora do fluxo de conversa normal? Envie uma mensagem ao selecionar o seu avatar e usar o botão de mensagem {icon}.
+        messages_body_2: Se precisar de ajuda, envie uma <a>mensagem a um membro da equipe</a>.
+        bookmarks_title: Você ainda não adicionou nada aos marcadores
+        bookmarks_body: Comece a adicionar postagens aos marcadores com o botão {icon}, eles serão listados aqui para consulta rápida. Você pode agendar um lembrete também!
+        other_title: Você ainda não tem nenhuma notificação
+        other_body: Você receberá notificação neste painel sobre outros tipos de atividade que podem ser relevantes para você - por exemplo, quando alguém vincular ou editar uma de suas postagens.
+        chat_title: Você ainda não tem notificações no chat
+        chat_body_1: Você receberá uma notificação neste painel quando alguém enviar uma mensagem ou <b>@mencionar</b> você no chat. As notificações também serão enviadas para o seu e-mail quando você não fizer login por um tempo.
+        chat_body_2: Clique no título na parte superior de qualquer canal de chat para configurar quais notificações você recebe nesse canal. Para saber mais, consulte suas <a>preferências de notificação</a>.
+      page:
+        title: Notificações
+        all: Todas
+        replies: Respostas
+        likes: Curtidas
+        chat: Chat
+        other: Outras
+        private: 'As notificações são pessoais: só aparecem no seu próprio perfil.'
+  api:
+    ai:
+      errors:
+        generic: A IA não conseguiu responder agora. Tente de novo em instantes.
+        auth: A chave da API de IA foi recusada. Avise a administração do fórum.
+        rate_limit: A IA está recebendo pedidos demais agora. Espere um pouco e tente de novo.
+        overloaded: O serviço de IA está sobrecarregado. Tente de novo em instantes.
+        network: Não foi possível falar com o serviço de IA. Tente de novo.
+        server: O serviço de IA teve um erro. Tente de novo.
+        bad_request: O serviço de IA recusou o pedido. Avise a administração do fórum se continuar.
+        not_configured: A IA não está configurada neste fórum.
+        aborted: A resposta foi interrompida.
+        refused: A IA não pôde atender a este pedido.
+        truncated: A resposta foi cortada por ser longa demais.
+        limit_reached: Você atingiu o limite de pedidos à IA de hoje. Tente de novo amanhã.
+        invalid_title: O nome precisa ter entre 1 e 120 caracteres.
+        message_length: A mensagem deve ter entre {min} e {max} caracteres.
+        invalid_mode: Ação de IA desconhecida.
+        no_content: Primeiro adicione conteúdo para realizar ações de IA nele.
+        no_prompt: Escreva o prompt personalizado.
+      personas:
+        general_name: Ajudante do fórum
+        general_description: Bot de IA de propósito geral capaz de realizar várias tarefas
+        general_prompt: Você é um assistente útil, simpático e direto. Ajude com qualquer pergunta. Quando a pergunta tiver a ver com o fórum, as discussões dele ou a comunidade, pesquise no fórum antes de responder.
+        forum_researcher_name: Pesquisador do Fórum
+        forum_researcher_description: O bot especializado em pesquisa profunda no fórum
+        forum_researcher_prompt: Você é um pesquisador meticuloso do fórum. Para cada pergunta, faça várias buscas com termos diferentes, leia as discussões mais relevantes e escreva uma resposta completa e organizada, com as conclusões e os links de cada discussão usada. Diga claramente quando o fórum não tiver a informação.
+        creative_name: Criativa
+        creative_description: Bot de IA sem integrações externas especializado em tarefas criativas
+        creative_prompt: 'Você é um assistente criativo: ajuda a escrever, a ter ideias, a revisar textos e a explorar possibilidades, com imaginação e bom gosto.'
+        researcher_name: Pesquisador da Web
+        researcher_description: O bot de IA que pesquisa e lê páginas na web
+        researcher_prompt: Você é um pesquisador. Pesquise na web para responder com informações atuais e cite as fontes com links.
+    badges:
+      first_like:
+        name: Primeira curtida
+        description: Curtiu uma postagem
+        long_description: Este emblema é concedido na primeira vez que você curtir uma postagem. Curtir postagens é uma ótima maneira de mostrar aos outros membros da comunidade que o que postaram era interessante, útil, legal ou divertido. Compartilhe o amor!
+      first_quote:
+        name: Primeira citação
+        description: Citou uma postagem
+        long_description: Este emblema é concedido na primeira vez que você citar uma postagem em uma resposta. Citar partes relevantes de postagens anteriores na sua resposta ajuda a manter as discussões conectadas e a não sair do tópico. A maneira mais fácil de citar é selecionar uma parte de uma postagem e usar o botão de citar. Cite à vontade!
+      first_link:
+        name: Primeiro link
+        description: Adicionou um link para outra discussão
+        long_description: Este emblema é concedido na primeira vez que você vincula outra discussão. Vincular discussões ajuda colegas leitores(as) a encontrar conversas relacionadas interessantes, mostrando as conexões entre as discussões. Sinta-se livre para adicionar links!
+      first_mention:
+        name: Primeira menção
+        description: Mencionou um(a) usuário(a) em uma postagem
+        long_description: Este emblema é concedido na primeira vez em que você menciona o @nome_de_usuário de alguém na sua postagem. Cada menção gera uma notificação para essa pessoa, para que saiba sobre sua postagem. Basta começar a digitar @ (arroba) para mencionar qualquer usuário(a). É uma maneira conveniente de chamar a atenção de outras pessoas para algo.
+      first_emoji:
+        name: Primeiro emoji
+        description: Utilizou um emoji em uma postagem
+        long_description: 'Este emblema é concedido na primeira vez que você adicionar um emoji à sua postagem. Emojis permitem que você transmita emoção em suas postagens, de felicidade até tristeza, raiva e todo o resto. Basta digitar : (dois pontos) para escolher uma das centenas de opções.'
+      first_flag:
+        name: Primeiro sinalizador
+        description: Sinalizou uma postagem
+        long_description: Este emblema é concedido na primeira vez que você sinaliza uma postagem. Sinalizar é uma forma de ajudar a manter este local agradável para todos. Se você perceber qualquer postagem que exija atenção da moderação por qualquer motivo, não hesite em sinalizar.
+      editor:
+        name: Editor(a)
+        description: Primeira edição de postagem
+        long_description: 'Este emblema é concedido na primeira vez que você edita uma de suas postagens. Incentivamos a edição: você pode melhorar a formatação, corrigir pequenos erros ou adicionar alguma coisa que tenha esquecido quando postou pela primeira vez. Faça edições para tornar suas postagens ainda melhores!'
+      autobiographer:
+        name: Autobiógrafo
+        description: Preencheu informações de perfil
+        long_description: Este emblema é concedido por preencher seu perfil de usuário(a) e selecionar uma foto de perfil. Permitir que saibam um pouco mais sobre quem você é e sobre os seus interesses contribui para uma comunidade melhor e mais conectada. Junte-se a nós!
+      reader:
+        name: Leitor(a)
+        description: Leu todas as respostas em uma discussão com mais de 100 respostas
+        long_description: Este emblema é concedido na primeira vez que você lê uma discussão longa com mais de 100 respostas. Ler uma conversa atentamente ajuda a acompanhar a discussão, entender diferentes pontos de vista, além de levar a assuntos mais interessantes. Quanto mais você lê, melhor a conversa fica.
+      new_user_of_the_month:
+        name: Novo(a) usuário(a) do mês
+        description: Contribuições notáveis no primeiro mês
+        long_description: Este emblema é concedido para parabenizar dois(duas) novos(as) usuários(as) a cada mês por suas excelentes contribuições gerais, de acordo com quantas pessoas curtiram suas postagens.
+      welcome:
+        name: Boas-vindas
+        description: Recebeu uma curtida
+        long_description: Este emblema é concedido quando você recebe sua primeira curtida em uma postagem. Parabéns, você postou algo que sua comunidade achou interessante, legal ou útil!
+      anniversary:
+        name: Aniversário
+        description: Membro ativo por um ano, postou ao menos uma vez
+        long_description: Este emblema é concedido quando você é membro por um ano com pelo menos uma postagem neste ano. Obrigado por ficar e contribuir para a nossa comunidade. Nosso trabalho não seria possível sem você.
+      appreciated:
+        name: Apreciado
+        description: Recebeu uma curtida em 20 postagens
+        long_description: Este emblema é concedido quando você recebe ao menos uma curtida em 20 postagens diferentes. A comunidade está gostando das suas contribuições para as conversas!
+      respected:
+        name: Respeitado(a)
+        description: Recebeu 2 curtidas em 100 postagens
+        long_description: Este emblema é concedido quando você recebe ao menos duas curtidas em 100 postagens diferentes. A comunidade está desenvolvendo respeito por suas várias contribuições e conversas aqui.
+      admired:
+        name: Admirado(a)
+        description: Recebeu cinco curtidas em 300 postagens
+        long_description: Este emblema é concedido quando você recebe pelo menos cinco curtidas em 300 postagens diferentes. Uau! A comunidade admira suas contribuições frequentes e de alta qualidade para as conversas aqui.
+      thank_you:
+        name: Obrigado
+        description: Teve 20 postagens curtidas e curtiu dez postagens
+        long_description: Este emblema é concedido quando você tem 20 postagens curtidas e dá 10 curtidas ou mais em troca. Quando alguém curte suas postagens, você dedica tempo para curtir o que os(as) outros(as) estão postando também.
+      gives_back:
+        name: Retribuidor(a)
+        description: Curtiu 100 postagens e teve 100 postagens curtidas
+        long_description: Este emblema é concedido quando você tem 100 postagens curtidas e dá 100 curtidas ou mais em troca. Obrigado por passar para frente!
+      empathetic:
+        name: Empático(a)
+        description: Curtiu 1.000 postagens e teve 500 postagens curtidas
+        long_description: Este emblema é concedido quando você tem 500 postagens curtidas e dá 1.000 curtidas ou mais em troca. Uau! Você é um modelo de generosidade e apreciação mútua.
+      out_of_love:
+        name: Por amor
+        description: Usou {max} curtidas no mesmo dia
+        long_description: Este emblema é concedido quando você dá {max} curtidas num mesmo dia. Lembre-se de que curtir as suas postagens favoritas incentiva seus colegas da comunidade a criar ainda mais discussões de qualidade no futuro.
+      higher_love:
+        name: Amor maior
+        description: Usou {max} curtidas no mesmo dia cinco vezes
+        long_description: Este emblema é concedido quando você dá {max} curtidas num mesmo dia, em cinco dias diferentes. Agradecemos por dedicar um tempo para incentivar ativamente as melhores conversas todos os dias!
+      crazy_in_love:
+        name: Apaixonado(a)
+        description: Usou {max} curtidas no mesmo dia 20 vezes
+        long_description: Este emblema é concedido quando você dá {max} curtidas num mesmo dia, em 20 dias diferentes. Uau! Você é um exemplo para incentivar os membros da comunidade!
+      enthusiast:
+        name: Entusiasta
+        description: Acessou durante dez dias consecutivos
+        long_description: Este emblema é concedido ao acessar durante dez dias consecutivos. Obrigado por ficar com a gente por mais de uma semana!
+      aficionado:
+        name: Aficionado(a)
+        description: Acessou durante 100 dias consecutivos
+        long_description: Este emblema é concedido por acessar durante 100 dias consecutivos. Isso é mais do que três meses!
+      devotee:
+        name: Devoto(a)
+        description: Acessou 365 dias consecutivos
+        long_description: Este emblema é concedido por ter acessado 365 dias consecutivos. Uau, um ano inteiro!
+      nice_post:
+        name: Resposta interessante
+        description: Recebeu dez curtidas em uma resposta
+        long_description: Este emblema é concedido quando sua resposta recebe dez curtidas. Sua resposta causou uma boa impressão na comunidade e ajudou a levar a conversa adiante.
+      good_post:
+        name: Resposta boa
+        description: Recebeu 25 curtidas em uma resposta
+        long_description: Este emblema é concedido quando sua resposta recebe 25 curtidas. Sua resposta foi excepcional e tornou a conversa muito mais interessante.
+      great_post:
+        name: Resposta excelente
+        description: Recebeu 50 curtidas em uma resposta
+        long_description: Este emblema é concedido quando sua resposta recebe 50 curtidas. Uau! Sua resposta foi inspiradora, fascinante, hilária ou perspicaz, e a comunidade adorou!
+      nice_topic:
+        name: Discussão interessante
+        description: Recebeu 10 curtidas em uma discussão
+        long_description: Este emblema é concedido quando sua discussão recebe 10 curtidas. Você começou uma conversa interessante que a comunidade gostou.
+      good_topic:
+        name: Boa discussão
+        description: Recebeu 25 curtidas em uma discussão
+        long_description: Este emblema é concedido quando sua discussão recebe 25 curtidas. Você começou uma conversa eletrizante que movimentou a comunidade.
+      great_topic:
+        name: Discussão excelente
+        description: Recebeu 50 curtidas em uma discussão
+        long_description: Este emblema é concedido quando sua discussão recebe 50 curtidas. Você começou uma conversa fascinante e a comunidade amou toda a discussão que ela gerou!
+      basic_user:
+        name: Básico
+        description: Concedido uso de todas as funções essenciais da comunidade
+        long_description: Este emblema é concedido quando você atinge o nível de confiança 1. Obrigado por acompanhar o fórum e ler algumas discussões para aprender o que é a nossa comunidade.
+      member:
+        name: Membro
+        description: Concedida a confiança de quem participa há semanas
+        long_description: Este emblema é concedido quando você atinge o nível de confiança 2. Obrigado por participar durante semanas para se juntar à nossa comunidade.
+      regular:
+        name: Regular
+        description: Concedida a confiança de um(a) colaborador(a) constante
+        long_description: Este emblema é concedido quando você atinge o nível de confiança 3. Obrigado por ser uma parte constante de nossa comunidade há meses. Agora você é um dos leitores(as) mais ativos(as) e um(a) colaborador(a) confiável que torna a nossa comunidade excelente.
+      leader:
+        name: Líder
+        description: Escolhido(a) pela equipe como exemplo para a comunidade
+        long_description: Este emblema é concedido ao alcançar o nível de confiança 4. Você é um(a) líder desta comunidade, conforme selecionado(a) pela equipe, e dá um exemplo positivo para o restante dos integrantes com suas ações e palavras.
+    badges_admin:
+      name_taken: Já existe um emblema com esse nome.
+      badge_not_found: Esse emblema não existe.
+      badge_not_grantable: Esse emblema não aceita concessão manual (os do sistema são concedidos pela regra automática).
+      user_not_found: Nenhum usuário com esse nome de usuário.
+      already_granted: Essa pessoa já tem este emblema, e ele não pode ser concedido mais de uma vez.
+      invalid_reason: O motivo deve ter até 500 caracteres; um link precisa começar com http:// ou https://.
+    messages:
+      recipients_limit: Desculpe, uma mensagem pode ter no máximo {max} destinatários.
+      invite_empty: Escolha alguém para convidar.
+      invite_group_invalid: Este grupo não recebe mensagens.
+      invite_group_already: '{group} já participa desta mensagem.'
+    profile:
+      invalid_website: O site precisa ser um endereço que comece com http:// ou https://.
+      invalid_status_emoji: O status aceita um único emoji.
+      invalid_status_until: A data para limpar o status precisa estar no futuro.
+      invalid_image_url: A imagem precisa ser um endereço https, sem espaços, aspas ou parênteses.
+      invalid_birthday: Escolha uma data de nascimento entre 1900 e ontem.
+    invites:
+      too_many: Você já tem convites ativos demais. Apague algum antes de gerar outro.
+  views:
+    not_found:
+      page_title: Página não encontrada
+      title: Oops! Essa página não existe ou é privada.
+      popular_topics: Discussões populares
+      recent_topics: Discussões recentes
+      see_more: Mais
+      search_title: Que tal tentar pesquisar?
+      search_button: Pesquisar
+      home: Voltar para o início
+      placeholder: Procurar discussões por título ou palavras-chave…
+# forumaker/profile-cover não traz pt-BR: o editor de capa (thirdparty/profileCover).
+forumaker-profile-cover:
+  forum:
+    cover: Editar capa
+    edit_cover: Editar capa
+    notice: 'Tamanho máximo: {size}. Formato recomendado: 21:9, com pelo menos 1600×400 pixels.'
+    position_label: Posição da capa
+    save_position_button: Salvar posição
+    added:
+      success: Capa do perfil atualizada
+      error: Não foi possível enviar a imagem
+    removed:
+      success: Capa do perfil removida
+      error: Não foi possível remover a capa. Tente de novo.
+linkrobins-wiki:
+  forum:
+    search:
+      heading: Wiki
+      placeholder: 'Pesquisar na wiki'
+      results_heading: 'Resultados para "{query}"'
+      all_button: 'Pesquisar "{query}" na wiki'
+      empty: 'Nenhum artigo corresponde a "{query}".'
+    nav: Wiki
+    common:
+      date_at_time: '{date} às {time}'
+    index:
+      new_article: 'Novo artigo'
+      new_article_tooltip: 'Escrever um novo artigo'
+      index_label: 'Índice'
+      empty_own: 'Ainda não há artigos. Clique em "Novo artigo" para escrever o primeiro.'
+      empty: 'Nenhum artigo para mostrar.'
+      untitled: 'Sem título'
+      deleted_badge: 'Excluído'
+      draft_badge: Rascunho
+      uncategorised: Outros
+      see_all_lead: 'Ver todos em'
+      no_categories: 'Ainda não há categorias.'
+    compose:
+      title: 'Novo artigo'
+      title_edit: 'Editar artigo'
+      title_label: 'Título'
+      title_placeholder: 'Título do artigo'
+      slug_label: 'Endereço (slug)'
+      slug_placeholder: 'ex.: primeiros-passos'
+      slug_help: 'Usado no endereço do artigo. Deixe em branco para gerar a partir do título.'
+      position_label: Posição
+      position_placeholder: 'ex.: 1'
+      position_help: 'Ordena o artigo dentro da categoria, do menor para o maior. Em branco, ele fica depois dos ordenados, dos mais novos para os mais antigos.'
+      category_label: 'Categoria'
+      no_category: 'Sem categoria'
+      body_label: 'Conteúdo'
+      body_placeholder: 'Escreva o artigo. Aceita Markdown.'
+      body_placeholder_click: 'Clique para escrever o artigo…'
+      body_placeholder_edit: 'Clique para continuar editando…'
+      discard_confirm: 'Você tem um artigo não salvo. Descartar?'
+      submit_create: 'Publicar artigo'
+      submit_update: 'Salvar alterações'
+      draft_label: 'Salvar como rascunho'
+      draft_help: 'Um rascunho só aparece para você e para os editores da wiki até ser publicado.'
+      faq_heading: 'Perguntas frequentes'
+      faq_help: 'Perguntas e respostas opcionais, mostradas embaixo do artigo. As respostas aceitam Markdown.'
+      faq_question_placeholder: 'Pergunta'
+      faq_answer_placeholder: 'Resposta. Aceita Markdown.'
+      faq_add: 'Adicionar pergunta'
+      faq_remove: 'Remover pergunta'
+    show:
+      deleted_notice: 'Este artigo foi excluído. Só os editores podem vê-lo.'
+      draft_notice: 'Este artigo é um rascunho. Só você e os editores da wiki podem vê-lo.'
+      toc_heading: 'Neste artigo'
+      faq_heading: 'Perguntas frequentes'
+      related_heading: 'Artigos relacionados'
+      by: 'por '
+      last_edited: 'editado por último por '
+      last_edited_tooltip: 'Editado por último por {name} em {date}'
+      created_tooltip: 'Escrito em {date}'
+      history: 'Histórico ({count})'
+      no_history: 'Ainda não há revisões.'
+      load_more_history: 'Carregar revisões mais antigas'
+      initial_version: 'criação'
+      diff_from_previous: 'Mudanças em relação à versão anterior'
+      diff_initial: 'Versão inicial'
+      diff_title: 'Título'
+      diff_none: 'Nenhuma mudança no conteúdo.'
+    action:
+      report: 'Denunciar'
+      edit: 'Editar'
+      delete: 'Excluir'
+      restore: 'Restaurar'
+      delete_forever: 'Excluir para sempre'
+      save_changes: 'Salvar alterações'
+      cancel: 'Cancelar'
+    report:
+      title: 'Denunciar este artigo'
+      intro: 'Os editores verão a denúncia junto com o artigo.'
+      reason_label: 'O que há de errado com ele?'
+      reason_inaccurate: 'Está incorreto'
+      reason_outdated: 'Está desatualizado'
+      reason_off_topic: 'Não pertence a este lugar'
+      reason_duplicate: 'Repete outro artigo'
+      reason_other: 'Outro motivo'
+      detail_label: 'Algo a acrescentar? (opcional)'
+      submit: 'Enviar denúncia'
+      sent: 'Obrigado. Um editor vai olhar isso.'
+      failed: 'Não foi possível enviar. Tente de novo.'
+    comments:
+      heading: 'Comentários ({count})'
+      empty: 'Ainda não há comentários.'
+      load_more: 'Carregar mais comentários'
+      placeholder: 'Escreva um comentário…'
+      post: 'Comentar'
+      deleted: 'Este comentário foi excluído.'
+      discard_confirm: 'Você tem um comentário não enviado. Descartar?'
+      empty_error: 'Escreva algo antes.'
+      confirm_delete: 'Excluir este comentário?'
+      confirm_delete_forever: 'Excluir este comentário para sempre? Não dá para desfazer.'
+      error_post: 'Não foi possível publicar o comentário.'
+      error_edit: 'Não foi possível salvar o comentário.'
+      error_delete: 'Não foi possível excluir o comentário.'
+    confirm:
+      soft_delete: 'Excluir este artigo? Os editores podem restaurá-lo depois.'
+      delete_forever: 'Excluir este artigo e o histórico dele para sempre? Não dá para desfazer.'
+    errors:
+      load_articles: 'Não foi possível carregar os artigos.'
+      load_article: 'Não foi possível carregar este artigo. Ele pode ter sido excluído, ou você não tem permissão para vê-lo.'
+      title_required: 'Escreva um título.'
+      empty_body: 'Escreva o texto do artigo antes de enviar.'
+      submit: 'Não foi possível salvar o artigo.'
+      delete_article: 'Não foi possível excluir o artigo.'
+      restore_article: 'Não foi possível restaurar o artigo.'
+      delete_article_forever: 'Não foi possível excluir o artigo para sempre.'
+      upload: 'Não foi possível enviar o arquivo.'
+      upload_no_files: 'O envio não retornou nenhum arquivo. Tente de novo.'
+      unknown: 'Erro desconhecido.'
+  api:
+    title_required: 'O artigo precisa de um título.'
+    content_required: 'O artigo precisa de conteúdo.'
+    article_soft_delete_first: 'O artigo precisa ser excluído antes de ser removido para sempre.'
+    slug_invalid: 'Esse endereço é reservado. Escolha um que não seja só um número.'
+    slug_taken: 'Outro artigo já usa esse endereço.'
+    faq_too_many: 'Um artigo pode ter no máximo {max} perguntas frequentes.'
+    article_required: 'É preciso informar um artigo.'
+    report_already_open: 'Você já denunciou este artigo. Um editor vai olhar.'
+    article_not_found: 'Artigo não encontrado.'
+    comment_required: 'O comentário precisa de conteúdo.'
+    comment_soft_delete_first: 'O comentário precisa ser excluído antes de ser removido para sempre.'

@@ -1,0 +1,204 @@
+// =====================================================================
+// Miniaturas de "Esquema de cores" com o layout do tema (themePreview.tsx).
+// Tudo em proporção da miniatura, que muda de tamanho conforme a tela.
+// =====================================================================
+
+.CanelaThemePreview {
+  --tp-line: var(--cn-primary-low-mid);
+  --tp-line-strong: var(--cn-primary-high);
+
+  display: flex;
+  flex-direction: column;
+  background: var(--cn-page-bg);
+  overflow: hidden;
+
+  // Alto contraste: linhas mais escuras (claro) ou mais claras (escuro).
+  [data-theme$='-hc'] & {
+    --tp-line: var(--cn-primary-high);
+    --tp-line-strong: var(--cn-primary);
+  }
+
+  span, i, b {
+    display: block;
+    flex-shrink: 0;
+  }
+}
+
+// Cabeçalho: hambúrguer, logo, a busca em pílula no meio e o avatar.
+.CanelaThemePreview-header {
+  display: flex;
+  align-items: center;
+  gap: 5%;
+  height: 13%;
+  padding: 0 5%;
+  background: var(--cn-surface);
+  border-bottom: 1px solid var(--cn-primary-low);
+}
+
+.CanelaThemePreview-burger {
+  width: 6%;
+  height: 1px;
+  background: var(--tp-line);
+  box-shadow: 0 -2px 0 var(--tp-line), 0 2px 0 var(--tp-line);
+}
+
+.CanelaThemePreview-logo {
+  width: 12%;
+  height: 32%;
+  border-radius: 2px;
+  background: var(--tp-line-strong);
+}
+
+.CanelaThemePreview-search {
+  flex: 1 1 auto;
+  height: 45%;
+  margin: 0 4%;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: 99px;
+  background: var(--cn-surface);
+}
+
+.CanelaThemePreview-avatar {
+  width: 9%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cn-primary-low-mid);
+}
+
+.CanelaThemePreview-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+// Barra lateral: "Novo tópico", links (o primeiro ativo) e as categorias.
+.CanelaThemePreview-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+  width: 30%;
+  padding: 4% 3%;
+  box-sizing: border-box;
+  background: var(--cn-surface);
+  border-right: 1px solid var(--cn-primary-low);
+}
+
+.CanelaThemePreview-newTopic {
+  height: 7%;
+  margin-bottom: 4%;
+  border-radius: 99px;
+  background: var(--cn-accent);
+}
+
+.CanelaThemePreview-link {
+  display: flex !important;
+  align-items: center;
+  gap: 8%;
+  height: 5%;
+  padding: 0 6%;
+  border-radius: 99px;
+
+  i {
+    width: 10%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--tp-line);
+  }
+
+  b {
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--tp-line);
+  }
+
+  &--active {
+    background: var(--cn-primary-100);
+
+    i, b {
+      background: var(--tp-line-strong);
+    }
+  }
+}
+
+.CanelaThemePreview-section {
+  width: 45%;
+  height: 1px;
+  margin: 6% 0 2% 6%;
+  background: var(--tp-line);
+}
+
+// O cartão de conteúdo com as abas e a lista.
+.CanelaThemePreview-main {
+  flex: 1 1 auto;
+  padding: 4% 5% 0;
+  min-width: 0;
+}
+
+.CanelaThemePreview-card {
+  height: 100%;
+  padding: 6% 6% 0;
+  box-sizing: border-box;
+  border-radius: 6px 6px 0 0;
+  background: var(--cn-surface);
+}
+
+.CanelaThemePreview-nav {
+  display: flex;
+  align-items: center;
+  gap: 7%;
+  height: 12%;
+  margin-bottom: 4%;
+  border-bottom: 1px solid var(--cn-border);
+}
+
+.CanelaThemePreview-tab {
+  width: 12%;
+  height: 1px;
+  background: var(--tp-line);
+
+  &--active {
+    height: 2px;
+    background: var(--cn-accent);
+  }
+}
+
+.CanelaThemePreview-button {
+  width: 22%;
+  height: 55%;
+  margin-left: auto;
+  border-radius: 99px;
+  background: var(--cn-accent);
+}
+
+.CanelaThemePreview-row {
+  position: relative;
+  height: 15%;
+  border-bottom: 1px solid var(--cn-border);
+}
+
+.CanelaThemePreview-title {
+  position: absolute;
+  top: 28%;
+  left: 0;
+  height: 1px;
+  background: var(--tp-line-strong);
+}
+
+.CanelaThemePreview-badge {
+  position: absolute;
+  top: 58%;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 1px;
+  box-shadow: 4px 1px 0 -1px var(--tp-line);
+}
+
+.CanelaThemePreview-count {
+  position: absolute;
+  top: 40%;
+  right: 4%;
+  width: 6%;
+  height: 2px;
+  background: var(--tp-line-strong);
+}

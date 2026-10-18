@@ -1,0 +1,255 @@
+// =====================================================================
+// Tokens do Canela — a paleta e as medidas do Horizon, o tema padrão do
+// Discourse, conferidas no meta.discourse.org.
+//
+// Toda a paleta sai da cor primária do Flarum (Aparência), assim como o
+// Horizon deriva tudo da "tertiary": fundo levemente tingido, seleção, links,
+// anel de foco. As derivações usam a sintaxe de cor relativa do CSS
+// (`oklch(from …)`), escapada com ~"" porque o less.php não a entende.
+//
+// Convenção: tokens do tema começam com `--cn-`. Os tokens do core
+// (--body-bg, --control-bg…) são redefinidos no fim deste arquivo para que
+// tudo o que o tema não redesenha (modais, dropdowns de extensões) já saia
+// com a cara do Discourse.
+// =====================================================================
+
+.canela-font(inter) {
+  --cn-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+.canela-font(jakarta) {
+  --cn-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+.canela-font(system) {
+  --cn-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  .canela-font(@config-canela-font);
+
+  // Medidas (meta.discourse.org a 1440px, escala 1:1)
+  --cn-header-height: 52px;
+  --cn-sidebar-width: 240px;
+  --cn-main-max: 1110px;      // o cartão de conteúdo
+  --cn-content-max: 1000px;   // texto corrido dentro dele
+  --cn-gap: 8px;
+  --cn-space-1: 4px;
+  --cn-space-2: 8px;
+  --cn-space-3: 12px;
+  --cn-space-4: 16px;
+  --cn-space-6: 24px;
+  --cn-space-8: 32px;
+
+  --cn-radius-large: 16px;    // cartão principal, caixas de categoria (--d-border-radius-large medido no Meta)
+  --cn-radius: 8px;           // botões quadrados, dropdowns, caixas pequenas
+  --cn-radius-input: 6px;
+  --cn-radius-pill: 6.25rem;  // botões do Horizon
+
+  // Tipografia (font-size base 16px do Discourse; escala --font-up/down-N medida no Meta)
+  --cn-font-up-6: 2.296em;
+  --cn-font-up-5: 2em;
+  --cn-font-up-4: 1.7511em;
+  --cn-font-up-3: 1.5157em;
+  --cn-font-up-2: 1.3195em;
+  --cn-font-up-1: 1.1487em;
+  --cn-font-0: 1em;
+  --cn-font-down-1: 0.8706em;
+  --cn-font-down-2: 0.7579em;
+  --cn-font-down-3: 0.6599em;
+
+  --cn-accent: var(--primary-color);
+  --cn-accent-text: #fff;
+
+  --cn-danger: #c80001;
+  --cn-success: #009900;
+  --cn-highlight: #ffff4d;
+  --cn-love: #fa6c8d;               // coração das curtidas (`--love` do Discourse)
+
+  // Cores das contagens "quentes" da lista (.heatmap-low/med/high do Discourse)
+  --cn-heat-low: #9b764f;
+  --cn-heat-med: #cf7721;
+  --cn-heat-high: #fe7a15;
+
+  --cn-shadow-card: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --cn-shadow-dropdown: 0 2px 12px rgba(0, 0, 0, 0.15);
+  --cn-shadow-modal: 0 8px 60px rgba(0, 0, 0, 0.3);
+
+  // Fundamentos dos controles (a abordagem do brechó: uma medida e um
+  // estado de cada, num lugar só). Altura dos campos e botões comuns, a dos
+  // formulários de entrar, e a transição curta dos estados. O foco de campo é
+  // só a borda na cor de destaque — sem anel grosso em volta.
+  --cn-control-height: 36px;
+  --cn-control-height-lg: 46px;
+  --cn-transition-state: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+// No escuro as sombras precisam de mais opacidade para aparecer.
+[data-theme^=dark] {
+  --cn-shadow-card: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --cn-shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --cn-shadow-modal: 0 8px 60px rgba(0, 0, 0, 0.9);
+}
+
+// ---------------------------------------------------------------------
+// Claro
+// ---------------------------------------------------------------------
+[data-theme^=light] {
+  --cn-primary: #1a1a1a;            // texto
+  --cn-secondary: #ffffff;          // superfície
+  --cn-primary-very-low: #f8f8f8;
+  --cn-primary-low: #e9e9e9;
+  --cn-primary-100: #f2f2f2;        // fundo do botão padrão
+  --cn-primary-200: #e0e0e0;
+  --cn-primary-300: #d1d1d1;        // bordas de campos
+  --cn-primary-low-mid: #b3b3b3;
+  --cn-primary-medium: #8f8f8f;
+  --cn-primary-high: #646464;       // texto secundário
+  --cn-primary-very-high: #333333;
+  --cn-border: #e9e9e9;             // separadores da lista e do cartão
+
+  --cn-surface: #ffffff;
+  --cn-background: ~"oklch(from var(--cn-accent) 96% calc(c * 0.125) h)";
+  --cn-selected: ~"oklch(from var(--cn-accent) 92% calc(c * 0.5) h)";
+  --cn-hover: ~"oklch(from var(--cn-accent) 92% calc(c * 0.5) h / 0.75)";
+  --cn-sidebar-link: ~"oklch(from var(--cn-accent) calc(l * 0.8) calc(c * 0.25) h)";
+  --cn-sidebar-border: ~"oklch(from var(--cn-accent) 88% calc(c * 0.25) h)";
+  --cn-sidebar-suffix: ~"oklch(from var(--cn-accent) l calc(c * 0.9) h)";
+  --cn-header-muted: ~"oklch(from var(--cn-accent) 54% calc(c * 0.5) h)";
+  --cn-header-border: ~"oklch(from var(--cn-accent) 73.5% calc(c * 0.5) h)";
+  --cn-link: var(--cn-accent);
+  // O anel de hover do Horizon (`--button-box-shadow`). Com a "tertiary" do
+  // Discourse (#595bca) ele sai bem claro; uma primária mais escura, como a
+  // deste fórum, deixava o anel forte demais — por isso a luminosidade tem piso.
+  --cn-ring: ~"oklch(from var(--cn-accent) clamp(0.86, calc(l * 1.5), 0.94) calc(c * 0.3) h)";
+  --cn-accent-active: ~"oklch(from var(--cn-accent) 40% c h)";
+  --cn-accent-low: ~"oklch(from var(--cn-accent) 95% calc(c * 0.3) h)";
+  --cn-blob-1: ~"oklch(from var(--cn-accent) 85% calc(c * 0.6) h / 0.5)";
+  --cn-blob-2: ~"oklch(from var(--cn-accent) 80% calc(c * 0.7) calc(h + 60) / 0.35)";
+}
+
+// ---------------------------------------------------------------------
+// Escuro
+// ---------------------------------------------------------------------
+[data-theme^=dark] {
+  --cn-primary: #f2f2f2;
+  --cn-secondary: #1a1a1a;
+  --cn-primary-very-low: #222222;
+  --cn-primary-low: #2e2e2e;
+  --cn-primary-100: #2a2a2a;
+  --cn-primary-200: #3a3a3a;
+  --cn-primary-300: #4a4a4a;
+  --cn-primary-low-mid: #6b6b6b;
+  --cn-primary-medium: #8f8f8f;
+  --cn-primary-high: #b5b5b5;
+  --cn-primary-very-high: #dedede;
+  --cn-border: #2e2e2e;
+
+  --cn-surface: #1a1a1a;
+  --cn-background: ~"oklch(from var(--cn-accent) 10% 0.025 h)";
+  --cn-selected: ~"oklch(from var(--cn-accent) calc(l * 0.7) calc(c * 0.25) h)";
+  --cn-hover: ~"oklch(from var(--cn-accent) calc(l * 0.7) calc(c * 0.25) h / 0.75)";
+  --cn-sidebar-link: ~"oklch(from var(--cn-accent) calc(l * 1.5) calc(c * 0.25) h)";
+  --cn-sidebar-border: ~"oklch(from var(--cn-accent) calc(l * 0.7) calc(c * 0.25) h)";
+  --cn-sidebar-suffix: ~"oklch(from var(--cn-accent) l calc(c * 0.9) h)";
+  --cn-header-muted: ~"oklch(from var(--cn-accent) calc(l * 1.35) calc(c * 0.25) h)";
+  --cn-header-border: ~"oklch(from var(--cn-accent) l calc(c * 0.25) h)";
+  --cn-link: ~"oklch(from var(--cn-accent) calc(l * 1.2) c h)";
+  --cn-ring: ~"oklch(from var(--cn-accent) clamp(0.28, calc(l * 0.6), 0.36) calc(c * 0.45) h)";
+  --cn-accent-active: ~"oklch(from var(--cn-accent) 50% c h)";
+  --cn-accent-low: ~"oklch(from var(--cn-accent) 25% calc(c * 0.4) h)";
+  --cn-blob-1: ~"oklch(from var(--cn-accent) 35% calc(c * 0.6) h / 0.35)";
+  --cn-blob-2: ~"oklch(from var(--cn-accent) 30% calc(c * 0.7) calc(h + 60) / 0.3)";
+}
+
+// ---------------------------------------------------------------------
+// Casca (cabeçalho, barra lateral, fundo e cartão), medida no
+// meta.discourse.org: os nomes seguem as variáveis do Discourse que cada
+// token reproduz.
+// ---------------------------------------------------------------------
+:root {
+  --cn-card-radius: 16px;           // .list-container / .regular
+  --cn-main-gap: 16px;              // --d-main-content-gap com a barra aberta
+  --cn-main-gap-wide: 32px;         // … e com a barra fechada
+  --cn-header-pad: 0.67rem;         // .d-header > .wrap (10,72px)
+  --cn-row-height: 2.3rem;          // --d-sidebar-row-height (36,8px)
+}
+
+// Entre 768 e 1023px a barra do Discourse encolhe para 13em.
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  :root {
+    --cn-sidebar-width: 208px;
+  }
+}
+
+[data-theme^=light] {
+  --cn-shell-icon: #d0d0d0;          // header_primary-low-mid: hambúrguer, ícones, borda do "PT"
+  --cn-shell-locale: var(--cn-primary-medium);
+  --cn-placeholder: #757575;
+  --cn-hover-accent: ~"oklch(from var(--cn-accent) l c h / 0.15)";   // --d-hover
+  --cn-hover-accent-text: var(--cn-accent);
+  --cn-accent-hover: ~"oklch(from var(--cn-accent) calc(l * 0.81) c h)"; // --tertiary-hover
+  --cn-header-button-bg: var(--cn-accent);
+  --cn-page-bg: ~"oklch(from var(--cn-accent) 97.8% calc(c * 0.035) h)";
+  --cn-page-gradient: ~"oklch(from var(--cn-accent) 89.6% calc(c * 0.31) h)";
+  --cn-card-shadow: ~"0 2px 6px oklch(from var(--cn-accent) l c h / 0.24)";
+  --cn-panel-shadow: 0 0 30px -2px rgba(0, 0, 0, 0.5);
+  --cn-cloak: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme^=dark] {
+  --cn-shell-icon: #989898;
+  --cn-shell-locale: var(--cn-primary-very-high);
+  --cn-placeholder: #757575;
+  --cn-hover-accent: ~"oklch(from var(--cn-accent) l c h / 0.15)";
+  --cn-hover-accent-text: ~"oklch(from var(--cn-accent) 73% calc(c * 0.65) h)";
+  --cn-accent-hover: ~"oklch(from var(--cn-accent) calc(l * 0.81) c h)";
+  --cn-header-button-bg: var(--cn-accent-hover);
+  --cn-page-bg: #000;
+  --cn-page-gradient: ~"oklch(from var(--cn-accent) 32.5% calc(c * 0.49) h)";
+  --cn-card-shadow: ~"0 2px 6px oklch(from var(--cn-accent) l c h / 0.05)";
+  --cn-panel-shadow: 0 0 30px -2px rgba(0, 0, 0, 0.5);
+  --cn-cloak: rgba(0, 0, 0, 0.3);
+}
+
+// ---------------------------------------------------------------------
+// Tokens do core redefinidos com a paleta acima
+// ---------------------------------------------------------------------
+[data-theme^=light],
+[data-theme^=dark] {
+  --body-bg: var(--cn-surface);
+  --body-bg-shaded: var(--cn-primary-very-low);
+  --body-bg-light: var(--cn-surface);
+  --text-color: var(--cn-primary);
+  --heading-color: var(--cn-primary);
+  --muted-color: var(--cn-primary-high);
+  --muted-more-color: var(--cn-primary-medium);
+  --link-color: var(--cn-link);
+  --control-bg: var(--cn-primary-100);
+  --control-bg-light: var(--cn-primary-very-low);
+  --control-bg-shaded: var(--cn-primary-low);
+  --control-color: var(--cn-primary);
+  --control-body-bg-mix: var(--cn-primary-very-low);
+  --header-bg: var(--cn-surface);
+  --header-color: var(--cn-primary);
+  --header-control-bg: transparent;
+  --header-control-color: var(--cn-primary-high);
+  --discussion-title-color: var(--cn-primary);
+  --code-bg: var(--cn-primary-very-low);
+  --code-color: var(--cn-primary-very-high);
+
+  // Botão padrão do Horizon: cinza claro com o ícone na cor de destaque
+  --button-bg: var(--cn-primary-100);
+  --button-color: var(--cn-primary);
+  --button-bg-hover: var(--cn-primary-100);
+  --button-color-hover: var(--cn-primary);
+  --button-bg-active: var(--cn-primary-low);
+  --button-color-active: var(--cn-primary);
+  --button-bg-disabled: var(--cn-primary-100);
+
+  --button-primary-bg: var(--cn-accent);
+  --button-primary-color: var(--cn-accent-text);
+  --button-primary-bg-hover: var(--cn-accent);
+  --button-primary-color-hover: var(--cn-accent-text);
+  --button-primary-bg-active: var(--cn-accent-active);
+  --button-primary-color-active: var(--cn-accent-text);
+  --button-primary-bg-disabled: var(--cn-accent);
+}

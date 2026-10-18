@@ -1,0 +1,36 @@
+// ---------------------------------------------------------------------
+// fof/discussion-thumbnail na lista: o quadrado arredondado antes do título
+// (componente de miniaturas do Horizon); no celular, no lugar do avatar.
+// ---------------------------------------------------------------------
+.CanelaTopicThumbnail {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 64px;
+  height: 64px;
+  margin-right: var(--cn-space-3);
+  overflow: hidden;
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media @phone {
+  .CanelaList .DiscussionListItem-content:has(.CanelaTopicThumbnail) .CanelaListItem-avatar {
+    display: none;
+  }
+
+  .CanelaTopicThumbnail {
+    grid-column: 1;
+    grid-row: ~"1 / span 2";
+    align-self: start;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+  }
+}

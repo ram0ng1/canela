@@ -1,0 +1,15 @@
+{
+  "extends": "flarum-tsconfig",
+  // Dois layouts: dentro do fórum (workbench/canela, vendor três níveis acima)
+  // e na CI (checkout sozinho com `composer update`, vendor ao lado de js/).
+  "include": ["src/**/*", "../vendor/*/*/js/dist-typings/@types/**/*", "../../../vendor/*/*/js/dist-typings/@types/**/*", "@types/**/*"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "declarationDir": "./dist-typings",
+    "baseUrl": ".",
+    "paths": {
+      "flarum/*": ["../vendor/flarum/core/js/dist-typings/*", "../../../vendor/flarum/core/js/dist-typings/*"],
+      "ext:flarum/tags/*": ["../vendor/flarum/tags/js/dist-typings/*", "../../../vendor/flarum/tags/js/dist-typings/*"]
+    }
+  }
+}

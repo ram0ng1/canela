@@ -1,0 +1,791 @@
+// =====================================================================
+// Menu do usuário do Discourse (`.user-menu.revamped.menu-panel`), medido no
+// meta.discourse.org (1440×900, 1:1): painel de raio 8 com a sombra curta do
+// `.menu-panel`, a lista de 320px à esquerda e a coluna de abas de 46px à
+// direita; itens com avatar de 2em e o ícone do tipo num selo de 22px.
+//
+// Em rem/em de 16px, como o Discourse: o body do tema é 15px.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Avatar do cabeçalho (`.header-dropdown-toggle.current-user`)
+// ---------------------------------------------------------------------
+.CanelaUserMenuWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.Canela .Header-secondary .CanelaUserMenuButton.Button,
+.CanelaUserMenuButton.Button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.55rem;
+  min-width: 2.55rem;
+  height: 2.55rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--cn-radius-pill);
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--cn-shell-icon);
+  transition: none;
+
+  .Avatar {
+    --size: 32px;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 32px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -2px;
+  }
+}
+
+// A bolha (`.d-header-icons .badge-notification`): borda da cor do
+// cabeçalho, no canto de cima do avatar.
+.CanelaUserMenuButton-badge {
+  position: absolute;
+  // Mais para fora do avatar: colada, a bolha cobria a inicial/rosto.
+  top: -4px;
+  right: -7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0.6em;
+  padding: 0.2em 0.4em;
+  border: 2px solid var(--cn-surface);
+  border-radius: 10px;
+  background: var(--cn-accent);
+  color: var(--cn-accent-text);
+  font-size: 0.7579rem;
+  font-weight: normal;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+
+  &--pms,
+  &--reviewables {
+    background: var(--cn-success);
+
+    .icon {
+      width: 1em;
+      font-size: 0.8706em;
+    }
+  }
+
+  &--reviewables {
+    background: var(--cn-danger);
+    color: #fff;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Painel
+// ---------------------------------------------------------------------
+.CanelaUserMenu {
+  // `--list-item-padding` do `.menu-panel`.
+  --cn-um-item-padding: 0.5em 1rem;
+
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  max-height: ~"calc(100dvh - var(--cn-header-height) - 1em)";
+  padding: 0;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  color: var(--cn-primary);
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  cursor: default;
+  animation: cn-float-down 250ms ease forwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0s;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+// `.panel-body-contents` com `row-reverse`: as abas ficam à direita.
+.CanelaUserMenu-bodyContents {
+  display: flex;
+  flex-direction: row-reverse;
+  min-height: 0;
+  max-height: 100%;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------
+// Abas (`.menu-tabs-container`)
+// ---------------------------------------------------------------------
+.CanelaUserMenu-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.CanelaUserMenu-tabList {
+  display: flex;
+  flex-direction: column;
+
+  &--bottom {
+    border-top: 1px solid var(--cn-border);
+  }
+}
+
+// `.btn.user-menu-tab`: 0.375em em volta do ícone, que tem 0.5em de padding
+// e raio 8 — 46px por aba, com a borda transparente do `.btn`.
+.CanelaUserMenu-tab {
+  position: relative;
+  display: flex;
+  padding: 0.375em;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--cn-primary-medium);
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
+.CanelaUserMenu-tabIcon {
+  display: flex;
+  padding: 0.5em;
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary-medium);
+
+  .CanelaIcon {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+.CanelaUserMenu-tab.active .CanelaUserMenu-tabIcon {
+  color: var(--cn-primary);
+  background-color: var(--cn-primary-100);
+}
+
+.CanelaUserMenu-tab:not(.active):hover .CanelaUserMenu-tabIcon,
+.CanelaUserMenu-tab:not(.active):focus-visible .CanelaUserMenu-tabIcon {
+  background-color: var(--cn-hover);
+}
+
+.CanelaUserMenu-tab:focus-visible .CanelaUserMenu-tabIcon {
+  box-shadow: 0 0 0 2px var(--cn-accent);
+}
+
+// `.badge-notification` da aba: no canto de cima, na cor de destaque.
+.CanelaUserMenu-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 0.5em;
+  padding: 0.21em 0.42em;
+  border-radius: 10px;
+  background-color: var(--cn-accent);
+  color: var(--cn-accent-text);
+  font-size: 0.6599em;
+  font-weight: normal;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media screen and (max-height: 400px) {
+  .CanelaUserMenu-tab {
+    padding: 0.125em 0.375em;
+    font-size: 0.8706em;
+  }
+
+  .CanelaUserMenu-badge {
+    top: 0;
+    right: 3px;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Lista da aba (`.quick-access-panel`)
+// ---------------------------------------------------------------------
+.CanelaUserMenu-panel {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 320px;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  border-right: 1px solid var(--cn-border);
+  user-select: none;
+}
+
+.CanelaUserMenu-panelInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+}
+
+// Os itens (`li` do `menu-item`), no menu e na página /notifications.
+.canela-um-items() {
+  .CanelaUserMenu-list {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .CanelaUserMenu-item {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0;
+    list-style-type: none;
+    background-color: var(--cn-surface);
+
+    &.unread,
+    &.pending {
+      background-color: var(--cn-hover);
+
+      &:hover,
+      &:focus-within {
+        background-color: var(--cn-selected);
+      }
+    }
+
+    &:hover,
+    &:focus-within {
+      background-color: var(--cn-hover);
+      outline: none;
+    }
+
+    > a,
+    > button {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+      padding: var(--cn-um-item-padding, 0.5em 1rem);
+      border: 0;
+      background: none;
+      color: var(--cn-primary);
+      font: inherit;
+      text-align: left;
+      text-decoration: none;
+      outline: 0;
+      cursor: pointer;
+
+      &:hover,
+      &:focus {
+        color: var(--cn-primary);
+        text-decoration: none;
+      }
+    }
+  }
+
+  .CanelaUserMenu-itemText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .CanelaUserMenu-label {
+    overflow: hidden;
+    color: var(--cn-primary);
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .CanelaUserMenu-description {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--cn-primary);
+    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    .username {
+      font-weight: bold;
+    }
+  }
+
+  // `.icon-avatar`: avatar de 2em e o selo de 22px no canto de cima.
+  .CanelaUserMenu-iconAvatar {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    width: 2em;
+    height: 2em;
+    margin: 0.3em 1em auto 0;
+    overflow: visible;
+
+    .Avatar {
+      --size: 2em;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-size: 0.875em;
+      line-height: 2.2857em;
+    }
+  }
+
+  .CanelaUserMenu-systemAvatar {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  // Esqueleto da lista enquanto carrega: mesmo padding, avatar e duas linhas
+  // de texto de um item, para a lista chegar sem mudar a altura do painel.
+  .CanelaUserMenu-list--loading {
+    overflow: hidden;
+  }
+
+  .CanelaUserMenu-item--skeleton,
+  .CanelaUserMenu-item--skeleton:hover {
+    background-color: var(--cn-surface);
+  }
+
+  .CanelaUserMenu-skeletonRow {
+    display: flex;
+    align-items: center;
+    padding: var(--cn-um-item-padding, 0.5em 1rem);
+
+    // Sem texto dentro, a coluna teria largura zero e as linhas sumiriam.
+    .CanelaUserMenu-itemText {
+      flex: 1 1 auto;
+    }
+  }
+
+  .CanelaUserMenu-skeletonAvatar {
+    flex-shrink: 0;
+    width: 2em;
+    height: 2em;
+    margin: 0.3em 1em auto 0;
+    border-radius: 50%;
+  }
+
+  .CanelaUserMenu-skeletonLine {
+    display: block;
+    height: 0.9em;
+    margin: 0.3em 0;
+  }
+
+  .CanelaUserMenu-iconWrapper {
+    position: absolute;
+    top: -0.45em;
+    right: -0.65em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    background: var(--cn-surface);
+
+    .icon {
+      display: block;
+      margin: 0;
+      padding: 0;
+      color: var(--cn-primary);
+      font-size: 0.8706em;
+      line-height: 1;
+    }
+  }
+
+  .CanelaUserMenu-item.unread .CanelaUserMenu-iconWrapper,
+  .CanelaUserMenu-item.pending .CanelaUserMenu-iconWrapper {
+    background: var(--cn-accent);
+
+    .icon {
+      color: var(--cn-accent-text);
+    }
+  }
+}
+
+.CanelaUserMenu-panel {
+  .canela-um-items();
+}
+
+// `.panel-body-bottom`: o botão largo com a setinha e o "Descartar".
+.CanelaUserMenu-bottom {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  padding: 0.75em 0.75em ~"max(env(safe-area-inset-bottom), 0.75em)";
+}
+
+// `.btn.btn-default` do Horizon: pílula branca de borda cinza.
+.CanelaUserMenu-showAll.Button,
+.CanelaUserMenu-dismiss.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0.5em 0.65em;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-surface);
+  box-shadow: none;
+  color: var(--cn-primary);
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: none;
+
+  .CanelaIcon {
+    width: 1em;
+    height: 1em;
+    color: var(--cn-primary-high);
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--cn-primary-low-mid);
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+    text-decoration: none;
+
+    .CanelaIcon {
+      color: var(--cn-primary);
+    }
+  }
+}
+
+.CanelaUserMenu-showAll.Button {
+  flex: 1 1 auto;
+}
+
+.CanelaUserMenu-bottom .CanelaUserMenu-dismiss.Button {
+  margin-left: 0.5em;
+}
+
+.CanelaUserMenu-showAll.Button:only-child {
+  margin: 0;
+}
+
+// Estado vazio (`.empty-state`, `--text-only`).
+.CanelaUserMenu-empty {
+  padding: 0.5em 1em;
+  user-select: text;
+}
+
+.CanelaUserMenu-emptyTitle {
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-1);
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 0.5em 0;
+}
+
+.CanelaUserMenu-emptyBody {
+  color: var(--cn-primary);
+
+  p {
+    margin: 0 0 0.5em;
+  }
+
+  a {
+    color: var(--cn-link);
+  }
+
+  .CanelaIcon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+  }
+}
+
+.CanelaUserMenu-spinnerContainer {
+  min-height: 2em;
+  margin: auto;
+  padding: 1em 0;
+}
+
+.CanelaUserMenu-spinner {
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+  border: 2px solid var(--cn-primary-low);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: canela-um-spin 0.75s linear infinite;
+}
+
+@keyframes canela-um-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Aba Perfil (`#quick-access-profile`): os itens do menu da sessão em
+// linhas de até 3,25em, ícone cinza e rótulo normal.
+// ---------------------------------------------------------------------
+.CanelaUserMenu-profile {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  > li {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    max-height: 3.25em;
+    box-sizing: border-box;
+    width: 100%;
+
+    &:hover,
+    &:focus-within {
+      background-color: var(--cn-hover);
+    }
+  }
+
+  // O `<hr>` do Discourse entre o status e o resto.
+  > li.Dropdown-separator {
+    flex: 0 0 auto;
+    height: 0;
+    max-height: none;
+    margin: 0;
+    border-top: 1px solid var(--cn-border);
+    background: none;
+  }
+
+  > li > a,
+  > li > .Button,
+  > li > button {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: var(--cn-um-item-padding, 0.5em 1rem);
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    box-shadow: none;
+    color: var(--cn-primary) !important;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
+    justify-content: flex-start;
+    white-space: nowrap;
+    transition: none;
+
+    .Button-icon,
+    .icon {
+      width: 1em;
+      margin: 0 0.5em 0 0;
+      color: var(--cn-primary-medium);
+      font-size: 1em;
+      text-align: center;
+    }
+
+    .Button-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: normal;
+    }
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: none;
+    }
+  }
+
+  // Com o status, o emoji no lugar do ícone e "até …" pequeno ao lado.
+  .CanelaUserMenu-statusEmoji {
+    width: 1em;
+    margin-right: 0.5em;
+    text-align: center;
+  }
+
+  .CanelaUserMenu-statusUntil {
+    margin-left: 0.5em;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-3);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular: o painel ocupa a largura toda, colado embaixo do cabeçalho.
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaUserMenu {
+    position: fixed;
+    top: var(--cn-header-height);
+    left: 0;
+    right: 0;
+    width: auto;
+    max-height: ~"calc(100dvh - var(--cn-header-height))";
+    border-width: 1px 0;
+    border-radius: 0;
+  }
+
+  .CanelaUserMenu-panel {
+    flex: 1 1 auto;
+    width: auto;
+  }
+
+  // `(width < 40rem)`: abas mais largas e itens mais altos para o dedo.
+  .CanelaUserMenu-tab {
+    padding: 0.75em 0.875em;
+  }
+
+  .CanelaUserMenu-panel .CanelaUserMenu-item {
+    padding-block: 0.15em;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Página /notifications (`.user-notifications-list`): a mesma lista, com as
+// abas de notificações em linha.
+// ---------------------------------------------------------------------
+.CanelaNotificationsPage {
+  .canela-um-items();
+
+  .CanelaNotificationsList {
+    --cn-um-item-padding: 0.5em 1rem;
+
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--cn-primary);
+
+    .CanelaUserMenu-list {
+      overflow: visible;
+    }
+  }
+}
+
+.CanelaNotificationsPage-header {
+  margin: 0 0 12px;
+}
+
+.CanelaNotificationsPage-title {
+  margin: 0;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-3);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.CanelaNotificationsPage-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+
+  .CanelaUserMenu-dismiss.Button {
+    margin-left: auto;
+  }
+}
+
+// As abas sublinhadas do `.nav-pills` do Horizon (as mesmas da lista).
+.CanelaNotificationsPage-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaNotificationsPage-tab > a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 0.65em;
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary);
+  font-size: var(--cn-font-0);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0.125em;
+    background: transparent;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-link);
+    text-decoration: none;
+
+    &::after {
+      background: var(--cn-accent);
+    }
+  }
+}
+
+.CanelaNotificationsPage-tab.active > a {
+  color: var(--cn-link);
+
+  &::after {
+    background: var(--cn-accent);
+  }
+}
+
+.CanelaNotificationsPage-more {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 4px;
+}

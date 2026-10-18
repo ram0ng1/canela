@@ -1,0 +1,241 @@
+// ---------------------------------------------------------------------
+// Modais de formulário longo (como no brechó): mais largos no desktop, os
+// campos em duas colunas agrupadas por assunto, só o corpo rola e o botão de
+// salvar fica sempre à vista no rodapé. No celular e no tablet estreito volta
+// a uma coluna. Os modais curtos não entram aqui e continuam compactos.
+// Só leiaute: nenhum campo muda de lugar no formulário nem na gravação.
+// ---------------------------------------------------------------------
+
+// Duas colunas a partir do tablet (modal de ~720px: ~340px por coluna).
+@cn-modal-two-cols: ~"(min-width: 768px)";
+
+// Cabeçalho fixo em cima, corpo rolável e o modal nunca maior que a janela.
+// Restrito aos modais listados: um corpo com `overflow` cortaria menus
+// suspensos de outros modais.
+.cn-modal-long(@width: 860px) {
+  .Modal-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    > form {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+  }
+
+  .Modal-header,
+  .Modal-alert {
+    flex: none;
+  }
+
+  .Modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    // O rodapé grudado ocupa o fim do corpo; sem isto sobraria uma faixa
+    // vazia embaixo dele.
+    padding-bottom: 0;
+  }
+
+  @media @tablet-up {
+    &.Modal {
+      max-width: ~"min(@{width}, calc(100vw - 48px))";
+    }
+
+    .Modal-content {
+      max-height: ~"calc(100dvh - 48px)";
+    }
+  }
+
+  // O botão de salvar vira o rodapé: grudado no fim da área que rola, da
+  // largura toda do modal, sobre o fundo do cartão.
+  .Form-body > .Form-controls,
+  .Form-body > .PollForm-submit {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    align-self: stretch;
+    width: auto;
+    margin: 0 ~"calc(-1 * var(--cn-modal-pad-x))";
+    padding: 12px var(--cn-modal-pad-x);
+    border-top: 1px solid var(--cn-primary-low);
+    background: var(--cn-surface);
+  }
+
+  // Duas colunas: cada campo ocupa uma; quem precisa da linha toda (textos
+  // longos, listas, o rodapé) pede `1 / -1`. `dense` deixa um campo curto
+  // subir para o buraco ao lado do anterior.
+  @media @cn-modal-two-cols {
+    .Form-body {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-flow: row dense;
+      align-items: start;
+      gap: 16px 24px;
+
+      > * {
+        min-width: 0;
+      }
+
+      > :has(textarea),
+      > .Form-controls,
+      > .PollForm-submit {
+        grid-column: ~"1 / -1";
+      }
+    }
+  }
+}
+
+// Editar usuário: só vira modal largo quando tem campos para isso (o próprio
+// usuário, ou quem só mexe nos grupos, vê três ou quatro itens e o modal
+// continua pequeno).
+.EditUserModal:has(.Form-body > :nth-child(5)) {
+  .cn-modal-long();
+
+  // Conta primeiro, depois o perfil, e por fim o texto "Sobre mim", as
+  // limpezas, os grupos e o rodapé — a mesma ordem numa coluna (celular) e
+  // em duas (conta à esquerda, perfil à direita, o resto na linha toda).
+  .Form-body {
+    > [data-item=nickname],
+    > [data-item=canelaTitle],
+    > [data-item=canelaLocation],
+    > [data-item=canelaWebsite] {
+      order: 1;
+    }
+
+    > [data-item=canelaBio],
+    > [data-item=canelaClear] {
+      order: 2;
+    }
+
+    > [data-item=groups] {
+      order: 3;
+    }
+
+    > [data-item=submit] {
+      order: 4;
+    }
+  }
+
+  @media @cn-modal-two-cols {
+    .Form-body {
+      > [data-item=username],
+      > [data-item=email],
+      > [data-item=password] {
+        grid-column: 1;
+      }
+
+      > [data-item=nickname],
+      > [data-item=canelaTitle],
+      > [data-item=canelaLocation],
+      > [data-item=canelaWebsite] {
+        grid-column: 2;
+      }
+
+      > [data-item=canelaBio],
+      > [data-item=canelaClear],
+      > [data-item=groups],
+      > [data-item=submit] {
+        grid-column: ~"1 / -1";
+      }
+    }
+  }
+}
+
+// As caixas de limpeza (status, capa) numa linha só.
+.EditUserModal [data-item=canelaClear] {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px 24px;
+
+  > .checkbox {
+    width: auto;
+    margin: 0;
+  }
+}
+
+// Grupos em grade de fichas: a caixa, o selo e o nome numa ficha clicável,
+// várias por linha, a marcada destacada na cor de destaque.
+.EditUserModal-groups > div {
+  display: grid;
+  // O `.Form-group` do core é uma coluna flexível alinhada ao início: sem
+  // isto a grade encolhe para a largura de uma ficha.
+  align-self: stretch;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+
+  > .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--cn-primary-low);
+    border-radius: var(--cn-radius);
+    cursor: pointer;
+    overflow-wrap: anywhere;
+
+    > input {
+      flex: none;
+      margin: 0;
+    }
+
+    &:hover {
+      background: var(--cn-primary-very-low);
+    }
+
+    &:has(input:checked) {
+      border-color: var(--cn-accent);
+      background: var(--cn-accent-low);
+    }
+
+    &:has(input:disabled) {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+}
+
+// Enquete (criar/editar, fof/polls): pergunta | subtítulo, imagem | data
+// final; respostas e opções de votação na linha toda, em duas colunas.
+.PollDiscussionModal {
+  .cn-modal-long();
+
+  @media @cn-modal-two-cols {
+    .Form-body {
+      > .PollForm-answers,
+      > .FieldSet:has(.PollForm-setting) {
+        grid-column: ~"1 / -1";
+      }
+    }
+
+    .PollForm-answers > .FieldSet > .FieldSet-items,
+    .FieldSet-items:has(> .PollForm-setting) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 24px;
+      align-items: start;
+
+      > * {
+        width: auto;
+        min-width: 0;
+      }
+    }
+  }
+}
+
+// Convites: o formulário é curto (fica na largura média), mas a lista cresce
+// com o uso; o cabeçalho fica e só o corpo rola.
+.CanelaInviteModal {
+  .cn-modal-long(600px);
+}
+
+.CanelaInviteModal .Modal-body {
+  padding-bottom: var(--cn-modal-pad-y);
+}

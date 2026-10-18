@@ -1,0 +1,2749 @@
+ramon-canela:
+  admin:
+    settings:
+      group_appearance: 外観
+      group_sidebar: サイドバー
+      group_header: ヘッダーとショートカット
+      group_home: ホームページ
+      group_list: スレッド一覧
+      group_topic: スレッド
+      group_profile: プロフィール
+      group_community: コミュニティ
+      group_composer: 投稿エディターと検索
+      requires_tags: Tags 拡張機能が必要ですが、無効になっています。
+      requires_fof_drafts: FoF Drafts 拡張機能が必要ですが、無効になっています。
+      requires_sidebar: サイドバーがオフになっています（上のサイドバーカード）。
+      section_colors: 色
+      colors_help: 'このテーマには独自の色はありません。Discourse の Horizon テーマがターシャリーカラーから配色を作るように、パレット全体を Flarum のプライマリーカラーから生成します。色付きの背景、選択、リンク、フォーカスリングはすべて、ライトモードでもダークモードでもこの色から派生します。'
+      colors_link: 外観で色を変更
+      section_font: フォント
+      font_label: フォーラムのフォント
+      font_help: フォーラム全体で使う書体です。Inter と Plus Jakarta Sans はテーマに同梱されており、ラテン文字に対応します。システムフォントは何もダウンロードせず、すべての文字に対応します。
+      font_inter: 'Inter: テーマの既定'
+      font_jakarta: Plus Jakarta Sans
+      font_system: システムフォント
+      font_notice: フォントを変更するとフォーラムの CSS が再コンパイルされるため、保存に数秒かかります。
+      section_surfaces: 背景とカード
+      tinted_background_label: プライマリーカラーで色付けした背景
+      tinted_background_help: Horizon のように、コンテンツとサイドバーの背後の背景にプライマリーカラーをうっすらと乗せます。オフにすると、ニュートラルなグレーのままです。
+      content_card_label: コンテンツをカードに収める
+      content_card_help: 一覧、スレッド、プロフィールを背景の上の角丸カードに配置します。オフにすると、コンテンツが枠なしで領域全体に広がります。
+      section_buttons: ボタン
+      pill_buttons_label: ピル型ボタン
+      pill_buttons_help: Horizon のように、両端が完全に丸いボタンです。オフにすると、角がわずかに丸くなります。
+      section_logo: ロゴ
+      show_title_with_logo_label: ロゴの横にフォーラムのタイトルを表示
+      show_title_with_logo_help: 外観でロゴをアップロードしている場合、これがオンのときだけロゴの横にタイトルを表示します。ロゴがない場合、タイトルは常に表示されます。
+      section_sidebar: サイドバー
+      sidebar_enabled_label: サイドバーを表示
+      sidebar_enabled_help: Discourse のように、ナビゲーションとタグを並べた左の列です。オフにすると、Flarum の既定のナビゲーションに戻ります。
+      sidebar_open_default_label: 開いた状態で開始
+      sidebar_open_default_help: ヘッダーのボタンでまだサイドバーを開閉していない人に対する表示です。その後は各訪問者の選択が優先され、ブラウザーに保存されます。
+      sidebar_new_topic_label: 「スレッドの作成」ボタン
+      sidebar_new_topic_help: サイドバー上部にある、新しいスレッドの投稿エディターを開くボタンです。
+      sidebar_footer_label: サイドバーのフッター
+      sidebar_footer_help: サイドバー下部のボタン：ライト／ダークテーマ、新規スレッド、キーボードショートカット。
+      section_sidebar_tags: タグ
+      sidebar_categories_label: タグセクション
+      sidebar_categories_help: 色またはアイコン付きのプライマリタグと、すべてのタグへのリンクです。
+      sidebar_tags_label: セカンダリタグセクション
+      sidebar_tags_help: セカンダリタグと、すべてのタグへのリンクです。
+      sidebar_tags_limit_label: サイドバーのセカンダリタグ数
+      sidebar_tags_limit_help: 「すべてのタグ」リンクの前に表示するセカンダリタグの数（{min}〜{max}）。
+      section_header_search: ヘッダーの検索
+      header_search_label: ヘッダー中央の検索欄
+      header_search_help: Discourse のように、ヘッダー中央に置くピル型の検索欄です。オフにすると、Flarum の既定の検索に戻ります。
+      section_shortcuts: キーボードショートカット
+      keyboard_shortcuts_label: キーボードショートカット
+      keyboard_shortcuts_help: Discourse のショートカット：/ で検索、c で新規スレッド、r で返信、j と k で一覧を移動、g h でホームへ、= でサイドバーを開閉、? で一覧をすべて表示。入力欄で入力中は動作しません。
+      section_welcome_banner: ウェルカムバナー
+      welcome_banner_label: ウェルカムバナーを表示
+      welcome_banner_help: Horizon のように、外観で設定したウェルカムのタイトルとメッセージを色付き背景の上のバナーに表示します。オフにすると、ページは一覧から始まります。
+      welcome_banner_guests_only_label: ゲストのみ
+      welcome_banner_guests_only_help: ログイン中のメンバーは一覧に直接進みます。バナーは初めての訪問者向けです。
+      welcome_banner_search_label: バナー内の検索欄
+      welcome_banner_search_help: バナー中央の大きな検索欄で、フォーラムの検索を開きます。
+      section_category_hero: タグのヘッダー
+      category_hero_label: タグの大きなヘッダー
+      category_hero_help: タグページで、一覧の前にアイコン、色、名前、説明を表示するヘッダーです。
+      category_hero_children_label: 子タグをカードで表示
+      category_hero_children_help: ヘッダーの下に、子タグをクリックできるカードとして表示します。
+      section_nav: 一覧のタブ
+      nav_unread_label: 未読タブ
+      nav_unread_help: まだ読んでいない返信があるスレッドです。ログイン中のメンバーにのみ表示されます。
+      nav_hot_label: 注目タブ
+      nav_hot_help: ここ数日に作成されたスレッドのうち、返信が最も多いものです。
+      hot_days_label: 注目で数える日数
+      hot_days_help: 対象とする期間（{min}〜{max} 日）。
+      section_nav_categories: タグフィルター
+      nav_dropdowns_label: タグのメニュー
+      nav_dropdowns_help: Discourse のように、タブの左にあるメニューで、一覧をプライマリタグやセカンダリタグで絞り込みます。
+      nav_categories_link_label: タグタブ
+      nav_categories_link_help: すべてのタグのページへ移動するタブです。
+      section_list_columns: 一覧の列
+      list_header_label: 列見出し
+      list_header_help: 一覧の上にある、スレッド、返信数、閲覧数、アクティビティの行です。
+      list_posters_label: 参加者のアバター
+      list_posters_help: Discourse の投稿者列のように、各スレッドの横に作成者と最後に返信した人のアバターを表示します。
+      list_views_label: 閲覧数の列
+      list_views_help: 各スレッドが閲覧された回数で、スレッドの閲覧数カードで集計されます。
+      list_heat_label: 多い数値を強調
+      list_heat_help: Discourse のヒートマップのように、他より大幅に多い数値をオレンジや赤で表示します。
+      list_excerpts_label: 固定スレッドの抜粋
+      list_excerpts_help: タイトルの下に、固定スレッドの最初の投稿の冒頭を表示します。
+      section_categories_page: タグページ
+      categories_layout_label: レイアウト
+      categories_layout_help: すべてのタグのページでの表示方法です。
+      categories_layout_boxes: 'ボックス: 色、説明、子タグ付きのカード'
+      categories_layout_list: 'リスト: 最新スレッド付きのタグの表'
+      section_topic_map: スレッドマップ
+      topic_map_label: スレッドマップ
+      topic_map_help: 最初の投稿の下に、作成日、最後の返信、返信数、参加者をまとめた概要を表示します。
+      section_topic_timeline: タイムライン
+      topic_timeline_label: 投稿の横のタイムライン
+      topic_timeline_help: 右側のバーで、スレッド内の現在位置を示し、任意の投稿へ移動できます。
+      section_topic_footer: スレッドのフッター
+      topic_footer_label: スレッド末尾のボタン
+      topic_footer_help: Discourse のように、最後の投稿の後に返信、共有、フォローを表示します。フォローには Subscriptions 拡張機能が必要です。
+      section_suggested: おすすめスレッド
+      suggested_topics_label: おすすめスレッドを表示
+      suggested_topics_help: スレッドの末尾に、続けて読む他のスレッドの短い一覧を表示します。できるだけ同じタグから選びます。
+      suggested_count_label: スレッド数
+      suggested_count_help: おすすめするスレッドの数（{min}〜{max}）。
+      section_user_page: プロフィールページ
+      user_cover_label: プロフィール上部のカバー
+      user_cover_help: Discourse のように、大きなアバターと名前の背後に広い帯を表示します。
+      user_stats_label: 統計
+      user_stats_help: 名前の下に登録日、最終訪問、投稿数とスレッド数を表示します。いいねは Likes 拡張機能がある場合のみ表示されます。
+      user_summary_label: 概要タブ
+      user_summary_help: ユーザーの数値と人気のスレッド・返信を表示する最初のタブです。
+      user_activity_read_label: 既読タブ
+      user_activity_read_help: アクティビティに、本人が読んだスレッドを新しい順に表示します。本人と管理者だけが見られます。
+      user_activity_reactions_label: リアクションタブ
+      user_activity_reactions_help: アクティビティの「いいね」の代わりに、本人が付けたいいねとリアクションをひとつのリストで、絵文字と投稿の抜粋つきで表示します。リアクションは、誰がリアクションしたかを見る権限のある人にだけ表示されます。
+      user_activity_votes_label: 投票タブ
+      user_activity_votes_help: アクティビティに、本人が投票した投票付きの投稿を表示します。他の人には投票者を公開している投票だけが表示されます。
+      user_activity_solved_label: 解決済みタブ
+      user_activity_solved_help: アクティビティに、ベストアンサーに選ばれた本人の返信を表示します。
+      section_user_card: ユーザーカード
+      user_card_label: ユーザーカード
+      user_card_help: 写真、数値、プロフィールへのリンクを載せたコンパクトなカードで、ページを離れずにアバターや名前から開けます。
+      groups_aria: 設定グループ
+      search_placeholder: 設定を検索…
+      search_clear: 検索をクリア
+      search_empty: 設定が見つかりません。
+      palette_accent: アクセント
+      palette_background: 色付きの背景
+      palette_selected: 選択
+      palette_accent_low: 淡いアクセント
+      palette_ring: フォーカスリング
+      palette_link: リンク
+      colors_current: 現在のプライマリーカラー
+      palette_light: ライト
+      palette_dark: ダーク
+      shell:
+        group_navigation: ヘッダーとサイドバー
+        group_people: プロフィールとユーザー
+        group_messages: メッセージとチャット
+        group_moderation: モデレーション
+        group_integrations: 連携
+        group_appearance_desc: 色、フォント、サーフェス、ボタン、アイコン、バナー、トースト。
+        group_navigation_desc: ヘッダーの検索とメニュー、ログイン、キーボードショートカット、Discourse のサイドバー。
+        group_list_desc: ホームページ、タブ、列、タグ、スレッド一覧のカウンター。
+        group_topic_desc: 投稿、タイムライン、スレッドマップ、フッター、閲覧機能。
+        group_composer_desc: Discourse の投稿エディター、下書き、ハッシュタグ、詳細検索。
+        group_people_desc: プロフィールページ、ユーザーカード、追加項目、アクティビティ。
+        group_messages_desc: プライベートメッセージとリアルタイムチャット。
+        group_community_desc: 概要、ガイドライン、ユーザー、グループ、バッジ、信頼レベル、招待。
+        group_moderation_desc: 'スタッフ向けツール：一括操作、編集履歴、投稿者への通知。'
+        group_integrations_desc: サードパーティ拡張機能向けの Discourse 風デザインです。それぞれ対応する拡張機能が有効な場合のみ動作します。
+        group_ai_desc: プロバイダー、ボット、投稿エディターのアシスタント、要約、関連スレッド。
+        'on': 'オン'
+        'off': 'オフ'
+        locked: 利用不可
+        saved: 保存しました
+        saving: 保存中…
+        saved_all: 変更を保存しました
+        save_error: 保存できませんでした
+        autosave: すべて自動で保存されます
+        requires_extension: '{name} 拡張機能が必要です'
+        extension_disabled: '{name} 拡張機能が必要です。インストール済みですが無効になっています。'
+        extension_missing: '{name} 拡張機能が必要です。インストールされていません。'
+        open_extension: 拡張機能を開く
+        depends_on: 「{name}」に依存していますが、オフになっています。
+        go_enable: 移動する
+        hidden_title: オフになっている項目に依存しているため非表示
+        needs: 「{name}」が必要
+        active_count: '{total} 件中 {active} 件の機能がオン'
+        search_results: 「{query}」の検索結果
+        auth_backend_off: '/login と /signup ページ（extend/auth.php）はまだサーバーで読み込まれていません。ボタンは引き続きモーダルを開きます。'
+      logo_colored_label: ロゴに色を付ける
+      logo_colored_help: アップロードしたロゴを形だけにして、アクセントカラー（タグのページやスレッドではタグの色）で塗ります。SVG か透明背景の PNG で最もきれいに表示されます。
+      loading_slider_label: 上部の読み込みバー
+      loading_slider_help: Discourse のように、ページ移動時にページが届くまで画面上部に細いバーが流れます。Flarum の「読み込み中…」の通知の代わりです。
+      toast_auto_close_label: 自動で閉じるトースト
+      toast_auto_close_help: Discourse のトーストのように、隅に出る通知（「保存しました」「リンクをコピーしました」など）がタイマーバー付きで数秒後に消えます。オフにすると、閉じるまで表示されます。
+      user_menu_label: Discourse のユーザーメニュー
+      user_menu_help: ヘッダーのアバターから、通知、返信、いいね、メッセージ、ブックマーク、チャット、レビュー、プロフィールのタブを持つパネルを開きます（Flarum のベルとセッションメニューの代わり）。
+      nav_sticky_label: タブを固定表示
+      nav_sticky_help: Horizon のように、一覧をスクロール中もタブバーがヘッダーの下に固定されます。meta.discourse.org では固定されません。
+      list_infinite_scroll_label: 無限スクロール
+      list_infinite_scroll_help: Discourse のように、一覧の終わりが画面に近づくと次のページが自動で読み込まれます。オフにすると、Flarum の「さらに読み込む」ボタンが残ります。
+      post_actions_label: Discourse の投稿アクション
+      post_actions_help: Discourse のように、各投稿のバーにいいね、リンクのコピー、ブックマーク、返信と、残りを展開する「…」を表示します。オフにすると、Flarum の操作メニューに戻ります。
+      embedded_replies_label: 埋め込み返信
+      embedded_replies_help: Discourse のように、各投稿の「N 件の返信」でその直下に返信を開き、引用元の投稿を上に表示します。
+      new_replies_bar_label: 新着返信のお知らせ
+      new_replies_bar_help: Discourse のように、スレッドを読んでいる途中でリアルタイムに返信が届くと「N 件の新しい返信があります」のバーが表示され、そこへ移動できます。
+      topic_event_posts_label: イベント投稿
+      topic_event_posts_help: 「スレッドをロックしました」「スレッドを固定しました」などの Flarum のお知らせをスレッド内に表示します。Discourse ではこのようには表示されません。
+      badges:
+        section_manager: バッジの管理
+        section_main: バッジと信頼レベル
+        badges_enabled_label: バッジ
+        badges_enabled_help: Discourse の自動バッジ（最初のいいね、ナイス返信、記念日など）、/badges ページ、プロフィールのバッジタブ、「… を獲得しました」の通知です。オフにすると、どれも表示されず、API は 404 を返します。
+        badges_user_card_label: ユーザーカードのバッジ
+        badges_user_card_help: アバターをクリックすると開くカードに、注目のバッジを最大 3 つ（金、銀、銅）表示します。
+        badges_summary_label: 概要に人気のバッジ
+        badges_summary_help: プロフィールの概要タブにあるバッジのセクションです。
+        badges_max_likes_per_day_label: 「Out of Love」系バッジの 1 日あたりのいいね数
+        badges_max_likes_per_day_help: Flarum はいいねを制限しません。Out of Love、Higher Love、Crazy in Love は、少なくともこの数のいいねをした日数を数えます（Discourse の既定は 50）。
+        run_now: 今すぐバッジを付与
+        run_done: 完了しました。
+        run_help: canela:badges コマンドは Flarum のスケジューラー（cron で php flarum schedule:run）で 1 日 1 回実行されます。初回の実行では、誰にも通知せずにフォーラムの過去の分を付与します。このボタンはバッジの部分だけを今すぐ実行します。
+        trust_levels_enabled_label: 信頼レベル
+        trust_levels_enabled_help: '新規、ベーシック、メンバー、レギュラー、リーダーの各レベルで、下のカードの要件から算出されます。レベルはプロフィールに表示され、信頼レベルのバッジを獲得できます。リーダーは手動でのみ付与されます：プロフィールのモデレーションメニューの「信頼レベルを変更…」から行います。'
+        requires_badges: バッジがオフになっています（上のバッジと信頼レベルのカード）。
+        requires_trust_levels: 信頼レベルがオフになっています（上のバッジと信頼レベルのカード）。
+        section_requirements: 信頼レベルの要件
+        source_stats: テーマの統計で閲覧を計測しています：訪問日数、閲覧時間、閲覧したスレッド、読んだ投稿は Discourse と同じく実測値です。
+        source_core: テーマの統計がない場合、閲覧は Flarum の既読状態（各人が各スレッドをどこまで読んだか）から算出し、訪問日数は登録からの日数になり、閲覧時間は数えられません。
+        no_likes: flarum/likes がない場合、いいねの要件は数えられません。
+        level_1: 1 · ベーシック
+        level_2: 2 · メンバー
+        level_3: 3 · レギュラー
+        level_4: 4 · リーダー
+        level_4_help: '自動では付与されません：管理者だけがプロフィールのモデレーションメニューから付与できます。手動でレベルを選ぶと固定もされます（システムによる昇格・降格は行われません）。'
+        unit_minutes: 分
+        unit_days: 日
+        unit_percent: '%'
+        tl1_requires_topics_entered_label: 閲覧したスレッド
+        tl1_requires_read_posts_label: 読んだ投稿
+        tl1_requires_time_spent_mins_label: 閲覧時間
+        tl2_requires_topics_entered_label: 閲覧したスレッド
+        tl2_requires_read_posts_label: 読んだ投稿
+        tl2_requires_time_spent_mins_label: 閲覧時間
+        tl2_requires_days_visited_label: 訪問日数
+        tl2_requires_likes_received_label: 受け取ったいいね
+        tl2_requires_likes_given_label: 送ったいいね
+        tl2_requires_topic_reply_count_label: 返信した他の人のスレッド
+        tl3_time_period_label: 評価期間
+        tl3_requires_days_visited_label: 期間内の訪問日数
+        tl3_requires_topics_replied_to_label: 期間内に返信したスレッド
+        tl3_requires_topics_viewed_label: 閲覧したスレッド（期間内に作成されたもの）
+        tl3_requires_topics_viewed_cap_label: 閲覧したスレッドの上限
+        tl3_requires_posts_read_label: 読んだ投稿（期間内に作成されたもの）
+        tl3_requires_posts_read_cap_label: 読んだ投稿の上限
+        tl3_requires_topics_viewed_all_time_label: 閲覧したスレッド（全期間）
+        tl3_requires_posts_read_all_time_label: 読んだ投稿（全期間）
+        tl3_requires_max_flagged_label: 通報された投稿の最大数
+        tl3_requires_likes_given_label: 期間内に送ったいいね
+        tl3_requires_likes_received_label: 期間内に受け取ったいいね
+        tl3_promotion_min_duration_label: レベルを失うまでの猶予期間
+        table_help: バッジをオフにすると、/badges ページとプロフィールから消え、新たな付与も止まります。既存の付与は保存されたままで、再びオンにすると戻ります。
+        table_failed: バッジを読み込めませんでした。テーマのマイグレーションは実行済みですか？
+        col_badge: バッジ
+        col_granted: 付与数
+        col_enabled: 'オン'
+        unavailable: このフォーラムには、このルールが計測する対象がありません（拡張機能がオフ、またはテーマの機能がありません）。
+        section_table: バッジ
+        new_badge: 新しいバッジ
+        grant_badge: バッジを付与
+        restore_system: システムバッジを復元
+        restore_confirm: 削除されたシステムバッジを再作成しますか？既存のもの（編集済みかどうかにかかわらず）はそのまま残ります。
+        restored: '{count, plural, =0 {不足しているシステムバッジはありませんでした。} other {# 件のシステムバッジを復元しました。}}'
+        needs_migration: 画像、「タイトルとして使用可能」、任意の手動付与、付与理由は、php flarum migrate を実行すると表示されます。
+        request_failed: うまくいきませんでした。もう一度お試しください。
+        col_type: 種類
+        tag_system: システム
+        tag_custom: カスタム
+        tag_unlisted: 非表示
+        tag_manual: 手動
+        view_grants: 付与を表示
+        edit: 編集
+        remove: 削除
+        removed: バッジを削除しました。
+        remove_system_confirm: システムバッジ「{badge}」を削除しますか？{count} 件の付与も削除されます。「システムバッジを復元」でのみ戻せます（以前の付与は戻りませんが、次回の実行時にルールが付与し直します）。
+        remove_custom_confirm: バッジ「{badge}」と {count} 件の付与を削除しますか？この操作は元に戻せません。
+        type_gold: 金
+        type_silver: 銀
+        type_bronze: 銅
+        grouping_getting_started: はじめに
+        grouping_community: コミュニティ
+        grouping_posting: 投稿
+        grouping_trust_level: 信頼レベル
+        grouping_other: その他
+        edit_title: バッジを編集
+        new_title: 新しいバッジ
+        name_placeholder: バッジ名
+        system_notice: 'システムバッジ：編集後も自動ルールは引き続き動作します。'
+        field_name: 名前
+        field_description: 説明
+        field_long_description: 詳しい説明
+        field_icon: アイコン（Font Awesome）
+        field_icon_help: スタイルと名前（例：「fas fa-star」「far fa-heart」）。
+        field_image: 画像（URL）
+        field_image_help: '任意：アイコンの代わりに表示します。正方形の画像の http(s) アドレスです。'
+        field_type: 種類
+        field_grouping: グループ分け
+        field_enabled: 有効
+        field_enabled_help: オフにすると、フォーラムから消え、付与されなくなり、既存の付与も非表示になります。
+        field_listable: バッジページに表示
+        field_allow_title: タイトルとして使用可能
+        field_multiple: 同じ人に複数回付与可能
+        field_manual: 管理者が手動で付与
+        save: 保存
+        create: バッジを作成
+        grant_title: バッジを付与
+        grant_none: 手動付与を受け付けるバッジがありません。そのオプションを付けたカスタムバッジを作成してください。
+        field_badge: バッジ
+        field_user: ユーザー
+        field_user_placeholder: ユーザー名
+        field_reason: 理由（任意）
+        field_reason_placeholder: 短い文章または投稿へのリンク
+        grant_submit: 付与
+        grant_done: '{username} さんに付与しました。'
+        grants_title: 「{badge}」の付与履歴
+        grants_none: このバッジを持っているユーザーはいません。
+        load_more: さらに読み込む
+        revoke: 取り消す
+        revoke_confirm: '{username} さんからこのバッジを取り消しますか？'
+      chat:
+        channels_only_title: チャットチャンネル
+        title: チャット
+        channels_title: チャンネルとダイレクトメッセージ
+        limits_title: メッセージ、アップロード、保存期間
+        needs_chat: これを設定するにはチャットを有効にしてください。
+        admins_always: 管理者は常に可能です。
+        realtime_on: メッセージは flarum/realtime の WebSocket を通じてリアルタイムに届きます（「php flarum realtime:serve」が実行中である必要があります）。停止した場合、チャットは数秒ごとにサーバーへ問い合わせる方式に切り替わります。
+        realtime_off: flarum/realtime がない場合、チャットは数秒ごとにサーバーへ新しいメッセージを問い合わせます。少し遅延があり、リクエストも増えますが動作します。リアルタイムにするには flarum/realtime を有効にして「php flarum realtime:serve」を実行してください。
+        retention_notice: 削除処理は Flarum のスケジューラー（cron で毎分「php flarum schedule:run」）で実行され、メッセージにならなかったアップロード画像も削除されます。
+        chars: 文字
+        days: 日
+        chat_enabled_label: チャット
+        chat_enabled_help: Discourse のチャット：公開チャンネル（単独またはタグに紐づけ）、ダイレクトメッセージ、スレッド、リアクション、メンション、画像に対応し、ヘッダーのアイコン、隅のドロワー、/chat ページを備えます。オフにするとフォーラムからすべて消え、API は機能が存在しないかのように応答します。メッセージは保持されます。
+        replaced_by_ramon_chat: "ramon/chat が有効です。テーマのチャットの代わりに使われ、テーマのチャットはオフになります。テーマはその見た目とサイドバーを調整します。"
+        chat_allowed_groups_label: チャットを利用できるユーザー
+        chat_allowed_groups_help: チャットが表示されるグループ。各ユーザーは自分の設定でチャットをオフにすることもできます。
+        chat_sidebar_label: サイドバーのセクション
+        chat_sidebar_help: サイドバーのタグの下にある「チャンネル」と「ダイレクトメッセージ」のセクション（未読とメンション付き）。
+        chat_create_channel_groups_label: 公開チャンネルを作成できるユーザー
+        chat_create_channel_groups_help: 管理者に加えて。チャンネルはタグに紐づけることができ、その場合はタグを閲覧できるユーザーだけがチャンネルを閲覧できます。
+        chat_moderator_groups_label: チャットをモデレートできるユーザー
+        chat_moderator_groups_help: 他のユーザーのメッセージの削除と復元、メッセージの固定、チャンネルのクローズ・アーカイブ・削除ができます。ダイレクトメッセージにモデレーションはなく、他人の会話を読むことは誰にもできません。
+        chat_dm_enabled_label: ダイレクトメッセージ
+        chat_dm_enabled_help: 2人またはグループでの非公開の会話。「新規メッセージ」またはプロフィールの「チャット」ボタンから開始します。
+        chat_dm_groups_label: ダイレクトメッセージを開始できるユーザー
+        chat_dm_groups_help: Discourse の「direct_message_enabled_groups」。
+        chat_dm_max_users_label: 1つの会話の参加者数
+        chat_dm_max_users_help: グループチャットの最大人数（作成者を含む）。
+        chat_threads_enabled_label: スレッド
+        chat_threads_enabled_help: メッセージに返信すると、サイドパネルに別の会話が開きます。各チャンネルの設定でスレッドを個別にオン／オフすることもできます。
+        chat_pins_enabled_label: 固定メッセージ
+        chat_pins_enabled_help: モデレーター（DM では参加者全員）はチャンネルごとに最大20件のメッセージを固定でき、会話上部のバーに表示されます。
+        chat_max_message_length_label: メッセージの最大文字数
+        chat_max_message_length_help: 文字数で指定。Discourse のデフォルトは 6000 です。
+        chat_uploads_enabled_label: メッセージ内の画像
+        chat_uploads_enabled_help: エディターの「+」、画像の貼り付けとドラッグ（JPG、PNG、GIF、WebP）。アバターと同様に検証され、public/assets/canela-chat に保存されます。
+        chat_upload_max_kb_label: 画像の最大サイズ
+        chat_upload_max_kb_help: 1ファイルあたり。
+        chat_retention_days_label: チャンネルの保存期間
+        chat_retention_days_help: これより古い公開チャンネルのメッセージは、1日1回完全に削除されます。0 にすると永久に保持します。
+        chat_dm_retention_days_label: ダイレクトメッセージの保存期間
+        chat_dm_retention_days_help: DM についても同様です。0 にすると永久に保持します。
+        chat_poll_seconds_label: リアルタイムなしの間隔
+        chat_poll_seconds_help: WebSocket がない場合に、開いている会話が新しいメッセージを問い合わせる間隔（秒）。
+      community:
+        section_legal_links: 利用規約とプライバシー
+        view_page: フォーラムでページを表示
+        section_about: 概要ページ
+        about_enabled_label: 概要ページ（/about）
+        about_enabled_help: フォーラムの説明、独自の文章、連絡先、スタッフ、サイトの統計を表示する Discourse のページ。サイドバーの「その他」メニューにリンクを追加します。
+        about_text_label: 概要の文章
+        about_text_help: タイトルの下に表示されます。Markdown と BBCode（フォーラムで有効なもの）に対応。HTML タグを含む場合は、整形せずに HTML として使用されます。
+        about_contact_email_label: 連絡先メールアドレス
+        about_contact_email_help: '「お問い合わせ」ボックスに表示されます。公開されるため、スタッフ用のアドレスを使用してください。'
+        about_contact_url_label: お問い合わせページ
+        about_contact_url_help: お問い合わせフォームまたはページの完全なアドレス（https://…）。
+        about_show_staff_label: スタッフを表示
+        about_show_staff_help: 「管理者」と「モデレーター」の一覧。非表示のグループは、閲覧権限のないユーザーには表示されません。
+        about_show_stats_label: サイトの統計を表示
+        about_show_stats_help: 過去24時間、7日間、30日間、全期間のスレッド、投稿、新規登録、アクティブユーザー、いいね。
+        stats_notice: 数値は公開コンテンツのみを集計し、30分ごとに再計算されます。
+        section_legal: ガイドライン、利用規約、プライバシー
+        guidelines_enabled_label: ガイドラインページ（/guidelines）
+        guidelines_enabled_help: フォーラムのコミュニティルール。概要の隣のタブとサイドバーの「その他」メニューに表示されます。Discourse と同様に、/faq も同じページに移動します。
+        guidelines_text_label: ガイドラインの文章
+        guidelines_text_help: 空欄にすると、Discourse のガイドラインを参考にしたテーマのデフォルト文章を使用します。Markdown と BBCode に対応。HTML タグを含む場合は HTML として扱われます。
+        tos_url_label: 利用規約のアドレス
+        tos_url_help: 「利用規約」タブと /tos はここに移動します。名前に「terms」を含む FoF Terms のポリシーが優先されます。
+        privacy_url_label: プライバシーポリシーのアドレス
+        privacy_url_help: 「プライバシーポリシー」タブと /privacy はここに移動します。名前に「privacy」を含む FoF Terms のポリシーが優先されます。
+        legal_notice: アドレスがない場合（ここにも FoF Terms にも）、タブは表示されません。その他の FoF Terms のポリシーは、それぞれの名前のタブになります。
+        section_directory: ユーザー一覧
+        directory_enabled_label: ユーザーページ（/u）
+        directory_enabled_help: 各ユーザーの受け取った・与えたいいね、スレッド、返信、最終アクセスを期間別に表示し、列で並べ替えられる Discourse の表。
+        directory_guests_label: ゲストにも表示
+        directory_guests_help: デフォルトでは、「ユーザーリストの閲覧」権限（権限設定）を持つユーザーだけがユーザー一覧とグループのメンバーを閲覧できます。オンにすると、ゲストも閲覧できます（非公開フォーラムを除く）。
+        directory_notice: いいねの列は Likes 拡張機能が有効な場合に、訪問数と既読投稿数はテーマの統計機能で表示されます。最終アクセスでの並べ替えは、各ユーザーのオンライン時刻を閲覧する core の権限に従います。
+        section_groups: グループ
+        groups_enabled_label: グループページ（/g）
+        groups_enabled_help: グループごとにアイコン、色、メンバー数を表示するカードと、メンバーを表示する各グループのページ。非表示のグループは閲覧権限のあるユーザーにのみ表示されます。
+        groups_activity_label: アクティビティタブ
+        groups_activity_help: グループページにメンバーの最近の投稿を表示します。
+        groups_profile_links_label: プロフィールのグループをグループページにリンク
+        groups_profile_links_help: プロフィールカードのグループのラベルが /g/グループ名 へのリンクになります。
+      gaps:
+        notifications_title: 投稿者への通知
+        mention_cards_help: '@メンションをクリックすると、プロフィールに移動する代わりにユーザーカードが開きます。'
+      integrations:
+        messages_label: Discourse のメッセージ
+        messages_help: 'flarum/messages に追加：プロフィールのボックス（最新、送信済み、新着、未読、アーカイブ）、ユーザーごとのアーカイブ、メッセージのタイトル、リアクション、「メッセージから退出」を Discourse と同様に提供します。'
+        solved_label: 解決策の承認
+        solved_help: discourse-solved と同様に、投稿バーの「✓ 解決策」と、最初の投稿のすぐ下に承認された回答を表示します。
+        reactions_label: リアクション
+        reactions_help: discourse-reactions と同様に、投稿バーに絵文字の集計を表示します。
+        polls_label: 投票
+        polls_help: 'Discourse の投票グリッドで表示：結果バーと、その横に大きな投票数。'
+        links_sidebar_label: サイドバーのリンク
+        links_sidebar_help: Discourse のカスタムリンクと同様に、FoF Links をヘッダーからサイドバーのセクションに移動します。
+        upload_progress_label: アップロードの進捗
+        upload_progress_help: Discourse と同様に、FoF Upload のファイル送信中にエディターに「アップロード中…」バーを表示します。
+        profile_cover_label: プロフィールカバー（forumaker/profile-cover）
+        profile_cover_help: 'テーマ独自のカバーの代わりに拡張機能のカバーを使います。プロフィールのバナー、ユーザーカードの背景（サムネイルがあればサムネイル）に、拡張機能のエディターで選んだ位置で表示します。エディターはプロフィールの「…」メニューと設定から開きます。テーマ独自の画像は保存されたままで、このスイッチをオフにすると元に戻ります。'
+        thumbnails_label: 一覧のサムネイル
+        thumbnails_help: Discourse が独自のサムネイルを表示する位置に、スレッド一覧のタイトルの横に FoF Discussion Thumbnail の画像を表示します。
+        verified_label: 認証バッジ
+        verified_help: 'ramon/verified のバッジを、Discourse のユーザーアイコンのように名前のすぐ後ろ、文字と同じ行・同じ大きさで表示します（投稿ヘッダー、埋め込み投稿、「返信先」、ユーザーカード、プロフィール）。'
+        wiki_label: 'テーマに合わせた Wiki'
+        wiki_help: 'linkrobins/wiki の Wiki を Discourse の見た目にします。目次はディスカッション一覧のように、記事は最初の投稿のように（マップと履歴つき）、執筆はディスカッションのコンポーザー（下書き、詳細オプション、よくある質問つき）で行い、サイドバーのコミュニティセクションに「Wiki」リンクを置きます。'
+        ramon_chat_label: Discourse スタイルのチャット（ramon/chat）
+        ramon_chat_help: 'ramon/chat 拡張機能を Discourse のチャットのように表示します：2 列目のないページ、ドロワー、メッセージ、エディター、スレッド、チャンネル画面。拡張機能が有効な場合、テーマ独自のチャットはこちらに切り替わります。'
+        ramon_chat_sidebar_label: サイドバーのチャンネル
+        ramon_chat_sidebar_help: 'テーマのサイドバーに「チャンネル」と「ダイレクトメッセージ」セクション（「マイスレッド」「検索」「保存済み」付き）を表示し、チャットページの独自のチャンネル列をなくします。'
+        ramon_chat_notifications_label: ユーザーメニューの「チャット」タブ
+        ramon_chat_notifications_help: チャットの通知（招待、メンション、モデレーション）をユーザーメニューの専用タブに表示します。
+        ramon_chat_user_button_label: ユーザーカードとプロフィールの「チャット」ボタン
+        ramon_chat_user_button_help: '「…」メニューの項目ではなく、ユーザーカードとプロフィールの「チャット」ボタンからダイレクト会話を開きます。flarum/messages が有効な場合は効果がありません（その場合、プライベートな会話は「メッセージ」になります）。'
+        marketplace_label: ストア（ramon/marketplace）をテーマの見た目で
+        marketplace_help: 'ストアのページ（ストアフロント、商品、カート、チェックアウト、注文、ダウンロード、販売者ダッシュボード、コース、プラン）をテーマのカード内に表示します。タイトルはヒーローのように、ボタン・入力欄・タブ・モーダルはテーマのものを使い、色はプライマリカラーから派生し、アイコンは Lucide になります。'
+        marketplace_sidebar_label: 'サイドバーの「ストア」セクション'
+        marketplace_sidebar_help: 'ストアのリンク（マーケットプレイス、カート、注文、ダウンロード、ウィッシュリストなど）を、「ストア」にマウスを乗せると開いていたメニューの代わりに、折りたためるサイドバーのセクションに表示します。'
+      group_ai: AI
+      ai:
+        translation_enabled_label: 自動翻訳
+        translation_enabled_help: 読者と異なる言語で書かれた投稿とタイトルは、最初に読まれたときに AI が翻訳し、全員のために保存します。日付の横の 文A で翻訳と原文を切り替えます。翻訳される投稿ごとに高速モデルを1回呼び出します。
+        translation_locales_label: 翻訳先の言語
+        translation_locales_help: 読者の言語は、その人の設定で選んだ言語です（ゲストはフォーラムの言語）。チェックされていない言語の読者には常に原文が表示されます。
+        translation_titles_label: タイトルを翻訳
+        translation_titles_help: スレッドのタイトルも、一覧とスレッド内で、ページ全体を1回の呼び出しで翻訳します。
+        translation_public_only_label: 公開コンテンツのみ
+        translation_public_only_help: ゲストも閲覧できるものだけを翻訳します。オフにすると、制限付きタグもモデルに送られます（メッセージや非表示の投稿は送られません）。
+        translation_daily_limit_label: 1日あたりの呼び出し回数（フォーラム全体）
+        translation_daily_limit_help: 翻訳される投稿、タイトルのまとまり、言語検出のまとまりがそれぞれ1回と数えられます。上限に達すると、翌日まで原文が表示されます。0 = 無制限。
+        requires_provider: まず「プロバイダーとモデル」カードでプロバイダーとキーを設定してください。
+        key_saved: ••••••••（キー保存済み。入力すると置き換えます）
+        key_clear: 保存済みのキーを削除
+        test_button: 接続をテスト
+        persona_off: 'オフ'
+        persona_name: 名前
+        persona_id: 識別子（英字、数字、_ と -）
+        persona_description: 説明（セレクターに表示）
+        persona_prompt: システムプロンプト
+        persona_enabled: 有効
+        persona_search: フォーラムを検索可能
+        persona_read: スレッドを閲覧可能
+        persona_web: Web を検索可能（Anthropic のみ。検索ごとに課金）
+        persona_remove: ペルソナを削除
+        persona_add: 新しいペルソナ
+        persona_restore: デフォルトに戻す
+        default_persona_label: デフォルトのペルソナ
+        default_persona_help: 「新しい質問」と検索の「AI に質問」で最初に選択されているペルソナ。
+        persona_new_name: 新しいペルソナ
+        schema_missing: 'AI のテーブルがまだ作成されていません：「php flarum migrate」を実行してください。それまで機能は非表示のままです。'
+        not_configured: API キーがない場合、AI 機能はフォーラムで非表示のままです。下記でプロバイダーを設定し、「接続をテスト」を使用してください。
+        provider_title: プロバイダーとモデル
+        provider_label: プロバイダー
+        provider_help: デフォルトは Anthropic（Claude）です。「OpenAI 互換」は OpenAI および同じ API を持つ任意のサービス（OpenRouter、Groq、Mistral、DeepSeek、Ollama、LM Studio…）で動作します。
+        provider_anthropic: Anthropic（Claude）
+        provider_openai: OpenAI 互換
+        anthropic_key_label: Anthropic API キー
+        anthropic_key_help: console.anthropic.com → API Keys で作成します。キーはサーバーに保存され、フォーラム側に送られることはありません。
+        model_label: メインモデル
+        anthropic_model_help: ボット、概要、書き換えを行うヘルパーモード（説明、カスタムプロンプト）で使用します。Sonnet は品質とコストのバランスが良く、Opus が最も高性能です。
+        fast_model_label: 高速モデル
+        fast_model_help: '短いタスク用：会話のタイトル、校正、翻訳、タイトルとタグの提案、一覧の要旨。'
+        openai_url_label: API ベース URL
+        openai_url_help: /v1 までのアドレス。テーマが /chat/completions を付加します。例：https://api.openai.com/v1、https://openrouter.ai/api/v1、http://localhost:11434/v1。
+        openai_key_label: API キー
+        openai_key_help: '「Authorization: Bearer」として送信されます。ローカルサーバーではキーが不要な場合があります。'
+        openai_fast_help: 空欄の場合はメインモデルを使用します。
+        features_title: 機能
+        summary_min_posts_label: 概要を作成する最小投稿数
+        summary_min_posts_help: これより小さいスレッドにはボタンが表示されません。
+        personas_title: ペルソナ
+        personas_help: 各ペルソナには名前、説明、システムプロンプト、使用できるツールがあります。ユーザーは質問欄の下でペルソナを選びます。
+        access_title: アクセスと制限
+        allowed_groups_label: ボット、ヘルパー、「AI に質問」を使用できるユーザー
+        allowed_groups_help: '「メンバー」はメールアドレスを確認済みのすべてのユーザーです。管理者は常に使用できます。'
+        summary_groups_label: スレッドの概要を生成できるユーザー
+        summary_groups_help: 完成した概要は、スレッドを閲覧できる人なら誰でも（ゲストを含む）読めます。
+        daily_limit_label: 1人1日あたりのリクエスト数
+        daily_limit_help: ボットへの質問、ヘルパーの使用、概要の生成がそれぞれ1回と数えられます。0 = 無制限。管理者には制限がありません。
+        embeddings_title: 埋め込み
+        requires_related: 「機能」カードで「関連スレッド」を有効にしてください。
+        embeddings_help: 'Anthropic には埋め込み API がありません：OpenAI 互換のもの（OpenAI、Voyage、Mistral、Ollama…）を使用してください。すべてを一括で埋め込むには「php flarum canela:ai-embeddings --all」。'
+        embeddings_url_label: 埋め込み API の URL
+        embeddings_key_label: API キー
+        embeddings_model_label: モデル
+        enabled_label: AI を有効にする
+        enabled_help: オフにすると、フォーラムに AI 機能は一切表示されず、AI API は 404 を返します。
+        bot_enabled_label: AI ボット（会話）
+        bot_enabled_help: /ai/conversations ページ：AI への質問、サイドバーの会話一覧、ペルソナ、ストリーミングされる回答。許可されたペルソナでは、AI がフォーラムを検索・閲覧し（そのユーザーが閲覧できるもののみ）、スレッドを引用します。
+        bot_header_icon_label: ヘッダーのロボットアイコン
+        bot_header_icon_help: 会話を開きます。会話内では、元いた場所に戻ります。
+        bot_sidebar_link_label: 'サイドバーの「AI ボット」リンク'
+        bot_sidebar_link_help: コミュニティセクション内。
+        search_enabled_label: 検索で AI に質問
+        search_enabled_help: '検索欄が「検索または AI に質問」になり、検索モーダルに「AI に質問：<query>」が表示され、会話が開きます。'
+        helper_enabled_label: エディターの AI ヘルパー
+        helper_enabled_help: エディターのツールバーの ✨ ボタン：校正、翻訳、簡潔化、説明、表の生成、カスタムプロンプト、タイトルの提案、タグの提案。変更のプレビューと「確定／破棄」付き。
+        summary_enabled_label: スレッドの概要
+        summary_enabled_help: スレッドマップの「要約」ボタンで、ストリーミングされる概要のパネルが開きます。概要は保存され、スレッドを閲覧できる全員が読めます。スレッドに新しい返信がつくと、「再生成」とともに古い概要として表示されます。
+        gists_enabled_label: 一覧の要旨
+        gists_enabled_help: 最もアクティブなスレッドで、抜粋の代わりに AI が書いた一文を表示します。スケジューラー（cron で「php flarum schedule:run」）により1時間ごとに、1回の実行で最大20件生成されます。1件ごとに高速モデルを1回呼び出します。
+        related_enabled_label: 関連スレッド（埋め込み）
+        related_enabled_help: スレッドの末尾に、意味の近いスレッドを表示します。埋め込み API が必要です（ここで設定し、機能を有効にしてください）。ベクトルは1時間ごと、および各スレッドの初回訪問時に生成されます。
+      auth:
+        pages_label: 全画面のログインと新規登録
+        pages_help: Discourse と同様に、ヘッダーの「ログイン」と「新規登録」ボタンで /login と /signup ページを開きます。オフにするとモーダルが開きます。
+      bookmarks:
+        title: ブックマーク
+        bookmarks_enabled_label: ブックマーク
+        bookmarks_enabled_help: メンバーは後で戻るために投稿をブックマークでき、名前とリマインダーは任意で設定できます。ブックマークはすべて自分のプロフィールの「ブックマーク」タブで確認できます。オフにするとボタンは消え、API は機能が存在しないかのように応答します。既存のブックマークは保持されます。
+        bookmarks_topic_button_label: スレッドをブックマーク
+        bookmarks_topic_button_help: スレッドのコントロール（フッターの「…」メニュー）に「スレッドをブックマーク」を追加します。Discourse と同様に、最初の投稿をブックマークします。
+        bookmarks_user_menu_label: ユーザーメニューの項目
+        bookmarks_user_menu_help: アバターメニューの「プロフィール」のすぐ下に「ブックマーク」のショートカットを追加します。
+        reminders_notice: リマインダーは Flarum のスケジューラーにより5分ごとに送信されます。サーバーで cron から毎分「php flarum schedule:run」を実行する必要があります。cron がなくてもブックマークは動作しますが、リマインダーは送信されません。
+      composer:
+        section_editor: Discourse の投稿エディター
+        enabled_label: Discourse の投稿エディター機能
+        enabled_help: 'マスタースイッチ：オフにすると、エディターは通常の Flarum のものになり、以下の機能はすべて無効になります。'
+        emoji_label: 絵文字ピッカー
+        emoji_help: ツールバーの絵文字ボタンで、検索、カテゴリー、最近使用したもの、肌の色を備えたピッカーが開きます。Emoji 拡張機能がある場合、絵文字はその画像で表示されます。
+        emoji_notice: 'Emoji 拡張機能が無効です：ピッカーはシステムの絵文字を使用し、「:name」の自動補完はテーマが提供します。'
+        preview_label: 横並びのプレビュー
+        preview_help: デスクトップでは、整形された投稿がエディターの右側に表示されます。エディターの隅にある « ボタンで誰でも非表示にできます。
+        similar_label: 類似スレッド
+        similar_help: 新しいスレッドのタイトルを入力中（3語以上）に、「あなたのスレッドは次のスレッドと似ています…」と関連スレッドを最大5件表示します。
+        linked_topic_label: リンクしたスレッドとして返信
+        linked_topic_help: 返信エディターの「↩ ▾」メニューで、返信を同じ本文、元へのリンク、同じタグを持つ新しいスレッドに変換します。
+        section_drafts: 下書き
+        drafts_label: 下書き（fof/drafts）
+        drafts_help: FoF Drafts 拡張機能があると、テーマは Discourse 方式で下書きを表示します：新しいスレッドと返信は入力が止まってから2秒後に自動保存され、スレッドに返信すると下書きが再開され、本文がある状態で閉じると破棄するか保持するかを尋ね、「スレッドの作成」ボタンに一覧を開く ⌄ が付きます。下書きはユーザーメニューとプロフィールの「下書き」タブにも表示されます。
+        drafts_note: 下書きは fof/drafts（drafts テーブル）が保存し、権限と予約投稿も管理します。投稿の編集には下書きがありません。
+        section_hashtags: '#タグ'
+        hashtags_label: タグのハッシュタグ
+        hashtags_help: 'エディターで # を入力するとタグを候補表示してそのリンクを挿入します。投稿内では、これらのリンク（および Mentions 拡張機能のタグメンション）がタグの記号付きのラベルになります。'
+        hashtags_mentions_notice: 'Mentions 拡張機能が有効な場合、エディターの # はその拡張機能のもの（タグメンション）になります。テーマはメンションを Discourse のハッシュタグとして描画するだけです。'
+        requires_composer: 投稿エディター機能が無効です（上の「Discourse の投稿エディター」カード）。
+      extras:
+        search_title: 検索ページ
+        search_page_enabled_label: 高度な検索ページ
+        search_page_enabled_help: Discourse の /search ページ：スレッド、投稿、タグ、ユーザーのタブ、高度なフィルター（投稿者、プライマリタグ、タグ、タイトルのみ、いいね済み、ステータス、日付、最小投稿数）と並べ替え。検索モーダルに「高度な検索」リンクが追加されます。
+        search_notice: 'フィルターは検索に入力できるショートカットにもなります：in:title、in:likes、in:bookmarks、min-posts:5 と、Flarum 標準のもの（author:、tag:、is:locked…）。'
+        bulk_title: 一括選択
+        bulk_select_enabled_label: モデレーター向けの一括選択
+        bulk_select_enabled_help: 一覧のバーにあるボタンで、各スレッドのチェックボックスと操作バーが表示されます：既読にする、固定、クローズ、タグの変更、非表示、削除。一覧内のいずれかのスレッドをモデレートできるユーザーにのみ表示され、各操作は権限がある場合にのみ適用されます。
+        top_periods_title: 期間別の人気
+        top_periods_enabled_label: 人気タブの期間セレクター
+        top_periods_enabled_help: 人気タブに「全期間／年／四半期／月／週／今日」を表示し、その期間に作成されたスレッドに一覧を絞り込みます。
+        text_size_title: 文字サイズ
+        text_size_enabled_label: 文字サイズの選択
+        text_size_enabled_help: 設定で、各ユーザーが「小」「標準」「大」「特大」から選べます。Discourse と同様に、選択はデバイスごとに適用されます（ブラウザーに保存）。
+        banner_title: お知らせバナー
+        banner_enabled_label: バナーを表示
+        banner_enabled_help: すべてのページのコンテンツの上に、閉じるボタン付きの帯を表示します。閉じたユーザーには、文章が変更されるまで再表示されません。
+        banner_text_label: バナーの文章
+        banner_text_help: 投稿と同様に Markdown、BBCode、絵文字に対応。HTML にするには、文章を HTML タグ（p、div…）で始めてください。空欄の場合、バナーは表示されません。
+        banner_reshow: 閉じたユーザーにも再表示
+        banner_reshow_done: バナーは全員に再表示されます。
+        print_title: スレッドを印刷
+        print_topic_enabled_label: スレッドのコントロールに「印刷」項目
+        print_topic_enabled_help: すべての投稿をすっきりした表示（サイドバー、ヘッダー、タイムラインなし）で読み込み、ブラウザーの印刷ダイアログを開きます。PDF として保存することもできます。
+        history_title: 編集履歴
+        post_history_enabled_label: 編集履歴を保存・表示
+        post_history_enabled_help: 編集のたびに以前の文章を保持します。投稿の「編集済み」が改訂回数付きの鉛筆アイコンになり、バージョン間の比較（インラインまたは横並び）を開きます。
+        history_notice: 記録されるのは機能が有効な間に行われた編集のみです。オフにすると新しい履歴は保存されず、フォーラムから履歴が消えますが、保存済みのものはデータベースに残ります。非表示の投稿のバージョンの文章は、その投稿を編集できるユーザーにのみ表示されます。
+      section_icons: アイコン
+      lucide_icons_label: Discourse のアイコン（Lucide）
+      lucide_icons_help: インターフェースのアイコン（検索、ベル、返信、いいね、メニュー…）を meta.discourse.org と同様に Lucide の細い線で描画します。オフにすると、塗りつぶしの Font Awesome アイコンに戻ります。Meta が置き換えないアイコン（ブランドや、タグとグループ用に選ばれた一部のアイコン）は Font Awesome のままです。
+      metoo:
+        title: 私も
+        enabled_label: '最初の投稿の「私も」ボタン'
+        enabled_help: Discourse Meta と同様の、最初の投稿の下にある「✋ 私も」ボタン：同じ問題を抱えるユーザーがクリックすると、件数が括弧内に表示され、スレッドをフォローし始めます。投稿者とロックされたスレッドでは読み取り専用のボタンになり、ゲストはログインに誘導されます。オフにするとボタンは消え、API は 404 を返します。既存のマークは保持されます。
+        tags_label: ボタンを表示する場所
+        tags_help: サポート用のタグにチェックを入れてください（Discourse Meta では Support、Bug…）。何もチェックしない場合はすべてのスレッドが対象です。親タグにチェックを入れると子タグも含まれます。
+        tags_loading: タグを読み込み中…
+        tags_some: '{count, plural, one {# 件選択中} other {# 件選択中}}'
+        tags_all: すべてのタグ
+        tags_clear: クリア（すべて）
+        hide_solved_label: スレッドが解決済みになったら非表示
+        hide_solved_help: ベストアンサーが選ばれると（FoF Best Answer）ボタンは消え、解決策が取り消されると再び表示されます（Discourse のデフォルト）。オフにすると、解決済みのスレッドにも表示されたままになります（プラグインの「複数の解決策」）。
+        follow_label: クリックでスレッドをフォロー
+        follow_help: 「私も」をクリックすると、解決策を知らせるためにそのユーザーがスレッドをフォローします（Subscriptions 拡張機能）。Discourse の「追跡中」と同様です。すでにフォロー中のユーザーはそのままで、マークを外してもフォローは解除されません。
+        no_best_answer_notice: FoF Best Answer 拡張機能がない場合、解決済みとみなされるスレッドはありません：選択したすべてのスレッドにボタンが表示されたままになります。
+      profile:
+        blocked_by_master: 「拡張プロフィール」カードで追加フィールドを有効にしてください。
+        characters_suffix: 文字
+        section_main: 拡張プロフィール
+        profile_enabled_label: 追加のプロフィールフィールド
+        profile_enabled_help: 'Discourse のプロフィールフィールド：誰もが自分が誰で、どこにいて、何をしているかを伝えられます。オフにすると、フィールドはフォーラムと API から消えますが、入力済みの内容は保持されます。'
+        profile_bio_label: 自己紹介
+        profile_bio_help: プロフィールとユーザーカードに表示される短い文章。リンク、**太字**、*斜体*、`code` に対応。HTML は使用できません。
+        profile_bio_max_length_label: 自己紹介の最大文字数
+        profile_bio_max_length_help: '{min}〜{max} 文字。'
+        profile_location_label: 所在地
+        profile_location_help: 市区町村または地域。プロフィールに地図アイコン付きで表示されます。
+        profile_website_label: ウェブサイト
+        profile_website_help: http または https のアドレス。新しいタブで開き、nofollow が付きます。
+        profile_birthday_label: 誕生日
+        profile_birthday_help: 任意の生年月日。本人が年を表示することを選ばない限り、他のユーザーには月日のみが表示されます。
+        section_title: ユーザーの肩書き
+        profile_title_label: 名前の下の肩書き
+        profile_title_help: プロフィール、ユーザーカード、投稿の名前の横に表示される短い肩書き（60文字まで）。
+        profile_title_self_label: 各自が自分の肩書きを選ぶ
+        profile_title_self_help: オフにすると、ユーザーを編集できるユーザー（モデレーター）だけが肩書きを設定します。スタッフから与えられる称号となります。
+        section_status: ユーザーステータス
+        profile_status_label: 絵文字付きステータス
+        profile_status_help: 絵文字とひとこと（「🌴 金曜日まで休暇中」）を、投稿の名前の横、カード、ヘッダーのアバターに表示します。ステータスが自動で消える時期は各ユーザーが選べます。
+        section_cover: カバーとカードの背景
+        profile_cover_label: プロフィール画像
+        profile_cover_help: Discourse と同様に、プロフィール上部のワイドなカバーとユーザーカードの背景です。画像がない場合、カバーにはユーザーの色が使われます。
+        profile_cover_upload_label: 画像のアップロードを許可
+        profile_cover_upload_help: 画像は縮小され（カバーは 2000px、カードは 900px）、WebP に変換されて assets/canela-covers に保存されます。無効の場合は https の画像アドレスのみ受け付けます。
+        cover_notice: 外部アドレスは https である必要があります。訪問者のブラウザーは画像を相手のサイトから直接読み込みます。
+        cover_forumaker_notice: 'forumaker/profile-cover が有効です。カバーとカードの背景はこの拡張機能から表示されます（連携 → プロフィールカバー）。ここでアップロードした画像は保存されたままですが、拡張機能が有効な間は表示も変更もされません。'
+      stats:
+        section_links: リンクのクリック
+        stats_links_enabled_label: リンクのクリックを数える
+        stats_links_enabled_help: Discourse と同様に、投稿内の外部リンクへのクリックをすべて数えます。数はリンクの横、スレッドマップの「人気のリンク」、プロフィール概要の「トップリンク」に表示されます。
+        links_notice: 1 人（ゲストは IP）につき 1 リンクあたり 24 時間に 1 クリックまでです。ボットは数えません。対象は投稿内にある外部リンクのみです。
+        section_views: スレッドの閲覧数
+        stats_views_enabled_label: 閲覧数を数える
+        stats_views_enabled_help: Discourse と同様に、各スレッドが開かれた回数を数えます。数は一覧の閲覧数の列に表示され、閲覧数の多い順に並べ替えられます。
+        stats_view_window_hours_label: 同じ人を再度数えるまでの時間
+        stats_view_window_hours_help: スレッドの新しい閲覧を IP／ユーザーごとに N 時間に 1 回数えます。Discourse と同様に、日付が変わると必ず再度数えます（topic_view_duration_hours）。{min}〜{max} 時間。Discourse は 8 を使用します。
+        hours_suffix: 時間
+        views_notice: Discourse と同様です：各アカウント（ゲストは IP）につき 1 スレッドあたり 1 日 1 閲覧で、上記の時間で制限されます。スレッドを閲覧できる人のみ数え、クローラーは数えません。ログイン中のユーザーの IP は保存されず、ゲストの IP はソルト付きのコードとしてのみ保持され、IP そのものは保存されません。各日の値はスレッドマップの「最近の閲覧数」グラフのために保持されます。
+        heat_title: 閲覧数の列のハイライト
+        heat_help: 一覧の閲覧数の列のヒートカラー（Discourse のヒートマップ）です。スレッド一覧で「多い数をハイライト」が有効なときに適用されます。
+        topic_views_heat_low_label: 弱いハイライトの開始値
+        topic_views_heat_low_help: この閲覧数を超えると、閲覧数の欄が少しハイライトされます。Discourse は 1000 を使用します。
+        topic_views_heat_medium_label: 中程度のハイライトの開始値
+        topic_views_heat_medium_help: この閲覧数を超えると、閲覧数の欄が中程度にハイライトされます。Discourse は 2000 を使用します。
+        topic_views_heat_high_label: 強いハイライトの開始値
+        topic_views_heat_high_help: この閲覧数を超えると、閲覧数の欄が強くハイライトされます。Discourse は 3500 を使用します。
+        views_suffix: 閲覧
+        section_counts: 新着と未読の件数
+        stats_counts_enabled_label: 件数を表示
+        stats_counts_enabled_help: ログイン中のユーザー向け：一覧のタブに「新着 (3)」「未読 (2)」を表示し、新しいものがあるときはサイドバーの「すべてのスレッド」の横に点を表示します。
+        stats_new_days_label: スレッドが新着扱いになる日数
+        stats_new_days_help: この期間に作成され、まだ開いていないスレッドです。0 にすると、登録時または最後の「すべて既読にする」以降のすべてを数えます。{min}〜{max}。Discourse は 2 を使用します。
+        days_suffix: 日
+        section_activity: プロフィールのアクティビティ
+        stats_activity_enabled_label: アクティビティを記録
+        stats_activity_enabled_help: Discourse と同様に、訪問日数、閲覧時間（合計と直近 60 日）、読んだ投稿、閲覧したスレッド、送った・受け取ったいいねをプロフィール概要に表示します。
+        activity_notice: 閲覧時間はタブが表示されていて、誰かがページを使用している間のみ数えます。数値はこの機能を有効にした日からゼロで始まります。閲覧したスレッドは閲覧数が有効であることが前提です。
+      ramon_chat_features:
+        group_moderation: "モデレーション"
+        review_flags_label: "「レビュー」にチャットの通報"
+        review_flags_help: "通報されたチャットメッセージを、投稿と一緒に日付順でテーマのレビューキュー（ページ、サイドバー、ユーザーメニュー）に表示します。通報を閲覧できる人、またはチャットのモデレーター向けです。"
+        title: "チャットの追加機能（ramon/chat）"
+        description: "Discourse のチャットにあって ramon/chat にないもの：ベルの通知、ワンクリックリアクション、「新しいメッセージ」、お気に入り、メッセージのリンク、WebSocket なしの「入力中」など。拡張機能は変更しません。"
+        backend_off: "テーマの「ramonchat」機能が有効になっていません（extend/.enabled）。"
+        group_reader: "読者向け"
+        group_messages: "メッセージ"
+        group_channels: "チャンネルと DM"
+        dm_max_label: "DM あたりの参加者数"
+        dm_max_help: "会話を始める人を含みます。ramon/chat の上限は 20 です。"
+        preferences_label: "設定の「チャット」セクション"
+        preferences_help: "チャットの有効化、サウンド、ヘッダーのインジケーター、送信キー、ワンクリックリアクション、ドロワー、メンションのメール、「チャンネル全体へのメンションを無視」。"
+        header_indicator_label: "ヘッダーインジケーターの設定"
+        header_indicator_help: "チャットボタンが数えるものを各自が選びます：すべての新着、DM とメンション、メンションのみ、なし。"
+        drawer_shortcut_label: "ドロワーのショートカット「-」"
+        drawer_shortcut_help: "Discourse と同じく、チャットのドロワーを開閉します。"
+        bell_label: "ベルの通知"
+        bell_help: "メンション（@here は直近 5 分以内にアクティブな人のみ）とウォッチ中のチャンネルの新着が通知になります。チャンネルを読むと既読になります。"
+        quick_reactions_label: "ワンクリックリアクション"
+        quick_reactions_help: "よく使う 3 つのリアクション（または自分で選んだもの）を 👍 の横に表示します。"
+        permalink_label: "メッセージのリンク"
+        permalink_help: "アクションの「リンクをコピー」と、会話をそのメッセージで開くアドレス。"
+        restore_label: "削除したメッセージの復元"
+        restore_help: "削除済みメッセージの表示に、復元できる人向けのボタンを追加します。"
+        long_press_label: "スマートフォンでの長押し操作"
+        long_press_help: "メッセージを長押しすると、下からアクションシートが開きます。"
+        collapse_deleted_label: "連続した削除済みメッセージをまとめる"
+        collapse_deleted_help: "「N 件のメッセージが削除されました」を 1 行にまとめ、「すべて表示」を付けます。"
+        paste_upload_label: "画像の貼り付けとドロップ"
+        paste_upload_help: "エディターに貼り付けた・ドロップした画像やファイルを添付としてアップロードします。"
+        mention_warning_label: "メンバー外の警告"
+        mention_warning_help: "エディターの @ 候補で、チャンネル外の人に「チャンネルのメンバーではありません」と表示します。"
+        typing_poll_label: "WebSocket なしの「入力中」"
+        typing_poll_help: "flarum/realtime がない場合、会話を開いている人が 3 秒ごとにサーバーに問い合わせます。"
+        new_message_label: "「新しいメッセージ」"
+        new_message_help: "DM とグループ DM のダイアログ（ユーザー検索、カウンター、グループ名）と「ダイレクトメッセージ」の「+」。"
+        self_dm_label: "自分宛ての DM（「メモする」）"
+        self_dm_help: "メモ用の自分だけの会話。"
+        group_name_label: "グループチャットの名前"
+        group_name_help: "参加者なら誰でもグループの会話名を変更できます。"
+        starred_label: "お気に入りチャンネル"
+        starred_help: "ヘッダーとチャンネル情報のスター。お気に入りはサイドバーの上に並びます。"
+        pin_indicator_label: "未読のピン留め"
+        pin_indicator_help: "まだ開いていないピン留めがあると、ピン留めバーに点を表示します。"
+        retention_label: "保持期間の表示"
+        retention_help: "メッセージの保持期間をチャンネル情報に表示します。"
+        delete_confirm_label: "名前を入力してチャンネルを削除"
+        delete_confirm_help: "チャンネルの削除時に「OK」ではなくチャンネル名の入力を求めます。"
+        auto_join_label: "自動参加チャンネルへの遅延参加"
+        auto_join_help: "後からアクセス権を得た人も「ユーザーを自動追加」のチャンネルに参加します（1 人につき 1 日 1 回まで）。"
+        tag_cleanup_label: 削除したタグのチャンネルを削除
+        tag_cleanup_help: タグを削除すると、そのチャンネルも削除されます。
+        dm_guard_label: "DM のルール"
+        dm_guard_help: "チャットを使えない人やオフにした人との DM を拒否し、下の参加者数の上限を適用します。"
+  forum:
+    ai:
+      translation:
+        original_language: この投稿は元々 {language} で書かれました。
+        title_original_language: このタイトルは元々 {language} で書かれました。
+        click_to_show_original: クリックして原文を表示します。
+        click_to_show_translation: クリックして翻訳を表示します。
+        disclaimer: AI による翻訳は正確でない場合があります。
+        show_original_all: 原文を表示
+        show_translated_all: 翻訳を表示
+      errors:
+        generic: AI は現在応答できません。もう一度お試しください。
+      tools:
+        searched: '「{query}」を検索しました: {count, plural, =0 {結果なし} one {# 件の結果} other {# 件の結果}}'
+        read: スレッドを読みました
+        read_missing: 利用できないスレッドを読もうとしました
+      bot:
+        page_title: AI との会話
+        title: AI ボット
+        header: どのようにお手伝いできますか？
+        placeholder: 質問してください...
+        submit: 質問を送信
+        disclaimer: 生成 AI は間違えることがあります。重要な情報は確認してください。
+        new: 新しい質問
+        persona_label: 'エージェント：'
+        remaining: '{count, plural, =0 {本日のリクエストをすべて使用しました。} one {本日の残りリクエスト：# 件。} other {本日の残りリクエスト：# 件。}}'
+        untitled: AI との会話
+        scroll_to_bottom: 一番下までスクロール
+        cancel_streaming: 返信を停止
+        shortcut_title: AI ボットと会話を始める
+        shortcut_link: AI ボット
+        exit: AI ボットを終了
+        back_to_forum: フォーラムに戻る
+        sidebar_empty: ボットとの会話履歴がここに表示されます。
+        load_more: さらに読み込む
+        conversation_menu: 会話のオプション
+        rename: 名前を変更
+        rename_prompt: '新しい会話名：'
+        delete: 削除
+        delete_confirm: この会話を削除しますか？この操作は元に戻せません。
+        today: 今日
+        last_7_days: 過去 7 日間
+        last_30_days: 過去 30 日間
+        not_allowed: AI ボットへのアクセス権がありません。
+        log_in: AI ボットと話すにはログインしてください。
+      search:
+        placeholder: 検索または AI に質問
+        ask_prefix: 'AI に質問：'
+        badge: AI
+      summary:
+        title: スレッドの概要
+        close: 概要パネルを閉じる
+        generate: 要約
+        regenerate: 再生成
+        in_progress: AI でスレッドを要約しています
+        summarized_on: '{date} に AI で要約'
+        model_used: '使用した AI：{model}'
+        outdated: 概要が古くなっています
+        outdated_posts: '{count, plural, one {（# 件の投稿が未反映）} other {（# 件の投稿が未反映）}}'
+        empty: このスレッドの概要はまだありません。
+      helper:
+        trigger: AI に質問
+        changes: 提案された編集
+        explain_title: AI による説明
+        loading: AI が生成しています
+        confirm: 確定
+        discard: 破棄
+        regen: もう一度試す
+        copy: コピー
+        copied: コピーしました！
+        no_content_error: AI の操作を行うには、まず内容を追加してください
+        custom_prompt_placeholder: カスタムプロンプトを入力...
+        custom_prompt_submit: プロンプトを送信
+        translate: '{language} に翻訳'
+        proofread: 文章を校正
+        simplify: 簡潔にする
+        explain: 説明
+        markdown_table: Markdown の表を生成
+        generate_titles: スレッドのタイトルを提案
+        suggest_tags: タグを提案
+        no_suggestions: 提案はありません
+      related:
+        title: 関連スレッド
+        topic: スレッド
+        replies: 返信数
+        activity: アクティビティ
+    auth:
+      login_page_title: ログイン
+      signup_page_title: 新規登録
+      forgot_heading: パスワードをリセット
+      back_to_login: ログインに戻る
+      reset_heading: パスワードをリセット
+      reset_help: アカウントの新しいパスワードを選んでください（8 文字以上）。
+      reset_new_password: 新しいパスワード
+      reset_confirm_password: 新しいパスワード（確認）
+      reset_submit: 新しいパスワードを保存
+      forgot_page_title: パスワードをリセット
+    badges:
+      page_title: バッジ
+      nav: バッジ
+      unavailable: このフォーラムではバッジが無効になっています。
+      none: まだバッジはありません。
+      not_found: このバッジは存在しないか、無効になっています。
+      all_badges: すべてのバッジ
+      recipients: 授与されたユーザー
+      no_recipients: このバッジを獲得したユーザーはまだいません。
+      load_more: さらに読み込む
+      owned: このバッジを持っています
+      granted_ago: '{ago}に授与'
+      granted_on: '{date} に授与'
+      awarded: '{count, plural, one {{number} 件授与} other {{number} 件授与}}'
+      multiple_grant: 複数回獲得できます
+      more: +{count}
+      more_badges: その他のバッジ
+      summary_heading: トップバッジ
+      user_none: '{username} はまだバッジを獲得していません。'
+      trust_level_label: '信頼レベル：{level}'
+      trust_level: 信頼レベル
+      notification: 「{badge}」を獲得しました
+      notification_setting: バッジを獲得したとき
+      types:
+        gold: ゴールド
+        silver: シルバー
+        bronze: ブロンズ
+      groupings:
+        getting_started: はじめに
+        community: コミュニティ
+        posting: 投稿
+        trust_level: 信頼レベル
+        other: その他
+      trust_levels:
+        newuser: 新規ユーザー
+        basic: ベーシックユーザー
+        member: メンバー
+        regular: レギュラー
+        leader: リーダー
+      trust_level_modal:
+        control: 信頼レベルを変更…
+        title: '{username} の信頼レベル'
+        level_label: レベル
+        locked_label: 信頼レベルをロック
+        locked_help: '信頼レベルはロックされています：システムはこのユーザーを昇格・降格しません。'
+        unlocked_help: '信頼レベルはロックされていません：システムは要件に基づいてこのユーザーを昇格・降格することがあります。'
+        submit: 保存
+    bookmarks:
+      post:
+        add: この投稿をブックマーク
+        edit: ブックマークを編集
+        reminder: 'リマインダー：{date}'
+      topic:
+        add: スレッドをブックマーク
+        edit: スレッドのブックマークを編集
+      alerts:
+        added: 投稿をブックマークしました。
+        removed: ブックマークを削除しました。
+        set_reminder: リマインダーを設定
+      modal:
+        create_title: ブックマークを作成
+        edit_title: ブックマークを編集
+        name_label: 名前
+        name_placeholder: 何のためのブックマークか思い出せるよう名前を付けましょう
+        reminder_label: リマインド
+        existing_reminder: このブックマークについて {date} にリマインドします。
+        custom_date: リマインダーの日付
+        custom_time: リマインダーの時刻
+        invalid_date: 未来の日付と時刻を選んでください。
+        save: 保存
+        cancel: キャンセル
+        delete: 削除
+      presets:
+        later_today: 今日の後ほど
+        tomorrow: 明日
+        next_week: 来週
+        next_month: 来月
+        custom: 日付と時刻を選択
+        none: リマインダーなし
+      page:
+        nav: ブックマーク
+        title: ブックマーク
+        private: ブックマークは非公開です。このプロフィールの所有者だけが自分のブックマークを見られます。
+        search_placeholder: ブックマークを検索…
+        column_topic: スレッド
+        column_date: ブックマーク日時
+        empty: まだブックマークがありません。
+        empty_help: 投稿のブックマークアイコンを使うと、名前やリマインダーを付けてここに保存できます。
+        no_results: 「{query}」に一致するブックマークは見つかりませんでした。
+        load_more: さらに読み込む
+        reminder_future: 'リマインダー：{date}'
+        reminder_past: 'リマインダー送信済み：{date}'
+        actions: ブックマークの操作
+        edit: 編集
+        clear_reminder: リマインダーを解除
+        delete: 削除
+        delete_confirm: このブックマークにはリマインダーが設定されています。削除しますか？
+      notification:
+        text: 'ブックマークのリマインダー：{title}'
+      settings:
+        notify_reminder_label: 指定した時刻にブックマークをリマインドする
+    chat:
+      title_capitalized: チャット
+      heading: チャット
+      open: チャットを開く
+      open_full_page: チャットを全画面で開く
+      close_full_page: 全画面チャットを閉じる
+      close: 閉じる
+      collapse: チャットドロワーを折りたたむ
+      expand: チャットドロワーを展開
+      chat_channels: チャンネル
+      browse_all_channels: すべてのチャンネルを見る
+      deleted_chat_username: 削除済み
+      deleted_message: 削除されたメッセージ
+      all_loaded: すべてのメッセージを表示しています
+      last_visit: 前回の訪問
+      edited: 編集済み
+      you: あなた
+      join: 参加
+      cancel: キャンセル
+      cancel_reply: 返信をキャンセル
+      save: 保存
+      delete: 削除
+      restore: 削除したメッセージを復元
+      edit: 編集
+      reply: 返信
+      react: 絵文字でリアクション
+      emoji: 絵文字を挿入
+      upload: ファイルを添付
+      upload_to_channel: '{title} にアップロード'
+      remove_upload: ファイルを削除
+      copy_link: リンクをコピー
+      copy_text: テキストをコピー
+      link_copied: リンクをクリップボードにコピーしました
+      text_copied: テキストをクリップボードにコピーしました
+      pin_message: メッセージを固定
+      unpin_message: メッセージの固定を解除
+      pinned: 固定
+      message_actions: メッセージの操作
+      more_message_actions: その他の操作
+      scroll_to_bottom: 一番下までスクロール
+      scroll_to_new_messages: 新しいメッセージを見る
+      invalid_access: このチャットチャンネルを表示する権限がありません
+      load_more: さらに読み込む
+      enable: チャットを有効にする
+      disabled_for_you: チャットが無効になっています。設定 → チャットで再び有効にできます。
+      log_in_to_chat: チャットを使うにはログインしてください。
+      no_pinned_messages: このチャンネルに固定されたメッセージはありません。
+      no_public_channels: まだどのチャンネルにも参加していません。
+      no_public_channels_cta: チャンネルを見る
+      no_direct_message_channels: まだダイレクトメッセージのチャンネルに参加していません。
+      no_direct_message_channels_cta: 会話を始める
+      message_too_long: メッセージが長すぎます。メッセージは最大 {count} 文字までです。
+      mention_here: 現在アクティブな全員に通知
+      mention_all: チャンネル内の全員に通知
+      deleted: '{count, plural, one {メッセージが削除されました。[表示]} other {# 件のメッセージが削除されました。[すべて表示]}}'
+      deleted_by: '{username} が {time} に削除'
+      placeholder_self: メモを書く
+      placeholder_channel: '{channelName} でチャット'
+      placeholder_thread: スレッドでチャット
+      placeholder_users: '{commaSeparatedNames} とチャット'
+      placeholder_group: グループでチャット
+      placeholder_silenced: 現在メッセージを送信できません。
+      placeholder_new_message_disallowed:
+        archived: チャンネルはアーカイブされているため、現在新しいメッセージを送信できません。
+        closed: チャンネルはクローズされているため、現在新しいメッセージを送信できません。
+        read_only: チャンネルは読み取り専用のため、現在新しいメッセージを送信できません。
+      retry_staged_message:
+        title: ネットワークエラー
+        action: 再送信しますか？
+      upload_errors:
+        too_large: サイズが大きすぎます
+        failed: 失敗しました
+      aria_roles:
+        composer: チャットエディター
+      composer:
+        send: 送信
+        toggle_toolbar: ツールバーの切り替え
+      chat_message_separator:
+        today: 今日
+        yesterday: 昨日
+      ago:
+        now: たった今
+        minutes: '{count}分'
+        hours: '{count}時間'
+        days: '{count}日'
+      replying_indicator:
+        single_user: '{username} が入力中です'
+        multiple_users: '{commaSeparatedUsernames} と {lastUsername} が入力中です'
+        many_users: '{commaSeparatedUsernames} とほか {count} 人が入力中です'
+      reactions:
+        add: '{emoji} でリアクション'
+        remove: '{emoji} のリアクションを削除'
+        counted: '{count, plural, one {リアクション {emoji}、# 人} other {リアクション {emoji}、# 人}}'
+        only_you: あなたが {emoji} でリアクションしました
+        you_and_single_user: あなたと {username} が {emoji} でリアクションしました
+        you_and_multiple_users: あなた、{commaSeparatedUsernames}、{username} が {emoji} でリアクションしました
+        you_multiple_users_and_more: '{count, plural, one {あなた、{commaSeparatedUsernames}、ほか # 人が {emoji} でリアクションしました} other {あなた、{commaSeparatedUsernames}、ほか # 人が {emoji} でリアクションしました}}'
+        single_user: '{username} が {emoji} でリアクションしました'
+        multiple_users: '{commaSeparatedUsernames} と {username} が {emoji} でリアクションしました'
+        multiple_users_and_more: '{count, plural, one {{commaSeparatedUsernames} とほか # 人が {emoji} でリアクションしました} other {{commaSeparatedUsernames} とほか # 人が {emoji} でリアクションしました}}'
+      mention_warning:
+        not_member: チャンネルに参加していません
+        invitations_sent: '{count, plural, one {招待を送信しました} other {招待を送信しました}}'
+      pinned_bar:
+        title: 固定
+      pinned_messages:
+        title: 固定されたメッセージ
+        pinned_by_you: あなたが固定
+        pinned_by_user: '{username} が固定'
+      channel_list:
+        title: チャンネル
+      direct_messages:
+        title: DM
+        sidebar_title: ダイレクトメッセージ
+        new_group: 会話を始める
+        close: チャンネルを閉じる
+      my_threads:
+        title: マイスレッド
+      search:
+        short_title: 検索
+        title: チャットを検索
+        no_results: 結果が見つかりません
+        sort:
+          relevance: 関連度
+          latest: 最新
+      search_view:
+        filter_placeholder: メッセージを検索
+        results_list_label: チャットメッセージの検索結果
+      empty_state:
+        title: チャンネルが見つかりません
+        my_threads: まだスレッドがありません。参加しているスレッドがここに表示されます。
+      browse:
+        title: チャンネル
+        filter_all: すべて
+        filter_open: オープン
+        filter_closed: クローズ
+        filter_archived: アーカイブ
+        filter_input_placeholder: チャンネル名で検索
+      channel:
+        no_memberships: このチャンネルにはメンバーがいません
+        no_memberships_found: メンバーが見つかりません
+        memberships_count: '{count, plural, one {# 人のメンバー} other {# 人のメンバー}}'
+        empty_state:
+          title: '{channelName} の始まりです'
+          direct_message_title: '{name} との会話を始めましょう'
+          joined_tip: 最初に投稿して会話を始めましょう。
+          members_here: '{count, plural, one {# 人のメンバーがいます} other {# 人のメンバーがいます}}'
+        preview_card:
+          guest_title: '{channelName} に参加してチャットを始めましょう'
+          join_body: 投稿や返信ができるようになり、チャンネル一覧に表示されます。
+          no_access_title: '{channelName} には参加できません'
+          no_access_body: このチャンネルは現在、新しいメンバーを受け付けていません。
+      channel_status:
+        read_only_header: チャンネルは読み取り専用です
+        archived_header: チャンネルはアーカイブされています
+        closed_header: チャンネルはクローズされています
+        open_header: チャンネルはオープンです
+      channel_info:
+        back_to_channel: 戻る
+        tabs:
+          members: メンバー
+          settings: 設定
+      about_view:
+        associated_category: 関連付けられたタグ
+        name: 名前
+        description: 説明
+      members_view:
+        filter_placeholder: メンバーを検索
+        add_member: メンバーを追加
+        back_to_settings: 設定に戻る
+      channel_settings:
+        edit: 編集
+        star_channel: チャンネルにスターを付ける
+        close_channel: チャンネルをクローズ
+        open_channel: チャンネルをオープン
+        archive_channel: チャンネルをアーカイブ
+        delete_channel: チャンネルを削除
+        leave_channel: チャンネルから退出
+        leave_groupchat_info: このグループチャットから退出すると、アクセスできなくなり、関連する通知も届かなくなります。再参加するには、グループチャットのメンバーから再度招待される必要があります。
+        join: 参加
+        leave: 退出
+      channel_archive:
+        confirm: '{channelTitle} チャンネルをアーカイブしますか？読み取り専用になり、新しいメッセージは送信できず、既存のメッセージも編集・削除できなくなります。'
+        instructions_plain: チャンネルをアーカイブすると読み取り専用モードになります。新しいメッセージは送信できず、既存のメッセージも編集・削除できなくなります。
+      channel_open:
+        instructions: チャンネルを再オープンし、すべてのユーザーがメッセージを送信したり、既存のメッセージを編集したりできるようにします。
+      channel_close:
+        instructions: チャンネルをクローズすると、スタッフ以外のユーザーは新しいメッセージの送信や既存のメッセージの編集ができなくなります。
+      channel_delete:
+        title: チャンネルを削除
+        instructions: '{name} チャンネルとチャット履歴を削除します。すべてのメッセージと、リアクションやアップロードなどの関連データは完全に削除されます。チャンネルの履歴を残したまま運用を終了したい場合は、代わりにチャンネルをアーカイブすることを検討してください。確認のため、下のボックスにチャンネル名を入力してください。'
+        confirm: 結果を理解したうえで、チャンネルを削除します
+        confirm_channel_name: チャンネル名を入力
+        process_started: チャンネルを削除しました。
+      channel_edit_name_slug_modal:
+        input_placeholder: 名前を追加
+        slug_label: スラッグ
+        slug_description: チャンネルのスラッグは、URL でチャンネル名の代わりに使われます
+      channel_edit_description_modal:
+        input_placeholder: 説明を追加
+        description: このチャンネルが何についての場所なのかを伝えましょう
+      create_channel:
+        title: 新しいチャンネル
+        create: チャンネルを作成
+        name: チャンネル名
+        description: 説明
+        threading:
+          label: スレッドを有効にする
+        choose_category:
+          label: タグを選択
+          none: 選択してください...
+          hint: 任意です。タグを指定すると、そのタグを閲覧できるユーザーだけがチャンネルを閲覧できます。
+      direct_message_creator:
+        title: 新しいメッセージ
+        add_to_channel: チャンネルに追加
+        selected_user_title: '{username} の選択を解除'
+      new_message_modal:
+        add_user_long: 'Shift + クリックまたは Shift + Enter：@{username} を追加'
+        default_search_placeholder: '#チャンネル、@ユーザー、その他なんでも'
+        user_search_placeholder: '...メンバーをさらに追加'
+        no_items: 項目がありません
+        create_group_placeholder: グループチャット名（任意）
+        participants_counter: '{selection_count}/{max} 人の参加者'
+        new_group_chat: 新しいグループチャット
+        create_new_group_chat: グループチャットを作成
+      notification_levels:
+        never: 通知しない
+        mention: メンションのみ
+        always: すべてのアクティビティ
+      settings:
+        info_title: チャンネル情報
+        settings_title: 設定
+        admin_title: 管理者
+        history_label: 履歴
+        mute: チャンネルをミュート
+        notification_level: 通知を送信
+        saved: 保存しました
+        channel_wide_mentions_label: '@all と @here のメンションを許可'
+        channel_wide_mentions_description: 'ユーザーが @all で #{channel} の全メンバーに、または @here でその時アクティブなメンバーだけに通知できるようにします'
+        channel_threading_label: スレッド
+        channel_threading_description: スレッドを有効にすると、チャットメッセージへの返信はメインのチャンネルとは別の会話として作成されます。
+        auto_join_users_label: ユーザーを自動的に追加
+        auto_join_users_info: '{category} タグを閲覧できるユーザーは、フォーラムを開くと自動的にチャンネルに参加します。'
+        auto_join_users_info_no_category: チャンネルを閲覧できるユーザーは、フォーラムを開くと自動的にチャンネルに参加します。
+      retention_reminders:
+        indefinitely_long_plain: このチャンネルのメッセージは無期限に保存されます。
+        long: '{count, plural, one {このチャンネルのメッセージは # 日間保存されます。} other {このチャンネルのメッセージは # 日間保存されます。}}'
+      thread:
+        label: スレッド
+        close: スレッドを閉じる
+        settings: 設定
+        replies: '{count, plural, one {# 件の返信} other {# 件の返信}}'
+        participants_other_count: +{count}
+        notifications:
+          regular:
+            title: 通常
+            description: このスレッドで誰かがあなたの @ユーザー名 をメンションすると通知されます。
+          tracking:
+            title: 追跡中
+            description: このスレッドの新着返信数がスレッド一覧とチャンネルに表示されます。このスレッドで誰かがあなたの @ユーザー名 をメンションすると通知されます。
+          watching:
+            title: ウォッチ中
+            description: このスレッドの新しい返信がすべて通知され、新着返信数が表示されます。
+      threads:
+        open: スレッドを開く
+        list: スレッド
+        none: このチャンネルで参加しているスレッドはありません。
+      sound:
+        title: チャットの通知音
+      sounds:
+        none: なし
+        bell: ベル
+        ding: ディン
+      header_indicator_preference:
+        title: ヘッダーにアクティビティインジケーターを表示
+        all_new: すべての新着メッセージ
+        dm_and_mentions: ダイレクトメッセージ、メンション、ウォッチ中のスレッド
+        only_mentions: メンションのみ
+        never: 表示しない
+      send_shortcut:
+        title: メッセージの送信方法
+        enter: Enter（Shift + Enter で改行）
+        meta_enter: Ctrl/⌘ + Enter（Enter で改行）
+      quick_reaction_type:
+        title: クイックリアクションの種類
+        options:
+          frequent: よく使うリアクション
+          custom: カスタムリアクション
+      ignore_channel_wide_mention:
+        title: チャンネル全体へのメンションを無視
+        description: '@here と @all のメンションで通知されなくなります。'
+      notifications:
+        mention: '{username} が {channel} であなたをメンションしました'
+        mention_here: '{username} が {channel} で @here を使用しました'
+        mention_all: '{username} が {channel} で @all を使用しました'
+        direct_message: ダイレクトメッセージ
+        direct_message_from: '{username} からダイレクトメッセージが届きました'
+        message_in: '{username} が {channel} に投稿しました'
+        settings_mention: チャットで誰かが自分をメンションしたとき
+        settings_message: チャットのダイレクトメッセージを受け取ったとき
+      errors:
+        too_fast: メッセージの送信が速すぎます。数秒お待ちください。
+        message_empty: メッセージが空です。
+        message_too_long: メッセージが長すぎます。メッセージは最大 {count} 文字までです。
+        reply_not_found: 返信先のメッセージはもう存在しません。
+        thread_not_found: このスレッドはもう存在しません。
+        invalid_emoji: 無効なリアクションです。
+        too_many_reactions: 1 つのメッセージに付けられるリアクションは最大 {count} 種類です。
+        too_many_pins: 1 つのチャンネルで固定できるメッセージは最大 {count} 件です。
+        tag_not_found: タグが見つかりません。
+        invalid_status: このチャンネルはそのステータスに戻せません。
+        name_required: チャンネルに名前を付けてください。
+        name_too_long: 名前は最大 {count} 文字までです。
+        slug_taken: このスラッグのチャンネルはすでに存在します。
+        description_too_long: 説明は最大 {count} 文字までです。
+        cannot_dm: 申し訳ありませんが、ダイレクトメッセージを送信できません。
+        too_many_users: 1 つの会話に参加できるのは最大 {count} 人です。
+        user_not_found: ユーザーが見つかりません。
+        user_cannot_chat: '{username} はチャットを無効にしています'
+    community:
+      unavailable: このページは利用できません。
+      load_error: このページを読み込めませんでした。しばらくしてからもう一度お試しください。
+      load_more: さらに読み込む
+      about:
+        title: このサイトについて
+        members: '{count, plural, one {# 人のメンバー} other {# 人のメンバー}}'
+        admin_count: '{count, plural, one {# 人の管理者} other {# 人の管理者}}'
+        moderator_count: '{count, plural, one {# 人のモデレーター} other {# 人のモデレーター}}'
+        created_ago: '{ago}に作成'
+        created: '{date} に作成'
+        our_admins: 管理者
+        our_moderators: モデレーター
+        contact_title: お問い合わせ
+        contact_text: 'このサイトに影響する重大な問題や緊急の事態が発生した場合は、こちらまでご連絡ください：'
+        activity_title: サイトのアクティビティ
+        activity:
+          topics: '{count, plural, one {{formatted} 件のスレッド} other {{formatted} 件のスレッド}}'
+          posts: '{count, plural, one {{formatted} 件の投稿} other {{formatted} 件の投稿}}'
+          users: '{count, plural, one {{formatted} 人の新規登録} other {{formatted} 人の新規登録}}'
+          activeUsers: '{count, plural, one {{formatted} 人のアクティブユーザー} other {{formatted} 人のアクティブユーザー}}'
+          likes: '{count, plural, one {{formatted} 件のいいね} other {{formatted} 件のいいね}}'
+        last_7_days: 過去 7 日間
+        stats_title: サイトの統計
+        period:
+          day: 過去 24 時間
+          week: 過去 7 日間
+          month: 過去 30 日間
+          all: 全期間
+        stat:
+          topics: スレッド
+          posts: 投稿
+          users: ユーザー
+          activeUsers: アクティブユーザー
+          likes: いいね
+      guidelines:
+        title: ガイドライン
+      legal:
+        tos: 利用規約
+        privacy: プライバシーポリシー
+      users:
+        title: ユーザー
+        empty: 表示するユーザーはまだいません。
+        no_results: その名前のユーザーは見つかりませんでした。
+        forbidden: ユーザー一覧を表示する権限がありません。
+        login_required: ユーザー一覧を表示するにはログインしてください。
+        period_label: 期間
+        search_placeholder: ユーザー名で絞り込み
+        total: '{count, plural, one {# 人のユーザー} other {# 人のユーザー}}'
+        period:
+          all: 全期間
+          yearly: 年
+          quarterly: 四半期
+          monthly: 月
+          weekly: 週
+          daily: 今日
+        column:
+          username: ユーザー名
+          likesReceived: 受け取った数
+          likesGiven: 送った数
+          topicCount: 作成したスレッド
+          postCount: 返信
+          daysVisited: 訪問
+          postsRead: 既読
+          lastSeenAt: 最終アクセス
+      groups:
+        title: グループ
+        empty: 表示するグループはありません。
+        members: '{count, plural, one {# 人のメンバー} other {# 人のメンバー}}'
+        closed: クローズ
+        filter_placeholder: すべてのグループ
+        hidden: 非表示
+        not_found: このグループは存在しないか、表示する権限がありません。
+        back: すべてのグループ
+        tabs_label: グループのセクション
+        tab_members: メンバー
+        tab_activity: アクティビティ
+        members_forbidden: グループのメンバーを表示する権限がありません。
+        members_login: このグループのメンバーを表示するにはログインしてください。
+        no_members: このグループにはまだメンバーがいません。
+        no_activity: このグループのメンバーはまだ何も投稿していません。
+    composer:
+      emoji:
+        button: 絵文字
+        title: 絵文字ピッカー
+        search_placeholder: 絵文字を検索…
+        close: 閉じる
+        hint: 絵文字を選択
+        no_results: 絵文字が見つかりませんでした。
+        autocomplete_header: 入力して絵文字を検索
+        tone_label: 肌の色
+        groups:
+          recent: 最近使用したもの
+          smileys: スマイリーと感情
+          people: 人々
+          nature: 動物と自然
+          food: 食べ物と飲み物
+          activities: アクティビティ
+          travel: 旅行と場所
+          objects: 物
+          symbols: 記号
+          flags: 旗
+        tones:
+          '0': デフォルト
+          '1': 明るい肌の色
+          '2': やや明るい肌の色
+          '3': 中間の肌の色
+          '4': やや濃い肌の色
+          '5': 濃い肌の色
+      hashtags:
+        autocomplete_header: タグ
+      similar:
+        title: あなたのスレッドは次のスレッドに似ています…
+        close: 閉じる
+      linked_topic:
+        menu_label: 返信の操作
+        reply: スレッドに返信
+        new_topic: 関連スレッドとして返信
+        continuation: '{link} からの続き'
+      drafts:
+        nav: 下書き
+        sidebar: 下書き
+        status_saving: 保存中…
+        status_saved: 下書きを保存しました
+        status_error: 下書きを保存できませんでした
+        close_title: この投稿をどうしますか？
+        close_text: 書いた内容は下書きとして保存し、このデバイスまたは別のデバイスで後から再開できます。
+        discard: 破棄
+        save_for_later: 下書きを保存して後で続ける
+        keep_editing: 編集を続ける
+        empty: 下書きはありません。
+        untitled: （無題）
+        unavailable: スレッドを利用できません
+        reply_title: 'RE: {title}'
+        type_new_topic: 新しいスレッド
+        type_reply: 返信
+        type_message: メッセージ
+        resume: 再開
+        delete: 下書きを削除
+        load_more: さらに読み込む
+        menu_label: 下書きを開く
+        view_all: すべて表示（{count}）
+      preview:
+        label: プレビュー
+        show: プレビューを表示
+        hide: プレビューを隠す
+      shell:
+        or: または
+        body_placeholder_formats: ここに入力してください。{formats} で書式を設定できます。
+        drag_images: 画像をドラッグまたは貼り付けできます。
+        action_new_topic: スレッドの作成
+        action_reply: スレッド
+        action_edit: 投稿を編集中
+        reply_to_topic_desc: 特定の投稿ではなく、スレッドに返信します
+        reply_as_new_topic_desc: このスレッドに関連する新しいスレッドを作成します
+        saved_draft: 投稿の下書きがあります。タップして再開します。
+        category_placeholder: プライマリタグ…
+        tags_placeholder: タグ（任意）…
+        title_placeholder: タイトルを入力するか、リンクを貼り付けてください
+        body_placeholder: ここに入力してください。
+        body_placeholder_markdown: ここに入力してください。ツールバーまたは Markdown で書式を設定できます。
+        body_placeholder_bbcode: ここに入力してください。BBCode で書式を設定できます。
+        body_placeholder_markdown_bbcode: ここに入力してください。Markdown または BBCode で書式を設定できます。
+        submit_new_topic: スレッドを作成
+        submit_reply: 返信
+        submit_edit: 編集を保存
+        discard: 破棄
+        cancel_edit: 編集をキャンセル
+        save_and_close: 保存して閉じる
+        body_placeholder_markdown_upload: ここに入力してください。ツールバーまたは Markdown で書式を設定できます。画像をドラッグまたは貼り付けできます。
+        body_placeholder_upload: ここに入力してください。画像をドラッグまたは貼り付けできます。
+        search_placeholder: 検索…
+        no_results: 一致するものが見つかりませんでした。
+        no_tags: 利用できるタグはありません。
+        no_category: （タグなし）
+        remove_tag: タグを削除
+        max_primary_tags: "{count, plural, other {プライマリタグは # 個までです。別のタグを選ぶには、選択済みのタグを外してください。}}"
+        max_secondary_tags: "{count, plural, other {セカンダリタグは # 個までです（子タグも数に含まれます）。}}"
+        bold_label: B
+        switch_to_markdown: Markdown エディターに切り替え
+        switch_to_rich: 書式付きテキストを表示
+        more_options: オプション
+        toggle_direction: 文字の方向を切り替え
+        add_poll: 投票を作成
+        edit_poll: 投票を編集
+        action_create_topic: スレッドの作成
+        create_topic_desc: 新しいスレッドを作成します
+    modals:
+      login_title: おかえりなさい
+      signup_title: アカウントを作成
+      identification: メールアドレス／ユーザー名
+      forgot_password: パスワードを忘れました
+      no_account: アカウントをお持ちでないですか？
+      sign_up: 新規登録
+      forgot_title: パスワードをリセット
+      forgot_submit: パスワードをリセット
+      flag_title: コミュニティの健全さを保つためのご協力ありがとうございます！
+      flag_off_topic: 関係がない内容です
+      flag_other: その他
+      flag_submit: 投稿を通報
+    extras:
+      gambits:
+        in_group: in
+        title_key: title
+        likes_key: likes
+        bookmarks_key: bookmarks
+        min_posts_key: min-posts
+        min_posts_hint: スレッド内の最小投稿数
+      search:
+        title: 検索
+        meta_title: 検索
+        meta_title_query: '検索：{query}'
+        tabs_label: 検索対象
+        tab_topics: スレッド
+        tab_posts: 投稿
+        tab_categories: タグ
+        tab_users: ユーザー
+        input_label: 検索語
+        input_placeholder: 検索
+        clear: 検索をクリア
+        submit: 検索
+        advanced: 詳細フィルター
+        sort_by: 並べ替え
+        sort_relevance: 関連性
+        sort_latest_post: 最新の投稿
+        sort_latest_topic: 最新のスレッド
+        sort_likes: いいねが多い順
+        sort_views: 閲覧数が多い順
+        result_count: '{count}{more} {count, plural, one {件の結果} other {件の結果}}'
+        result_for: 検索語：
+        no_results: 結果が見つかりませんでした。
+        failed: 検索を完了できませんでした。しばらくしてからもう一度お試しください。
+        start: 探しているものを入力するか、詳細フィルターを開いてください。
+        need_more: 検索語を入力してください。
+        load_more: さらに表示
+        modal_link: 詳細検索 →
+        posts_filters_note: 投稿の検索では、投稿者、タグ（1つ）、いいね、ブックマークのみが使われます。その他のフィルターはスレッドに適用されます。
+        filter_author: 投稿者
+        filter_author_placeholder: ユーザー名
+        filter_category: プライマリタグ
+        filter_category_any: すべてのプライマリタグ
+        filter_tags: タグ
+        filter_tags_add: タグを追加…
+        filter_tag_remove: タグ {name} を削除
+        filter_where: 検索範囲
+        filter_in_title: タイトルのみ
+        filter_mine: 自分の投稿
+        filter_liked: 自分がいいねした
+        filter_bookmarked: 自分がブックマークした
+        filter_unread: 未読
+        filter_status: ステータス
+        status_any: すべて
+        status_open: オープン
+        status_closed: クローズ
+        status_sticky: 固定
+        filter_posted: 投稿日
+        filter_after: 以降
+        filter_before: 以前
+        filter_min_posts: 最小投稿数
+      bulk:
+        toggle_on: スレッドを選択
+        toggle_off: 選択を終了
+        bar_label: 選択したスレッドの操作
+        selected: '{count, plural, =0 {スレッドが選択されていません} one {# 件選択中} other {# 件選択中}}'
+        select_all: すべて選択（{count}）
+        select_one: 「{title}」を選択
+        clear: クリア
+        hint: スレッドにチェックを入れてください（shift+クリックで範囲選択）。
+        mark_read: 既読にする
+        sticky: 固定
+        unsticky: 固定を解除
+        lock: クローズ
+        unlock: オープン
+        tags: タグを変更
+        hide: 削除
+        restore: 復元
+        delete: 完全に削除
+        hide_confirm: '{count, plural, one {# 件のスレッドを削除しますか？} other {# 件のスレッドを削除しますか？}}後で復元できます。'
+        delete_confirm: '{count, plural, one {# 件のスレッドを完全に削除しますか？} other {# 件のスレッドを完全に削除しますか？}}この操作は取り消せません。'
+        done: '{count, plural, =0 {変更されたスレッドはありません。} one {# 件のスレッドを変更しました。} other {# 件のスレッドを変更しました。}}'
+        skipped: '{count, plural, one {# 件をスキップしました（権限がないか、すでにその状態です）。} other {# 件をスキップしました（権限がないか、すでにその状態です）。}}'
+        failed: '{count, plural, one {# 件が失敗しました。} other {# 件が失敗しました。}}'
+      top_periods:
+        label: 期間
+        all: 全期間
+        yearly: 年
+        quarterly: 四半期
+        monthly: 月
+        weekly: 週
+        daily: 今日
+      text_size:
+        heading: インターフェース
+        label: 文字サイズ
+        help: このデバイスにのみ適用されます。
+        smaller: 小さい
+        normal: 標準
+        larger: 大きい
+        largest: 最大
+      banner:
+        label: お知らせ
+        dismiss: お知らせを閉じる
+      print:
+        button: 印刷
+        preparing: スレッドの印刷を準備しています…
+        print_again: 印刷
+        close: 閉じる
+      history:
+        title: 履歴
+        open: '{count, plural, one {# 件の改訂} other {# 件の改訂}}：履歴を表示'
+        failed: この投稿の履歴を読み込めませんでした。
+        content_hidden: この投稿は非表示です。各バージョンの本文は編集権限のあるユーザーにのみ表示されます。
+        pager_label: 改訂を閲覧
+        first: 最初のバージョン
+        previous: 前の改訂
+        next: 次の改訂
+        last: 現在のバージョン
+        position: バージョン {from} → {to}（全 {total} 件）
+        original: 元のバージョン（全 {total} 件）
+        edited_by: '{name} が {date} に編集'
+        created_by: '{name} が {date} に作成'
+        deleted_user: 削除されたユーザー
+        mode_label: 比較モード
+        mode_inline: インライン
+        mode_side: 左右に並べる
+        added: '{count, plural, one {+# 語} other {+# 語}}'
+        removed: '{count, plural, one {−# 語} other {−# 語}}'
+        before: 前のバージョン
+        after: このバージョン
+    shortcuts:
+      groups:
+        actions: 操作
+        jump_to: 移動
+        navigation: ナビゲーション
+        application: アプリケーション
+      actions:
+        new: 新着
+        unread: 未読
+        bookmarks: ブックマーク
+        messages: メッセージ
+        drafts: 下書き
+        next_prev_topic_jump: リスト内の次／前のスレッド
+        suggested: 最初のおすすめスレッド
+        jump_to_post: 投稿へ移動
+        first_last_post: 最初／最後の投稿
+        first_unread: 最初の未読投稿
+        next_prev_section: 次／前のセクション
+        show_incoming: 新着または更新されたスレッドを表示
+        user_menu: ユーザーメニューを開く
+        focus_composer: 投稿エディターに戻る
+        search_global: 検索（入力中でも可）
+        log_out: ログアウト
+        bookmark_topic: スレッドをブックマーク
+        pin_topic: スレッドを固定／固定解除
+        share_topic: スレッドを共有
+        reply_topic: スレッドに返信
+        reply_post: 投稿に返信
+        quote_post: 投稿を引用
+        reply_linked: リンクしたスレッドとして返信
+        like_post: 投稿にいいね
+        bookmark_post: 投稿をブックマーク
+        share_post: 投稿を共有
+        edit_post: 投稿を編集
+        delete_post: 投稿を削除
+        flag_post: 投稿を通報
+        topic_menu: スレッドメニューを開く
+        print: スレッドを印刷
+        watch_topic: スレッドをウォッチ
+        regular_topic: スレッドの通知を通常にする
+        mute_topic: スレッドをミュート
+        bulk_item: スレッドを選択（一括選択）
+        bulk_toggle: 一括選択の切り替え
+        dismiss: 新着または未読を既読にする
+        home: ホーム
+        latest: 最新
+        top: 人気
+        categories: タグ
+        notifications: 通知
+        profile: プロフィール
+        settings: 設定
+        next_prev_topic: 次／前のスレッド
+        open_topic: 選択したスレッドを開く
+        back: 戻る
+        sidebar: サイドバーの切り替え
+        create: 新しいスレッドを作成
+        reply: スレッドに返信
+        search: 検索
+        help: キーボードショートカットを表示
+      title: キーボードショートカット
+      or: または
+      search_placeholder: キーの組み合わせまたは説明でショートカットを検索
+      no_results: ショートカットが見つかりません。
+    gaps:
+      lightbox:
+        title: 画像
+        counter: '{current} / {total}'
+        zoom: ズーム（Z キー）
+        open: 元の画像
+        download: ダウンロード
+        close: 閉じる（Esc）
+        previous: 前へ（左矢印）
+        next: 次へ（右矢印）
+      code:
+        copy: コードをクリップボードにコピー
+        copied: コピーしました！
+        fullscreen: コードを全画面で表示
+        view_code: コードを表示
+      table:
+        expand: 表を展開
+        view_table: 表を表示
+      heading_anchor: 見出しへのリンク
+      spoiler:
+        reveal: 'ネタバレ: クリックで表示'
+      read_state:
+        unread: 未読の投稿
+        last_visit: 前回の訪問
+      timeline:
+        back: 戻る
+        back_description: 最後の未読投稿に戻る
+      jump:
+        title: 移動…
+        post_label: 投稿
+        of: 全{count, plural, one {# 件の投稿} other {# 件の投稿}}中
+        submit: 移動
+      title_editor:
+        edit: タイトルを編集
+        label: スレッドのタイトル
+        tags: タグ
+        save: 保存
+        cancel: キャンセル
+      share:
+        title: スレッドを共有
+        post_title: '投稿 #{number} を共有'
+        instructions: このスレッドへのリンクを共有：
+        post_instructions: 'この投稿へのリンクを共有：'
+        link_label: リンク
+        copy: コピー
+        copied: リンクをコピーしました。
+        networks:
+          x: X で共有
+          facebook: Facebook で共有
+          linkedin: LinkedIn で共有
+          whatsapp: WhatsApp で共有
+          telegram: Telegram で共有
+          reddit: Reddit で共有
+          email: メールで送信
+      last_visit: 前回の訪問
+      dismiss:
+        unread: 既読にする
+        new: 既読にする
+        confirm_unread: このリストのすべてのスレッドを既読にしますか？
+        confirm_new: このリストの新着スレッドを既読にしますか？
+      notifications:
+        post_edited: '{username} さんがあなたの投稿を編集しました'
+        post_edited_setting: 自分の投稿が編集されたとき
+        topic_linked: '{username} さんがあなたのスレッドにリンクしました'
+        topic_linked_setting: 自分のスレッドがリンクされたとき
+        invite_accepted: '{username} さんがあなたの招待を承諾しました'
+        invite_accepted_setting: 自分の招待から誰かが参加したとき
+      invites:
+        title: フォーラムに招待
+        help: リンクを生成して、招待したい人に送ってください。このリンクから登録した人はあなたが招待したユーザーとして表示され、あなたに通知が届きます。
+        sign_up_closed: このフォーラムでは新規登録が停止されています。管理者が新規登録を開放するまでリンクは機能しません。
+        max_redemptions: 利用できる人数
+        expires_days: 有効日数
+        create: リンクを生成（してコピー）
+        yours: あなたの招待
+        none: まだ招待を生成していません。
+        uses: '{used} / {max} 回使用'
+        expires: '{date} まで有効'
+        delete: 招待を削除
+        sidebar: 招待
+        share_button: 招待
+        invited_by: '{username} さんがあなたをフォーラムに招待しました。'
+      category_notifications:
+        toggle: タグの通知：{level}
+        watching: ウォッチ中
+        watching_description: このタグのすべてのスレッドを自動的にウォッチし、新しい投稿があるたびに通知されます。
+        watching_first_post: 最初の投稿をウォッチ
+        watching_first_post_description: このタグの新しいスレッドの最初の投稿が通知されます。
+        normal: 通常
+        normal_description: 誰かがあなたの @ユーザー名 をメンションしたり、あなたに返信したりすると通知されます。
+        muted: ミュート
+        muted_description: このタグのスレッドについては一切通知されません。
+        hidden: ミュートして非表示
+        hidden_description: 通知されないことに加えて、このタグのスレッドは最新のリストに表示されなくなります。
+      sidebar:
+        home: ホーム
+        my_messages: マイメッセージ
+        new_in_category: このタグには新着または未読のスレッドがあります
+        review: レビュー
+        faq: よくある質問
+        tos: 利用規約
+        privacy: プライバシー
+        custom_title: リンク
+    list:
+      topic: スレッド
+      replies: 返信数
+      views: 閲覧数
+      activity: アクティビティ
+      new_topic: 新しいスレッド
+      unread_count: '{count, plural, one {未読の返信 # 件} other {未読の返信 # 件}}'
+      mark_read: クリックして既読にする
+      original_poster: 投稿者
+      relevant_poster: 最も関連性の高い投稿
+      most_recent_poster: 最新の投稿者
+      replies_a11y: '{count, plural, one {返信 # 件} other {返信 # 件}}'
+      views_a11y: '{count, plural, one {閲覧 # 回} other {閲覧 # 回}}'
+      created_at: '作成：{date}'
+      last_reply_at: '最新の返信：{date}'
+      read_more: 続きを読む
+    nav:
+      label: スレッドリストのナビゲーション
+      latest: 最新
+      hot: 話題
+      newest: 新着
+      unread: 未読
+      top: 人気
+      categories_link: タグ
+      more: その他の並べ替え
+      sort_label: リストを選択
+      categories: タグ
+      subcategories: 子タグ
+      tags: セカンダリタグ
+      all_categories: すべてのタグ
+      all_subcategories: '{name} のすべて'
+      all_tags: すべてのセカンダリタグ
+      new_topic: スレッドの作成
+      remove_filter: フィルターを解除
+      no_subcategory: 子タグなし
+      no_tags: セカンダリタグなし
+      search_placeholder: 検索…
+      no_results: 結果が見つかりません。
+      filter_for_more: 絞り込んでさらに表示…
+    hero:
+      subcategories: 子タグ
+    categories:
+      category: タグ
+      topics: スレッド
+      latest: 最新
+      tags_title: セカンダリタグ
+      tags_sort_by: 並べ替え
+      tags_sort_count: 件数
+      tags_sort_name: 名前
+      tags_all: すべてのタグ
+      tags_none: まだセカンダリタグはありません。
+    messages:
+      reactions:
+        react: リアクション
+        unreact: リアクションを取り消す
+        reactors_title: リアクション
+        notification: '{username} さんがあなたのメッセージにリアクションしました'
+      untitled: メッセージ
+      page:
+        title: メッセージ
+        nav: メッセージ
+      nav:
+        label: メッセージの受信箱
+        inbox_box: 受信箱
+        all: すべての受信箱
+        inbox: 最新
+        sent: 送信済み
+        new: 新着
+        new_with_count: 新着（{count}）
+        unread: 未読
+        unread_with_count: 未読（{count}）
+        archive: アーカイブ
+        new_message: 新しいメッセージ
+      list:
+        new_message: 新しいメッセージ
+        unread_count: '{count, plural, one {未読メッセージ # 件} other {未読メッセージ # 件}}'
+      empty:
+        title: メッセージはありません
+        body_1: 通常の会話の流れとは別に、誰かと個人的に直接話したいですか？相手のアバターを選択し、{icon} メッセージボタンを使ってメッセージを送信してください。
+        body_2: サポートが必要な場合は、<a>スタッフにメッセージを送信</a>できます。
+      topic:
+        glyph: これは個人メッセージです
+        map_label: メッセージの参加者
+        replies: '{count, plural, one {返信} other {返信}}'
+        leave: 退出
+        leave_confirm: このメッセージから退出してもよろしいですか？
+        footer_label: メッセージの操作
+        share: このスレッドへのリンクを共有
+        copy_link: この投稿へのリンクをクリップボードにコピー
+        archive: アーカイブ
+        archive_help: メッセージをアーカイブに移動
+        move_to_inbox: 受信箱に移動
+        move_to_inbox_help: メッセージを受信箱に戻す
+        reply: 返信
+        views: '{count, plural, one {閲覧 # 回} other {閲覧 # 回}}'
+        remove_user: ユーザーを削除
+        remove_confirm: このメッセージから {name} さんを削除してもよろしいですか？
+        defer: 後で読む
+        defer_help: 未読にする
+      composer:
+        action_new: メッセージを作成
+        action_new_desc: 新しい個人メッセージを作成
+        action_topic: スレッドの作成
+        action_topic_desc: 新しいスレッドを作成
+        action_reply: メッセージ
+        actions_label: 投稿エディターの操作
+        users_placeholder: ユーザーまたはグループを追加
+        remove_recipient: '{username} を削除'
+        searching: 検索中…
+        no_results: 一致するものが見つかりません
+        type_to_search: 入力して検索
+        title_placeholder: タイトル
+        submit: メッセージを送信
+        submit_reply: 返信
+        recipients_missing: 宛先を 1 人以上追加してください。
+        staff_keyword: staff
+        reply_as_message: 個人メッセージとして返信
+        reply_as_message_desc: スレッドの作成者に新しい個人メッセージを作成
+      sidebar:
+        my_messages: マイメッセージ
+        unread: '{count, plural, one {新着または未読のメッセージ # 件} other {新着または未読のメッセージ # 件}}'
+      user:
+        message: メッセージ
+      invite:
+        title: 招待
+        help: このスレッドに招待したい人のユーザー名を入力してください。
+        placeholder: 選択…
+        submit: 招待を送信
+        success: そのユーザーをこのメッセージに招待しました。
+        success_group: そのグループをこのメッセージに招待しました。
+      notifications:
+        watching: ウォッチ中
+        watching_description: このメッセージへの新しい返信がすべて通知され、新しい返信の件数が表示されます。
+        watching_reason: このスレッドをウォッチしているため、通知を受け取ります。
+        tracking: 追跡中
+        tracking_description: このメッセージへの新しい返信の件数が表示されます。誰かがあなたの @ユーザー名 をメンションしたり、あなたに返信したりすると通知されます。
+        tracking_reason: このスレッドを追跡しているため、新しい返信の件数が表示されます。
+        regular: 通常
+        regular_description: 誰かがあなたの @ユーザー名 をメンションしたり、あなたに返信したりすると通知されます。
+        regular_reason: 誰かがあなたの @ユーザー名 をメンションしたり、あなたに返信したりすると通知されます。
+        muted: ミュート
+        muted_description: このメッセージについては一切通知されません。
+        muted_reason: このスレッドのすべての通知を無視しています。
+      events:
+        invited_user: '{when}に {who} さんを招待しました'
+        invited_group: '{when}に {who} を招待しました'
+        removed_user: '{when}に {who} さんを削除しました'
+        user_left: '{when}に {who} さんがこのメッセージから退出しました'
+    metoo:
+      label: 私も
+      label_with_count: '{label}（{count}）'
+      title: 私も同じ問題が発生しています
+      author_title: あなたが作成したスレッドです
+      closed_title: このスレッドはクローズされています
+    motion:
+      link_copied: リンクをコピーしました！
+    profile:
+      status:
+        label: ステータス
+        until: '{when} まで'
+        choose_emoji: 絵文字を選択
+        custom_emoji: その他の絵文字
+        no_emoji: 絵文字なし
+        clear_never: クリアしない
+        clear_30m: 30分後
+        clear_1h: 1時間後
+        clear_4h: 4時間後
+        clear_today: 今日
+        clear_week: 今週
+        clear_custom: 日時を選択
+      birthday:
+        today: 今日は誕生日です！
+      settings:
+        heading: プロフィール
+        save: プロフィールを保存
+        discard: 変更を破棄
+        saved: プロフィールを保存しました。
+        title_label: 肩書き
+        title_placeholder: 例：モデレーター、写真家、開発者
+        title_help: プロフィールでは名前の下に、投稿では名前の横に表示されます。
+        title_locked: 肩書きはモデレーターによって設定されています。
+        bio_label: 自己紹介
+        bio_placeholder: あなたについて少し教えてください。
+        bio_help: リンク、**太字**、*斜体*、`code` が使えます。
+        location_label: 所在地
+        location_placeholder: 例：ポルトガル、リスボン
+        website_label: ウェブサイト
+        birthday_label: 誕生日
+        birthday_show_year: 年を表示する（年齢も表示されます）
+        birthday_help: 年を表示しない限り、他のユーザーには月と日のみが表示されます。
+        status_label: ステータス
+        status_placeholder: 例：休暇中、会議中、返信が遅れます
+        status_clear: ステータスをクリア
+        status_clear_after: クリアするタイミング
+        status_custom_required: ステータスを消す日時を選択してください。
+        cover_label: プロフィールのカバー画像
+        cover_help: プロフィール上部に表示される横長の画像です。ファイルをアップロードするか、画像の https アドレスを貼り付けてください。
+        card_label: ユーザーカードの背景
+        card_help: 誰かがあなたのアバターをクリックしたときに開くカードで、名前の背景に表示されます。
+        cover_edit: カバーを編集
+        cover_forumaker_help: プロフィール上部のワイドな画像で、ユーザーカードの背景にも表示されます。エディターでアップロード、削除、表示する部分の選択ができます。
+        no_image: 画像なし
+        upload: 画像をアップロード
+        remove_image: 画像を削除
+        image_too_large: 画像が {max} を超えています。もっと小さい画像を選んでください。
+      moderation:
+        clear_status: ステータスをクリア
+        clear_images: カバー画像とカードの背景を削除
+    review:
+      title: レビュー
+      empty: レビューする項目はありません。
+      load_more: さらに読み込む
+      filter_label: 種類
+      filter_all: すべて
+      filter_flagged: 通報された投稿
+      filter_queued: 承認待ちの投稿
+      type_flagged: 通報された投稿
+      type_queued: 承認待ちの投稿
+      status_pending: 保留中
+      hidden_label: 非表示
+      view_post: 投稿を見る
+      show_more: もっと見る
+      show_less: 表示を減らす
+      flagged_by: 通報者
+      flag_type: 理由
+      flag_date: 日時
+      reason_off_topic: 関係がない内容
+      reason_inappropriate: 不適切
+      reason_spam: スパム
+      reason_other: その他
+      queued_reason: この投稿は、全員に公開される前にモデレーターの承認を待っています。
+      agree: 同意…
+      agree_and_hide: 同意して投稿を非表示
+      agree_and_keep: 同意して投稿を残す
+      agree_and_keep_hidden: 同意して非表示のままにする
+      disagree: 同意しない
+      disagree_and_restore: 同意せず投稿を復元
+      ignore: 無視
+      delete_post: 投稿を削除
+      delete_confirm: この投稿を削除しますか？この操作は取り消せません。
+      approve_post: 投稿を承認
+      reject_post: 投稿を却下
+      reject_confirm: この投稿を却下しますか？投稿は削除されます。
+      done_agreed: 通報に同意しました。投稿は残されています。
+      done_agreed_hidden: 通報に同意しました。投稿は非表示になりました。
+      done_disagreed: 通報に同意しませんでした。
+      done_ignored: 通報を無視しました。
+      done_deleted: 投稿を削除しました。
+      done_approved: 投稿を承認しました。
+      done_rejected: 投稿を却下しました。
+    search_menu:
+      title: 検索
+      in: 対象
+      in_topics_posts: すべてのスレッドと投稿
+      enter_hint: または Enter を押す
+      mobile_enter_hint: または「検索」をタップ
+      too_short: 検索語が短すぎます。
+      no_results: 結果が見つかりませんでした。
+      open_advanced: 詳細検索を開く
+      clear_search: 検索をクリア
+      clear_recent: 最近の検索をクリア
+      close: 検索を閉じる
+      more: もっと見る
+      results: 件の結果
+      tips:
+        category_tag: タグで絞り込み
+        author: 投稿者で絞り込み
+        in: メタデータで絞り込み（例：{examples}）
+        full_search: 全画面検索を開く
+    header:
+      language: '言語：{name}'
+      advanced_search: 詳細検索を開く
+    sidebar:
+      label: サイドバー
+      toggle: サイドバーの切り替え
+      new_topic: スレッドの作成
+      topics: すべてのスレッド
+      my_posts: 自分の投稿
+      my_messages: 自分のメッセージ
+      admin: 管理者
+      more: その他
+      categories: タグ
+      tags: セカンダリタグ
+      all_categories: すべてのタグ
+      all_tags: すべてのタグ
+      notifications: 通知
+      settings: 設定
+      customize_categories: タグをカスタマイズ
+      customize_tags: セカンダリタグをカスタマイズ
+      customize_filter: 絞り込み…
+      customize_save: 保存
+      customize_reset: デフォルトに戻す
+      keyboard_shortcuts: キーボードショートカット
+      palette:
+        title: カラーパレット
+        default: デフォルト
+        high_contrast: ハイコントラスト
+      theme:
+        title: テーマ
+        save_failed: テーマを切り替えられませんでした。もう一度お試しください。
+      color_mode:
+        title: カラーモード
+        light: ライト
+        dark: ダーク
+        auto: 自動
+    age:
+      now: たった今
+      minutes: '{count}分'
+      hours: '{count}時間'
+      days: '{count}日'
+    stats:
+      views:
+        views_long: '{count, plural, one {このスレッドは{number}回閲覧されました} other {このスレッドは{number}回閲覧されました}}'
+        views_lowercase: '{count, plural, one {閲覧} other {閲覧}}'
+        short_thousands: '{number}k'
+        short_millions: '{number}M'
+        menu_title: 最近の閲覧
+        view_explainer: 同じ訪問者の閲覧は {hours} 時間ごとに1回として数えます。
+        no_views: 閲覧統計はまだありません。後でもう一度確認してください。
+        chart_error: グラフの表示中にエラーが発生しました。もう一度お試しください。
+        views: 閲覧数
+        predicted_views: 予測閲覧数
+      views_sort: 閲覧数が多い順
+      new_count: '{count, plural, one {新着スレッド # 件} other {新着スレッド # 件}}'
+      unread_count: '{count, plural, one {未読の返信があるスレッド # 件} other {未読の返信があるスレッド # 件}}'
+      sidebar_dot: '新しい更新があります：新着 {new} 件、未読 {unread} 件'
+      activity:
+        days_visited: 訪問日数
+        time_read: 閲覧時間
+        posts_read: 既読の投稿
+        topics_viewed: 閲覧したスレッド
+        likes_given: 付けたいいね
+        likes_received: もらったいいね
+      duration:
+        seconds: '{count} 秒'
+        minutes: '{count} 分'
+        hours: '{count} 時間'
+        days: '{count} 日'
+    links:
+      clicks: '{count, plural, one {# クリック} other {# クリック}}'
+    ramon_chat:
+      review:
+        type: "通報されたチャットメッセージ"
+        view_in_chat: "チャットで見る"
+        message_deleted: "メッセージは削除されました。"
+        dismiss: "通報を却下"
+        done_dismissed: "通報を却下しました。"
+        delete_message: "メッセージを削除"
+        delete_confirm: "このチャットメッセージを削除しますか？通報もキューから消えます。"
+        done_deleted: "メッセージを削除しました。"
+        filter_chat: "チャット"
+      preferences:
+        sound_default: "フォーラムのサウンド"
+        quick_custom_help: "絵文字の名前をスペース区切りで（heart, tada, eyes…）。👍 には専用のボタンがあります。"
+        open_in_drawer: "チャットをドロワーで開く"
+        open_in_drawer_help: "オフにすると、チャットボタンは全画面ページを開きます。"
+        email_mentions: "チャットでメンションされたらメールを受け取る"
+      notifications:
+        settings_message: "ウォッチ中のチャットの会話に新しいメッセージがある"
+      new_message:
+        search_placeholder: "ユーザーを検索"
+        open: "会話を開く"
+      group_name:
+        help: "新しい名前は参加者全員に表示されます。空にすると参加者の名前に戻ります。"
+      star:
+        remove: "お気に入りから外す"
+      pins:
+        unseen: "まだ見ていないピン留めメッセージがあります"
+    marketplace:
+      categories: ストアのカテゴリ
+      all: すべて
+      shop_messages: ストアのメッセージ
+    thirdparty:
+      ramon_chat:
+        continue_in: 続きから
+      solved:
+        accepted_bar: "解決策"
+        title: 解決策
+        accepted: 解決策
+        accepted_title: 解決策として承認済み
+        accepted_by: '{username} さんが {ago} に解決策として承認しました'
+        mark: 解決策にする
+        unmark: クリックして解除
+        jump: 回答へ移動
+        expand: 回答全体を表示
+        collapse: 回答を折りたたむ
+      reactions:
+        summary: '{count, plural, one {# 件のリアクション: リアクションした人を見る} other {# 件のリアクション: リアクションした人を見る}}'
+        picker: リアクションを選択
+        react_with: '{reaction} でリアクション'
+        remove: リアクションを取り消す
+        like_reaction: いいね
+      polls:
+        votes: '{count, plural, =0 {票} one {票} other {票}}'
+      upload:
+        uploading: '{count, plural, one {ファイルをアップロード中…} other {# 件のファイルをアップロード中…}}'
+      wiki:
+        column_article: '記事'
+        categories: 'カテゴリ'
+        all_categories: 'すべてのカテゴリ'
+        category_placeholder: 'カテゴリ…'
+        see_all: 'すべて表示'
+        edited_by: '{name} が編集'
+        edits_title: '{date} に最終編集'
+        history_title: '版の履歴'
+        close: '閉じる'
+        more: 'その他の操作'
+        created: '作成'
+        updated: '更新'
+        revisions: '{count, plural, other {版}}'
+        advanced: '詳細オプション'
+        comment_action: 'コメント'
+        comment_edit: 'コメントを編集中'
+        share: '記事を共有'
+        hero_description: 'コミュニティが書いて更新しているガイド、リファレンス、回答。'
+        hero_articles: '{count, plural, other {# 件の記事}}'
+        hero_categories: '{count, plural, other {# 個のカテゴリ}}'
+        empty_title: 'ここには記事がありません'
+        empty_error: '接続を確認して、もう一度お試しください。'
+        retry: '再試行'
+        empty_search: '別の言葉で検索するか、カテゴリから探してください。'
+        clear_search: '検索をクリア'
+        empty_category: 'このカテゴリにはまだ記事がありません'
+        not_found: '記事を表示できません'
+        back_to_wiki: 'Wiki に戻る'
+        previous: '前へ'
+        next: '次へ'
+        pager_label: '同じカテゴリの記事'
+    topic:
+      link_copied: リンクをクリップボードにコピーしました。
+      new_replies: '{count, plural, one {新しい返信が # 件あります} other {新しい返信が # 件あります}}'
+      embedded:
+        go_to_post: 投稿へ移動
+      post:
+        mention_unavailable: "表示できない投稿"
+        in_reply_to: '返信先: クリックで投稿を表示'
+        replies: '{count, plural, one {# 件の返信} other {# 件の返信}}'
+        more_replies: '{count, plural, one {さらに # 件の返信を表示} other {さらに # 件の返信を表示}}'
+        like: この投稿にいいね
+        unlike: いいねを取り消す
+        cannot_like: この投稿にはいいねできません
+        like_guest: この投稿にいいねするには新規登録またはログインしてください
+        go_to_quoted: 引用元の投稿へ移動
+        who_liked: いいねした人
+        reply: 返信
+        show_more: もっと見る
+        show_less: 表示を減らす
+        show_hidden: 削除された投稿の内容を表示
+        hide_hidden: 削除された投稿の内容を隠す
+        share: この投稿へのリンクをクリップボードにコピー
+      notifications:
+        toggle: スレッドの通知：{level}
+        watching: ウォッチ中
+        watching_description: このスレッドの新しい返信をすべて通知し、新しい返信の件数を表示します。
+        watching_reason: このスレッドをウォッチしているため、通知が届きます。
+        normal: 通常
+        normal_description: 誰かがあなたの @name をメンションするか、あなたに返信すると通知されます。
+        normal_reason: 誰かがあなたの @name をメンションするか、あなたに返信すると通知されます。
+        muted: ミュート
+        muted_description: このスレッドに関する通知は一切届かず、最新にも表示されません。
+        muted_reason: このスレッドに関する通知は一切届きません。
+      author_filter:
+        showing: '@{username} さんの{count, plural, one {# 件の投稿} other {# 件の投稿}}を表示中'
+        show_all: すべて表示
+      footer:
+        aria_label: スレッドの操作
+        share: 共有
+        bookmark: ブックマーク
+        bookmarked: ブックマーク済み
+        flag: 通報
+        mark_unread: 未読にする
+        more: その他のスレッド操作
+        reply: 返信
+      suggested:
+        title: おすすめのスレッド
+        topic: スレッド
+        replies: 返信数
+        activity: アクティビティ
+        views: 閲覧数
+        related_title: 関連スレッド
+        tab_suggested: おすすめ
+        tab_related: 関連
+      map:
+        aria_label: スレッドの概要
+        replies: '{count, plural, one {返信} other {返信}}'
+        views: '{count, plural, one {閲覧} other {閲覧}}'
+        users: '{count, plural, one {ユーザー} other {ユーザー}}'
+        likes: '{count, plural, one {いいね} other {いいね}}'
+        frequent_posters: よく投稿する人
+        most_liked: いいねが多い返信
+        links: '{count, plural, one {リンク} other {リンク}}'
+        popular_links: 人気のリンク
+        show_more_links: もっと見る
+        posts: '{count, plural, one {# 件の投稿} other {# 件の投稿}}'
+      timeline:
+        ago: '{age}前'
+        unread: '{count, plural, one {# 件未読} other {# 件未読}}'
+      user_card:
+        read: 閲覧
+        read_recently: '最近 {time}'
+        likes_received: いいね
+        solutions: 解決策
+        posts_in_topic: '{count, plural, one {このスレッドに # 件の投稿} other {このスレッドに # 件の投稿}}'
+        view_profile: プロフィールを見る
+        more: その他の操作
+        online: オンライン中
+        last_seen: 最終アクセス
+        joined: 参加日
+        posts: 投稿
+        discussions: スレッド
+    user:
+      age_ago:
+        now: たった今
+        minutes: '{count, plural, one {# 分前} other {# 分前}}'
+        hours: '{count, plural, one {# 時間前} other {# 時間前}}'
+        days: '{count, plural, one {# 日前} other {# 日前}}'
+      stats:
+        joined: 参加日
+        last_post: 最終投稿
+        seen: 最終アクセス
+        online: オンライン中
+        posts: 投稿
+        topics: スレッド
+        groups: グループ
+      nav:
+        activity: アクティビティ
+        posts: 投稿
+        discussions: スレッド
+        read: 既読
+        reactions: リアクション
+        votes: 投票
+        solved: 解決済み
+        scroll_left: タブを左にスクロール
+        scroll_right: タブを右にスクロール
+        reactions_empty: まだリアクションはありません。
+      summary:
+        nav: 概要
+        stats_heading: 統計
+        days_visited: '{count, plural, other {訪問日数}}'
+        time_read: 閲覧時間
+        topics_viewed: 閲覧したスレッド
+        posts_read: 読んだ投稿
+        likes_received_short: 受け取った数
+        solutions: 解決策
+        most_replied_to: よく返信した相手
+        empty_links: "クリックされたリンクはまだありません。"
+        empty_replied: "返信はまだありません。"
+        empty_likes: "いいねはまだありません。"
+        most_liked_by: よくいいねをくれたユーザー
+        most_liked: よくいいねしたユーザー
+        top_categories: よく使うタグ
+        top_links: 人気のリンク
+        recent_time_read: 最近の閲覧時間
+        topics: スレッド
+        replies_column: 返信
+        days_member: '{count, plural, other {メンバー日数}}'
+        topics_created: 作成したスレッド
+        posts_created: 作成した投稿
+        likes_given_short: 送った数
+        top_replies_heading: 人気の返信
+        top_topics_heading: 人気のスレッド
+        no_replies: 返信はまだありません。
+        no_topics: スレッドはまだありません。
+        more_replies: 他の返信
+        more_topics: 他のスレッド
+        replies: '{count, plural, =0 {返信なし} other {# 件の返信}}'
+      preferences:
+        nav: 設定
+        tabs:
+          account: アカウント
+          security: セキュリティ
+          profile: プロフィール
+          notifications: 通知
+          tracking: 追跡
+          users: 無視中のユーザー
+          interface: インターフェース
+          navigation-menu: ナビゲーションメニュー
+          chat: チャット
+          other: その他
+        empty: このタブで調整できる項目はまだありません。
+        username: ユーザー名
+        username_help: 'プロフィールのアドレスに使われる名前です。投稿であなたを呼ぶときは @{username} と書きます。'
+        avatar: プロフィール画像
+        avatar_change: 画像を変更
+        avatar_help: 正方形の画像が最適です。ファイルを画像の上にドラッグすることもできます。
+        email: メールアドレス
+        email_primary: メイン
+        email_confirmed: 確認済み
+        email_unconfirmed: 未確認
+        email_resend: 確認メールを再送信
+        email_resent: 確認メールを送信しました
+        email_help: あなたとスタッフだけが見られます。プロフィールには表示されません。
+        password_heading: パスワード
+        password_help: 新しいパスワードを設定するためのリンクをメールでお送りします。
+        auto_track_heading: 自動追跡
+        nav_menu_heading: サイドバー
+        nav_menu_help: サイドバーに表示するタグを選択します。この端末にのみ適用されます。
+        nav_menu_default: フォーラムの既定
+        nav_menu_picked: '{count, plural, other {# 件を選択}}'
+        nav_menu_edit: カスタマイズ
+    usermenu:
+      toggle: ユーザーメニュー
+      sr_menu_tabs: ユーザーメニューのタブ
+      view_all_notifications: すべての通知を表示
+      view_all_bookmarks: すべてのブックマークを表示
+      view_all_messages: すべての個人メッセージを表示
+      view_all_reviewables: すべてのレビュー項目を表示
+      view_all: すべて表示
+      dismiss: 既読にする
+      dismiss_notifications_tooltip: 未読の通知をすべて既読にする
+      dismiss_bookmarks_tooltip: 未読のブックマークリマインダーをすべて既読にする
+      dismiss_messages_tooltip: 未読の個人メッセージ通知をすべて既読にする
+      badge:
+        new_messages: '{count, plural, other {# 件の新着個人メッセージ}}'
+        new_reviewables: '{count, plural, other {# 件の新着レビュー項目}}'
+        unread: '{count, plural, other {# 件の未読項目}}'
+      tabs:
+        all_notifications: すべての通知
+        replies: 返信
+        replies_with_unread: '{count, plural, other {返信 - 未読の返信 # 件}}'
+        likes: いいね
+        likes_with_unread: '{count, plural, other {いいね - 未読のいいね # 件}}'
+        messages: 個人メッセージ
+        messages_with_unread: '{count, plural, other {個人メッセージ - 未読のメッセージ # 件}}'
+        bookmarks: ブックマーク
+        bookmarks_with_unread: '{count, plural, other {ブックマーク - 未読のブックマーク # 件}}'
+        chat_notifications: チャットの通知
+        chat_notifications_with_unread: '{count, plural, other {チャットの通知 - 未読の通知 # 件}}'
+        review_queue: レビューキュー
+        review_queue_with_unread: '{count, plural, other {レビューキュー - レビュー待ちの項目 # 件}}'
+        other_notifications: その他の通知
+        other_notifications_with_unread: '{count, plural, other {その他の通知 - 未読の通知 # 件}}'
+        profile: プロフィール
+      profile:
+        set_custom_status: カスタムステータスを設定
+        summary: 概要
+        activity: アクティビティ
+        messages: メッセージ
+        dark_mode: ダークモード
+        light_mode: ライトモード
+      empty:
+        generic: このリストに項目はありません。
+        notifications_title: 通知はまだありません
+        notifications_body_1: このパネルには、あなたに直接関係するアクティビティが通知されます。あなたのスレッドや投稿への返信、誰かがあなたを <b>@メンション</b> したり引用したりしたとき、ウォッチ中のスレッドへの返信などです。しばらくログインしていない場合は、通知がメールでも送信されます。
+        notifications_body_2: 通知を受け取りたいスレッドやタグは {icon} から選べます。詳しくは<a>通知設定</a>をご覧ください。
+        page_title: 通知はまだありません
+        page_body_1: あなたに直接関係するアクティビティが通知されます。あなたのスレッドや投稿への返信、誰かがあなたを <b>@メンション</b> したり引用したりしたとき、ウォッチ中のスレッドへの返信などです。しばらくログインしていない場合は、通知がメールでも送信されます。
+        likes_title: まだいいねを受け取っていません
+        likes_body_1: 誰かがあなたの投稿にいいねするたびにここに通知されるので、他の人が何を価値あると感じているかがわかります。あなたが他の人の投稿にいいねしたときも、相手に同じように通知されます！
+        likes_body_2: いいねの通知がメールで送信されることはありませんが、サイト上でのいいねの通知の受け取り方は<a>通知設定</a>で調整できます。
+        messages_title: メッセージはありません
+        messages_body_1: 通常の会話の流れとは別に、誰かと直接個人的に話したいときは、その人のアバターを選択して {icon} メッセージボタンからメッセージを送信できます。
+        messages_body_2: お困りの場合は、<a>スタッフにメッセージを送信</a>できます。
+        bookmarks_title: まだ何もブックマークしていません
+        bookmarks_body: '{icon} ボタンで投稿をブックマークすると、ここに一覧表示されてすぐに参照できます。リマインダーを設定することもできます！'
+        other_title: その他の通知はまだありません
+        other_body: このパネルには、あなたに関係する可能性のあるその他のアクティビティが通知されます。たとえば、誰かがあなたの投稿にリンクしたり、あなたの投稿を編集したりしたときなどです。
+        chat_title: チャットの通知はまだありません
+        chat_body_1: 誰かがチャットであなたに直接メッセージを送ったり、<b>@メンション</b> したりすると、このパネルに通知されます。しばらくログインしていない場合は、通知がメールでも送信されます。
+        chat_body_2: チャットチャンネルの上部にあるタイトルをクリックすると、そのチャンネルで受け取る通知を設定できます。詳しくは<a>通知設定</a>をご覧ください。
+      page:
+        title: 通知
+        all: すべて
+        replies: 返信
+        likes: いいね
+        chat: チャット
+        other: その他
+        private: '通知は個人的なものです。あなた自身のプロフィールにのみ表示されます。'
+  api:
+    ai:
+      errors:
+        generic: AI が現在応答できません。しばらくしてからもう一度お試しください。
+        auth: AI の API キーが拒否されました。フォーラムの管理者にお知らせください。
+        rate_limit: 現在 AI へのリクエストが多すぎます。少し待ってからもう一度お試しください。
+        overloaded: AI サービスが過負荷状態です。しばらくしてからもう一度お試しください。
+        network: AI サービスに接続できませんでした。もう一度お試しください。
+        server: AI サービスでエラーが発生しました。もう一度お試しください。
+        bad_request: AI サービスがリクエストを拒否しました。繰り返し発生する場合はフォーラムの管理者にお知らせください。
+        not_configured: このフォーラムでは AI が設定されていません。
+        aborted: 返信が中断されました。
+        refused: AI はこのリクエストに対応できませんでした。
+        truncated: 返信が長すぎるため途中で切れました。
+        limit_reached: 本日の AI リクエストの上限に達しました。明日もう一度お試しください。
+        invalid_title: 名前は 1〜120 文字で入力してください。
+        message_length: メッセージは {min}〜{max} 文字で入力してください。
+        invalid_mode: 不明な AI アクションです。
+        no_content: AI アクションを実行するには、先に内容を追加してください。
+        no_prompt: カスタムプロンプトを入力してください。
+      personas:
+        general_name: フォーラムヘルパー
+        general_description: さまざまなタスクを実行できる汎用 AI ボット
+        general_prompt: あなたは親切でフレンドリー、そして率直なアシスタントです。どんな質問にも手助けしてください。フォーラム、そのスレッド、コミュニティに関する質問の場合は、回答する前にフォーラムを検索してください。
+        forum_researcher_name: フォーラムリサーチャー
+        forum_researcher_description: フォーラムの詳細な調査に特化したボット
+        forum_researcher_prompt: あなたは綿密なフォーラムリサーチャーです。各質問について、異なる語句で何度か検索し、最も関連性の高いスレッドを読み、結論と使用したすべてのスレッドのリンクを含む、完全で整理された回答を書いてください。フォーラムに情報がない場合は、はっきりとそう伝えてください。
+        creative_name: クリエイティブ
+        creative_description: 外部連携を持たない、創作タスクに特化した AI ボット
+        creative_prompt: 'あなたは創作アシスタントです。想像力と良いセンスをもって、文章の執筆、アイデア出し、推敲、可能性の探求を手伝います。'
+        researcher_name: ウェブリサーチャー
+        researcher_description: ウェブ上のページを検索して読む AI ボット
+        researcher_prompt: あなたはリサーチャーです。ウェブを検索して最新の情報で回答し、出典をリンク付きで示してください。
+    badges:
+      first_like:
+        name: 初めてのいいね
+        description: 投稿にいいねした
+        long_description: このバッジは、初めて投稿にいいねしたときに付与されます。投稿へのいいねは、コミュニティの仲間に、その投稿が興味深い、役に立つ、素晴らしい、楽しいと伝える最適な方法です。どんどん気持ちを伝えましょう！
+      first_quote:
+        name: 初めての引用
+        description: 投稿を引用した
+        long_description: このバッジは、返信の中で初めて投稿を引用したときに付与されます。以前の投稿の関連部分を返信で引用すると、スレッドのつながりが保たれ、話題がそれにくくなります。どんどん引用しましょう！
+      first_link:
+        name: 初めてのリンク
+        description: 他のスレッドへのリンクを追加した
+        long_description: このバッジは、初めて他のスレッドにリンクしたときに付与されます。スレッド同士をリンクすると、双方向のつながりが表示され、他の読者が興味深い関連の会話を見つけやすくなります。自由にリンクしましょう！
+      first_mention:
+        name: 初めてのメンション
+        description: 投稿でユーザーをメンションした
+        long_description: このバッジは、投稿で初めて誰かの @ユーザー名 をメンションしたときに付与されます。メンションするたびにその人に通知が届くので、あなたの投稿に気づいてもらえます。@（アットマーク）を入力し始めるだけで、どのユーザーでもメンションできます。
+      first_emoji:
+        name: 初めての絵文字
+        description: 投稿で絵文字を使った
+        long_description: このバッジは、初めて投稿に絵文字を追加したときに付与されます。絵文字を使うと、喜びから悲しみ、怒り、その間のあらゆる感情を投稿で表現できます。
+      first_flag:
+        name: 初めての通報
+        description: 投稿を通報した
+        long_description: このバッジは、初めて投稿を通報したときに付与されます。通報は、ここを誰にとっても心地よい場所に保つために、みんなで協力する方法です。何らかの理由でモデレーターの対応が必要な投稿を見つけたら、ためらわずに通報してください。
+      editor:
+        name: 編集者
+        description: 初めての投稿編集
+        long_description: 'このバッジは、初めて自分の投稿を編集したときに付与されます。編集は大歓迎です。書式を整えたり、小さなミスを直したり、投稿時に書き忘れたことを追加したりできます。編集して投稿をさらに良くしましょう！'
+      autobiographer:
+        name: 自伝作家
+        description: プロフィール情報を入力した
+        long_description: このバッジは、ユーザープロフィールを入力し、プロフィール画像を選択すると付与されます。あなたがどんな人で、何に興味があるのかをコミュニティに少し知ってもらうことで、より良く、よりつながりのあるコミュニティになります。ぜひ参加してください！
+      reader:
+        name: 読者
+        description: 返信が 100 件を超えるスレッドのすべての返信を読んだ
+        long_description: このバッジは、返信が 100 件を超える長いスレッドを初めて読んだときに付与されます。会話をじっくり読むことで、スレッドの流れを追い、さまざまな視点を理解でき、より興味深い会話につながります。
+      new_user_of_the_month:
+        name: 今月の新人ユーザー
+        description: 最初の 1 か月で際立った貢献をした
+        long_description: このバッジは、投稿にいいねした人の数で測られる優れた全体的な貢献をたたえて、毎月 2 人の新規ユーザーに付与されます。
+      welcome:
+        name: ようこそ
+        description: いいねを受け取った
+        long_description: このバッジは、投稿で初めていいねを受け取ったときに付与されます。おめでとうございます。コミュニティの仲間が興味深い、素晴らしい、役に立つと感じる投稿をしました！
+      anniversary:
+        name: 記念日
+        description: 1 年間活動し、少なくとも 1 回投稿したメンバー
+        long_description: このバッジは、メンバーになって 1 年が経ち、その 1 年間に少なくとも 1 回投稿したときに付与されます。コミュニティにとどまり、貢献してくださりありがとうございます。あなたなしでは成り立ちません。
+      appreciated:
+        name: 感謝される人
+        description: 20 件の投稿でいいねを 1 つ受け取った
+        long_description: このバッジは、20 件の異なる投稿でそれぞれ少なくとも 1 つのいいねを受け取ったときに付与されます。コミュニティはここでの会話へのあなたの貢献を楽しんでいます！
+      respected:
+        name: 尊敬される人
+        description: 100 件の投稿でいいねを 2 つ受け取った
+        long_description: このバッジは、100 件の異なる投稿でそれぞれ少なくとも 2 つのいいねを受け取ったときに付与されます。コミュニティは、ここでの会話へのあなたの数多くの貢献に敬意を抱きつつあります。
+      admired:
+        name: 憧れの人
+        description: 300 件の投稿でいいねを 5 つ受け取った
+        long_description: このバッジは、300 件の異なる投稿でそれぞれ少なくとも 5 つのいいねを受け取ったときに付与されます。すごい！コミュニティは、ここでの会話へのあなたの頻繁で質の高い貢献を称賛しています。
+      thank_you:
+        name: ありがとう
+        description: いいねされた投稿が 20 件あり、10 回いいねした
+        long_description: このバッジは、いいねされた投稿が 20 件あり、お返しに 10 回以上いいねしたときに付与されます。誰かにいいねされたとき、あなたも時間を割いて他の人の投稿にいいねしています。
+      gives_back:
+        name: 恩返し
+        description: いいねされた投稿が 100 件あり、100 回いいねした
+        long_description: このバッジは、いいねされた投稿が 100 件あり、お返しに 100 回以上いいねしたときに付与されます。善意をつないでくれてありがとうございます！
+      empathetic:
+        name: 共感の人
+        description: いいねされた投稿が 500 件あり、1000 回いいねした
+        long_description: このバッジは、いいねされた投稿が 500 件あり、お返しに 1000 回以上いいねしたときに付与されます。すごい！あなたは寛大さと相互の感謝の模範です。
+      out_of_love:
+        name: 愛ゆえに
+        description: 1 日に {max} 回いいねした
+        long_description: このバッジは、1 日に {max} 回いいねしたときに付与されます。少し時間を取って気に入った投稿にいいねすることを忘れずにいると、コミュニティの仲間がこれからもさらに素晴らしいスレッドを生み出す励みになります。
+      higher_love:
+        name: より大きな愛
+        description: 1 日に {max} 回のいいねを 5 回達成した
+        long_description: このバッジは、5 日間それぞれで 1 日に {max} 回いいねしたときに付与されます。毎日時間を割いて、最高の会話を積極的に応援してくれてありがとうございます！
+      crazy_in_love:
+        name: 愛に夢中
+        description: 1 日に {max} 回のいいねを 20 回達成した
+        long_description: このバッジは、20 日間それぞれで 1 日に {max} 回いいねしたときに付与されます。すごい！あなたはコミュニティの仲間を日々励ます模範です！
+      enthusiast:
+        name: 熱心な人
+        description: 10 日連続で訪問した
+        long_description: このバッジは、10 日連続で訪問すると付与されます。1 週間以上通い続けてくれてありがとうございます！
+      aficionado:
+        name: 愛好家
+        description: 100 日連続で訪問した
+        long_description: このバッジは、100 日連続で訪問すると付与されます。3 か月以上です！
+      devotee:
+        name: 熱烈な支持者
+        description: 365 日連続で訪問した
+        long_description: このバッジは、365 日連続で訪問すると付与されます。すごい、まる 1 年です！
+      nice_post:
+        name: ナイス返信
+        description: 返信で 10 回いいねされた
+        long_description: このバッジは、返信が 10 回いいねされると付与されます。あなたの返信はコミュニティに強い印象を与え、会話を前に進めました！
+      good_post:
+        name: グッド返信
+        description: 返信で 25 回いいねされた
+        long_description: このバッジは、返信が 25 回いいねされると付与されます。あなたの返信は格別で、誰にとっても会話をより魅力的なものにしました！
+      great_post:
+        name: グレート返信
+        description: 返信で 50 回いいねされた
+        long_description: このバッジは、返信が 50 回いいねされると付与されます。すごい！あなたの返信は刺激的で、魅力的で、面白く、洞察に富んでおり、コミュニティに愛されました。
+      nice_topic:
+        name: ナイススレッド
+        description: スレッドで 10 回いいねされた
+        long_description: このバッジは、スレッドが 10 回いいねされると付与されます。あなたはコミュニティが楽しめる興味深い会話を始めました！
+      good_topic:
+        name: グッドスレッド
+        description: スレッドで 25 回いいねされた
+        long_description: このバッジは、スレッドが 25 回いいねされると付与されます。あなたはコミュニティが集まって大いに楽しむ活気ある会話を始めました！
+      great_topic:
+        name: グレートスレッド
+        description: スレッドで 50 回いいねされた
+        long_description: このバッジは、スレッドが 50 回いいねされると付与されます。あなたは魅力的な会話を始め、コミュニティはそこから生まれた活発なスレッドを楽しみました！
+      basic_user:
+        name: ベーシック
+        description: コミュニティの基本機能がすべて利用可能になった
+        long_description: このバッジは、信頼レベル 1 に達すると付与されます。しばらく滞在していくつかのスレッドを読み、私たちのコミュニティについて知ってくれてありがとうございます。
+      member:
+        name: メンバー
+        description: 数週間にわたって参加した人としての信頼を得た
+        long_description: このバッジは、信頼レベル 2 に達すると付与されます。数週間にわたって参加し、本当の意味でコミュニティの一員になってくれてありがとうございます。
+      regular:
+        name: レギュラー
+        description: 継続的な貢献者としての信頼を得た
+        long_description: このバッジは、信頼レベル 3 に達すると付与されます。数か月にわたってコミュニティの常連でいてくれてありがとうございます。あなたは今や最も活発な読者の 1 人であり、コミュニティを素晴らしいものにする頼れる貢献者です。
+      leader:
+        name: リーダー
+        description: コミュニティの模範としてスタッフに選ばれた
+        long_description: このバッジは、信頼レベル 4 に達すると付与されます。あなたはスタッフに選ばれたこのコミュニティのリーダーであり、ここでの言動を通じてコミュニティの他のメンバーに良い手本を示しています。
+    badges_admin:
+      name_taken: その名前のバッジはすでに存在します。
+      badge_not_found: そのバッジは存在しません。
+      badge_not_grantable: そのバッジは手動で付与できません（システムバッジは自動ルールによって付与されます）。
+      user_not_found: そのユーザー名のユーザーはいません。
+      already_granted: このユーザーはすでにこのバッジを持っており、複数回付与することはできません。
+      invalid_reason: 理由は 500 文字以内で入力してください。リンクは http:// または https:// で始まる必要があります。
+    messages:
+      recipients_limit: 申し訳ありませんが、メッセージを送信できるのは最大 {max} 人の宛先までです。
+      invite_empty: 招待する相手を選んでください。
+      invite_group_invalid: このグループはメッセージを受け取れません。
+      invite_group_already: '{group} はすでにこのメッセージに参加しています。'
+    profile:
+      invalid_website: ウェブサイトは http:// または https:// で始まるアドレスにしてください。
+      invalid_status_emoji: ステータスには絵文字を 1 つだけ使用できます。
+      invalid_status_until: ステータスを消去する日時は未来の日時にしてください。
+      invalid_image_url: 画像は、スペース、引用符、括弧を含まない https のアドレスにしてください。
+      invalid_birthday: 生年月日は 1900 年から昨日までの間で選んでください。
+    invites:
+      too_many: 有効な招待が多すぎます。新しく生成する前に、いずれかを削除してください。
+  views:
+    not_found:
+      page_title: ページが見つかりません
+      title: おっと！そのページは存在しないか、非公開です。
+      popular_topics: 人気のスレッド
+      recent_topics: 最近のスレッド
+      see_more: もっと見る
+      search_title: 検索してみませんか？
+      search_button: 検索
+      home: ホームに戻る
+      placeholder: タイトルやキーワードでスレッドを検索…
+# forumaker/profile-cover には日本語がないため: カバーエディター（thirdparty/profileCover）。
+forumaker-profile-cover:
+  forum:
+    cover: カバーを編集
+    edit_cover: カバーを編集
+    notice: '最大サイズ: {size}。推奨形式: 21:9、1600×400 ピクセル以上。'
+    position_label: カバーの位置
+    save_position_button: 位置を保存
+    added:
+      success: プロフィールカバーを更新しました
+      error: 画像をアップロードできませんでした
+    removed:
+      success: プロフィールカバーを削除しました
+      error: カバーを削除できませんでした。もう一度お試しください。
+linkrobins-wiki:
+  forum:
+    search:
+      heading: Wiki
+      placeholder: 'Wiki を検索'
+      results_heading: '「{query}」の検索結果'
+      all_button: 'Wiki で「{query}」を検索'
+      empty: '「{query}」に一致する記事はありません。'
+    nav: Wiki
+    common:
+      date_at_time: '{date} {time}'
+    index:
+      new_article: '新しい記事'
+      new_article_tooltip: '新しい記事を書く'
+      index_label: '目次'
+      empty_own: 'まだ記事がありません。「新しい記事」をクリックして書きましょう。'
+      empty: '表示する記事はありません。'
+      untitled: '無題'
+      deleted_badge: '削除済み'
+      draft_badge: 下書き
+      uncategorised: その他
+      see_all_lead: 'すべて表示：'
+      no_categories: 'まだカテゴリがありません。'
+    compose:
+      title: '新しい記事'
+      title_edit: '記事を編集'
+      title_label: 'タイトル'
+      title_placeholder: '記事のタイトル'
+      slug_label: 'URL スラッグ'
+      slug_placeholder: '例: getting-started'
+      slug_help: '記事の URL に使われます。空欄にするとタイトルから作成されます。'
+      position_label: 並び順
+      position_placeholder: '例: 1'
+      position_help: 'カテゴリ内での並び順です（小さい順）。空欄の場合は、順番のある記事の後に新しい順で並びます。'
+      category_label: 'カテゴリ'
+      no_category: 'カテゴリなし'
+      body_label: '内容'
+      body_placeholder: '記事を書いてください。Markdown が使えます。'
+      body_placeholder_click: 'クリックして記事を書く…'
+      body_placeholder_edit: 'クリックして編集を続ける…'
+      discard_confirm: '保存していない記事があります。破棄しますか？'
+      submit_create: '記事を公開'
+      submit_update: '変更を保存'
+      draft_label: '下書きとして保存'
+      draft_help: '下書きは公開するまで、あなたと Wiki の編集者にだけ表示されます。'
+      faq_heading: 'よくある質問'
+      faq_help: '記事の下に表示する質問と回答（任意）。回答には Markdown が使えます。'
+      faq_question_placeholder: '質問'
+      faq_answer_placeholder: '回答。Markdown が使えます。'
+      faq_add: '質問を追加'
+      faq_remove: '質問を削除'
+    show:
+      deleted_notice: 'この記事は削除されています。編集者だけが見られます。'
+      draft_notice: 'この記事は下書きです。あなたと Wiki の編集者だけが見られます。'
+      toc_heading: 'この記事の内容'
+      faq_heading: 'よくある質問'
+      related_heading: '関連記事'
+      by: '作成者：'
+      last_edited: '最終編集者：'
+      last_edited_tooltip: '{name} が {date} に最終編集'
+      created_tooltip: '{date} に作成'
+      history: '履歴（{count}）'
+      no_history: 'まだ版がありません。'
+      load_more_history: '古い版を読み込む'
+      initial_version: '作成'
+      diff_from_previous: '前の版からの変更'
+      diff_initial: '最初の版'
+      diff_title: 'タイトル'
+      diff_none: '内容の変更はありません。'
+    action:
+      report: '報告'
+      edit: '編集'
+      delete: '削除'
+      restore: '復元'
+      delete_forever: '完全に削除'
+      save_changes: '変更を保存'
+      cancel: 'キャンセル'
+    report:
+      title: 'この記事を報告'
+      intro: '編集者は記事と一緒にこの報告を確認します。'
+      reason_label: '何が問題ですか？'
+      reason_inaccurate: '内容が不正確'
+      reason_outdated: '情報が古い'
+      reason_off_topic: 'ここにふさわしくない'
+      reason_duplicate: 'ほかの記事と重複している'
+      reason_other: 'その他'
+      detail_label: '補足があれば（任意）'
+      submit: '報告を送信'
+      sent: 'ありがとうございます。編集者が確認します。'
+      failed: '送信できませんでした。もう一度お試しください。'
+    comments:
+      heading: 'コメント（{count}）'
+      empty: 'まだコメントはありません。'
+      load_more: 'さらにコメントを読み込む'
+      placeholder: 'コメントを書く…'
+      post: 'コメントする'
+      deleted: 'このコメントは削除されました。'
+      discard_confirm: '送信していないコメントがあります。破棄しますか？'
+      empty_error: '先に何か書いてください。'
+      confirm_delete: 'このコメントを削除しますか？'
+      confirm_delete_forever: 'このコメントを完全に削除しますか？元に戻せません。'
+      error_post: 'コメントを投稿できませんでした。'
+      error_edit: 'コメントを保存できませんでした。'
+      error_delete: 'コメントを削除できませんでした。'
+    confirm:
+      soft_delete: 'この記事を削除しますか？編集者はあとで復元できます。'
+      delete_forever: 'この記事と履歴を完全に削除しますか？元に戻せません。'
+    errors:
+      load_articles: '記事を読み込めませんでした。'
+      load_article: 'この記事を読み込めませんでした。削除されたか、閲覧する権限がない可能性があります。'
+      title_required: 'タイトルを入力してください。'
+      empty_body: '送信する前に記事の本文を書いてください。'
+      submit: '記事を保存できませんでした。'
+      delete_article: '記事を削除できませんでした。'
+      restore_article: '記事を復元できませんでした。'
+      delete_article_forever: '記事を完全に削除できませんでした。'
+      upload: 'ファイルをアップロードできませんでした。'
+      upload_no_files: 'アップロードでファイルが返されませんでした。もう一度お試しください。'
+      unknown: '不明なエラーです。'
+  api:
+    title_required: '記事のタイトルが必要です。'
+    content_required: '記事の内容が必要です。'
+    article_soft_delete_first: '完全に削除する前に、記事を削除する必要があります。'
+    slug_invalid: 'その URL スラッグは予約されています。数字だけではないものを選んでください。'
+    slug_taken: 'その URL スラッグはほかの記事で使われています。'
+    faq_too_many: '1 つの記事に登録できるよくある質問は最大 {max} 件です。'
+    article_required: '記事が必要です。'
+    report_already_open: 'この記事はすでに報告済みです。編集者が確認します。'
+    article_not_found: '記事が見つかりません。'
+    comment_required: 'コメントの内容が必要です。'
+    comment_soft_delete_first: '完全に削除する前に、コメントを削除する必要があります。'

@@ -1,0 +1,210 @@
+// =====================================================================
+// Página do tópico: o título dentro do cartão e o layout de duas colunas
+// do Discourse — o stream (largura de leitura) e, à direita, a coluna da
+// linha do tempo, que acompanha a rolagem.
+//
+// Medidas de meta.discourse.org a 1440px: cartão de 1110px com 16px de
+// respiro, stream de ~760px (avatar 45 + 12 + 690 + 12), a linha do tempo
+// começando ~65px depois.
+// =====================================================================
+
+.CanelaTopic {
+  --cn-topic-stream-max: 759px;
+  --cn-topic-timeline-gap: 66px;
+  --cn-topic-sticky-top: calc(var(--cn-header-height) + var(--cn-space-6));
+}
+
+// ---------------------------------------------------------------------
+// Título (DiscussionHero, que o tema põe dentro do cartão)
+// ---------------------------------------------------------------------
+.DiscussionHero.CanelaTopicHero {
+  // O tags pinta o hero com a cor da tag e o core centraliza; o Discourse
+  // não faz nenhum dos dois.
+  --hero-bg: transparent;
+  background: none;
+  color: var(--cn-primary);
+  text-align: left;
+  position: relative;
+  margin: 0;
+  padding: 0 0 14px;
+  border-bottom: 0;
+
+  // O título ocupa a largura do cartão (o #topic-title do Discourse), mas a
+  // linha embaixo dele é a borda do primeiro post: só a largura do stream.
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: ~"min(100%, var(--cn-topic-stream-max, 759px))";
+    height: 1px;
+    background: var(--cn-border);
+  }
+
+  .container {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .DiscussionHero-items > li {
+    display: inline;
+  }
+
+  // O flarum/tags põe o título numa linha própria com margem; aqui ele fica
+  // na mesma linha dos ícones de status.
+  .item-title {
+    display: inline;
+    margin: 0;
+  }
+
+  .DiscussionHero-title {
+    display: inline;
+    margin: 0;
+    font-size: 1.7511rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: normal;
+    color: var(--cn-primary);
+    overflow-wrap: anywhere;
+    vertical-align: baseline;
+  }
+
+  // Os ícones de status (fixado, trancado, oculto…) do Discourse são só o
+  // ícone em cinza, sem o círculo colorido do badge.
+  .DiscussionHero-badges {
+    display: inline-flex;
+    gap: var(--cn-space-1);
+    margin: 0 var(--cn-space-2) 0 0;
+    padding: 0;
+    // Medidas do `.topic-statuses` do Discourse: na escala do título (28px),
+    // ícone de 0.75em em primary-low-mid, alinhado à linha de base.
+    font-size: 1.751rem;
+    vertical-align: baseline;
+
+    > li {
+      margin: 0;
+    }
+
+    .Badge {
+      --badge-bg: transparent;
+      width: auto;
+      height: auto;
+      background: none;
+      box-shadow: none;
+      border: 0;
+      color: var(--cn-primary-low-mid);
+      font-size: 0.75em;
+      line-height: 1;
+
+      .icon {
+        font-size: 1em;
+      }
+    }
+  }
+
+  .item-canelaBadges {
+    display: block;
+    margin-top: 0;
+  }
+
+  .CanelaTopicHero-badges {
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-high);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Duas colunas — só a partir de 925px: abaixo disso o Discourse esconde a
+// linha do tempo e mostra a aba "1 / 11" no pé da tela (veja Timeline.less).
+// ---------------------------------------------------------------------
+@media (min-width: 925px) {
+  .Canela .CanelaTopic .Page-container.container,
+  .CanelaTopic .Page-container.container {
+    display: grid;
+    grid-template-columns: minmax(0, var(--cn-topic-stream-max)) minmax(120px, 1fr);
+    grid-template-areas:
+      "hero hero"
+      "content sidebar";
+    column-gap: var(--cn-space-6);
+    row-gap: 0;
+    flex-direction: initial;
+  }
+
+  .CanelaTopic .Page-container > .Page-hero--inline {
+    grid-area: hero;
+    min-width: 0;
+  }
+
+  .CanelaTopic .Page-container > .Page-content {
+    grid-area: content;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    // O core aumenta a fonte do stream no desktop-hd; o tema tem a sua.
+    font-size: inherit;
+  }
+
+  // A coluna ocupa a altura toda da linha para a navegação ficar grudada
+  // abaixo do cabeçalho enquanto os posts rolam.
+  .CanelaTopic .Page-container > .Page-sidebar {
+    grid-area: sidebar;
+    align-self: stretch;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .CanelaTopic .DiscussionPage-nav {
+    position: sticky;
+    top: var(--cn-topic-sticky-top);
+    padding-top: var(--cn-space-2);
+  }
+}
+
+@media @desktop-up {
+  .Canela .CanelaTopic .Page-container.container,
+  .CanelaTopic .Page-container.container {
+    column-gap: var(--cn-topic-timeline-gap);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular
+// ---------------------------------------------------------------------
+// Tablet estreito: uma coluna só; a navegação vira a aba flutuante.
+@media (min-width: 768px) and (max-width: 924px) {
+  .CanelaTopic .Page-container.container {
+    display: block;
+  }
+
+  .CanelaTopic .Page-container > .Page-content {
+    width: auto;
+    max-width: none;
+    margin: 0;
+  }
+
+  // Só a aba e a folha (as duas fixas) moram ali: a coluna não ocupa altura.
+  .CanelaTopic .Page-container > .Page-sidebar {
+    float: none;
+    width: auto;
+    height: 0;
+    margin: 0;
+  }
+}
+
+@media @phone {
+  .DiscussionHero.CanelaTopicHero {
+    padding-bottom: 18px;
+  }
+
+  .DiscussionHero.CanelaTopicHero .DiscussionHero-title {
+    font-size: var(--cn-font-up-3);
+  }
+
+  .CanelaTopic .Page-content {
+    margin-top: 0;
+  }
+}

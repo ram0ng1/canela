@@ -1,0 +1,257 @@
+// =====================================================================
+// ramon/verified no visual do Discourse (js/src/forum/thirdparty/verified.tsx).
+//
+// O selo é um "ícone depois do nome" (.CanelaUserIcons): na linha do texto,
+// do tamanho dele, logo depois do nome e antes do emoji de status. Tudo sob
+// html.CanelaVerified, que só existe com a chave ligada no admin; desligada,
+// fica o visual da própria extensão.
+// =====================================================================
+
+html.CanelaVerified {
+  // O item que a extensão põe no cabeçalho do post (e o <ul> extra da prévia
+  // da resposta): o tema já desenha o selo depois do nome, no PostUser.
+  .Post-header .item-verified {
+    display: none;
+  }
+
+  .CanelaUserIcons {
+    .VerifiedPopover-anchor,
+    .VerifiedBadge {
+      margin: 0;
+      vertical-align: middle;
+    }
+
+    // O tamanho vem do admin da extensão ("Tamanho do selo", que ela põe
+    // inline em --verified-size; o padrão é 1.2em). O tema só aplica uma
+    // proporção sobre ele: na linha do texto, 3/4 (~0.9em com o padrão).
+    .VerifiedBadge {
+      width: ~"calc(var(--verified-size, 1.2em) * 0.75)" !important;
+      height: ~"calc(var(--verified-size, 1.2em) * 0.75)" !important;
+    }
+  }
+
+  // Ao lado de um nome grande (cartão e perfil), proporcional a ele
+  // (~0.7em do nome com o padrão).
+  .CanelaUserIcons--card .VerifiedBadge,
+  .CanelaUserIcons--profile .VerifiedBadge {
+    width: ~"calc(var(--verified-size, 1.2em) * 0.58)" !important;
+    height: ~"calc(var(--verified-size, 1.2em) * 0.58)" !important;
+  }
+
+  // No chat o ramon/chat fixa 13px (com !important) e ignora o admin: aqui
+  // vale o mesmo tamanho do admin, na proporção da linha do texto.
+  .ChatMessage-meta .VerifiedPopover-anchor .VerifiedBadge,
+  .ChatMessage-meta .VerifiedBadge.VerifiedBadge--chat {
+    width: ~"calc(var(--verified-size, 1.2em) * 0.75)" !important;
+    height: ~"calc(var(--verified-size, 1.2em) * 0.75)" !important;
+
+    svg,
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // O popover do cartão e do perfil abre para baixo: em cima, o cabeçalho
+  // da página (ou a borda do cartão) o cortaria.
+  .CanelaUserIcons--card,
+  .CanelaUserIcons--profile {
+    .VerifiedPopover {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+
+    .VerifiedPopover-arrow {
+      bottom: auto;
+      top: -6px;
+      border-right: none;
+      border-bottom: none;
+      border-top: 1px solid var(--control-bg);
+      border-left: 1px solid var(--control-bg);
+    }
+
+    .VerifiedPopover-anchor::before {
+      bottom: auto;
+      top: 100%;
+    }
+  }
+
+  // O texto do popover não herda o negrito nem o tamanho do nome.
+  .CanelaUserIcons .VerifiedPopover {
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: normal;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Modais do ramon/verified no padrão dos modais do tema (Components.less):
+// "Verificar usuário" / "Revogar" (VerificationPromptModal) e o pedido de
+// verificação (VerifiedRequestModal). Campos com rótulo, controle e ajuda
+// bem separados, select com a largura do conteúdo e a setinha do tema, e o
+// botão primário no rodapé, à esquerda, sobre um traço de borda a borda.
+// ---------------------------------------------------------------------
+html.CanelaVerified {
+  .VerificationPromptModal {
+    .Modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25em;
+      padding-bottom: 0;
+    }
+
+    .Form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      margin: 0;
+
+      > label {
+        margin: 0;
+      }
+    }
+
+    // O último grupo é o do botão: vira o rodapé, de borda a borda.
+    .Modal-body > .Form-group:last-child {
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 8px;
+      margin: 0.25em ~"calc(-1 * var(--cn-modal-pad-x))" 0;
+      padding: 12px var(--cn-modal-pad-x);
+      border-top: 1px solid var(--cn-primary-low);
+
+      .Button {
+        width: auto;
+        margin: 0;
+      }
+    }
+  }
+
+  // O pedido de verificação mantém o ícone e o texto de abertura da
+  // extensão; os campos e o rodapé seguem os dos modais do tema.
+  .VerifiedRequestModal {
+    .VerifiedRequestModal-hero-title {
+      font-family: inherit;
+      font-size: var(--cn-font-up-1);
+      font-weight: 700;
+      letter-spacing: normal;
+      color: var(--cn-primary);
+    }
+
+    .VerifiedRequestModal-hero-text {
+      font-size: var(--cn-font-down-1);
+      color: var(--cn-primary-medium);
+    }
+
+    .VerifiedRequestModal-form {
+      padding-top: 4px;
+    }
+
+    .VerifiedRequestModal-field {
+      margin-bottom: 1.25em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .Form-group > .VerifiedRequestModal-fieldLabel {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: normal;
+      text-transform: none;
+      color: var(--cn-primary);
+    }
+
+    .VerifiedRequestModal-fieldHint {
+      margin-top: 4px;
+      font-size: var(--cn-font-down-1);
+      color: var(--cn-primary-medium);
+    }
+
+    .VerifiedRequestModal-textarea.FormControl {
+      padding: 0.5em 0.65em;
+      font-size: 1rem;
+    }
+
+    .VerifiedRequestModal-footer {
+      display: flex;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-top: 1.25em;
+      padding: 12px 32px;
+      border-top: 1px solid var(--cn-primary-low);
+    }
+
+    .VerifiedRequestModal-submit.Button {
+      height: auto;
+      padding: 8px 16px;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+  }
+
+  .VerificationPromptModal,
+  .VerifiedRequestModal {
+    textarea.FormControl {
+      width: 100%;
+      min-height: 5.5em;
+      resize: vertical;
+    }
+
+    // O select do tema: largura do conteúdo, com folga para a setinha, que
+    // troca o ⇅ do core por um chevron à direita.
+    .Select {
+      position: relative;
+      align-self: flex-start;
+      min-width: 12em;
+      max-width: 100%;
+
+      select.FormControl {
+        width: 100%;
+        padding-right: 2.5em;
+        appearance: none;
+      }
+
+      .Select-caret {
+        display: none;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0.9em;
+        width: 0.45em;
+        height: 0.45em;
+        border-right: 2px solid var(--cn-primary-medium);
+        border-bottom: 2px solid var(--cn-primary-medium);
+        transform: translateY(-70%) rotate(45deg);
+        pointer-events: none;
+      }
+    }
+
+    .Button--primary {
+      background: var(--cn-accent);
+      color: var(--cn-accent-text);
+      opacity: 1;
+
+      // Desabilitado (falta escolher algo): claramente apagado, sem parecer
+      // um botão "ativo" de cor clara.
+      &:disabled,
+      &.disabled {
+        background: var(--cn-primary-low);
+        color: var(--cn-primary-medium);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  @media @phone {
+    .VerifiedRequestModal .VerifiedRequestModal-footer {
+      padding: 12px 20px;
+    }
+  }
+}

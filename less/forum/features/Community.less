@@ -1,0 +1,891 @@
+// =====================================================================
+// Páginas de comunidade: Sobre (/about), Usuários (/u) e Grupos (/g).
+// Medidas do Discourse (about.scss, directory.scss, groups.scss): títulos
+// h1 em 2em/700, tabelas com cabeçalho cinza pequeno e linhas separadas
+// pela borda do conteúdo.
+// =====================================================================
+
+// A navegação está na barra global: a coluna lateral do PageStructure sobra.
+.CanelaCommunityPage .Page-sidebar {
+  display: none;
+}
+
+.CanelaCommunityPage .Page-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+// O Discourse trabalha com 16px de base (o corpo do Flarum é 15px), e as
+// medidas em em abaixo contam com isso.
+.CanelaCommunityPage .Page-container {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+// ---------------------------------------------------------------------
+// Peças comuns
+// ---------------------------------------------------------------------
+.CanelaCommunity-empty {
+  margin: var(--cn-space-6) 0;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaCommunity-more {
+  display: flex;
+  justify-content: center;
+  margin: var(--cn-space-4) 0;
+}
+
+// Tabelas largas rolam de lado dentro do cartão, sem empurrar a página.
+.CanelaCommunity-tableWrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.CanelaCommunity-table {
+  width: 100%;
+  margin-top: var(--cn-space-1);
+  border-collapse: collapse;
+
+  // `.directory-table__cell`: 12px × 8px, a borda da tabela embaixo.
+  th,
+  td {
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--cn-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  // `.directory-table__column-header`: cinza, 8px, texto normal.
+  thead th {
+    padding: 8px;
+    color: var(--cn-primary-medium);
+    font-size: 1em;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .CanelaCommunity-num {
+    text-align: center;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Bloco de usuário (o `user-info` do Discourse): avatar de 48px, 1em de vão,
+// usuário em negrito e o nome ao lado, o título cinza embaixo
+// ---------------------------------------------------------------------
+.CanelaUserTile {
+  display: flex;
+  align-items: flex-start;
+  gap: 1em;
+  min-width: 0;
+
+  &-avatar .Avatar {
+    --size: 48px;
+    width: var(--size);
+    height: var(--size);
+    font-size: calc(var(--size) / 2.2);
+    line-height: var(--size);
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.4;
+  }
+
+  &-name {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5em;
+    min-width: 0;
+    color: var(--cn-primary-high);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--cn-primary-high);
+      text-decoration: none;
+    }
+  }
+
+  &-username {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-displayName {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-title,
+  &-meta {
+    color: var(--cn-primary-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Sobre (about.scss): abas, nome do fórum em font-up-1, a faixa de números
+// entre linhas e as duas colunas (650px / 200px, 2em de vão)
+// ---------------------------------------------------------------------
+.CanelaAbout {
+  max-width: 1100px;
+
+  &-header {
+    max-width: 1100px;
+  }
+
+  // As abas do topo: `.nav-pills` com o sublinhado de 2px na ativa.
+  &-nav {
+    margin-bottom: 2.5em;
+
+    ul {
+      display: flex;
+      gap: 0.5em;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      // Quatro abas não cabem no celular: rolam de lado, como as do Discourse.
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    li {
+      flex: 0 0 auto;
+    }
+
+    li > a {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0.65em 0.75em;
+      border-radius: var(--cn-radius);
+      background: transparent;
+      color: var(--cn-primary);
+      font-size: 1em;
+      line-height: 1;
+      text-decoration: none;
+      transition: none;
+
+      &:hover,
+      &[active="true"] {
+        color: var(--cn-link);
+        background: transparent;
+        text-decoration: none;
+
+        &::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 0.125em;
+          background: var(--cn-link);
+        }
+      }
+    }
+  }
+
+  .CanelaCommunityPage &-title {
+    margin: 0 0 8px;
+    font-size: 1.1487em;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--cn-primary);
+  }
+
+  &-description {
+    margin: 1em 0;
+    color: var(--cn-primary);
+    font-size: 1em;
+  }
+
+  // A faixa de números entre duas linhas, na coluna da esquerda.
+  &-summary {
+    display: flex;
+    margin: 0 0 1em;
+    padding: 1em;
+    border-top: 1px solid var(--cn-border);
+    border-bottom: 1px solid var(--cn-border);
+    list-style: none;
+  }
+
+  &-summaryItem {
+    flex: 1 0 fit-content;
+    color: var(--cn-primary);
+
+    .icon {
+      margin-right: 3px;
+      color: var(--cn-primary);
+    }
+  }
+
+  &-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    max-width: 1100px;
+  }
+
+  &-left {
+    flex: 1 1 650px;
+    min-width: 0;
+  }
+
+  &-right {
+    flex: 1 2 200px;
+    min-width: 0;
+  }
+
+  .CanelaCommunityPage &-sectionTitle {
+    margin: 0 0 8px;
+    font-size: 1.1487em;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--cn-primary);
+  }
+
+  &-text {
+    margin: 1em 0;
+    font-size: 1em;
+    line-height: 1.4;
+
+    p {
+      margin: 0 0 1em;
+    }
+  }
+
+  &-staff {
+    margin-top: 3em;
+  }
+
+  &-users {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &-box {
+    margin: 0;
+  }
+
+  &-contactInfo {
+    margin: 1em 0;
+    color: var(--cn-primary);
+    word-break: break-word;
+
+    a {
+      color: var(--cn-link);
+    }
+  }
+
+  &-activityList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // `.about__activities-item`: ícone de 1em na cor do texto, 1em até o texto.
+  &-activityItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5em;
+  }
+
+  &-activityIcon {
+    flex-shrink: 0;
+    margin-right: 1em;
+    color: var(--cn-primary);
+  }
+
+  &-activityText {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-activityCount {
+    color: var(--cn-primary);
+  }
+
+  &-activityPeriod {
+    color: var(--cn-primary);
+    font-size: 0.7579em;
+  }
+
+  &-statsSection {
+    margin-top: 3em;
+  }
+
+  &-statsTable {
+    tbody th {
+      font-weight: 400;
+      color: var(--cn-primary);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      color: var(--cn-primary-medium);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  &-statsIcon {
+    width: 1.25em;
+    margin-right: var(--cn-space-2);
+    color: var(--cn-primary-medium);
+    text-align: center;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Diretório (directory.scss): o período como título à esquerda; o total e o
+// filtro por nome à direita; a tabela com números grandes e cinza. Sem
+// destaque de linha no hover e sem transição — o Discourse não tem.
+// ---------------------------------------------------------------------
+.CanelaDirectory-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cn-space-2);
+  margin: 0 0 var(--cn-space-2);
+}
+
+// Os filtros se desmancham na barra: período à esquerda, busca no fim.
+.CanelaDirectory-filters {
+  display: contents;
+}
+
+.CanelaDirectory-period {
+  order: 0;
+  width: auto;
+  margin-right: auto;
+}
+
+.CanelaUsers .Select:has(> .CanelaDirectory-period) {
+  order: 0;
+  margin-right: auto;
+
+  .Select-caret {
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaUsers .CanelaDirectory-period.Select-input {
+  width: auto;
+  height: auto;
+  padding: 0 1.4em 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--cn-primary);
+  font-size: 1.5157em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.CanelaDirectory-total {
+  order: 1;
+  color: var(--cn-primary-medium);
+  font-weight: 400;
+}
+
+.CanelaDirectory-search {
+  position: relative;
+  order: 2;
+  display: block;
+  margin: 0;
+
+  .icon {
+    display: none;
+  }
+
+  .FormControl {
+    width: 210px;
+    max-width: 100%;
+    height: 38px;
+    padding: 8px 0.65em;
+    border-radius: var(--cn-radius);
+  }
+}
+
+.CanelaDirectory-table {
+  // A coluna do usuário fica parada ao rolar a tabela de lado no celular.
+  .CanelaDirectory-userCol {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    min-width: 200px;
+    background: var(--cn-surface);
+  }
+
+  thead .CanelaDirectory-userCol {
+    z-index: 2;
+  }
+
+  // A linha de quem está vendo (`.me`): o realce amarelo do Discourse.
+  tbody tr.is-me td {
+    background: ~"color-mix(in srgb, var(--cn-highlight) 35%, var(--cn-surface))";
+  }
+}
+
+.CanelaDirectory-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cn-space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+  }
+
+  &.is-static {
+    cursor: default;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  th.is-sorted & {
+    color: var(--cn-primary);
+  }
+}
+
+// O coração das colunas de curtidas, na cor `--love`.
+.CanelaDirectory-columnIcon {
+  color: var(--cn-love);
+  font-size: 0.8706em;
+}
+
+.CanelaDirectory-sortIcon {
+  font-size: 0.75em;
+}
+
+// Os números grandes e cinza do Discourse, só quando a tabela tem espaço.
+.CanelaDirectory-value {
+  color: var(--cn-primary-medium);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+@media @tablet-up {
+  .CanelaUsers .CanelaDirectory-value {
+    font-size: 1.3195em;
+  }
+}
+
+// Na página do grupo os valores ficam do tamanho do texto, na cor dele, e o
+// período sai (o Discourse só tem o filtro por nome ali).
+.CanelaGroup .CanelaDirectory-value {
+  color: var(--cn-primary);
+}
+
+.CanelaGroup .Select:has(> .CanelaDirectory-period) {
+  display: none;
+}
+
+// ---------------------------------------------------------------------
+// Grupos (groups.scss): `group-box` em grade de 16em, flair redondo de 40px
+// ---------------------------------------------------------------------
+.CanelaGroupFlair {
+  --flair-size: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--flair-size);
+  height: var(--flair-size);
+  border-radius: 50%;
+  background: var(--cn-primary-low);
+  color: var(--cn-primary);
+  font-size: calc(var(--flair-size) * 0.5556);
+  font-weight: 700;
+
+  &--colored {
+    background: var(--group-color);
+    color: #fff;
+  }
+
+  &--large {
+    --flair-size: 50px;
+  }
+}
+
+.CanelaGroups-header {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+}
+
+.CanelaGroups-filter.FormControl {
+  width: 210px;
+  height: 38px;
+  margin: 0 0.5em 0.5em 0;
+  padding: 8px 0.65em;
+  border-radius: var(--cn-radius);
+}
+
+.CanelaGroups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16em, 1fr));
+  gap: 1em;
+  width: 100%;
+  margin: 1em 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaGroups-item {
+  display: flex;
+  min-width: 0;
+}
+
+// Sem transição: a borda escurece na hora, como no Discourse.
+.CanelaGroupCard {
+  display: flex;
+  flex: 1;
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: none;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--cn-primary-low-mid);
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 8em;
+    padding: 1em;
+  }
+
+  &-infoWrapper {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    min-height: 40px;
+    margin-bottom: 0.25em;
+    overflow: hidden;
+
+    .CanelaGroupFlair {
+      margin-right: 0.5em;
+    }
+  }
+
+  &-info {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  &-details {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  &-name {
+    font-size: 1.5157em;
+    font-weight: 700;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  &-mention {
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  &-count {
+    display: flex;
+    align-items: center;
+    flex: none;
+    color: var(--cn-primary-high);
+
+    .icon {
+      margin-right: 0.25em;
+      font-size: 0.8em;
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  &-membership {
+    margin-top: auto;
+    padding-top: 1em;
+    color: var(--cn-primary-medium);
+  }
+}
+
+// O `group-details-container`: caixa com borda, flair de 50px e o nome.
+.CanelaGroup {
+  &-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin-bottom: 1em;
+    padding: 16px;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+  }
+
+  &-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  &-headerInfo {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .CanelaCommunityPage &-name {
+    margin: 0;
+    font-size: 1.5157em;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--cn-primary);
+  }
+
+  &-mention {
+    margin-bottom: 0.5em;
+    color: var(--cn-primary);
+  }
+
+  // Abas como o `.group-nav` (nav-pills): o sublinhado de 2px na ativa; só o
+  // ícone tem transição (cor, 0.2s).
+  &-tabs {
+    margin-bottom: 1em;
+    border-bottom: 1px solid var(--cn-border);
+
+    ul {
+      display: flex;
+      gap: 0.5em;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      flex: 1 1 auto;
+    }
+  }
+
+  &-tab.Button {
+    position: relative;
+    justify-content: center;
+    width: 100%;
+    min-height: 30px;
+    padding: 0.65em 0.75em;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary);
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1;
+    transition: none;
+
+    .Button-icon {
+      margin-right: 5px;
+      color: var(--cn-primary-high);
+      font-size: 0.8706em;
+      transition: color 0.2s;
+    }
+
+    &:hover,
+    &.active {
+      background: transparent;
+      color: var(--cn-link);
+
+      .Button-icon {
+        color: var(--cn-link);
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 0.125em;
+        background: var(--cn-link);
+      }
+    }
+  }
+
+  &-tabCount {
+    margin-left: 5px;
+  }
+
+  &-body {
+    margin-top: 0;
+  }
+}
+
+// O "stream" de atividade do Discourse (`user-stream-item`): avatar de 48px,
+// título do tópico como link, autor e data embaixo e o trecho recuado 56px.
+.CanelaStream {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &-item {
+    padding: 16px 0.53em;
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  &-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  &-avatar .Avatar {
+    --size: 48px;
+    width: var(--size);
+    height: var(--size);
+    font-size: calc(var(--size) / 2.2);
+    line-height: var(--size);
+  }
+
+  &-titles {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &-topic {
+    color: var(--cn-link);
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1.4;
+
+    &:hover {
+      color: var(--cn-link);
+      text-decoration: underline;
+    }
+  }
+
+  &-meta {
+    display: flex;
+    gap: var(--cn-space-2);
+    color: var(--cn-primary-medium);
+    font-size: 0.8706em;
+
+    a {
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  &-excerpt {
+    margin: 12px 0 0 56px;
+    color: var(--cn-primary);
+    line-height: 1.4;
+    word-break: break-word;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaAbout-summary {
+    flex-direction: column;
+  }
+
+  .CanelaAbout-summaryItem {
+    margin-bottom: 1em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .CanelaDirectory-controls,
+  .CanelaDirectory-filters,
+  .CanelaDirectory-search,
+  .CanelaDirectory-search .FormControl {
+    width: 100%;
+  }
+
+  .CanelaDirectory-table .CanelaDirectory-userCol {
+    min-width: 160px;
+  }
+
+  .CanelaStream-excerpt {
+    margin-left: 0;
+  }
+
+}
+
+
+// As Diretrizes (`.body-page` do Discourse): texto corrido até 700px, com os
+// títulos de seção em font-up-2 e o espaço das listas do "cooked".
+.CanelaGuidelines {
+  .CanelaGuidelines-body {
+    max-width: 700px;
+    line-height: 1.5;
+
+    h2 {
+      margin: 1.75em 0 0.5em;
+      font-size: 1.3195em;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--cn-primary);
+
+      &:first-child {
+        margin-top: 0.5em;
+      }
+    }
+
+    ul,
+    ol {
+      margin: 0 0 1em;
+      padding-left: 1.5em;
+    }
+
+    li {
+      margin-bottom: 0.25em;
+    }
+  }
+}

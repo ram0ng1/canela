@@ -1,0 +1,163 @@
+// =====================================================================
+// ramon/marketplace: correções geradas a partir do CSS compilado da extensão
+// (não editar à mão; regerar quando a extensão mudar).
+//
+// Cada seletor da extensão com peso 800/900 desce a 700 (o peso dos títulos
+// do Discourse), o tracking negativo volta ao normal, sombra com desfoque e
+// gradiente somem e o `transform` do hover (o "pulo" do cartão) sai. Só
+// sobrescrevem: um seletor que deixar de existir na extensão não faz nada.
+// Vem antes do Marketplace.less, cujas regras escritas à mão vencem estas.
+// =====================================================================
+& when (@config-ramon-marketplace = true) {
+
+[data-theme] .MarketplacePage-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MarketplaceChip-count { font-weight: 700; }
+[data-theme] .MpAdd--success::after { font-weight: 700; }
+[data-theme] .MpHoverNavItem-submenu { box-shadow: none; }
+[data-theme] .MpBtn--ghost { font-weight: 700; }
+[data-theme] .MarketplaceShop-heroText h1 { letter-spacing: normal; }
+[data-theme] .MarketplaceProductCard:hover .MarketplaceProductCard-media img { transform: none; }
+[data-theme] .MarketplaceProductCard-badge--owned { box-shadow: none; }
+[data-theme] .MarketplaceProductCard:hover .MarketplaceProductCard-quickAdd,
+[data-theme] .MarketplaceProductCard:focus-within .MarketplaceProductCard-quickAdd { transform: none; }
+[data-theme] .MarketplaceProductCard-quickAdd .Button:hover { transform: none; }
+[data-theme] .MpProduct-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpProduct-priceAmount { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpProduct-priceFree { font-weight: 700; }
+[data-theme] .MpProduct-composerHint > .MpBtn--ghost:hover > i { transform: none; }
+[data-theme] .MpProduct-section > h2 { letter-spacing: normal; }
+[data-theme] .MpProduct-gallery-item:hover { transform: none; }
+[data-theme] .MpProduct-gallery-more { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpLightbox-img { box-shadow: none; }
+[data-theme] .MpProduct-card > h3 { font-weight: 700; }
+[data-theme] .MpProduct-reviewAvatar { font-weight: 700; }
+[data-theme] .MpProduct-reviewForm h3 { font-weight: 700; }
+[data-theme] .MpProduct-related > h2 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpRelated-card:hover { transform: none; }
+[data-theme] .MpRelated-price { font-weight: 700; }
+[data-theme] .MpCart-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCart-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCart-summary-row--total strong { font-weight: 700; }
+[data-theme] .MpCheckout-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCheckout-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCheckout-num { font-weight: 700; }
+[data-theme] .MpCheckout-summary-row--total strong { font-weight: 700; }
+[data-theme] .MpCheckout-actField-manualBtn:hover { transform: none; }
+[data-theme] .MpTooltip:hover::before,
+[data-theme] .MpTooltip:hover::after,
+[data-theme] .MpTooltip:focus-within::before,
+[data-theme] .MpTooltip:focus-within::after { transform: none; }
+[data-theme] .MpCheckout-bump-price { font-weight: 700; }
+[data-theme] .MpOrders-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpOrders-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpOrders-filter.is-active { box-shadow: none; }
+[data-theme] .MpOrders-cardRef { font-weight: 700; }
+[data-theme] .MpOrders-cardTotal { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpOrders-itemPrice { font-weight: 700; }
+[data-theme] .MpOrderDetail-heroMain h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpOrderDetail-heroMain h1 .ref { font-weight: 700; }
+[data-theme] .MpOrderDetail-total { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpOrderDetail-section > h2 { font-weight: 700; }
+[data-theme] .MpOrderDetail-item-price { font-weight: 700; }
+[data-theme] .MpOrderDetail-item-note-text strong { font-weight: 700; }
+[data-theme] .MpOrderDetail-summary > h3 { font-weight: 700; }
+[data-theme] .MpOrderDetail-summary-row--total strong { font-weight: 700; }
+[data-theme] .MpOrderDetail-item-note--manual { background-image: none; }
+[data-theme] .MpOrderDetail-item-note--activated { background-image: none; }
+[data-theme] .MpComposer-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpComposer-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpComposer-sectionHead > h2 { letter-spacing: normal; }
+[data-theme] .MpComposer-cardTitle { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpComposer-stepNum { font-weight: 700; }
+[data-theme] .MpDownloads-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpDownloads-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpDownloads-cardTitle { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpTicket-card h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSuccess-hero.is-paid { background-image: none; }
+[data-theme] .MpSuccess-hero.is-pending { background-image: none; }
+[data-theme] .MpSuccess-heroTitle { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSuccess-card--notfound > h1 { font-weight: 700; }
+[data-theme] .MpSuccess-step--manual { background-image: none; }
+[data-theme] .MpSubs-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSubs-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSubs-filter.is-active { box-shadow: none; }
+[data-theme] .MpSubs-cardTitle { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSubs-cardPrice { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpAccount-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpAccount-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpAccount-cardTitle { font-weight: 700; }
+[data-theme] .MpAccount-cardStat strong { font-weight: 700; }
+[data-theme] .MpAccount-card:hover .MpAccount-cardArrow { transform: none; }
+[data-theme] .MpWishlist-cardPrice { font-weight: 700; }
+[data-theme] .MpCoupons-code { font-weight: 700; }
+[data-theme] .MpConversation-bubble { box-shadow: none; }
+[data-theme] .MpConversation-attachRemove { box-shadow: none; }
+[data-theme] .MpGiftCards-card { background-image: none; }
+[data-theme] .MpGiftCards-code { font-weight: 700; }
+[data-theme] .MpGiftCards-cardBody .MpGiftCards-balance { font-weight: 700; }
+[data-theme] .MpGiftCards-preset { font-weight: 700; }
+[data-theme] .MpStore-analyticsValue { font-weight: 700; }
+[data-theme] .MpSellerProfile-name { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSellerProfile-subtitle { letter-spacing: normal; }
+[data-theme] .MpSellerProfile-card:hover { transform: none; }
+[data-theme] .MpSellerProfile-cardPrice { font-weight: 700; }
+[data-theme] .MpSellerProfile-reviewAvatar { font-weight: 700; }
+[data-theme] .MpUserReviews-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpSellerModal-toggle-track::after { box-shadow: none; }
+[data-theme] .MpPlans-eyebrow { font-weight: 700; }
+[data-theme] .MpPlans-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpPlans-save { font-weight: 700; }
+[data-theme] .MpPlan:hover { transform: none; }
+[data-theme] .MpPlan-badge { font-weight: 700; }
+[data-theme] .MpPlan-currency { font-weight: 700; }
+[data-theme] .MpPlan-amount { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpPlan-cta { font-weight: 700; }
+[data-theme] .MpStoreVerified .VerifiedPopover { box-shadow: none; }
+[data-theme] .MpShop-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpShop-cardTitle { font-weight: 700; }
+[data-theme] .MpShop-ownedBadge { box-shadow: none; }
+[data-theme] .MpShop-ownedBadge:hover::after,
+[data-theme] .MpShop-ownedBadge:hover::before { transform: none; }
+[data-theme] .MpChip--save { font-weight: 700; }
+[data-theme] .MpBundle-heroTitle { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpBundle-heroPrice-final { font-weight: 700; }
+[data-theme] .MpBundle-heroPrice-save { font-weight: 700; }
+[data-theme] .MpEmbed:hover { box-shadow: none; }
+[data-theme] .MpEmbed-typeBadge { box-shadow: none; }
+[data-theme] .MpEmbedModal .Modal-header .Modal-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpEmbedModal-typeChip { font-weight: 700; }
+[data-theme] .MpEmbedModal-tag { font-weight: 700; }
+[data-theme] .MpEmbedModal-price strong { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpEmbedModal-priceFree { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpEmbedModal-open:hover i { transform: none; }
+[data-theme] .MpRefundRequests-header > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpRefundRequests-headerTitle > h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpRefundRequests-filter.is-active { box-shadow: none; }
+[data-theme] .MpRefundRequests-filterBadge { font-weight: 700; }
+[data-theme] .MpRefundRequests-cardOrder { font-weight: 700; }
+[data-theme] .MpRefundRequests-cardAmount { font-weight: 700; }
+[data-theme] .MpRefundRequests-label { font-weight: 700; }
+[data-theme] .MpCoursesHero-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCoursesHero-stat strong { font-weight: 700; }
+[data-theme] .MpCourseCard:hover { transform: none; }
+[data-theme] .MpCourseCard-price { font-weight: 700; }
+[data-theme] .MpCourses-card:hover { transform: none; }
+[data-theme] .MpCoursePlayer-title { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCoursePlayer-enrolled { font-weight: 700; }
+[data-theme] .MpCoursePlayer-overviewCard h2 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCoursePlayer-lessonEyebrow { font-weight: 700; }
+[data-theme] .MpCoursePlayer-panelTitle { font-weight: 700; }
+[data-theme] .MpCoursePlayer-lessonName { font-weight: 700; }
+[data-theme] .MpCoursePlayer-playingTag { font-weight: 700; }
+[data-theme] .MpCoursePage-area--head h1 { font-weight: 700; letter-spacing: normal; }
+[data-theme] .MpCoursePage-coverPlay:hover { transform: none; }
+[data-theme] .MpCoursePage-buyPrice { font-weight: 700; }
+[data-theme] .MarketplaceCartDropdown-menu.Dropdown-menu { box-shadow: none; }
+[data-theme^=dark] .MpShop-card:hover,
+body.dark-mode .MpShop-card:hover,
+[data-theme^=dark] .MpDiscover-card:hover,
+body.dark-mode .MpDiscover-card:hover { box-shadow: none; }
+[data-theme^=dark] .MpTicket-qrWrap,
+body.dark-mode .MpTicket-qrWrap { box-shadow: none; }
+
+}

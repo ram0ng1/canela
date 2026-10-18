@@ -1,0 +1,114 @@
+// =====================================================================
+// Casca (tablet e desktop): cabeçalho fixo, barra lateral à esquerda e o
+// conteúdo num cartão branco sobre o fundo tingido, nas medidas do
+// meta.discourse.org (#main-outlet-wrapper):
+//
+//   ┌──────────────────── .App-header (52px) ────────────────────┐
+//   │ aside.CanelaSidebar │ ≥16px │ .Page-hero (fora do cartão)  │
+//   │ (240px; 208px até   │       │ ┌─ .Page-container ────────┐ │
+//   │  1023px)            │       │ │ (o cartão, máx. 1110px)  │ │
+// =====================================================================
+
+:root {
+  --cn-composer-left: 0px;
+}
+
+@media @tablet-up {
+  .Canela.App {
+    padding-top: var(--cn-header-height);
+  }
+
+  // O conteúdo: abre espaço para a barra quando ela está encaixada. O
+  // Discourse deixa no mínimo 16px entre a barra e o cartão, e 32px de cada
+  // lado quando a barra está fechada.
+  .Canela .App-content,
+  .Canela .App-footer {
+    padding-left: var(--cn-main-gap-wide);
+    padding-right: var(--cn-main-gap-wide);
+    box-sizing: border-box;
+    // Sem animação ao abrir/fechar a barra, como no Meta.
+    transition: none;
+  }
+
+  .Canela--sidebarOpen {
+    --cn-composer-left: var(--cn-sidebar-width);
+
+    .App-content,
+    .App-footer {
+      margin-left: var(--cn-sidebar-width);
+      padding-left: var(--cn-main-gap);
+      padding-right: var(--cn-main-gap);
+    }
+  }
+
+  // A lista do Discourse termina 48px acima do pé da página.
+  .Canela .Page {
+    padding-bottom: 48px;
+  }
+
+  // O hero (banner de boas-vindas, categoria) mora fora do cartão, sobre o
+  // fundo tingido, e acompanha a largura dele.
+  .Canela .Page-hero:not(.Page-hero--inline) {
+    max-width: var(--cn-main-max);
+    margin: 0 auto;
+    padding: 0 var(--cn-space-4);
+    box-sizing: border-box;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // O cartão (.list-container / .regular do Discourse): 16px abaixo do
+  // cabeçalho, 16px de respiro, cantos de 16px e a sombra tingida.
+  // ---------------------------------------------------------------------
+  .Canela .Page-container.container {
+    width: auto;
+    max-width: var(--cn-main-max);
+    margin: var(--cn-space-4) auto 0;
+    padding: var(--cn-space-4);
+    box-sizing: border-box;
+    gap: var(--cn-space-6);
+  }
+
+  .Canela--card .Page-container.container {
+    background: var(--cn-surface);
+    border-radius: var(--cn-card-radius);
+    box-shadow: var(--cn-card-shadow);
+  }
+
+  // Sem o fundo tingido, o cartão precisa de uma borda para existir.
+  .Canela--card:not(.Canela--tinted) .Page-container.container {
+    border: 1px solid var(--cn-border);
+    box-shadow: none;
+  }
+
+  .Canela .Page-content,
+  .Canela .Page-sidebar {
+    margin-top: 0;
+  }
+
+  // O hero que o PageStructure põe dentro do cartão (tópico e perfil) ocupa a
+  // linha toda acima do conteúdo.
+  .Canela .Page-container:has(> .Page-hero--inline) {
+    flex-wrap: wrap;
+
+    > .Page-hero--inline {
+      flex: 0 0 100%;
+      min-width: 0;
+    }
+  }
+
+  // A navegação da página inicial e da página de tags foi para a barra global.
+  // Vale para qualquer página que use o IndexSidebar do core (as das
+  // extensões e dos recursos do tema também), e não só para as do core.
+  .Canela:not(.Canela--noSidebar) {
+    .IndexPage .Page-sidebar,
+    .TagsPage .Page-sidebar,
+    .Page-sidebar:has(.IndexPage-nav),
+    .Page-sidebar:empty {
+      display: none;
+    }
+  }
+}

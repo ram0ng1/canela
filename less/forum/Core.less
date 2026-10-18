@@ -1,0 +1,115 @@
+// =====================================================================
+// Base: tipografia, cores do texto e o fundo da página.
+// =====================================================================
+
+body {
+  font-family: var(--cn-font);
+  // 16px e 1,4 de entrelinha, como o body do Discourse.
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--cn-primary);
+  background: var(--cn-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// O fundo do meta.discourse.org: a cor quase branca puxada para o destaque,
+// com um degradê que desce do topo e termina 260px antes do pé da janela
+// (.meta-bg + .meta-bg-gradient, ambos fixos).
+body:has(.Canela--tinted) {
+  background-color: var(--cn-page-bg);
+  background-image: linear-gradient(var(--cn-page-gradient) 0, var(--cn-page-bg) ~"calc(100% - 260px)");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+// As peças coloridas e desfocadas que flutuam atrás do conteúdo no Meta
+// (.meta-bg-icons): mesmas posições, giros, escalas, desfoque e opacidade.
+// Ficam atrás de tudo e nunca recebem clique.
+.CanelaBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+
+  .Canela:not(.Canela--tinted) ~ & {
+    display: none;
+  }
+
+  @media @phone {
+    display: none;
+  }
+}
+
+.CanelaBackdrop-tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 15%;
+  background: var(--tile-bg);
+  color: var(--tile-fg, #fffef5);
+  font-size: 24px;
+  opacity: 0.4;
+  filter: blur(4px);
+
+  &--plane { top: 500px; right: -5px; --tile-bg: #28abe2; transform: rotate(25deg); }
+  &--chat { top: 300px; left: 245px; --tile-bg: var(--cn-accent); transform: rotate(-30deg); }
+  &--quote { top: 60px; left: 280px; --tile-bg: #fff470; --tile-fg: #6740a5; transform: rotate(190deg) scale(2); }
+  &--bell { top: 100px; right: 0; --tile-bg: #0ca64e; transform: rotate(-20deg) scale(1.5); }
+  &--sparkles { top: 1000px; right: -97px; --tile-bg: #f15d22; transform: rotate(20deg) scale(2); }
+  &--reactions { top: 850px; left: 180px; --tile-bg: #d5342a; transform: rotate(20deg); }
+}
+
+.Canela {
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--cn-primary);
+    font-family: var(--cn-font);
+  }
+
+  // As caixas de texto e botões herdam a fonte do tema, e não a do sistema.
+  button, input, select, textarea {
+    font-family: inherit;
+  }
+
+  ::selection {
+    background: var(--cn-selected);
+  }
+
+  // Como o Discourse: contorno fino por DENTRO do elemento; botões não têm
+  // contorno — o foco deles é o fundo de hover (Components.less).
+  :focus-visible {
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -1px;
+  }
+
+  .Button:focus-visible,
+  button:focus-visible {
+    outline: none;
+  }
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0.1em 0.45em;
+  border: 1px solid var(--cn-primary-300);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  font-family: var(--cn-font);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+// Barras de rolagem finas, na cor da seleção, como no Horizon.
+.Canela, .CanelaSidebar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cn-selected) transparent;
+}

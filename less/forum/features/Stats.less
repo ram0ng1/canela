@@ -1,0 +1,179 @@
+// Estatísticas: o "(N)" das abas Novos/Não lidos, o ponto do "Tópicos" na
+// barra lateral e o menu "Visualizações recentes" do mapa do tópico. A coluna
+// Visualizações em si mora na lista (List.less).
+
+// "Novos (3)": o número no mesmo tom da aba, só um pouco mais leve, como no
+// Discourse — a aba ativa pinta os dois de uma vez.
+.CanelaStatsCount {
+  font-variant-numeric: tabular-nums;
+  font-weight: inherit;
+  color: inherit;
+}
+
+// O ponto da barra lateral, logo depois do rótulo. Ele mora dentro do
+// .Button-label (o LinkButton põe ali tudo o que recebe), e por isso é inline:
+// o rótulo corta o texto com reticências, e um bloco seria cortado junto.
+.CanelaSidebar .Button-label {
+  .CanelaStatsDot {
+    display: inline-block;
+    vertical-align: middle;
+    width: 6px;
+    height: 6px;
+    margin-left: var(--cn-space-2);
+    border-radius: 50%;
+    background: var(--cn-accent);
+  }
+}
+
+// O calor das visualizações fora da lista (tópicos sugeridos): as classes
+// `heatmap-*` do Discourse, com as mesmas cores da coluna da lista.
+.heatmap-low {
+  color: var(--cn-heat-low) !important;
+}
+.heatmap-med {
+  color: var(--cn-heat-med) !important;
+}
+.heatmap-high {
+  color: var(--cn-heat-high) !important;
+  font-weight: 500;
+}
+
+// "Visualizações recentes" (.topic-map__views-content do Discourse). As cores
+// do gráfico são as `--chart-*-color` do .topic-map de lá: linha e pontos no
+// tom médio da cor de destaque (tertiary-medium), previsão em cinza
+// (primary-low-mid); grade e textos nos tons padrão do Chart.js.
+.CanelaTopicMap-menu--views {
+  --cn-chart-line: var(--cn-accent);
+  --cn-chart-point: ~"color-mix(in srgb, var(--cn-accent) 55%, var(--cn-surface))";
+  --cn-chart-prediction: var(--cn-primary-low-mid);
+  --cn-chart-grid: ~"color-mix(in srgb, var(--cn-primary) 10%, transparent)";
+  --cn-chart-text: var(--cn-primary-high);
+
+  width: 400px;
+  max-width: ~"min(400px, calc(100vw - 32px))";
+
+  // Com os números lado a lado, o menu encolhe ao conteúdo (min-width: unset).
+  &:has(.CanelaTopicViews) {
+    width: max-content;
+    min-width: 0;
+  }
+
+  .LoadingIndicator-container {
+    padding: 1rem;
+  }
+}
+
+// No escuro, o tom médio puxado para o fundo some na grade: o Discourse
+// escurece o tertiary só 20% ali, então a mistura leva mais destaque.
+[data-theme^='dark'] .CanelaTopicMap-menu--views {
+  --cn-chart-point: ~"color-mix(in srgb, var(--cn-accent) 80%, var(--cn-surface))";
+}
+
+.CanelaViewsChart-canvas {
+  padding: 0.75em 1rem;
+  // O SVG ocupa a largura medida; sem ela (primeiro desenho) o bloco já tem a
+  // altura do gráfico, para o menu não pular quando ele aparece.
+  min-height: 100px;
+}
+
+.CanelaViewsChart-svg {
+  display: block;
+  overflow: visible;
+  font-size: 12px;
+  font-family: inherit;
+  user-select: none;
+}
+
+.CanelaViewsChart-grid line {
+  stroke: var(--cn-chart-grid);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.CanelaViewsChart-ticks text {
+  fill: var(--cn-chart-text);
+}
+
+.CanelaViewsChart-line {
+  fill: none;
+  stroke: var(--cn-chart-point);
+  stroke-width: 3;
+  stroke-linejoin: miter;
+}
+
+.CanelaViewsChart-line--predicted {
+  stroke: var(--cn-chart-prediction);
+  stroke-dasharray: 5 5;
+}
+
+.CanelaViewsChart-point {
+  fill: var(--cn-chart-point);
+  stroke: var(--cn-chart-point);
+  stroke-width: 1;
+}
+
+.CanelaViewsChart-point--predicted {
+  fill: var(--cn-chart-prediction);
+  stroke: var(--cn-chart-prediction);
+}
+
+// A dica do Chart.js: rgba(0,0,0,.8), texto branco, título em negrito.
+.CanelaViewsChart-tooltip {
+  > rect:first-child {
+    fill: rgba(0, 0, 0, 0.8);
+  }
+
+  text {
+    fill: #fff;
+  }
+}
+
+.CanelaViewsChart-tooltipTitle {
+  font-weight: 700;
+}
+
+.CanelaViewsChart-tooltipSwatch {
+  fill: var(--cn-chart-line);
+  stroke: var(--cn-chart-point);
+  stroke-width: 2;
+}
+
+.CanelaViewsChart-tooltipSwatch--predicted {
+  fill: var(--cn-chart-prediction);
+  stroke: var(--cn-chart-prediction);
+}
+
+.CanelaViewsChart-explainer {
+  padding: 0 1rem;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-high);
+}
+
+.CanelaViewsChart--error {
+  padding: 0.75em 1rem 0;
+  color: var(--cn-primary-high);
+}
+
+// Até dois dias: os números lado a lado (.topic-views do Discourse).
+.CanelaTopicViews {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1rem;
+  padding: 0.5em 1rem 0;
+}
+
+.CanelaTopicViews-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.CanelaTopicViews-count {
+  font-size: var(--cn-font-up-4);
+  color: var(--cn-primary-high);
+}
+
+.CanelaTopicViews-date {
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}

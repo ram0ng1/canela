@@ -1,0 +1,1001 @@
+// =====================================================================
+// Recursos "extras": página de busca, seleção em massa, Melhores por
+// período, tamanho do texto, banner de anúncio, imprimir e histórico.
+// Medidas da página de busca tiradas do print do meta.discourse.org
+// (p4-g_search.png, escala 1:1) e de common/base/search.scss.
+// =====================================================================
+
+// ── Página de busca ──────────────────────────────────────────────────
+// Medidas do CSS do Meta (common/base/search.scss + Horizon): 16px de base,
+// a página com 10% de respiro dos lados (nada abaixo de 1024px), abas em
+// `nav-pills`, campo de 38px com canto de 8px, botão e "Filtros avançados"
+// em pílula, a faixa de ordenação entre bordas e os resultados com 2em entre
+// eles. Sem transições: o Horizon zera a dos botões e abas, e o painel de
+// filtros abre na hora, sem animação.
+
+.CanelaSearchPage .Page-sidebar {
+  display: none;
+}
+
+.CanelaSearchPage .Page-container {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.CanelaSearch {
+  max-width: none;
+  margin: 0;
+  padding: 1rem 10% 0;
+}
+
+@media (max-width: 1023px) {
+  .CanelaSearch {
+    padding: 0;
+  }
+}
+
+// As fontes (Tópicos, Postagens, Etiquetas e categorias) como `.nav-pills`.
+.CanelaSearch-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5em;
+  margin: 0 0 12px;
+  // Como a `horizontal-overflow-nav`: no estreito rola de lado, sem quebrar.
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.CanelaSearch-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0.65em 0.75em;
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: transparent;
+  color: var(--cn-primary);
+  font: inherit;
+  font-size: 1em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  transition: none;
+
+  &:hover,
+  &.active {
+    color: var(--cn-link);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.125em;
+      background: var(--cn-link);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -2px;
+  }
+}
+
+.CanelaSearch-form {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.5em 1em;
+}
+
+.CanelaSearch-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 60%;
+  min-width: 0;
+}
+
+.CanelaSearch .CanelaSearch-input {
+  width: 100%;
+  height: 38px;
+  margin: 0;
+  padding: 8px 2em 8px 0.65em;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: 1em;
+  box-shadow: none;
+
+  // O foco padrão do Discourse: borda e contorno de 2px por dentro.
+  &:focus {
+    border-color: var(--cn-accent);
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -2px;
+    box-shadow: none;
+  }
+
+  // O "x" próprio substitui o do navegador.
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+.CanelaSearch-clear.Button {
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  display: flex;
+  width: auto;
+  height: auto;
+  padding: 0;
+  transform: translateY(-50%);
+  color: var(--cn-primary-medium);
+  font-size: 1em;
+}
+
+.CanelaSearch-submit.Button {
+  flex: 1 1 0;
+  justify-content: center;
+  height: 38px;
+  padding: 8px 0.65em;
+  border-radius: var(--cn-radius-pill);
+  font-size: 1em;
+  transition: none;
+}
+
+// `.search-filters`: 16px acima; 16px embaixo quando o painel está fechado.
+.CanelaSearch-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 0;
+  margin: 0;
+}
+
+.CanelaSearch-advancedToggle.Button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 38px;
+  padding: 8px 0.65em;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  font-size: 1em;
+  font-weight: 400;
+  transition: none;
+
+  &:hover,
+  &.active {
+    background: var(--cn-primary-100);
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaSearch-advancedCaret {
+  margin-left: 4px;
+  font-size: 0.8706em;
+  color: inherit;
+}
+
+// A faixa de ordenação (`.search-info`): borda em cima e 16px de respiro.
+.CanelaSearch-divider {
+  display: none;
+}
+
+.CanelaSearch-sortRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 16px 0 0;
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--cn-border);
+}
+
+// Com o painel aberto, a borda de cima sai (`:has(.--is-expanded)`).
+.CanelaSearch:has(.CanelaSearchFilters) .CanelaSearch-sortRow {
+  border-top: 0;
+}
+
+.CanelaSearch-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  margin: 0 0 0 auto;
+}
+
+.CanelaSearch-sortLabel {
+  margin: 0 8px 0 0;
+  color: var(--cn-primary-high);
+  font-size: 1em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.CanelaSearch-selectWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.CanelaSearch .CanelaSearch-select {
+  height: 38px;
+  padding: 8px 2em 8px 8px;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: 1em;
+  font-weight: 500;
+  appearance: none;
+}
+
+.CanelaSearch-selectCaret {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7em;
+  color: var(--cn-primary-high);
+  pointer-events: none;
+}
+
+// "50+ resultados para sidebar" (`.result-count`): font-up-2, seminegrito.
+.CanelaSearch .CanelaSearch-heading {
+  margin: 0;
+  padding: 16px 0 0;
+  font-size: 1.3195em;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--cn-primary);
+}
+
+.CanelaSearch-term {
+  padding: 0;
+  background: var(--cn-accent-low);
+  color: inherit;
+}
+
+.CanelaSearch-empty {
+  margin: 2em 0;
+  color: var(--cn-primary-high);
+  text-align: center;
+}
+
+// `.fps-result-entries`: 16px acima da lista.
+.CanelaSearch-list {
+  margin: 0;
+  padding: 16px 0 0;
+  list-style: none;
+}
+
+.CanelaSearch-more {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 2em;
+}
+
+// Um resultado (`.fps-result`): avatar de 48px, 1em até o texto, título em
+// font-up-1, categoria/etiquetas pequenas e o trecho cinza; 2em entre eles.
+.CanelaSearchResult {
+  position: relative;
+  display: flex;
+  max-width: 100%;
+  margin: 0 0 2em;
+  padding: 0;
+  word-break: break-word;
+
+  mark {
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font-weight: 700;
+    text-decoration: none;
+  }
+}
+
+.CanelaSearchResult-avatar {
+  flex-shrink: 0;
+  margin-right: 1em;
+  padding: 0.15em 0 0 0.15em;
+
+  .Avatar {
+    --size: 48px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    line-height: 48px;
+  }
+}
+
+.CanelaSearchResult-main {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 0.25em;
+}
+
+.CanelaSearchResult-titleLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.CanelaSearchResult-title {
+  color: var(--cn-primary);
+  font-size: 1.1487em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+
+  &:hover {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaSearchResult-status {
+  flex-shrink: 0;
+  color: var(--cn-primary-medium);
+  font-size: 1.1em;
+  line-height: 1.2;
+
+  .Badge {
+    --badge-size: 18px;
+  }
+}
+
+.CanelaSearchResult-number,
+.CanelaSearchResult-handle {
+  color: var(--cn-primary-medium);
+  font-size: 0.8706em;
+}
+
+// `.search-category`: 0.25em acima, 0.5em entre categoria e etiquetas.
+.CanelaSearchResult-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.5em;
+  max-width: 100%;
+  margin-top: 0.25em;
+  color: var(--cn-primary-high);
+  font-size: 0.8706em;
+
+  &:empty {
+    display: none;
+  }
+}
+
+// `.blurb`: cinza médio, a data e as palavras achadas um tom mais escuro.
+.CanelaSearchResult-blurb {
+  margin-top: 0.25em;
+  color: var(--cn-primary-medium);
+  font-size: 1em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+
+  mark {
+    color: var(--cn-primary-high);
+  }
+}
+
+.CanelaSearchResult-date {
+  color: var(--cn-primary-high);
+}
+
+.CanelaSearchResult-count {
+  align-self: center;
+  color: var(--cn-primary-medium);
+  font-size: 0.8706em;
+}
+
+.CanelaSearchResult--tag {
+  align-items: flex-start;
+}
+
+// Filtros avançados (`.search-advanced-filters`): borda, canto de 8px, 1.5em
+// de respiro e as opções em duas colunas (column-count) a partir de 640px.
+.CanelaSearchFilters {
+  min-width: 0;
+  margin-top: 16px;
+  padding: 1.5em;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+}
+
+.CanelaSearchFilters-grid {
+  column-count: 2;
+  column-gap: 2em;
+
+  > * {
+    break-inside: avoid;
+    margin-bottom: 1em;
+  }
+}
+
+@media (min-width: 1024px) {
+  .CanelaSearchFilters-grid {
+    column-gap: 5em;
+  }
+}
+
+.CanelaSearchFilters-label {
+  margin-bottom: 4px;
+  font-weight: 700;
+  color: var(--cn-primary);
+}
+
+.CanelaSearchFilters-field .FormControl {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.CanelaSearchFilters-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.CanelaSearchFilters-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+  cursor: pointer;
+
+  &.is-disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  input {
+    accent-color: var(--cn-accent);
+  }
+}
+
+.CanelaSearchFilters-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cn-space-2);
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-weight: normal;
+    font-size: 0.8706em;
+    color: var(--cn-primary-high);
+  }
+}
+
+.CanelaSearchFilters .CanelaSearchFilters-number {
+  max-width: 120px;
+}
+
+.CanelaSearchFilters-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.CanelaSearchFilters-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 2px 2px 10px;
+  background: var(--cn-primary-100);
+  border-radius: var(--cn-radius-pill);
+  font-size: 0.8706em;
+}
+
+.CanelaSearchFilters-chipRemove.Button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 10px;
+  color: var(--cn-primary-high);
+}
+
+.CanelaSearchFilters .CanelaSearchFilters-tagAdd {
+  width: auto;
+  flex: 1;
+  min-width: 140px;
+}
+
+.CanelaSearchFilters-note {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: var(--cn-space-3) 0 0;
+  font-size: 0.8706em;
+  color: var(--cn-primary-high);
+}
+
+@media (max-width: 639px) {
+  .CanelaSearch-form {
+    flex-direction: column;
+  }
+
+  .CanelaSearch-field,
+  .CanelaSearch-submit.Button {
+    flex: none;
+    width: 100%;
+  }
+
+  .CanelaSearchFilters-grid {
+    column-count: 1;
+  }
+}
+
+// ── Seleção em massa ─────────────────────────────────────────────────
+
+.CanelaBulk-toggle.active {
+  background: var(--cn-selected);
+  color: var(--cn-accent-active);
+}
+
+// Gruda no topo do cartão ao rolar, logo abaixo do cabeçalho do site.
+.CanelaBulkBar {
+  position: sticky;
+  top: ~"calc(var(--cn-header-height) + 8px)";
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cn-space-2) var(--cn-space-4);
+  margin: var(--cn-space-2) 0;
+  padding: 8px 12px;
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  box-shadow: var(--cn-shadow-card);
+}
+
+.CanelaBulkBar-status,
+.CanelaBulkBar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cn-space-2);
+}
+
+.CanelaBulkBar-count {
+  font-weight: 600;
+}
+
+.CanelaBulkBar-link.Button {
+  padding: 0 4px;
+  color: var(--cn-link);
+}
+
+.CanelaBulkBar-hint {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaBulkBar-action.Button {
+  height: 32px;
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaBulkBar-action--danger.Button {
+  color: var(--cn-danger);
+}
+
+.CanelaBulkCheck {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  padding: 0 10px 0 4px;
+  margin: 0;
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--cn-accent);
+    cursor: pointer;
+  }
+}
+
+.DiscussionListItem.CanelaBulk-selected {
+  background: var(--cn-selected);
+}
+
+// ── Melhores por período ─────────────────────────────────────────────
+
+.CanelaTopPeriod-button.Button {
+  height: 32px;
+  border-radius: var(--cn-radius-pill);
+}
+
+// ── Tamanho do texto ─────────────────────────────────────────────────
+// A fonte base do tema (16px no body, como o Discourse) e a das postagens escalam juntas; o que
+// é medido em em/rem acompanha sozinho.
+
+.canela-text-size(@scale, @percent) {
+  font-size: @percent;
+  --cn-text-scale: @scale;
+  --post-font-size: calc(16px * @scale);
+
+  body {
+    font-size: calc(16px * @scale);
+  }
+}
+
+html.canela-text-smaller {
+  .canela-text-size(0.85, 85%);
+}
+
+html.canela-text-larger {
+  .canela-text-size(1.15, 115%);
+}
+
+html.canela-text-largest {
+  .canela-text-size(1.3, 130%);
+}
+
+.CanelaTextSize {
+  max-width: 320px;
+}
+
+.CanelaTextSize-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+// ── Banner de anúncio ────────────────────────────────────────────────
+
+.CanelaBanner-root:empty {
+  display: none;
+}
+
+.CanelaBanner {
+  position: relative;
+  max-width: var(--cn-main-max);
+  margin: var(--cn-space-4) auto 0;
+  padding: var(--cn-space-4) 48px var(--cn-space-4) var(--cn-space-6);
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-left: 4px solid var(--cn-accent);
+  border-radius: var(--cn-radius-large);
+  box-shadow: var(--cn-shadow-card);
+}
+
+.CanelaBanner-body {
+  font-size: var(--cn-font-0);
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.CanelaBanner-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--cn-primary-medium);
+
+  &:hover {
+    color: var(--cn-primary);
+  }
+}
+
+@media @phone {
+  .CanelaBanner {
+    margin: var(--cn-space-2);
+    border-radius: var(--cn-radius);
+  }
+}
+
+// ── Imprimir ─────────────────────────────────────────────────────────
+
+// Na tela, a visão de impressão cobre a página (o diálogo do navegador
+// abre por cima dela, e o "Fechar" fica à mão se a pessoa cancelar).
+.CanelaPrint {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: auto;
+  padding: var(--cn-space-6) ~"max(var(--cn-space-4), calc((100vw - 800px) / 2))";
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+}
+
+.CanelaPrint-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--cn-space-2);
+  margin-bottom: var(--cn-space-4);
+}
+
+.CanelaPrint-title {
+  margin: 0 0 6px;
+  font-size: var(--cn-font-up-4);
+  line-height: 1.2;
+}
+
+.CanelaPrint-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaPrint-post {
+  padding: var(--cn-space-4) 0;
+  border-top: 1px solid var(--cn-border);
+  break-inside: avoid-page;
+}
+
+.CanelaPrint-header {
+  padding-bottom: var(--cn-space-4);
+}
+
+.CanelaPrint-postHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  .Avatar {
+    --size: 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+    line-height: 28px;
+  }
+}
+
+.CanelaPrint-date,
+.CanelaPrint-number {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaPrint-number {
+  margin-left: auto;
+}
+
+html.canela-printing {
+  overflow: hidden;
+}
+
+@media print {
+  // Com a visão de impressão aberta, só ela vai para o papel.
+  html.canela-printing {
+    overflow: visible;
+
+    body > *:not(#canela-print) {
+      display: none !important;
+    }
+
+    .CanelaPrint {
+      position: static;
+      overflow: visible;
+      padding: 0;
+    }
+
+    .CanelaPrint-toolbar {
+      display: none;
+    }
+  }
+
+  // Ctrl+P direto na página do tópico: tira a casca, a barra lateral, a
+  // linha do tempo, o editor e os botões, e deixa as postagens.
+  .App-header,
+  .App-navigation,
+  .App-drawer,
+  #canela-sidebar,
+  .CanelaSidebar,
+  .CanelaBanner-root,
+  .App-composer,
+  .App-footer,
+  .DiscussionPage .Page-sidebar,
+  .PostStreamScrubber,
+  .Post-actions,
+  .Post-footer,
+  .PostStream-item .ReplyPlaceholder,
+  .CanelaTopicFooter,
+  .CanelaSuggested,
+  .CanelaBulkBar,
+  #alerts,
+  #modal {
+    display: none !important;
+  }
+
+  body,
+  .App,
+  .App-content,
+  .Page-container {
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .App-content,
+  .Page-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .PostStream-item,
+  .CanelaPrint-post {
+    break-inside: avoid-page;
+  }
+
+  .Post-body a::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    color: #666;
+    word-break: break-all;
+  }
+}
+
+// ── Histórico de edições ─────────────────────────────────────────────
+
+.CanelaPostEdited {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-primary-100);
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaHistory-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cn-space-3);
+  padding-bottom: var(--cn-space-3);
+  margin-bottom: var(--cn-space-3);
+  border-bottom: 1px solid var(--cn-border);
+}
+
+.CanelaHistory-pager {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.CanelaHistory-position {
+  min-width: 9em;
+  text-align: center;
+  font-weight: 600;
+}
+
+.CanelaHistory-editor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaHistory-avatar {
+  --size: 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.CanelaHistory-modes {
+  display: flex;
+  gap: 4px;
+}
+
+.CanelaHistory-mode.Button {
+  height: 30px;
+  font-size: var(--cn-font-down-1);
+
+  &.active {
+    background: var(--cn-selected);
+    color: var(--cn-accent-active);
+  }
+}
+
+.CanelaHistory-stats {
+  display: flex;
+  gap: var(--cn-space-3);
+  margin-bottom: var(--cn-space-2);
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+}
+
+.CanelaHistory-added {
+  color: var(--cn-success);
+}
+
+.CanelaHistory-removed {
+  color: var(--cn-danger);
+}
+
+.CanelaHistory-text {
+  margin: 0;
+  padding: var(--cn-space-3);
+  max-height: 60vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  font-size: var(--cn-font-0);
+  line-height: 1.6;
+  background: var(--cn-primary-very-low);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary);
+}
+
+.CanelaHistory-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cn-space-3);
+}
+
+// Verde e vermelho translúcidos: legíveis no claro e no escuro.
+.CanelaHistory-ins {
+  background: rgba(0, 153, 0, 0.18);
+  text-decoration: none;
+}
+
+.CanelaHistory-del {
+  background: rgba(200, 0, 1, 0.16);
+  text-decoration: line-through;
+}
+
+.CanelaHistory-empty {
+  margin: var(--cn-space-4) 0;
+  color: var(--cn-primary-high);
+  text-align: center;
+}
+
+@media @phone {
+  .CanelaHistory-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

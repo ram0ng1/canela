@@ -1,0 +1,721 @@
+// =====================================================================
+// Lista de tópicos no formato do Discourse: colunas Tópico | Postadores |
+// Respostas | Visualizações | Atividade, linhas separadas por borda, e no
+// celular avatar à esquerda com a contagem no canto.
+//
+// Medidas tiradas do CSS computado do meta.discourse.org (1440, 900 e 400px):
+// `.topic-list`, `.topic-list-item`, `.link-top-line`, `.link-bottom-line`,
+// `.badge-category__wrapper`, `td.posters`, `td.num`, `td.activity`.
+// =====================================================================
+
+// Larguras das colunas (o td inteiro do Discourse, com o padding) —
+// compartilhadas pelo cabeçalho e pelas linhas, que usam as mesmas classes
+// CanelaCell--*. A atividade desconta os 12px do padding da linha.
+@canela-col-posters: 154px;   // 146px + 4px de cada lado
+@canela-col-replies: 76px;    // 4.3em + 4px de cada lado
+@canela-col-views: 98px;
+@canela-col-activity: 81px;   // 5.5em de 13.9px + 4px; os 12px finais vêm da linha
+@canela-row-x: 12px;
+// Coluna do ⋮ (controles da discussão), no lugar dos 12px finais da linha:
+// o botão de 28px fica a 4px da borda e a 9px do texto da atividade.
+@canela-col-controls: 36px;
+
+// A lista mede em em a partir de 1rem (16px), como o Discourse: o body do
+// tema é 15px, e sem isso todas as fontes da lista sairiam 1px menores. 1rem
+// acompanha o "tamanho do texto" do leitor, que escala o html.
+.CanelaList,
+.CanelaListHeader {
+  font-size: 1rem;
+}
+
+// ---------------------------------------------------------------------
+// Badges de categoria e etiqueta (usados também na barra lateral, no tópico
+// e na página de categorias) — `.badge-category__wrapper` do Discourse
+// ---------------------------------------------------------------------
+.CanelaCategorySymbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  color: var(--category-color, var(--cn-primary-medium));
+  line-height: 1;
+
+  .icon {
+    font-size: 0.85em;
+  }
+
+  // --category-badge-size: 0.75em; --category-badge-border-radius: 2px
+  &--square::before {
+    content: '';
+    width: 0.75em;
+    height: 0.75em;
+    border-radius: 2px;
+    background: currentColor;
+  }
+}
+
+.CanelaBadges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  min-width: 0;
+}
+.CanelaBadges-labels {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+
+.CanelaCategoryBadge,
+.CanelaTagBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.33em;
+  max-width: 100%;
+  color: var(--cn-primary-high);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+// No badge, o símbolo é do tamanho do quadradinho/ícone (0.9em), sem caixa
+// de 1em em volta — senão o nome fica longe dele.
+.CanelaCategoryBadge .CanelaCategorySymbol {
+  width: auto;
+  height: auto;
+
+  .icon {
+    font-size: 0.9em;
+  }
+}
+.CanelaCategoryBadge-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+// "Pai ▪ Filha": um pouco mais de ar antes do quadradinho da filha.
+.CanelaCategoryBadge-parent {
+  margin-right: 0.17em;
+}
+// O ícone da etiqueta do Flarum, na cor dela quando houver.
+.CanelaTagBadge .CanelaTagSymbol {
+  display: inline-flex;
+  font-size: 0.9em;
+  color: var(--tag-color, var(--cn-primary-medium));
+}
+
+// ---------------------------------------------------------------------
+// Cabeçalho de colunas (`.topic-list-header`): 13.9px, padding 12px 4px,
+// sem borda embaixo.
+// ---------------------------------------------------------------------
+.CanelaListHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 @canela-row-x;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.2;
+  color: var(--cn-primary-very-high);
+}
+.CanelaListHeader-cell {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  padding: 12px 4px;
+  font-weight: normal;
+  white-space: nowrap;
+
+  &--topic {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-left: 0;
+  }
+}
+.CanelaListHeader-sort {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  user-select: none;
+
+  // `.sortable:hover { background-color: var(--d-hover) }`
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+  }
+}
+.CanelaListHeader-arrow {
+  font-size: 0.75em;
+}
+.CanelaListHeader .CanelaCell--activity {
+  padding-right: 0;
+}
+.CanelaListHeader .CanelaCell--replies,
+.CanelaListHeader .CanelaCell--views,
+.CanelaListHeader .CanelaCell--activity {
+  text-align: center;
+  justify-content: center;
+  font-weight: normal;
+  font-size: inherit;
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------
+// Linha (`.topic-list-item`)
+// ---------------------------------------------------------------------
+.CanelaList .DiscussionList-discussions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Especificidade dupla para vencer o .DiscussionListItem do core, que no
+// tablet+ põe margens negativas, raio e fundo no hover. Mira a lista, e não a
+// linha: o MinimalDiscussionListItem do modal de busca fica como o core.
+.CanelaList .DiscussionListItem {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--cn-border);
+  transition: none;
+
+  &:hover {
+    background: transparent;
+  }
+
+  // Controles (⋮): numa coluna estreita própria, depois de Atividade, da
+  // altura da linha e com o botão no meio dela. Antes ficavam no canto de
+  // cima, por cima da data da atividade. Aparecem no hover, no foco (teclado)
+  // e com o menu aberto; em telas de toque o core já os deixa sempre à vista.
+  .DiscussionListItem-controls {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: @canela-col-controls;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // Aberto para cima, o menu passa por cima da barra de navegação da
+    // lista (.CanelaNav, z-index 4).
+    &.open {
+      z-index: 5;
+    }
+
+    // O menu abre embaixo da linha inteira (o contêiner tem a altura dela),
+    // alinhado à direita: não cobre o título nem as colunas da própria linha.
+    // Perto do fim da tela o core marca o Dropdown-menu--top, e aí ele abre
+    // acima da linha.
+    .Dropdown-menu {
+      top: 100%;
+      bottom: auto;
+      right: 4px;
+      left: auto;
+      margin: 0;
+
+      &.Dropdown-menu--top {
+        top: auto;
+        bottom: 100%;
+      }
+    }
+
+    .Dropdown-toggle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border-radius: var(--cn-radius-pill);
+      background: var(--cn-surface);
+      color: var(--cn-primary-medium);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-primary-100);
+        color: var(--cn-primary);
+      }
+    }
+  }
+}
+
+// A linha do tópico de onde o leitor voltou (`background-fade-highlight`).
+@keyframes canela-fade-highlight {
+  0% {
+    background-color: var(--cn-accent-low);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .CanelaList .DiscussionListItem.CanelaListItem--highlighted {
+    animation: canela-fade-highlight 2.5s ease-out;
+  }
+}
+
+// A coluna do ⋮ só existe quando alguma linha tem controles (visitante não
+// tem): aí a linha e o cabeçalho reservam a mesma largura no fim, e nada
+// passa por cima de Respostas, Visualizações ou Atividade. No celular o core
+// esconde o ⋮ (as ações vêm do deslizar), e a linha segue com o grid de lá.
+@media @tablet-up {
+  .CanelaList:has(.DiscussionListItem-controls) {
+    .DiscussionListItem-content,
+    .CanelaListHeader {
+      padding-right: @canela-col-controls;
+    }
+  }
+
+  .CanelaList .DiscussionListItem:focus-within .DiscussionListItem-controls {
+    opacity: 1;
+  }
+}
+
+// td: padding 20px 4px; a primeira coluna começa a 12px e a última termina a 12px.
+.CanelaList .DiscussionListItem-content {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 @canela-row-x;
+  color: var(--cn-primary-very-high);
+}
+
+.CanelaListItem-avatar {
+  display: none;
+}
+
+.CanelaTopic.DiscussionListItem-main {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 0;
+  padding: 20px 4px 20px 0;
+}
+
+// `.link-top-line`: --font-up-1 (18.4px), line-height 1.2, peso 400.
+.CanelaTopic-titleLine.DiscussionListItem-title {
+  margin: 0;
+  font-size: var(--cn-font-up-1);
+  font-weight: normal;
+  line-height: 1.2;
+  color: var(--cn-primary);
+  overflow: visible;
+  overflow-wrap: anywhere;
+
+  // O core põe negrito nos não lidos; o Discourse marca com a bolinha.
+  .DiscussionList:not(.DiscussionList--searchResults) .unread & {
+    font-weight: normal;
+  }
+}
+.CanelaTopic-title {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  // Visitado: --title-color--read (primary-medium).
+  .read & {
+    color: var(--cn-primary-medium);
+  }
+
+  mark {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    font-weight: 700;
+    color: var(--cn-primary);
+  }
+}
+
+// `.topic-statuses`: ícones em primary-medium antes do título (16px: um
+// pouco maiores que os 14px do Discourse, a pedido do usuário).
+.CanelaTopic-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 6px;
+  vertical-align: 1px;
+  color: var(--cn-primary-medium);
+
+  .Badge {
+    --size: auto;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+
+    &,
+    .Badge-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+.CanelaUnread {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  vertical-align: middle;
+  cursor: pointer;
+
+  &--new {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ~"oklch(from var(--cn-accent) calc(l + (1 - l) * 0.35) calc(c * 0.7) h)";
+  }
+
+  &--count {
+    min-width: 1.5em;
+    height: 1.5em;
+    padding: 0 0.45em;
+    border-radius: var(--cn-radius-pill);
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+    font-size: var(--cn-font-down-2);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  &:hover,
+  &:focus-visible {
+    box-shadow: none;
+  }
+}
+
+// `.link-bottom-line`: --font-down-1, margin-top 4px, gap 0 8px, line-height 1.4.
+.CanelaTopic-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  margin-top: 4px;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+  color: var(--cn-primary-high);
+
+  &:empty {
+    display: none;
+  }
+}
+.CanelaTopic-info.DiscussionListItem-info {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  font-size: inherit;
+  color: var(--cn-primary-medium);
+}
+.CanelaTopic-stats {
+  display: inline-flex;
+  gap: 8px;
+  color: var(--cn-primary-medium);
+
+  .DiscussionListItem-stats-item {
+    font-size: inherit;
+    color: inherit;
+  }
+}
+
+// `.topic-excerpt`: 16px, line-height 1.4, primary-high, margin-top 4px.
+.CanelaTopic-excerpt {
+  margin-top: 4px;
+  padding-right: 4px;
+  font-size: var(--cn-font-0);
+  line-height: 1.4;
+  color: var(--cn-primary-high);
+  overflow-wrap: anywhere;
+
+  mark {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    font-weight: 700;
+    color: inherit;
+  }
+}
+// "ler mais" do Discourse: na mesma cor do excerto no desktop.
+.CanelaTopic-excerptMore {
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-link);
+    text-decoration: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Colunas (`td.num`, 13.9px, primary-very-high)
+// ---------------------------------------------------------------------
+.CanelaCell {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  padding: 0 4px;
+  text-align: center;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.2;
+  color: var(--cn-primary-very-high);
+}
+
+.CanelaCell--posters {
+  width: @canela-col-posters;
+  text-align: left;
+}
+.CanelaCell--replies {
+  width: @canela-col-replies;
+}
+.CanelaCell--views {
+  width: @canela-col-views;
+  display: none;
+
+  .CanelaList--views & {
+    display: block;
+  }
+}
+.CanelaCell--activity {
+  width: @canela-col-activity;
+  padding-right: 0;
+  text-align: right;
+}
+
+// `td.posters > a { float: left; margin-right: 4px }`, avatares de 24px.
+.CanelaPosters {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.CanelaPosters-avatar {
+  display: block;
+  position: relative;
+  border-radius: 50%;
+
+  .Avatar {
+    .Avatar--size(24px);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--cn-ring);
+  }
+}
+// O autor que também postou por último ganha o brilho do Discourse
+// (`.posters a:first-child .avatar.latest:not(.single)`).
+.CanelaPosters-avatar--glow .Avatar {
+  position: relative;
+  left: -2px;
+  border: 1px solid ~"oklch(from var(--cn-accent) l c h / 0.5)";
+  box-shadow: 0 0 3px 1px ~"oklch(from var(--cn-accent) l c h / 0.35)";
+}
+
+.CanelaCell--replies {
+  font-weight: 700;
+}
+
+// `td.activity a { padding: 15px 5px }`: o texto termina 5px antes da borda.
+.CanelaCell--activity .CanelaActivity {
+  display: inline-block;
+  padding: 15px 5px;
+}
+.CanelaActivity {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+// Calor das contagens (.heatmap-* do Discourse).
+.CanelaCell--heat-low {
+  color: var(--cn-heat-low);
+}
+.CanelaCell--heat-med {
+  color: var(--cn-heat-med);
+}
+.CanelaCell--heat-high {
+  color: var(--cn-heat-high);
+}
+// Só o alto engorda (`.topic-list .heatmap-high { font-weight: 500 }` do
+// Horizon); o leve e o moderado mudam só a cor.
+.CanelaCell--views.CanelaCell--heat-high {
+  font-weight: 500;
+}
+
+// O "frio" da atividade (coldmap) não tem cor na lista de tópicos do Meta —
+// só na lista de categorias. As classes ficam, sem estilo, para quem quiser.
+
+// Carregar mais / lista vazia. Com a rolagem infinita, o botão só aparece
+// se o observador não existir (ou para quem navega pelo teclado).
+.CanelaList .DiscussionList-loadMore {
+  margin: 0;
+  padding: 20px 0;
+  text-align: center;
+
+  &:empty {
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Tablet (Discourse entre sm e lg, com barra lateral): título de 16px,
+// badges de 12.1px, só o avatar do último postador e sem visualizações.
+// ---------------------------------------------------------------------
+@media (min-width: 768px) and (max-width: 1023px) {
+  .CanelaTopic-titleLine.DiscussionListItem-title {
+    font-size: var(--cn-font-0);
+  }
+
+  .CanelaTopic-meta {
+    font-size: var(--cn-font-down-1);
+
+    .CanelaBadges {
+      font-size: var(--cn-font-down-1);
+    }
+  }
+
+  .CanelaTopic-excerpt {
+    font-size: var(--cn-font-down-1);
+  }
+
+  // `@mixin hide-posters`: coluna de 2em com só o `a.latest`, centrado.
+  .CanelaCell--posters {
+    width: 40px;
+  }
+  .CanelaPosters {
+    justify-content: center;
+  }
+  .CanelaPosters-avatar:not(.CanelaPosters-avatar--latest) {
+    display: none;
+  }
+  .CanelaPosters-avatar--glow .Avatar {
+    left: 0;
+  }
+
+  .CanelaCell--views,
+  .CanelaList--views .CanelaCell--views {
+    display: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular (print mob-a e CSS de `.mobile-view .topic-list`): avatar de 48px,
+// título a 78% da largura, contagem de 21px no canto; embaixo, o excerto e
+// a linha de badges com a atividade à direita.
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaListHeader {
+    display: none;
+  }
+
+  // O core estica a lista 15px para cada lado no celular; dentro do cartão
+  // ela vai de borda a borda do padding, como a tabela do Discourse.
+  .CanelaList.DiscussionList {
+    margin: 0;
+  }
+
+  .CanelaList .DiscussionListItem-content {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    grid-template-rows: auto 1fr;
+    column-gap: 7px;
+    align-items: start;
+    padding: 7px 0;
+
+    &:active {
+      background: transparent;
+    }
+  }
+
+  .CanelaListItem-avatar {
+    display: block;
+    grid-column: 1;
+    grid-row: ~"1 / span 2";
+
+    .Avatar {
+      .Avatar--size(48px);
+    }
+  }
+
+  // O bloco do tópico ocupa até a borda; a contagem e a data ficam por cima
+  // dele, nos cantos, como o `.pull-right` e o `.num.activity` do Discourse.
+  .CanelaTopic.DiscussionListItem-main {
+    grid-column: ~"2 / -1";
+    grid-row: ~"1 / span 2";
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .CanelaTopic-titleLine.DiscussionListItem-title {
+    width: 78%;
+    font-size: var(--cn-font-up-1);
+    line-height: 1.2;
+  }
+
+  // No celular o excerto vem antes da linha de badges.
+  .CanelaTopic-excerpt {
+    order: 1;
+    margin-top: 4px;
+    padding-right: 0;
+    font-size: var(--cn-font-0);
+  }
+
+  .CanelaTopic-excerptMore {
+    color: var(--cn-link);
+  }
+
+  .CanelaTopic-meta {
+    order: 2;
+    margin-top: 8px;
+    padding-right: 4.5em;
+    line-height: 1.2;
+  }
+
+  .CanelaCell--posters,
+  .CanelaCell--views,
+  .CanelaList--views .CanelaCell--views {
+    display: none;
+  }
+
+  .CanelaCell--replies {
+    position: relative;
+    z-index: 1;
+    grid-column: 3;
+    grid-row: 1;
+    width: auto;
+    padding: 0;
+    text-align: right;
+    font-size: var(--cn-font-up-2);
+    line-height: 1.2;
+  }
+
+  .CanelaCell--activity {
+    position: relative;
+    z-index: 1;
+    grid-column: 3;
+    grid-row: 2;
+    align-self: end;
+    width: auto;
+    padding: 0;
+    color: var(--cn-primary-medium);
+
+    .CanelaActivity {
+      padding: 0;
+    }
+  }
+}

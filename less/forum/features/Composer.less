@@ -1,0 +1,759 @@
+// =====================================================================
+// Recursos do editor do Discourse (o composer em si é de forum/Composer.less):
+// seletor de emoji, autocompletar de :emoji e #tag, hashtags nos posts,
+// tópicos semelhantes, menu "responder como tópico vinculado", rascunhos e
+// a pré-visualização lado a lado.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Seletor de emoji
+// ---------------------------------------------------------------------
+
+// Fixo no <body>: dentro do composer seria cortado pela borda de cima. Acima
+// do composer e abaixo dos modais.
+.CanelaEmojiPicker-portal {
+  position: fixed;
+  z-index: calc(~"var(--zindex-composer) + 5");
+  width: 400px;
+  max-width: ~"calc(100vw - 16px)";
+}
+
+.CanelaEmojiPicker {
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+  max-height: ~"calc(100vh - 16px)";
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  box-shadow: var(--cn-shadow-dropdown);
+  overflow: hidden;
+}
+
+.CanelaEmojiPicker-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 6px;
+}
+
+.CanelaEmojiPicker-search {
+  position: relative;
+  flex: 1;
+
+  .icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cn-primary-medium);
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  .FormControl {
+    width: 100%;
+    height: 34px;
+    padding-left: 32px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-input);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+
+    &:focus {
+      border-color: var(--cn-accent);
+      box-shadow: none;
+    }
+  }
+}
+
+.CanelaEmojiPicker-close.Button {
+  width: 32px;
+  height: 32px;
+  color: var(--cn-primary-high);
+
+  &:hover {
+    background: var(--cn-hover);
+  }
+}
+
+// A fileira de categorias do Discourse: só ícones, a ativa sublinhada.
+.CanelaEmojiPicker-groups {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--cn-border);
+}
+
+.CanelaEmojiPicker-group {
+  flex: 1;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--cn-primary-medium);
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--cn-primary);
+  }
+
+  &.active {
+    color: var(--cn-accent);
+    border-bottom-color: var(--cn-accent);
+  }
+}
+
+.CanelaEmojiPicker-body {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 6px 6px;
+  overscroll-behavior: contain;
+}
+
+.CanelaEmojiPicker-sectionTitle {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 8px 4px 4px;
+  background: var(--cn-surface);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+}
+
+.CanelaEmojiPicker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+}
+
+.CanelaEmojiPicker-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--cn-radius-input);
+  background: none;
+  cursor: pointer;
+
+  img.emoji {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    outline: none;
+  }
+}
+
+.CanelaEmojiPicker-char {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.CanelaEmojiPicker-empty {
+  padding: 24px 8px;
+  text-align: center;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaEmojiPicker-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 8px;
+  border-top: 1px solid var(--cn-border);
+  background: var(--cn-primary-very-low);
+}
+
+.CanelaEmojiPicker-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+
+  img.emoji,
+  .CanelaEmojiPicker-char {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    font-size: 22px;
+  }
+
+  code {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: none;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+  }
+}
+
+.CanelaEmojiPicker-hint {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// O tom de pele: as bolinhas de cor do Discourse. Cores fixas, de propósito:
+// são os tons do Unicode, não da paleta do fórum.
+.CanelaEmojiPicker-tones {
+  display: flex;
+  gap: 4px;
+}
+
+.CanelaEmojiPicker-tone {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid var(--cn-surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--cn-border);
+  cursor: pointer;
+
+  &.active {
+    box-shadow: 0 0 0 2px var(--cn-accent);
+  }
+
+  &--0 { background: #ffcc4d; }
+  &--1 { background: #f7dece; }
+  &--2 { background: #f3d2a2; }
+  &--3 { background: #d5ab88; }
+  &--4 { background: #af7e57; }
+  &--5 { background: #7c533e; }
+}
+
+// Celular: uma folha presa ao rodapé, na largura da tela.
+@media @phone {
+  .CanelaEmojiPicker-portal {
+    top: auto !important;
+    right: 0;
+    bottom: 0;
+    left: 0 !important;
+    width: 100%;
+    max-width: none;
+    z-index: calc(~"var(--zindex-modal) + 1");
+  }
+
+  .CanelaEmojiPicker {
+    height: 60vh;
+    border-radius: var(--cn-radius-large) var(--cn-radius-large) 0 0;
+    border-bottom: 0;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Autocompletar (:emoji sem o flarum/emoji, e #tag sem o flarum/mentions)
+// ---------------------------------------------------------------------
+
+// Um ponto no canto do pai do textarea: o menu se posiciona pelo cursor.
+.CanelaAutocomplete-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  z-index: 5;
+}
+
+.Dropdown-menu.CanelaAutocomplete {
+  display: block;
+  position: absolute;
+  min-width: 220px;
+  max-width: 360px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  box-shadow: var(--cn-shadow-dropdown);
+
+  .Dropdown-header {
+    padding: 4px 8px;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+  }
+
+  > li > button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: var(--cn-radius-input);
+    background: none;
+    color: var(--cn-primary);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  > li.active > button {
+    background: var(--cn-selected);
+  }
+
+  img.emoji {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  mark {
+    padding: 0;
+    background: none;
+    color: inherit;
+    font-weight: 600;
+  }
+}
+
+.CanelaAutocomplete-emoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.CanelaAutocomplete-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaAutocomplete-meta {
+  margin-left: auto;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaHashtag-tagIcon {
+  color: var(--cn-primary-medium);
+  font-size: 12px;
+}
+
+// O autocompletar ":" do flarum/emoji, quando ele está ligado: só a pele.
+.ComposerBody-emojiDropdownContainer .EmojiDropdown {
+  padding: 4px;
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  box-shadow: var(--cn-shadow-dropdown);
+
+  .Dropdown-header {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+  }
+
+  > li > button {
+    border-radius: var(--cn-radius-input);
+  }
+
+  > li.active > button,
+  > li > button:hover {
+    background: var(--cn-selected);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Hashtags nos posts (e na prévia): a pílula do Discourse
+// ---------------------------------------------------------------------
+.CanelaHashtag,
+.Post-body a.CanelaHashtag,
+.Post-body a.TagMention.CanelaHashtag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  margin: 0 1px;
+  padding: 0 0.4em;
+  border: 0;
+  border-radius: 0.3em;
+  background: var(--cn-primary-low) !important;
+  color: var(--cn-primary) !important;
+  font-weight: 500;
+  line-height: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: baseline;
+
+  &:hover {
+    background: var(--cn-primary-low-mid) !important;
+    text-decoration: none;
+  }
+
+  .CanelaHashtag-symbol {
+    display: inline-flex;
+    align-self: center;
+  }
+
+  .CanelaCategorySymbol {
+    font-size: 0.85em;
+  }
+
+  .CanelaHashtag-symbol > .icon {
+    color: var(--cn-primary-medium);
+    font-size: 0.8em;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Tópicos semelhantes
+// ---------------------------------------------------------------------
+.CanelaSimilarTopics {
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  box-shadow: var(--cn-shadow-dropdown);
+  overflow: hidden;
+}
+
+// O cabeçalho do `.composer-popup`: o ✕ em cima à direita e o título em h3,
+// tudo sobre o fundo do composer (`--composer-popup-background: secondary`).
+.CanelaSimilarTopics-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 0 0 2rem;
+  background: var(--cn-surface);
+}
+
+.Composer .ComposerBody-header .CanelaSimilarTopics-title,
+.CanelaSimilarTopics-title {
+  margin: 2rem 0 10px;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-2);
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.CanelaSimilarTopics-close.Button {
+  position: sticky;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 0 0 0 var(--cn-button-radius);
+  color: var(--cn-primary-medium);
+  background: var(--cn-surface) !important;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaSimilarTopics-list {
+  max-height: none;
+  margin: 0;
+  padding: 0 2rem 2rem;
+  overflow: visible;
+  list-style: none;
+
+  > li + li {
+    margin-top: 0.5em;
+  }
+}
+
+.CanelaSimilarTopics-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  color: var(--cn-primary);
+  text-decoration: none;
+
+  &:hover .CanelaSimilarTopics-itemTitle {
+    color: var(--cn-link);
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.CanelaSimilarTopics-itemTitle {
+  font-weight: 400;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaSimilarTopics-itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaSimilarTopics-itemStats {
+  white-space: nowrap;
+}
+
+// Como o `.composer-popup` do Discourse: um balão DENTRO do composer, no
+// canto de baixo à direita, por cima do texto (60% da largura; sobre a
+// prévia quando ela está aberta). O `.Composer` é o bloco de referência.
+@media @tablet-up {
+  .ComposerBody-header > .item-canelaSimilar {
+    position: absolute;
+    right: 1rem;
+    bottom: 4.2rem;
+    z-index: 701;
+    width: 60%;
+    max-height: 50%;
+    margin: 0;
+    overflow-y: auto;
+    border-radius: calc(var(--cn-radius) * 2);
+    box-shadow: var(--cn-shadow-dropdown);
+
+    .show-preview & {
+      right: 1.5rem;
+      width: ~"calc(50% - 2rem)";
+    }
+
+    .CanelaSimilarTopics {
+      border: 0;
+      border-radius: inherit;
+      box-shadow: none;
+    }
+  }
+}
+
+@media @phone {
+  .ComposerBody-header > .item-canelaSimilar {
+    flex: 1 1 100%;
+    order: 3;
+    padding: 8px 12px;
+
+    .CanelaSimilarTopics {
+      box-shadow: none;
+    }
+
+    .CanelaSimilarTopics-list {
+      max-height: 30vh;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Rascunhos (fof/drafts): o erro no rodapé, a pergunta ao fechar, o "⌄" do
+// botão Novo tópico e a aba do perfil
+// ---------------------------------------------------------------------
+.CanelaDraftStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  white-space: nowrap;
+
+  &--error {
+    color: var(--cn-danger);
+  }
+}
+
+.CanelaDraftStatus-label .icon {
+  margin-right: 4px;
+  font-size: 11px;
+}
+
+@media @phone {
+  .CanelaDraftStatus-label {
+    display: none;
+  }
+}
+
+.CanelaDraftCloseModal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.CanelaDrafts-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaDrafts-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--cn-border);
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.CanelaDrafts-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cn-primary-100);
+  color: var(--cn-primary-high);
+  font-size: 13px;
+}
+
+.CanelaDrafts-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.CanelaDrafts-context {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaDrafts-title {
+  margin: 2px 0 4px;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-1);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.CanelaDrafts-excerpt {
+  margin: 0;
+  color: var(--cn-primary-high);
+  overflow-wrap: anywhere;
+}
+
+.CanelaDrafts-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.CanelaDrafts-more {
+  margin-top: var(--cn-space-4);
+  text-align: center;
+}
+
+// O número ao lado de "Rascunhos" no menu do usuário.
+.CanelaDrafts-count {
+  margin-left: 6px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// O menu do "⌄" (o `topic-drafts-menu` do Discourse): uma linha por
+// rascunho, ícone do tipo e o título cortado com reticências.
+// A posição (fixa, à direita do botão; embaixo no celular) é calculada no
+// DraftsMenu: a barra lateral cortaria um menu absoluto.
+.CanelaDraftsMenu-menu.Dropdown-menu {
+  min-width: 0;
+  padding: 4px 0;
+  z-index: var(--zindex-dropdown, 1000);
+
+  > li > button,
+  > li > a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 8px 12px;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    text-align: left;
+  }
+
+  .Button-icon {
+    flex: none;
+    width: 14px;
+    margin: 0;
+    color: var(--cn-primary-medium);
+  }
+
+  .Button-label {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .LoadingIndicator-container {
+    padding: 8px 0;
+  }
+}
+
+.CanelaDraftsMenu-title {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanelaDraftsMenu-all {
+  justify-content: center;
+  border-top: 1px solid var(--cn-border);
+  color: var(--cn-primary-high) !important;
+}
+
+@media @phone {
+  .CanelaDrafts-item {
+    flex-wrap: wrap;
+  }
+
+  .CanelaDrafts-actions {
+    width: 100%;
+    padding-left: 44px;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Pré-visualização lado a lado (a grade mora em forum/Composer.less)
+// ---------------------------------------------------------------------
+
+// A prévia não dá altura à linha: a caixa rolável é absoluta e acompanha a
+// altura do editor, que é a que o core calcula.
+.CanelaComposerPreview {
+  position: relative;
+  min-width: 0;
+  border-left: 1px solid var(--cn-primary-low);
+
+  .minimized & {
+    display: none;
+  }
+}
+
+// `.d-editor-preview-wrapper`: 8px 16px, o fundo do próprio composer.
+.CanelaComposerPreview-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-anchor: none;
+  overscroll-behavior: contain;
+  padding: 8px 16px;
+  cursor: default;
+}
+
+.CanelaComposerPreview-body {
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+
+  > :first-child {
+    margin-top: 0;
+  }
+}

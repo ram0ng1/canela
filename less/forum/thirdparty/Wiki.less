@@ -1,0 +1,1683 @@
+// =====================================================================
+// linkrobins/wiki no padrão do tema (o Discourse/Horizon)
+//
+// A wiki traz o próprio visual: cartões em grade, cores fixas e tokens do
+// core (`--muted-color`, `--control-bg`). Aqui cada tela fica com as peças do
+// tema: o hero das categorias, a barra da lista, as linhas com colunas da
+// lista de tópicos, o post com avatar e o texto "cooked", o mapa do tópico, o
+// histórico em painel e o composer de tópico. As classes Canela* vêm de
+// js/src/forum/thirdparty/wiki; as LinkRobinsWiki-* são da extensão.
+//
+// O Canela compila depois da wiki, então as regras de mesma especificidade
+// daqui vencem as dela.
+//
+// Só com a extensão e a integração ligadas (@config-canela-wiki, extend.php).
+// =====================================================================
+& when (@config-canela-wiki = true) {
+
+.CanelaWiki {
+  // A coluna do avatar do post e o vão até o texto (os do tópico).
+  --cn-wiki-avatar: 45px;
+  --cn-wiki-gap: 12px;
+  --cn-wiki-offset: calc(~"var(--cn-wiki-avatar) + var(--cn-wiki-gap)");
+  --cn-wiki-stream: 759px;
+  // A borda esquerda do texto do post: a coluna do avatar e os 11px do cooked.
+  --cn-wiki-text: calc(~"var(--cn-wiki-offset) + 11px");
+
+  .Page-content {
+    min-width: 0;
+  }
+}
+
+// O ícone de livro que a wiki põe antes dos títulos dela e o título só do
+// celular (no tema, o cabeçalho já diz onde se está).
+.CanelaWiki .LinkRobinsWiki-mobileTitle {
+  display: none;
+}
+
+// ---------------------------------------------------------------------
+// Índice: hero, barra da lista e busca
+// ---------------------------------------------------------------------
+.CanelaWikiHero.Hero .CanelaCategoryHero-icon .CanelaCategorySymbol {
+  width: auto;
+  height: auto;
+}
+
+.CanelaWikiNav {
+  flex-wrap: wrap;
+}
+
+.CanelaWikiNav .CanelaNav-start {
+  flex-wrap: nowrap;
+  column-gap: 8px;
+}
+
+.CanelaWikiNav-search {
+  position: relative;
+  flex: 0 1 280px;
+  min-width: 0;
+}
+
+.CanelaWikiNav-searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  transform: translateY(-50%);
+  color: var(--cn-primary-medium);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.CanelaWikiNav-searchInput.FormControl {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 10px 0 34px;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  font-size: var(--cn-font-0);
+  box-shadow: none;
+
+  &::placeholder {
+    color: var(--cn-primary-medium);
+  }
+
+  &:focus {
+    border-color: var(--cn-accent);
+    background: var(--cn-surface);
+    box-shadow: none;
+    outline: 0;
+  }
+}
+
+// O layout próprio do admin (blocos): a busca e o botão numa linha só.
+.CanelaWiki .LinkRobinsWiki-indexHeader--searchOnly {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 var(--cn-space-6);
+
+  .CanelaWikiNav-search {
+    flex: 1 1 auto;
+  }
+
+  .CanelaWikiNav-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: var(--cn-radius-pill);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Lista de artigos: as linhas da lista de tópicos
+// ---------------------------------------------------------------------
+.CanelaWikiList,
+.CanelaWiki .CanelaWikiList-header {
+  font-size: 1rem;
+}
+
+.CanelaWikiList-header {
+  .CanelaWikiCell--author {
+    flex: 0 0 64px;
+    padding: 12px 4px;
+  }
+}
+
+.CanelaWikiList-rows {
+  border-top: 1px solid var(--cn-border);
+}
+
+.CanelaWikiRow {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--cn-border);
+  color: var(--cn-primary-very-high);
+}
+
+.CanelaWikiRow-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 20px 4px 20px 0;
+}
+
+.CanelaWikiRow-titleLine {
+  margin: 0;
+  font-size: var(--cn-font-up-1);
+  font-weight: normal;
+  line-height: 1.2;
+  color: var(--cn-primary);
+  overflow-wrap: anywhere;
+}
+
+.CanelaWikiRow-title {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: inherit;
+    text-decoration: none;
+  }
+
+}
+
+// Os ícones de estado antes do título (rascunho, excluído), só o ícone em
+// cinza, como os do Discourse.
+.CanelaWikiRow-status {
+  display: inline-flex;
+  gap: 4px;
+  margin-right: 6px;
+  color: var(--cn-primary-medium);
+  font-size: 0.85em;
+  vertical-align: baseline;
+}
+
+.CanelaWikiRow-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  margin-top: 4px;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+  color: var(--cn-primary-high);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.CanelaWikiRow-excerpt {
+  display: -webkit-box;
+  margin-top: 4px;
+  padding-right: 4px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+  color: var(--cn-primary-medium);
+  overflow-wrap: anywhere;
+}
+
+.CanelaWikiRow--deleted {
+  .CanelaWikiRow-title {
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaWikiCell--author {
+  flex: 0 0 64px;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 4px;
+}
+
+// O selo "Rascunho" / "Excluído": a etiqueta pequena do Discourse.
+.CanelaWikiTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-low);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-2);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  &--danger {
+    background: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
+    color: var(--cn-danger);
+  }
+}
+
+// A página inicial agrupada: uma seção por categoria.
+.CanelaWikiGroups {
+  display: flex;
+  flex-direction: column;
+}
+
+.CanelaWikiGroup {
+  margin-top: var(--cn-space-6);
+
+  &:first-child {
+    margin-top: var(--cn-space-2);
+  }
+}
+
+.CanelaWikiGroup-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 0 12px 10px;
+  border-bottom: 2px solid var(--category-color, var(--cn-primary-low));
+}
+
+.CanelaWikiGroup-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--cn-font-up-2);
+  font-weight: 700;
+  line-height: 1.3;
+
+  .CanelaCategoryBadge {
+    color: var(--cn-primary);
+    white-space: normal;
+  }
+}
+
+.CanelaWikiGroup-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-link);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-link);
+    text-decoration: underline;
+  }
+}
+
+.CanelaWikiGroup-description {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaWikiList--grouped .CanelaWikiList-rows {
+  border-top: 0;
+}
+
+// Vazio, erro e "Carregar mais": como a lista de tópicos.
+.CanelaWiki .LinkRobinsWiki-empty {
+  margin: var(--cn-space-4) 0;
+  padding: var(--cn-space-8) var(--cn-space-4);
+  border: 0;
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-0);
+  text-align: center;
+}
+
+.CanelaWiki .LinkRobinsWiki-loadMore {
+  margin-top: var(--cn-space-4);
+  text-align: center;
+}
+
+// O layout próprio do admin: os blocos de texto e de categorias.
+.CanelaWiki {
+  .LinkRobinsWiki-home {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-6);
+  }
+
+  .LinkRobinsWiki-homeBlock-title,
+  .LinkRobinsWiki-prose h2 {
+    margin: 0 0 var(--cn-space-2);
+    font-size: var(--cn-font-up-2);
+    font-weight: 700;
+    color: var(--cn-primary);
+  }
+
+  .LinkRobinsWiki-prose {
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-0);
+    line-height: 1.5;
+
+    a {
+      color: var(--cn-link);
+    }
+  }
+
+  .LinkRobinsWiki-categoryCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--cn-space-3);
+  }
+
+  .LinkRobinsWiki-categoryCard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--cn-space-4);
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    text-decoration: none;
+    box-shadow: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover);
+      text-decoration: none;
+    }
+  }
+
+  .LinkRobinsWiki-categoryCard-desc {
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Artigo: o título do tópico
+// ---------------------------------------------------------------------
+.CanelaWikiArticle-header {
+  position: relative;
+  padding: 0 0 14px;
+
+  // A linha embaixo do título vai só até a largura do texto, como a do tópico.
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: ~"min(100%, var(--cn-wiki-stream))";
+    height: 1px;
+    background: var(--cn-border);
+  }
+}
+
+.CanelaWikiArticle-title {
+  margin: 0;
+  font-size: 1.7511rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--cn-primary);
+  overflow-wrap: anywhere;
+}
+
+.CanelaWikiArticle-status {
+  margin-right: 8px;
+  font-size: 0.7em;
+  color: var(--cn-primary-medium);
+  vertical-align: middle;
+}
+
+.CanelaWikiArticle-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  margin-top: 8px;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-high);
+}
+
+.CanelaWikiArticle-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cn-primary-high);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+.CanelaWikiArticle-crumbSep {
+  color: var(--cn-primary-low-mid);
+  font-size: 0.85em;
+}
+
+// Avisos de rascunho e de excluído: a faixa de aviso do Discourse.
+.CanelaWiki {
+  .LinkRobinsWiki-draftNotice,
+  .LinkRobinsWiki-deletedNotice {
+    max-width: var(--cn-wiki-stream);
+    margin: var(--cn-space-4) 0 0;
+    padding: 12px 16px;
+    border: 0;
+    border-left: 4px solid var(--cn-accent);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-0);
+    box-sizing: border-box;
+  }
+
+  .LinkRobinsWiki-deletedNotice {
+    border-left-color: var(--cn-danger);
+    background: ~"color-mix(in srgb, var(--cn-danger) 8%, var(--cn-surface))";
+  }
+}
+
+// ---------------------------------------------------------------------
+// Artigo: o texto e a coluna do sumário (o lugar da linha do tempo)
+// ---------------------------------------------------------------------
+.CanelaWiki .CanelaWikiArticle-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+.CanelaWiki .CanelaWikiArticle-layout > .LinkRobinsWiki-articleMain {
+  flex: 0 1 var(--cn-wiki-stream);
+  max-width: var(--cn-wiki-stream);
+  min-width: 0;
+}
+
+.CanelaWiki .LinkRobinsWiki-tocRail {
+  flex: 0 0 200px;
+  top: calc(~"var(--cn-header-height, 60px) + var(--cn-space-6)");
+  max-height: calc(~"100vh - var(--cn-header-height, 60px) - 48px");
+  margin-top: var(--cn-space-4);
+}
+
+.CanelaWiki .LinkRobinsWiki-toc-title {
+  margin: 0 0 8px;
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--cn-primary-high);
+}
+
+.CanelaWiki .LinkRobinsWiki-toc-list {
+  border-left: 1px solid var(--cn-border);
+}
+
+.CanelaWiki .LinkRobinsWiki-toc-link {
+  margin-left: -1px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-left: 2px solid transparent;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.35;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+.CanelaWiki .LinkRobinsWiki-toc-item.is-active > .LinkRobinsWiki-toc-link {
+  border-left-color: var(--cn-accent);
+  color: var(--cn-primary);
+  font-weight: 600;
+}
+
+// Sem largura para o texto e a coluna juntos, o sumário vira a barra
+// "Neste artigo" que a wiki usa no celular (o título e o menu que abre a
+// lista), presa embaixo do cabeçalho ao rolar.
+@media (max-width: 1279px) {
+  .CanelaWiki .LinkRobinsWiki-tocRail {
+    display: none;
+  }
+
+  .CanelaWiki .CanelaWikiArticle-layout > .LinkRobinsWiki-articleMain {
+    flex: 1 1 auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .CanelaWiki .LinkRobinsWiki-mobileToc {
+    display: block;
+    margin: var(--cn-space-4) 0 0 var(--cn-wiki-text);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-inner {
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc.is-pinned .LinkRobinsWiki-mobileToc-inner {
+    position: fixed;
+    top: calc(~"var(--cn-header-height, 60px) + 6px");
+    z-index: 10;
+    box-shadow: var(--cn-shadow-dropdown);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    background: none;
+    color: var(--cn-primary);
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-icon {
+    color: var(--cn-primary-medium);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-panel {
+    max-height: 55vh;
+    overflow-y: auto;
+    padding: 10px 14px 12px;
+    border-top: 1px solid var(--cn-border);
+  }
+}
+
+// ---------------------------------------------------------------------
+// O post: avatar na coluna da esquerda, cabeçalho, texto e ações
+// ---------------------------------------------------------------------
+.CanelaWikiPost {
+  position: relative;
+  padding: var(--cn-space-4) 0 0 var(--cn-wiki-offset);
+}
+
+.CanelaWikiPost-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  padding: 0 11px 4px;
+  font-size: var(--cn-font-0);
+}
+
+.CanelaWikiPost-avatar {
+  position: absolute;
+  top: var(--cn-space-4);
+  left: 0;
+
+  .Avatar {
+    .Avatar--size(48px);
+  }
+}
+
+.CanelaWikiPost-names {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
+  min-width: 0;
+}
+
+.CanelaWikiPost-username {
+  font-weight: 700;
+  color: var(--cn-primary-high);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+.CanelaWikiPost-editor {
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+.CanelaWikiPost-info {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+// O lápis das edições (`.post-info.edits`): o número e o ícone, em cinza.
+.CanelaWikiPost-edits {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cn-primary-medium);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible,
+  &.active {
+    color: var(--cn-primary);
+  }
+}
+
+// O texto do artigo é o "cooked" dos posts (Posts.less, `.Post-body`); só
+// sai o que a wiki muda nele.
+.CanelaWiki .LinkRobinsWiki-articleBody.CanelaWikiPost-body {
+  margin: 0;
+  padding: 4px 11px 0;
+  line-height: 1.5;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    scroll-margin-top: calc(~"var(--cn-header-height, 60px) + 16px");
+  }
+}
+
+// A barra de ações do post (`.post-controls`): botões redondos de 38px só de
+// ícone, e "Editar" com o rótulo, como nos posts wiki do Discourse.
+.CanelaWikiPost-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+  margin-top: var(--cn-space-3);
+  padding: 0 0 var(--cn-space-2);
+}
+
+.CanelaWikiPost-actions .Button.CanelaWikiPost-action,
+.CanelaWikiPost-more > .Button.CanelaWikiPost-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: var(--cn-radius-pill);
+  background: transparent;
+  color: var(--cn-primary-low-mid);
+  font-size: var(--cn-font-0);
+  transition: none;
+
+  .Button-icon {
+    margin: 0;
+    font-size: 1.1em;
+  }
+
+  &:hover,
+  &:focus-visible,
+  .open > & {
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaWikiPost-actions .Button.CanelaWikiPost-edit {
+  padding: 0 14px;
+  color: var(--cn-primary-high);
+}
+
+// O mapa do tópico (TopicExtras.less), com a linha de baixo que no tópico
+// vem do post seguinte.
+.CanelaWikiMap.CanelaTopicMap--op {
+  border-bottom: 1px solid var(--cn-border);
+}
+// ---------------------------------------------------------------------
+// Histórico de revisões: painel que abre pelo lápis ou pelo mapa
+// ---------------------------------------------------------------------
+.CanelaWiki .CanelaWikiHistory {
+  margin-top: var(--cn-space-4);
+  padding: var(--cn-space-3) var(--cn-space-4) var(--cn-space-4);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-surface);
+  scroll-margin-top: calc(~"var(--cn-header-height, 60px) + 16px");
+}
+
+.CanelaWikiHistory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: var(--cn-space-2);
+}
+
+.CanelaWikiHistory-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--cn-font-up-1);
+  font-weight: 600;
+  color: var(--cn-primary);
+}
+
+.CanelaWiki .LinkRobinsWiki-revisions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaWiki .LinkRobinsWiki-revision.CanelaWikiRevision {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--cn-border);
+  background: none;
+}
+
+.CanelaWikiRevision-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 4px;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-0);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+  }
+}
+
+.CanelaWikiRevision-caret {
+  flex: none;
+  width: 14px;
+  color: var(--cn-primary-medium);
+  font-size: 0.85em;
+}
+
+.CanelaWikiRevision-avatar.Avatar {
+  .Avatar--size(24px);
+  flex: none;
+}
+
+.CanelaWikiRevision-user {
+  flex: none;
+  font-weight: 600;
+}
+
+.CanelaWikiRevision-summary {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--cn-primary-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaWikiRevision-date {
+  flex: none;
+  margin-left: auto;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+.CanelaWiki {
+  .LinkRobinsWiki-revisionDiff {
+    padding: 0 4px var(--cn-space-3) 26px;
+  }
+
+  .LinkRobinsWiki-diff-label {
+    margin: 0 0 6px;
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-medium);
+  }
+
+  .LinkRobinsWiki-diff {
+    overflow-x: auto;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+    font-family: ~"ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+    font-size: var(--cn-font-down-1);
+  }
+
+  .LinkRobinsWiki-diff-line {
+    color: var(--cn-primary-high);
+
+    &.is-add {
+      background: ~"color-mix(in srgb, var(--cn-success) 16%, var(--cn-surface))";
+    }
+
+    &.is-del {
+      background: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
+    }
+
+    &.is-add .LinkRobinsWiki-diff-sign {
+      color: var(--cn-success);
+    }
+
+    &.is-del .LinkRobinsWiki-diff-sign {
+      color: var(--cn-danger);
+    }
+  }
+
+  .LinkRobinsWiki-diff-add {
+    background: ~"color-mix(in srgb, var(--cn-success) 16%, var(--cn-surface))";
+  }
+
+  .LinkRobinsWiki-diff-del {
+    background: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
+  }
+
+  .LinkRobinsWiki-diff-fold,
+  .LinkRobinsWiki-diff-none {
+    color: var(--cn-primary-medium);
+  }
+
+  .LinkRobinsWiki-history-loadMore {
+    padding-top: var(--cn-space-2);
+    text-align: center;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Perguntas frequentes, relacionados e comentários
+// ---------------------------------------------------------------------
+.CanelaWiki {
+  .LinkRobinsWiki-faq {
+    margin-top: var(--cn-space-6);
+  }
+
+  .LinkRobinsWiki-faq-heading,
+  .LinkRobinsWiki-related-heading,
+  .LinkRobinsWiki-comments-heading {
+    margin: 0 0 var(--cn-space-3);
+    font-size: var(--cn-font-up-1);
+    font-weight: 600;
+    color: var(--cn-primary);
+  }
+
+  // O `details` do texto do Discourse: linha com a seta, sem caixa.
+  .LinkRobinsWiki-faq-item {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+
+    &:last-of-type {
+      border-bottom: 1px solid var(--cn-border);
+    }
+  }
+
+  .LinkRobinsWiki-faq-question {
+    padding: 12px 4px;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-0);
+    font-weight: 600;
+    background: none;
+
+    &:hover {
+      background: var(--cn-hover);
+    }
+  }
+
+  .LinkRobinsWiki-faq-caret {
+    color: var(--cn-primary-medium);
+  }
+
+  .LinkRobinsWiki-faq-answer {
+    padding: 0 4px 12px 22px;
+  }
+
+  // Relacionados: a lista dos "tópicos sugeridos".
+  .LinkRobinsWiki-related {
+    margin-top: var(--cn-space-8);
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .LinkRobinsWiki-related-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--cn-border);
+
+    li {
+      margin: 0;
+      border-bottom: 1px solid var(--cn-border);
+    }
+
+    a {
+      display: block;
+      padding: 14px 12px;
+      color: var(--cn-primary);
+      font-size: var(--cn-font-up-1);
+      line-height: 1.2;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-hover);
+        text-decoration: none;
+      }
+    }
+  }
+
+  // Comentários: as respostas do tópico (avatar de 48px, nome, data à direita).
+  .LinkRobinsWiki-comments {
+    margin-top: var(--cn-space-8);
+    padding: 0;
+    border: 0;
+  }
+
+  .LinkRobinsWiki-commentList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .LinkRobinsWiki-comment {
+    display: flex;
+    gap: var(--cn-wiki-gap);
+    margin: 0;
+    padding: var(--cn-space-4) 0;
+    border: 0;
+    border-top: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: none;
+  }
+
+  .LinkRobinsWiki-comment-side {
+    flex: 0 0 var(--cn-wiki-avatar);
+
+    .Avatar {
+      .Avatar--size(48px);
+    }
+  }
+
+  .LinkRobinsWiki-comment-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .LinkRobinsWiki-comment-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 11px;
+    font-size: var(--cn-font-0);
+  }
+
+  .LinkRobinsWiki-comment-author a,
+  .LinkRobinsWiki-comment-author {
+    font-weight: 700;
+    color: var(--cn-primary-high);
+    text-decoration: none;
+  }
+
+  .LinkRobinsWiki-comment-date {
+    margin-left: auto;
+    font-size: var(--cn-font-down-1);
+    color: var(--cn-primary-medium);
+  }
+
+  .LinkRobinsWiki-comment-body {
+    padding: 4px 11px 0;
+  }
+
+  .LinkRobinsWiki-comment-deleted,
+  .LinkRobinsWiki-comments-empty {
+    padding: 4px 0;
+    color: var(--cn-primary-medium);
+    font-style: normal;
+  }
+
+  .LinkRobinsWiki-comments-form,
+  .LinkRobinsWiki-composePreview {
+    margin-top: var(--cn-space-3);
+  }
+
+  // A caixa "Escreva…" que abre o composer (o ReplyPlaceholder do core).
+  .LinkRobinsWiki-comments-form .ReplyPlaceholder,
+  .LinkRobinsWiki-composePreview .ReplyPlaceholder {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 14px 16px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius-large);
+    background: var(--cn-surface);
+    color: var(--cn-primary-medium);
+    text-align: left;
+    cursor: text;
+    box-shadow: none;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--cn-accent);
+    }
+
+    .Post-container {
+      display: flex;
+      align-items: center;
+      gap: var(--cn-wiki-gap);
+    }
+
+    .Post-side {
+      position: static;
+    }
+
+    .Post-avatar,
+    .Avatar {
+      .Avatar--size(32px);
+      position: static;
+      margin: 0;
+    }
+
+    .Post-main,
+    .Post-header {
+      margin: 0;
+      padding: 0;
+      color: inherit;
+      font-size: var(--cn-font-0);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// O composer do artigo: a linha "rascunho · opções avançadas" e o painel
+// recolhível (rolável, para não empurrar o editor para fora do composer)
+// ---------------------------------------------------------------------
+.CanelaWikiComposer .ComposerBody-header > .item-canelaWikiOptions {
+  order: 3;
+  flex: 1 1 100%;
+}
+
+.CanelaWikiComposerOptions {
+  border-bottom: 1px solid var(--cn-composer-border, var(--cn-border));
+}
+
+.CanelaWikiComposerOptions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 6px 16px;
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaWikiComposerOptions-draft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--cn-primary-high);
+  font-weight: 500;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+    accent-color: var(--cn-accent);
+  }
+
+  .icon {
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaWikiComposerOptions-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 8px;
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary-high);
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible,
+  .is-open & {
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+  }
+}
+
+.CanelaWikiComposerOptions-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-accent);
+  color: var(--cn-accent-text, #fff);
+  font-size: 11px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+.CanelaWikiComposerOptions-caret {
+  color: var(--cn-primary-medium);
+}
+
+.CanelaWikiComposerOptions-panel {
+  max-height: ~"min(34vh, 240px)";
+  overflow-y: auto;
+  padding: 4px 16px 14px;
+  border-top: 1px solid var(--cn-composer-border, var(--cn-border));
+  background: var(--cn-primary-very-low);
+  scrollbar-width: thin;
+}
+
+.CanelaWikiComposerOptions-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.CanelaWikiComposerOptions-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.CanelaWikiComposerOptions-label {
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+}
+
+.CanelaWikiComposerOptions-help {
+  margin: 0;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-2);
+  line-height: 1.4;
+}
+
+.CanelaWikiComposerOptions-panel .FormControl {
+  min-height: 34px;
+  background: var(--cn-surface);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaWikiComposerOptions-faq {
+  margin-top: 14px;
+}
+
+.CanelaWikiComposerOptions-faqHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.CanelaWikiComposerOptions-faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.CanelaWikiComposerOptions-faqEntry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+
+  > textarea {
+    grid-column: 1;
+    resize: vertical;
+  }
+}
+
+.CanelaWikiComposerOptions-faqRemove.Button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  color: var(--cn-danger);
+}
+
+.CanelaWikiComposerOptions-faqAdd.Button {
+  margin-top: 8px;
+  border-radius: var(--cn-radius-pill);
+  font-size: var(--cn-font-down-1);
+}
+
+@media @phone {
+  .CanelaWikiComposerOptions-bar {
+    padding: 6px 12px;
+  }
+
+  .CanelaWikiComposerOptions-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .CanelaWikiComposerOptions-panel {
+    max-height: 40vh;
+    padding: 4px 12px 12px;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Hero da página inicial: o selo do livro, a frase e os números
+// ---------------------------------------------------------------------
+.CanelaWikiHero-stats {
+  margin: 4px 0 0;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-0);
+}
+// ---------------------------------------------------------------------
+// Skeletons e vazios
+// ---------------------------------------------------------------------
+.CanelaWikiRow--skeleton {
+  pointer-events: none;
+
+  .CanelaWikiRow-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.CanelaWikiSkeleton-title,
+.CanelaWikiSkeleton-line,
+.CanelaWikiSkeleton-heading,
+.CanelaWikiSkeleton-crumb,
+.CanelaWikiSkeleton-age,
+.CanelaWikiSkeleton-avatar,
+.CanelaWikiSkeleton-postAvatar {
+  display: block;
+}
+
+.CanelaWikiSkeleton-title {
+  height: 18px;
+}
+
+.CanelaWikiSkeleton-line {
+  width: 90%;
+  height: 12px;
+
+  &--short {
+    width: 45%;
+  }
+}
+
+.CanelaWikiSkeleton-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.CanelaWikiSkeleton-age {
+  width: 32px;
+  height: 12px;
+  margin-left: auto;
+}
+
+.CanelaWikiArticle-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: var(--cn-wiki-stream);
+}
+
+.CanelaWikiSkeleton-heading {
+  width: 60%;
+  height: 30px;
+}
+
+.CanelaWikiSkeleton-crumb {
+  width: 140px;
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.CanelaWikiPost--skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 220px;
+}
+
+.CanelaWikiSkeleton-postAvatar {
+  position: absolute;
+  top: var(--cn-space-4);
+  left: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+// O vazio do Discourse: ícone grande num círculo tingido, a frase e a ação.
+.CanelaWikiEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: var(--cn-space-6) auto;
+  padding: var(--cn-space-8) var(--cn-space-4);
+  max-width: 480px;
+  text-align: center;
+}
+
+.CanelaWikiEmpty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  background: var(--cn-accent-low, var(--cn-primary-low));
+  color: var(--cn-accent);
+  font-size: 32px;
+
+  .icon {
+    color: inherit;
+  }
+}
+
+.CanelaWikiEmpty-title {
+  margin: 0;
+  font-size: var(--cn-font-up-2);
+  font-weight: 700;
+  color: var(--cn-primary);
+}
+
+.CanelaWikiEmpty-text {
+  margin: 0 0 8px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-0);
+  line-height: 1.5;
+}
+
+.CanelaWikiEmpty-action.Button {
+  border-radius: var(--cn-radius-pill);
+}
+
+// ---------------------------------------------------------------------
+// Anterior / próximo na categoria
+// ---------------------------------------------------------------------
+.CanelaWikiPager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cn-space-3);
+  margin-top: var(--cn-space-8);
+}
+
+.CanelaWikiPager-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--cn-accent);
+    background: var(--cn-hover);
+    text-decoration: none;
+  }
+
+  &--next {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  &--empty {
+    visibility: hidden;
+  }
+}
+
+.CanelaWikiPager-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaWikiPager-title {
+  font-size: var(--cn-font-up-1);
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+// Tudo o que vem depois do post na coluna do texto dele (o avatar e os 11px
+// do cooked): perguntas, histórico, navegação, relacionados e comentários.
+.CanelaWiki {
+  .LinkRobinsWiki-faq,
+  .CanelaWikiHistory,
+  .CanelaWikiPager,
+  .LinkRobinsWiki-related,
+  .LinkRobinsWiki-comments {
+    margin-left: var(--cn-wiki-text);
+  }
+
+  .LinkRobinsWiki-faq {
+    padding: 0;
+    border: 0;
+  }
+
+  .LinkRobinsWiki-related-list a {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.CanelaWikiComments-reply {
+  display: flex;
+  margin-top: var(--cn-space-4);
+}
+
+// ---------------------------------------------------------------------
+// Denunciar (WikiReportModal): as opções do modal de sinalizar do Discourse
+// ---------------------------------------------------------------------
+.LinkRobinsWikiReportModal {
+  .LinkRobinsWikiReport-reasons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .LinkRobinsWikiReport-reason {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--cn-hover);
+    }
+
+    &:has(input:checked) {
+      border-color: var(--cn-accent);
+      background: ~"color-mix(in srgb, var(--cn-accent) 8%, var(--cn-surface))";
+    }
+
+    input {
+      margin: 0;
+      accent-color: var(--cn-accent);
+    }
+  }
+
+  .helpText {
+    color: var(--cn-primary-medium);
+  }
+
+  .Button--primary {
+    border-radius: var(--cn-radius-pill);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular (< 768): barra da lista em uma linha, post sem a coluna do avatar
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaWiki {
+    --cn-wiki-offset: 0px;
+    --cn-wiki-text: 0px;
+  }
+
+  .CanelaWikiNav {
+    flex-wrap: nowrap;
+  }
+
+  .CanelaWikiNav .CanelaNav-start {
+    flex: 1 1 auto;
+  }
+
+  // No celular a barra da lista esconde os dropdowns; na wiki o de
+  // categorias é o único filtro, então fica.
+  .CanelaWikiNav .CanelaWikiNav-dropdowns {
+    display: flex;
+    flex: none;
+  }
+
+  .CanelaWikiNav .CanelaNav-drop .CanelaSelectKit-headerContent {
+    max-width: 110px;
+  }
+
+  .CanelaWikiNav-search {
+    flex: 1 1 auto;
+  }
+
+  .CanelaWikiList-header,
+  .CanelaWikiCell--author {
+    display: none;
+  }
+
+  .CanelaWikiRow {
+    align-items: flex-start;
+    padding: 0 4px;
+  }
+
+  .CanelaWikiRow-main {
+    padding: 14px 4px 14px 0;
+  }
+
+  .CanelaWikiRow .CanelaCell--activity {
+    width: auto;
+    padding-top: 14px;
+    font-size: var(--cn-font-down-1);
+
+    .CanelaActivity {
+      padding: 0;
+    }
+  }
+
+  .CanelaWikiGroup-header {
+    padding: 0 4px 8px;
+  }
+
+  .CanelaWikiArticle-title {
+    font-size: var(--cn-font-up-3);
+  }
+
+  .CanelaWikiPost {
+    padding-top: var(--cn-space-3);
+  }
+
+  // O avatar entra na linha do nome, como no post do Discourse no celular.
+  .CanelaWikiPost-avatar {
+    position: static;
+
+    .Avatar {
+      .Avatar--size(40px);
+    }
+  }
+
+  .CanelaWikiPost-header,
+  .CanelaWiki .LinkRobinsWiki-articleBody.CanelaWikiPost-body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .CanelaWiki .CanelaWikiHistory {
+    padding: var(--cn-space-2) var(--cn-space-3) var(--cn-space-3);
+  }
+
+  .CanelaWikiRevision-summary {
+    display: none;
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc {
+    margin: var(--cn-space-3) 0 0;
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-inner {
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    box-shadow: none;
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc.is-pinned .LinkRobinsWiki-mobileToc-inner {
+    top: calc(~"var(--cn-header-height, 60px) + 6px");
+    box-shadow: var(--cn-shadow-dropdown);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-bar {
+    color: var(--cn-primary);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-icon {
+    color: var(--cn-primary-medium);
+  }
+
+  .CanelaWiki .LinkRobinsWiki-mobileToc-panel {
+    border-top-color: var(--cn-border);
+  }
+
+  .CanelaWikiPager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .CanelaWikiPager-link--empty {
+    display: none;
+  }
+
+  .CanelaWikiSkeleton-postAvatar {
+    position: static;
+    width: 40px;
+    height: 40px;
+  }
+
+  .CanelaWiki .LinkRobinsWiki-comment-side {
+    flex-basis: 40px;
+
+    .Avatar {
+      .Avatar--size(40px);
+    }
+  }
+}
+
+}

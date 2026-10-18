@@ -1,0 +1,62 @@
+/*
+ * As visualizações por dia do tópico (GET /api/discussions/{id}/canela-views),
+ * guardadas por tópico enquanto a página está aberta — o `mapCache` do
+ * Discourse: abrir e fechar o menu não refaz a requisição.
+ */
+import app from 'flarum/forum/app';
+import type Discussion from 'flarum/common/models/Discussion';
+
+export interface ViewStat {
+  /** AAAA-MM-DD, em UTC (o dia do servidor). */
+  viewed_at: string;
+  views: number;
+}
+
+export interface ViewStatsResponse {
+  topic_id: number;
+  stats: ViewStat[];
+}
+
+/** Os 30 dias do Discourse (`from = 30.days.ago`). */
+export const VIEW_STATS_DAYS = 30;
+
+const cache = new Map<string, ViewStatsResponse>();
+
+export function cachedViewStats(discussion: Discussion): ViewStatsResponse | undefined {
+  return cache.get(String(discussion.id()));
+}
+
+/**
+ * Como o `fetchViews` do mapa do Discourse: sem nenhum dia gravado (o tópico é
+ * de antes da contagem diária, ou a tabela ainda não existe), entra um dia só
+ * — hoje — com o total do tópico.
+ */
+export function fetchViewStats(discussion: Discussion, totalViews: number): Promise<ViewStatsResponse> {
+  const key = String(discussion.id());
+  const cached = cache.get(key);
+
+  if (cached) return Promise.resolve(cached);
+
+  return app
+    .request<ViewStatsResponse>({
+      method: 'GET',
+      url: `${app.forum.attribute('apiUrl')}/discussions/${key}/canela-views`,
+      // `filter[days]`: a API do Flarum recusa um `?days=` solto.
+      params: { filter: { days: VIEW_STATS_DAYS } },
+    })
+    .then((data) => {
+      const stats = Array.isArray(data?.stats)
+        ? data.stats.map((stat) => ({ viewed_at: String(stat.viewed_at), views: Number(stat.views) || 0 }))
+        : [];
+
+      if (!stats.length) {
+        stats.push({ viewed_at: new Date().toISOString().split('T')[0], views: totalViews });
+      }
+
+      const result = { topic_id: Number(data?.topic_id) || Number(key), stats };
+
+      cache.set(key, result);
+
+      return result;
+    });
+}

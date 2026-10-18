@@ -1,0 +1,83 @@
+// Canela — tema para Flarum 2 inspirado no Discourse (Horizon).
+// A ordem importa: tokens primeiro, depois a base, a casca e as telas.
+
+@import "fonts.less";
+@import "common/tokens.less";
+
+// Casca
+@import "forum/Core.less";
+@import "forum/Icons.less";
+@import "forum/Components.less";
+@import "forum/Shell.less";
+@import "forum/Header.less";
+@import "forum/Sidebar.less";
+@import "forum/Shortcuts.less";
+@import "forum/ThemePreview.less";
+@import "forum/Mobile.less";
+
+// Lista de tópicos
+@import "forum/List.less";
+@import "forum/Navigation.less";
+@import "forum/Hero.less";
+@import "forum/Categories.less";
+
+// Tópico
+@import "forum/Topic.less";
+@import "forum/Posts.less";
+@import "forum/Timeline.less";
+@import "forum/TopicExtras.less";
+
+// Perfil, menus, editor, busca e configurações
+@import "forum/Menus.less";
+@import "forum/UserMenu.less";
+@import "forum/Review.less";
+@import "forum/Composer.less";
+@import "forum/Search.less";
+@import "forum/Settings.less";
+@import "forum/User.less";
+
+// Recursos com backend
+@import "forum/features/Community.less";
+@import "forum/features/Stats.less";
+@import "forum/features/Bookmarks.less";
+@import "forum/features/Composer.less";
+@import "forum/features/Extras.less";
+@import "forum/features/Profile.less";
+@import "forum/features/Badges.less";
+@import "forum/features/Ai.less";
+@import "forum/features/Chat.less";
+@import "forum/features/Messages.less";
+@import "forum/features/Links.less";
+@import "forum/features/MeToo.less";
+@import "forum/features/Auth.less";
+
+// Recursos do Discourse que faltavam (gaps)
+@import "forum/Gaps.less";
+
+// Movimento do Discourse (por último: ajusta spinner, dicas e toasts)
+@import "forum/Motion.less";
+
+// Extensões de terceiros (FoF) no visual do Discourse
+@import "forum/thirdparty/BestAnswer.less";
+@import "forum/thirdparty/Reactions.less";
+@import "forum/thirdparty/Polls.less";
+@import "forum/thirdparty/Links.less";
+@import "forum/thirdparty/FollowTags.less";
+@import "forum/thirdparty/Upload.less";
+@import "forum/thirdparty/OAuth.less";
+@import "forum/thirdparty/Terms.less";
+@import "forum/thirdparty/Formatting.less";
+@import "forum/thirdparty/Thumbnails.less";
+@import "forum/thirdparty/Moderation.less";
+@import "forum/thirdparty/RamonChat.less";
+@import "forum/thirdparty/RamonChatFeatures.less";
+@import "forum/thirdparty/Verified.less";
+@import "forum/thirdparty/ProfileCover.less";
+@import "forum/thirdparty/Wiki.less";
+@import "forum/thirdparty/Marketplace.generated.less";
+@import "forum/thirdparty/Marketplace.less";
+@import "forum/thirdparty/MarketplacePages.less";
+
+// Modais de formulário longo: largos, em colunas, com o salvar fixo (por
+// último: vence os tamanhos dos modais do core e das extensões).
+@import "forum/ModalLayout.less";

@@ -1,0 +1,18 @@
+includes:
+    # Achados antigos (relações/estáticos mágicos do Eloquent, integrações com
+    # extensões opcionais) congelados aqui: a CI fica verde e todo código NOVO
+    # é conferido. Vá apertando com o tempo (regenerar: composer analyse --
+    # --generate-baseline).
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - extend
+        - extend.php
+        - migrations
+    # A CI resolve o flarum/core com `composer update`: um erro congelado pode
+    # não se repetir lá. Não falhar quando uma entrada do baseline sobra.
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false

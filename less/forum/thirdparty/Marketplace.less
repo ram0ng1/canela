@@ -1,0 +1,904 @@
+// =====================================================================
+// ramon/marketplace no visual do tema (Discourse/Horizon)
+//
+// A extensão foi desenhada para o tema avocado: títulos de 38px em peso 900,
+// cartões com sombra, botões em pílula com peso 700, cinzas e cores fixos e
+// os tokens `--avocado-*`/`--home-*`. Aqui:
+//
+// - os tokens dela (`--mp-*`) viram os do tema (`--cn-*`), no claro e no
+//   escuro, a partir da cor primária do fórum — a maior parte das telas muda
+//   só por isso;
+// - a página ocupa a área de conteúdo inteira, na superfície lisa, como a do
+//   chat: a faixa do título em cima e o conteúdo sem caixa (a moldura vem do
+//   JS: thirdparty/marketplace/pages);
+// - botões, campos, pílulas, abas, menus e modais com as peças do tema;
+// - antes deste arquivo, Marketplace.generated.less: as correções geradas do
+//   CSS da extensão (pesos 800/900, sombras, gradientes, o "pulo" no hover).
+//
+// O Canela compila depois da extensão: com a mesma especificidade, a regra
+// daqui vence. As regras levam `[data-theme]` (o atributo do <html>) para
+// vencer também as do dark-mode.less dela, que usam `[data-theme^=dark]`.
+//
+// Só com a extensão habilitada e a integração ligada (@config-ramon-marketplace,
+// extend.php).
+// =====================================================================
+& when (@config-ramon-marketplace = true) {
+
+// ---------------------------------------------------------------------
+// Tokens
+// ---------------------------------------------------------------------
+html[data-theme^=light],
+html[data-theme^=dark] {
+  // Superfícies: o cartão é a superfície do tema; dentro dele, as caixas
+  // usam o cinza bem claro e o hover o cinza do botão padrão.
+  --mp-surface: var(--cn-primary-very-low);
+  --mp-surface-alt: var(--cn-primary-100);
+  --mp-surface-raised: var(--cn-surface);
+  --mp-surface-hover: var(--cn-primary-100);
+
+  // Bordas
+  --mp-border: var(--cn-border);
+  --mp-border-soft: var(--cn-border);
+  --mp-border-strong: var(--cn-primary-low);
+  --mp-input-border: var(--cn-primary-300);
+  --mp-input-border-hover: var(--cn-primary-low-mid);
+
+  // Sem sombras: no Horizon só o cartão principal e os menus têm sombra.
+  --mp-shadow-sm: none;
+  --mp-shadow: none;
+  --mp-shadow-hover: none;
+  --mp-shadow-focus: none;
+
+  // Cantos do tema
+  --mp-radius-xs: 4px;
+  --mp-radius-sm: var(--cn-radius-input);
+  --mp-radius: var(--cn-radius);
+  --mp-radius-lg: var(--cn-radius);
+  --mp-radius-full: var(--cn-radius-pill);
+
+  // Texto
+  --mp-text: var(--cn-primary);
+  --mp-text-soft: var(--cn-primary-very-high);
+  --mp-text-strong: var(--cn-primary);
+  --mp-muted: var(--cn-primary-high);
+  --mp-muted-strong: var(--cn-primary-high);
+
+  // Escala: os títulos de página moram no hero (abaixo); os números grandes
+  // descem um degrau, como os do resumo do perfil.
+  --mp-fs-4xl: 2rem;
+  --mp-fs-3xl: 1.75rem;
+  --mp-fs-display: 2.296rem;
+  --mp-fs-hero: 2.296rem;
+
+  // Destaque
+  --mp-accent: var(--cn-accent);
+  --mp-accent-soft: var(--cn-accent-low);
+  --mp-accent-strong: var(--cn-link);
+  --mp-accent-contrast: var(--cn-accent-text);
+
+  // Semânticos do tema
+  --mp-danger: var(--cn-danger);
+  --mp-danger-soft: ~"color-mix(in srgb, var(--cn-danger) 12%, var(--cn-surface))";
+  --mp-danger-strong: ~"color-mix(in srgb, var(--cn-danger) 75%, var(--cn-primary))";
+  --mp-success: var(--cn-success);
+  --mp-success-soft: ~"color-mix(in srgb, var(--cn-success) 12%, var(--cn-surface))";
+  --mp-success-strong: ~"color-mix(in srgb, var(--cn-success) 70%, var(--cn-primary))";
+
+  // O "CTA preto" da extensão é o texto do tema (inverte sozinho no escuro).
+  --mp-dark: var(--cn-primary);
+  --mp-dark-hvr: var(--cn-primary-very-high);
+
+  // Sem gradientes nos selos opcionais.
+  --mp-digital-grad: var(--cn-accent);
+  --mp-physical-grad: var(--cn-accent);
+
+  --mp-t-fast: 0s;
+  --mp-t-mid: 0s;
+
+  // A largura é a do cartão do tema (o container da extensão não limita).
+  --mp-max-width: none;
+
+  // Os tokens do avocado que a extensão lê direto.
+  --avocado-surface-1: var(--cn-primary-very-low);
+  --avocado-surface-2: var(--cn-primary-100);
+  --avocado-border-subtle: var(--cn-border);
+  --avocado-border-soft: var(--cn-border);
+  --avocado-border-chip: var(--cn-primary-low);
+  --avocado-muted-icon: var(--cn-primary-medium);
+  --avocado-text-dark: var(--cn-primary);
+  --avocado-online: var(--cn-success);
+  --home-border: var(--cn-border);
+  --home-shadow: none;
+  --home-title: var(--cn-primary);
+  --home-muted: var(--cn-primary-high);
+}
+
+html[data-theme^=dark] {
+  --mp-danger-soft: ~"color-mix(in srgb, var(--cn-danger) 22%, var(--cn-surface))";
+  --mp-danger-strong: ~"color-mix(in srgb, var(--cn-danger) 45%, var(--cn-primary))";
+  --mp-success-soft: ~"color-mix(in srgb, var(--cn-success) 22%, var(--cn-surface))";
+  --mp-success-strong: ~"color-mix(in srgb, var(--cn-success) 45%, var(--cn-primary))";
+}
+
+
+
+// ---------------------------------------------------------------------
+// Casca: a loja ocupa a área de conteúdo inteira, como a página do chat
+// (RamonChat.less, body.ChatFullPage): sem o fundo tingido, sem as peças que
+// flutuam atrás e sem o cartão; a superfície lisa encosta na barra lateral e
+// no cabeçalho. Em cima, a faixa do título (o hero da loja); embaixo, o
+// conteúdo (`.CanelaMp-card`, que aqui não desenha caixa nenhuma).
+// ---------------------------------------------------------------------
+body:has(.Canela.MarketplacePage) {
+  background-color: var(--cn-surface);
+  background-image: none;
+
+  .CanelaBackdrop {
+    display: none;
+  }
+}
+
+.Canela.MarketplacePage {
+  // A extensão pinta o #app (e o .App-content) com o fundo do corpo.
+  background: transparent;
+  min-height: 0;
+
+  // A largura do texto: o conteúdo fica centrado até 1280px, com 32px de
+  // respiro de cada lado (16px no celular).
+  --cn-mp-gutter: ~"max(32px, calc((100% - 1280px) / 2))";
+
+  .App-content,
+  .IndexPage {
+    background: none;
+  }
+
+  .Page {
+    padding-bottom: 0;
+  }
+
+  // O seletor de páginas do celular do avocado não existe aqui.
+  .MpNav-helper,
+  .AvocadoNav-helper {
+    display: none !important;
+  }
+
+  // A raiz da página e os embrulhos dela (container, MarketplacePage) não
+  // desenham nada: quem desenha é a faixa do título e o conteúdo.
+  #content .MarketplacePage,
+  #content .container,
+  .CanelaMp-page {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  // (O `!important` vence o max-width da camada de compatibilidade com o avocado.)
+  #content .CanelaMp-page {
+    max-width: none !important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    color: var(--cn-primary);
+    font-size: 15px;
+  }
+}
+
+@media @tablet-up {
+  .Canela.MarketplacePage .App-content,
+  .Canela--sidebarOpen.MarketplacePage .App-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// A faixa do título: largura toda, fio embaixo, o título grande (2,3rem/700,
+// o do banner de boas-vindas) e a contagem e as ações ao lado.
+.CanelaMp-hero {
+  padding: var(--cn-space-8) var(--cn-mp-gutter, 32px) var(--cn-space-6);
+  border-bottom: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+
+  > [class*="-header"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--cn-space-3) var(--cn-space-4);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  [class*="-headerTitle"] {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--cn-space-1) var(--cn-space-3);
+    min-width: 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(~"1.9rem, 4vw, 2.6rem");
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--cn-primary);
+    font-family: inherit;
+  }
+
+  // "3 itens no carrinho", "Ramon"…: o texto da mensagem do banner.
+  [class*="-count"],
+  [class*="-subtitle"],
+  [class*="-lead"],
+  p {
+    margin: 0;
+    font-size: var(--cn-font-0);
+    font-weight: 400;
+    color: var(--cn-primary-high);
+  }
+}
+
+// O conteúdo: só o respiro, sem caixa.
+.CanelaMp-card {
+  min-width: 0;
+  padding: var(--cn-space-6) var(--cn-mp-gutter, 32px) var(--cn-space-8);
+  box-sizing: border-box;
+  background: none;
+
+  > :first-child,
+  > [class*="-section"]:first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media @phone {
+  .Canela.MarketplacePage {
+    --cn-mp-gutter: 16px;
+  }
+
+  .CanelaMp-hero {
+    padding-top: var(--cn-space-6);
+    padding-bottom: var(--cn-space-4);
+  }
+
+  .CanelaMp-card {
+    padding-top: var(--cn-space-4);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Tipografia dentro das telas
+// ---------------------------------------------------------------------
+[data-theme] {
+  // As telas da extensão: páginas, blocos do perfil, menu do carrinho e
+  // modais (que moram fora do #app).
+  .CanelaMp-page,
+  .MpSellerProfile,
+  .MpReviewsProfile,
+  .MarketplaceCartDropdown,
+  .MpSellerModal,
+  .MpRefundRequestModal,
+  .ReportProductModal,
+  .MpEmbedModal,
+  .MarketplaceConfirmModal {
+    font-family: inherit;
+
+    h1, h2, h3, h4, h5 {
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: normal;
+      color: var(--cn-primary);
+    }
+  }
+
+  // Os títulos de seção: o 1,15em/700 dos títulos do resumo do perfil.
+  .CanelaMp-card [class*="-sectionHead"] > h2,
+  .CanelaMp-card [class*="-section"] > h2 {
+    font-size: var(--cn-font-up-1);
+    font-weight: 700;
+    color: var(--cn-primary);
+  }
+
+  // Links soltos da extensão ("Voltar à loja", "Continuar comprando", "Ver
+  // detalhes"): a cor de link do tema.
+  .CanelaMp-page a[class*="-back"],
+  .CanelaMp-page a[class*="-continueLink"],
+  .CanelaMp-page [class*="-cardDetails"] {
+    color: var(--cn-link);
+    font-weight: 400;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Botões: os do tema (Components.less). O padrão é o cinza com o ícone na
+// cor de destaque, o primário é a cor de destaque; peso normal, hover só
+// troca o fundo, sem "afundar" no clique.
+// ---------------------------------------------------------------------
+[data-theme] .MpBtn {
+  height: var(--cn-control-height);
+  padding: 0 16px;
+  gap: 6px;
+  border: 0;
+  border-radius: var(--cn-button-radius);
+  background: var(--cn-primary-100);
+  color: var(--cn-primary);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+  box-shadow: none;
+  transition: none;
+
+  > i,
+  > svg.icon {
+    font-size: 15px;
+    color: var(--cn-accent);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-primary-200);
+    color: var(--cn-primary);
+    opacity: 1;
+    box-shadow: none;
+  }
+
+  &:active {
+    transform: none;
+  }
+
+  &:focus-visible {
+    outline: 1.5px solid var(--cn-accent);
+    outline-offset: 2px;
+  }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+  }
+
+  &--small {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+
+  &--tiny {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  // Primário, "info" e o CTA escuro: a cor de destaque.
+  &--primary,
+  &--info,
+  &--dark {
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+
+    > i,
+    > svg.icon {
+      color: var(--cn-accent-text);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-accent-hover);
+      color: var(--cn-accent-text);
+    }
+
+    &:active {
+      background: var(--cn-accent-active);
+    }
+  }
+
+  // Secundário com borda (filtros, "ver mais"): o botão padrão do tema.
+  &--outline,
+  &--ghost {
+    border: 0;
+    background: var(--cn-primary-100);
+    color: var(--cn-primary);
+  }
+
+  &--success {
+    background: var(--mp-success-soft);
+    color: var(--mp-success-strong);
+
+    > i,
+    > svg.icon {
+      color: var(--cn-success);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--mp-success-soft);
+      color: var(--mp-success-strong);
+    }
+  }
+
+  &--danger {
+    background: var(--cn-danger);
+    color: #fff;
+
+    > i,
+    > svg.icon {
+      color: #fff;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: ~"color-mix(in srgb, var(--cn-danger) 82%, #000)";
+      color: #fff;
+    }
+  }
+}
+
+// Os botões do Flarum que a extensão usa dentro das telas já são os do tema.
+// O confirmar dos modais dela: o raio do tema, não o pílula fixo.
+[data-theme] .MarketplaceConfirmModal-actions .MpBtn {
+  height: var(--cn-control-height);
+  border-radius: var(--cn-button-radius);
+  font-weight: 400;
+}
+
+// ---------------------------------------------------------------------
+// Campos: o `input[type=text]` do Discourse (Components.less).
+// ---------------------------------------------------------------------
+[data-theme] {
+  // As telas da extensão: páginas, blocos do perfil, menu do carrinho e
+  // modais (que moram fora do #app).
+  .CanelaMp-page,
+  .MpSellerProfile,
+  .MpReviewsProfile,
+  .MarketplaceCartDropdown,
+  .MpSellerModal,
+  .MpRefundRequestModal,
+  .ReportProductModal,
+  .MpEmbedModal,
+  .MarketplaceConfirmModal {
+    input.FormControl,
+    select.FormControl,
+    textarea.FormControl,
+    input:not([type]):not(.FormControl),
+    input[type="text"]:not(.FormControl),
+    input[type="search"]:not(.FormControl),
+    input[type="email"]:not(.FormControl),
+    input[type="number"]:not(.FormControl),
+    input[type="url"]:not(.FormControl),
+    select:not(.FormControl),
+    textarea:not(.FormControl) {
+      min-height: var(--cn-control-height);
+      border: 1px solid var(--cn-primary-300);
+      border-radius: var(--cn-radius);
+      background-color: var(--cn-surface);
+      color: var(--cn-primary);
+      font-size: 15px;
+      box-shadow: none;
+      transition: none;
+
+      &::placeholder {
+        color: var(--cn-primary-medium);
+      }
+
+      &:hover:not(:focus):not([disabled]) {
+        border-color: var(--cn-primary-low-mid);
+      }
+
+      &:focus,
+      &:focus-visible {
+        border-color: var(--cn-accent);
+        background-color: var(--cn-surface);
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  // A busca da vitrine: o campo do tema com a lupa dentro.
+  .MpShop-searchWrap,
+  [class*="-searchWrap"] {
+    // A lupa: o <i> da extensão vira o <svg> do Lucide, e o posicionamento
+    // dela (feito para o `> i`) precisa acompanhar.
+    > i,
+    > svg.icon {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      z-index: 1;
+      transform: translateY(-50%);
+      color: var(--cn-primary-medium);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    input {
+      height: var(--cn-control-height);
+      padding-left: 36px;
+      border-radius: var(--cn-radius);
+    }
+  }
+
+  // O seletor de ordem (MpSortDropdown): o botão padrão e o menu do tema.
+  .MpShop-sortTrigger {
+    height: var(--cn-control-height);
+    padding: 0 14px;
+    border: 0;
+    border-radius: var(--cn-button-radius);
+    background: var(--cn-primary-100);
+    color: var(--cn-primary);
+    font-size: 15px;
+    font-weight: 400;
+    box-shadow: none;
+
+    > i,
+    > svg.icon {
+      color: var(--cn-primary-high);
+    }
+
+    &:hover,
+    &:focus,
+    &.is-open {
+      border: 0;
+      background: var(--cn-primary-200);
+      box-shadow: none;
+    }
+  }
+
+  .MpShop-sortDropdown,
+  .MpHoverNavItem-submenu {
+    padding: 4px;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    box-shadow: var(--cn-shadow-dropdown);
+  }
+
+  .MpShop-sortOption {
+    padding: 8px 12px;
+    border-radius: var(--cn-radius-input);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--cn-primary);
+
+    &:hover {
+      background: var(--cn-hover);
+    }
+
+    &.is-active {
+      font-weight: 400;
+      background: var(--cn-selected);
+    }
+  }
+
+  .MpShop-sortOption-check {
+    color: var(--cn-accent);
+  }
+
+  .MpShop-cartBtn {
+    height: var(--cn-control-height) !important;
+    padding: 0 16px !important;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Pílulas, chips e selos: o fundo cinza do tema, peso normal, sem cor
+// fixa — os de estado usam o par -soft/-strong derivado do tema.
+// ---------------------------------------------------------------------
+[data-theme] {
+  .MpChip,
+  .MpBadge,
+  .MarketplaceBadge,
+  .MarketplaceChip {
+    border-radius: var(--cn-radius-pill);
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: none;
+  }
+
+  .MpChip:not([class*="MpChip--"]),
+  .MpChip--sub {
+    background: var(--cn-primary-100);
+    color: var(--cn-primary-high);
+  }
+
+  .MpChip--sub {
+    background: var(--cn-accent-low);
+    color: var(--cn-link);
+  }
+
+  // Filtro por etiqueta da vitrine: a pílula de categoria do tema.
+  .MpTagChip {
+    border: 1px solid var(--cn-primary-low);
+    background: var(--cn-surface);
+    color: var(--cn-primary-high);
+    font-weight: 400;
+
+    &:hover {
+      border-color: var(--cn-primary-low-mid);
+      background: var(--cn-primary-very-low);
+    }
+
+    &.is-active {
+      border-color: var(--cn-accent);
+      background: var(--cn-selected);
+      color: var(--cn-primary);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Abas: as do perfil do tema (texto cinza, a ativa na cor de destaque com o
+// traço embaixo).
+// ---------------------------------------------------------------------
+[data-theme] {
+  .MpProduct-tabs,
+  .MpSellerModal-tabs {
+    gap: 0;
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  .MpProduct-tab,
+  .MpSellerModal-tab {
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--cn-primary-high);
+    border-radius: 0;
+    background: none;
+
+    &:hover {
+      color: var(--cn-primary);
+      background: none;
+    }
+
+    &.is-active,
+    &.active,
+    &[aria-selected="true"] {
+      color: var(--cn-accent);
+      font-weight: 400;
+
+      &::after {
+        height: 2px;
+        background: var(--cn-accent);
+        border-radius: 0;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Cartões dentro do cartão: borda fina do tema, sem sombra, sem pulo; o
+// hover só muda a borda (o `a` inteiro da extensão).
+// ---------------------------------------------------------------------
+[data-theme] {
+  a[class*="Mp"][class*="-card"],
+  a[class*="Mp"][class*="-item"],
+  a[class*="Mp"][class*="-row"],
+  a[class*="Mp"][class*="-tile"] {
+    transition: none;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--cn-primary-low-mid);
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  // A "lista de tópicos" da loja: os cartões têm o raio do tema e a borda
+  // da lista.
+  .MpShop-card,
+  .MpAccount-card,
+  .MpRelated-card,
+  .MpCourseCard {
+    border-color: var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+  }
+
+  // O link "Ver detalhes" do cartão é o link do tema, sem negrito.
+  .MpShop-cardDetails,
+  .MpShop-cardFoot a {
+    font-weight: 400;
+    color: var(--cn-link);
+  }
+
+  // Ícone do cartão: o quadrado tingido com a cor de destaque, no lugar das
+  // oito cores fixas da extensão.
+  .MpShop-cardIcon,
+  .MpAccount-cardIcon,
+  [class*="Mp"][class*="-cardIcon"] {
+    border-radius: var(--cn-radius);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Menu do carrinho (cabeçalho) e o submenu antigo: os menus do tema.
+// ---------------------------------------------------------------------
+[data-theme] .MarketplaceCartDropdown-menu.Dropdown-menu {
+  // A setinha fica acima do menu: sem o `overflow: hidden` da extensão, que
+  // a cortaria; quem corta os cantos é o conteúdo.
+  overflow: visible;
+  margin-top: 10px;
+  padding: 0;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+
+  // A setinha: o ::before é a borda (1px maior) e o ::after o preenchimento,
+  // na cor do cabeçalho do painel. A posição vem do JS (cartDropdown.ts).
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: var(--cn-mp-arrow-x, calc(100% - 18px));
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  &::before {
+    top: -9px;
+    border-width: 0 9px 9px;
+    border-bottom-color: var(--cn-border);
+  }
+
+  &::after {
+    top: -8px;
+    border-width: 0 8px 8px;
+    border-bottom-color: var(--cn-primary-very-low);
+  }
+
+  .MarketplaceCartDropdown {
+    overflow: hidden;
+    border-radius: inherit;
+  }
+}
+
+// O painel: cabeçalho e rodapé no cinza bem claro do tema (o mesmo da
+// setinha), separados da lista pela borda; "Ver carrinho" é o botão padrão.
+[data-theme] .MarketplaceCartDropdown {
+  &-head,
+  &-footer {
+    background: var(--cn-primary-very-low);
+    border-color: var(--cn-border);
+  }
+
+  &-head {
+    padding: 10px 14px;
+
+    strong {
+      font-weight: 700;
+      color: var(--cn-primary);
+    }
+
+    span {
+      color: var(--cn-primary-high);
+    }
+  }
+
+  &-footer {
+    border-top: 1px solid var(--cn-border);
+
+    .totals strong {
+      color: var(--cn-primary);
+      font-weight: 700;
+    }
+  }
+
+  &-items li {
+    border-color: var(--cn-border);
+
+    &:hover {
+      background: var(--cn-hover);
+    }
+
+    .thumb {
+      border-radius: var(--cn-radius);
+      background: var(--cn-accent-low);
+      color: var(--cn-accent);
+    }
+
+    .name {
+      color: var(--cn-primary);
+      font-weight: 400;
+    }
+
+    .qty {
+      color: var(--cn-primary-medium);
+    }
+
+    .price {
+      color: var(--cn-primary);
+      font-weight: 700;
+    }
+  }
+
+  &-empty > svg.icon,
+  &-empty > i {
+    width: 56px;
+    height: 56px;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary-medium);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Coração da lista de desejos: preenchido na cor de destaque quando o
+// produto está na lista (o Lucide só desenha o contorno; o preenchimento é o
+// `fill`, como o marcador ativo em Icons.less), sobre o fundo normal do botão.
+// ---------------------------------------------------------------------
+[data-theme] .MpWishlistBtn.is-active {
+  background: var(--cn-primary-100);
+
+  > svg.icon,
+  > i {
+    color: var(--cn-accent);
+    fill: currentColor;
+  }
+
+  &:hover {
+    background: var(--cn-primary-200);
+  }
+}
+
+// O `fas fa-heart` (sólido) da extensão é o favorito marcado.
+.MpWishlistBtn svg.CanelaLucide.fas.fa-heart,
+[class*="MpWishlist"] svg.CanelaLucide.fas.fa-heart,
+.MpShop-card svg.CanelaLucide.fas.fa-heart {
+  color: var(--cn-accent);
+  fill: currentColor;
+}
+
+// "Já possui" / "Já no carrinho": o ícone na cor de sucesso, como o texto.
+[data-theme] .MpProduct-ownedBtn,
+[data-theme] .MpProduct-buyBtn--added,
+[data-theme] .MpProduct-buyBtn.MpBtn--success {
+  > svg.icon,
+  > i {
+    color: var(--cn-success);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Modais da extensão: os do tema. O de produto do vendedor é um formulário
+// longo: largo, só o corpo rola e as abas ficam à vista.
+// ---------------------------------------------------------------------
+.MpSellerModal {
+  .cn-modal-long(960px);
+}
+
+// ---------------------------------------------------------------------
+// Perfil: a vitrine do vendedor e as avaliações no estilo dos blocos do
+// resumo do perfil (títulos 1,15em/700, sem caixa em volta).
+// ---------------------------------------------------------------------
+[data-theme] {
+  .MpSellerProfile,
+  .MpReviewsProfile {
+    color: var(--cn-primary);
+    font-size: 15px;
+
+    h2,
+    h3 {
+      font-size: var(--cn-font-up-1);
+      font-weight: 700;
+    }
+  }
+}
+
+}

@@ -1,0 +1,1171 @@
+// =====================================================================
+// Perfil do usuário como o do Discourse (meta.discourse.org/u/…), com as
+// medidas tiradas do CSS do Meta (user.scss + new-user.scss + Horizon):
+//
+//   ┌───────────── capa (300px; 200px no celular) ──────────────────────┐
+//   ( avatar 144 )  username (2em, 700)                       [Mensagem]
+//      (flair)      Nome de exibição (1.5157em)
+//                   título · local/site · bio
+//   ─────────────────────────────────────────────────────────────────────
+//   Ingressou 23 fev  Última postagem 17 set  Visto(a) 14 h  Grupos team
+//   ─────────────────────────────────────────────────────────────────────
+//        Resumo          ≡ Atividade           Emblemas        (16px)
+//   ───────────────────── Tudo · Tópicos · Curtidas ───────── (13.9px)
+//   conteúdo da aba (margem de 2em)
+//
+// Fora do Resumo o cabeçalho encolhe (`--collapsed`, o `.collapsed-info` do
+// Discourse): avatar de 45px e os dois nomes, sem capa, bio nem números.
+// O hero já está dentro do cartão (.Page-hero--inline, feito pela casca).
+// =====================================================================
+
+// O Discourse trabalha com 16px de base, e as medidas em em abaixo contam
+// com isso (o corpo do Flarum é 15px).
+.CanelaUserPage .Page-container {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+// ---------------------------------------------------------------------
+// Layout da página: cartão, abas e conteúdo empilhados
+// ---------------------------------------------------------------------
+.Canela .CanelaUserPage .Page-container.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0;
+
+  // Em coluna, a base de 100% que a casca dá ao hero seria a altura.
+  > .Page-hero--inline {
+    flex: 0 0 auto;
+  }
+}
+
+.Canela .CanelaUserPage .Page-sidebar {
+  float: none;
+  width: auto;
+  margin: 0;
+}
+
+.Canela .CanelaUserPage .Page-content {
+  float: none;
+  width: auto;
+  min-width: 0;
+  padding: 0;
+  margin-top: 2em;
+}
+
+// ---------------------------------------------------------------------
+// O cartão do perfil
+// ---------------------------------------------------------------------
+.CanelaUserHero.UserCard {
+  // O UserCard do core é um hero escuro com texto branco (.light-contents);
+  // dentro do cartão branco tudo volta às cores do texto.
+  --light-content-color: var(--cn-primary);
+  --light-content-control-color: var(--cn-primary);
+  --light-content-control-bg: var(--cn-primary-100);
+  --light-content-control-bg-shaded: var(--cn-primary-low);
+  --light-content-control-bg-fadedin: var(--cn-primary-low);
+
+  position: static;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: var(--cn-primary);
+  text-align: left;
+  box-shadow: none;
+
+  .darkenBackground {
+    padding: 0;
+    background: none;
+  }
+
+  > .darkenBackground > .container {
+    display: flex;
+    align-items: center;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: var(--cn-link);
+  }
+}
+
+// A capa: a imagem do perfil estendido (--canela-cover) ou, sem ela, a cor
+// do usuário (a cor dominante do avatar, --usercard-bg) em degradê com a cor
+// de destaque. Retangular, de ponta a ponta, como a `.user-profile-image`.
+.CanelaUserHero-cover {
+  height: 300px;
+  margin: 0;
+  border-radius: 0;
+  background-color: var(--usercard-bg, var(--cn-accent));
+  background-image:
+    var(--canela-cover, none),
+    radial-gradient(60% 120% at 85% 10%, var(--cn-blob-2), transparent 70%),
+    radial-gradient(50% 90% at 10% 100%, var(--cn-blob-1), transparent 70%),
+    linear-gradient(135deg, var(--usercard-bg, var(--cn-accent)) 0%, ~"color-mix(in oklch, var(--usercard-bg, var(--cn-accent)) 55%, var(--cn-accent))" 55%, var(--cn-accent) 100%);
+  background-size: cover;
+  // A posição vertical do editor da forumaker/profile-cover, quando ela manda na capa.
+  background-position: var(--canela-cover-position, center center);
+  background-repeat: no-repeat;
+}
+
+.CanelaUserHero .UserCard-profile {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 0;
+  margin-right: auto;
+  padding: 0;
+  text-align: left;
+}
+
+// Com capa, o bloco começa 15px abaixo dela (`.details { padding-top: 15px }`).
+.CanelaUserHero--cover .UserCard-profile {
+  padding-top: 15px;
+}
+
+// Avatar de 144px, sem borda, com 20px até os nomes e 10px embaixo.
+.CanelaUserHero-avatar {
+  position: relative;
+  flex: none;
+  align-self: flex-start;
+
+  > a {
+    display: block;
+  }
+}
+
+.CanelaUserHero .UserCard-avatar {
+  width: auto;
+  height: auto;
+  margin: 0 20px 10px 0;
+
+  // flex, e não block: o avatar padrão (a inicial sobre a cor) precisa do
+  // alinhamento do core para a letra ficar no centro.
+  .Avatar {
+    --size: 144px;
+    display: flex;
+    width: 144px;
+    height: 144px;
+    font-size: 56px;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.CanelaUserHero .AvatarEditor .Dropdown-toggle {
+  margin: 0;
+}
+
+// Sem foto, o core deixa o "+" do editor sempre à vista (opacidade .7); no
+// Discourse o avatar padrão aparece limpo e o editor só surge no hover.
+.CanelaUserHero .AvatarEditor:not(:hover):not(.open) .AvatarEditor--noAvatar {
+  opacity: 0;
+}
+
+// O "flair": o ícone do grupo num círculo de 40px na cor dele, 16px para
+// dentro da margem direita do avatar e 8px acima da base.
+.CanelaAvatarFlair {
+  position: absolute;
+  right: 16px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cn-primary-low);
+  color: var(--cn-primary);
+  font-size: 22px;
+  line-height: 1;
+  pointer-events: none;
+
+  &--colored {
+    background: var(--group-color);
+    color: #fff;
+  }
+}
+
+// O `.primary-textual`: nomes, título, local e bio, com 8px embaixo.
+.CanelaUserHero .UserCard-content {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 0 0 0.5em;
+  word-break: break-word;
+}
+
+.CanelaUserHero-names {
+  min-width: 0;
+}
+
+.CanelaUserHero .UserCard-identity.CanelaUserHero-username {
+  display: block;
+  margin: 0;
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: normal;
+  color: var(--cn-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .username {
+    color: inherit;
+  }
+}
+
+.CanelaUserHero-displayName {
+  margin: 0;
+  font-size: 1.5157em;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--cn-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Título ("team"): texto comum, na cor do texto.
+.CanelaUserHero .CanelaProfileTitle {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--cn-primary);
+}
+
+.CanelaUserHero .CanelaProfileStatus {
+  margin-top: 0.5em;
+}
+
+// Ícones (selo de verificado) e insígnias que não são grupo (suspenso, por
+// exemplo): na linha do nome, depois dele, alinhados ao meio da altura. Só
+// quebram para baixo se o nome não couber; o nome corta com reticências, e o
+// h1 deixa o popover do selo sair dele.
+.CanelaUserHero .UserCard-identity.CanelaUserHero-username {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.3em;
+  overflow: visible;
+
+  .username {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Caixa sem altura de linha própria: o centro dela é o centro do selo. O
+  // pequeno deslocamento leva o selo ao meio das minúsculas do nome (o centro
+  // da caixa do h1 fica acima delas, por causa das ascendentes).
+  .CanelaUserIcons {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    line-height: 1;
+    transform: translateY(0.06em);
+  }
+}
+
+.CanelaUserHero .UserCard-badges.CanelaUserHero-badges {
+  display: inline-flex;
+  margin: 0;
+  font-size: 1rem;
+
+  .Badge {
+    --size: 20px;
+    box-shadow: none;
+  }
+}
+
+// Local, site e aniversário numa linha (`.user-profile__location-and-website`).
+.CanelaUserHero .UserCard-info {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  margin: 0.5em 0 0;
+  padding: 0;
+  font-size: 1em;
+  line-height: 1.4;
+  color: var(--cn-primary);
+
+  > li {
+    display: block;
+    min-width: 0;
+    margin: 0 1em 0 0;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .CanelaProfileFact {
+    gap: 0.33em;
+    color: var(--cn-primary);
+  }
+
+  a.CanelaProfileFact {
+    color: var(--cn-link);
+  }
+
+  .icon {
+    width: auto;
+    font-size: 0.8706em;
+    color: var(--cn-primary-high);
+  }
+}
+
+// A bio é conteúdo "cozido": parágrafos com 1em entre eles.
+.CanelaUserHero .CanelaProfileBio {
+  max-width: none;
+  max-height: 300px;
+  margin: 1em 0 0;
+  overflow: auto;
+  font-size: 1em;
+  line-height: 1.4;
+
+  p {
+    margin: 0 0 1em;
+  }
+}
+
+// Controles à direita, centrados na altura do bloco (`.controls`).
+.CanelaUserHero .UserCard-controls {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: center;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5em;
+  max-width: 13.5em;
+  margin: 0 0 0.5em 0.5em;
+  padding: 0;
+
+  .Dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+}
+
+// O core esconde o ícone do botão de controles do perfil; aqui ele é o botão.
+.CanelaUserPage .CanelaUserHero .CanelaUserHero-controls .Dropdown-toggle .Button-icon {
+  display: inline-block;
+}
+
+.CanelaUserHero .CanelaUserHero-message.Button--primary {
+  min-width: 9em;
+  justify-content: center;
+  background: var(--cn-accent);
+  color: var(--cn-accent-text);
+
+  .Button-icon {
+    color: var(--cn-accent-text);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-accent-hover);
+    color: var(--cn-accent-text);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Cabeçalho encolhido (fora do Resumo)
+// ---------------------------------------------------------------------
+.CanelaUserHero--collapsed {
+  border-bottom: 1px solid var(--cn-border);
+
+  .UserCard-profile {
+    padding-top: 0;
+  }
+
+  .UserCard-avatar {
+    margin: 0 10px 10px 0;
+
+    .Avatar {
+      --size: 45px;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+    }
+  }
+
+  .CanelaAvatarFlair {
+    right: 2px;
+    bottom: 8px;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .UserCard-content {
+    padding-bottom: 0;
+  }
+
+  .UserCard-identity.CanelaUserHero-username {
+    font-size: 1.5157em;
+  }
+
+  .CanelaUserHero-displayName {
+    font-size: 1.1487em;
+  }
+
+  .CanelaProfileTitle,
+  .CanelaProfileStatus,
+  .CanelaProfileBio,
+  .UserCard-badges,
+  .UserCard-info,
+  .CanelaFeaturedBadges {
+    display: none;
+  }
+
+  .UserCard-controls {
+    max-width: none;
+    flex: 1 2 min-content;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Linha de estatísticas (`.secondary dl`)
+// ---------------------------------------------------------------------
+.CanelaUserStats {
+  display: block;
+  margin: 0;
+  padding: 0.5em 0;
+  border-top: 1px solid var(--cn-border);
+  font-size: 1em;
+  line-height: 1.4;
+
+  &-item {
+    display: inline-flex;
+    align-items: baseline;
+    margin: 4px 0;
+    white-space: nowrap;
+  }
+
+  dt,
+  dd {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  dt {
+    margin: 0 5px 0 0;
+    font-weight: 400;
+    color: var(--cn-primary-medium);
+  }
+
+  dd {
+    margin: 0 15px 0 0;
+    padding: 0;
+    color: var(--cn-primary);
+  }
+
+  &-online {
+    color: var(--cn-success);
+  }
+
+  // "team, plugin_authors": vírgula depois de cada grupo, menos do último.
+  &-group:not(:last-child) {
+    margin-right: 0.25em;
+
+    &::after {
+      content: ",";
+      color: var(--cn-primary);
+    }
+  }
+
+  a.CanelaUserStats-group {
+    color: var(--cn-link);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Abas (`.user-navigation`): a linha principal e, em "Atividade", a segunda
+// ---------------------------------------------------------------------
+.CanelaUserNav {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--cn-border);
+
+  ul {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5em;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  li {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+  }
+
+  li > a,
+  li > button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 30px;
+    height: auto;
+    margin: 0;
+    padding: 0.65em 0.75em;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cn-primary);
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    // Horizon zera a transição dos botões e abas (--d-button-transition:
+    // none); só o ícone muda de cor em 0.2s, como no `.nav-pills`.
+    transition: none;
+
+    .Button-icon {
+      margin: 0 5px 0 0;
+      font-size: 0.8706em;
+      color: var(--cn-primary-high);
+      transition: color 0.2s;
+    }
+
+    .Button-label {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      line-height: normal;
+    }
+
+    // O Discourse não mostra as contagens nas abas.
+    .Button-badge {
+      display: none;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: transparent;
+      color: var(--cn-link);
+      text-decoration: none;
+
+      .Button-icon {
+        color: var(--cn-link);
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 0.125em;
+        background: var(--cn-link);
+      }
+    }
+  }
+
+  li.active > a,
+  li > a[active="true"] {
+    color: var(--cn-link);
+    background: transparent;
+
+    .Button-icon {
+      color: var(--cn-link);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.125em;
+      background: var(--cn-link);
+    }
+  }
+}
+
+.CanelaUserNav-primary {
+  border-top: 1px solid var(--cn-border);
+  border-bottom: 1px solid var(--cn-border);
+}
+
+// Sem a linha de estatísticas, a borda de cima já é a do cabeçalho encolhido.
+.CanelaUserPage--collapsed .CanelaUserNav-primary {
+  border-top: 0;
+}
+
+// O `horizontal-overflow-nav`: abaixo do desktop, quando as abas não cabem, a
+// última some num degradê em vez de ser cortada seca na borda (ou embaixo do
+// botão "Nova mensagem").
+@media (max-width: 1023px) {
+  .CanelaMessagesNav-pillsWrap > ul {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  }
+}
+
+// A linha de "Atividade" (ScrollNav): quando as abas não cabem, setas ‹ ›
+// nas pontas do lado em que ainda há abas, e as abas esmaecem embaixo delas.
+.CanelaScrollNav {
+  position: relative;
+
+  &-arrow {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 1px;
+    z-index: 1;
+    align-items: center;
+    justify-content: center;
+    width: 1.75em;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--cn-surface);
+    color: var(--cn-primary-high);
+    font-size: 0.8706em;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-link);
+    }
+
+    &--left {
+      left: 0;
+    }
+
+    &--right {
+      right: 0;
+    }
+  }
+
+  &--left &-arrow--left,
+  &--right &-arrow--right {
+    display: flex;
+  }
+
+  &--right > ul {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3.5em), transparent calc(100% - 1.75em));
+    mask-image: linear-gradient(to right, #000 calc(100% - 3.5em), transparent calc(100% - 1.75em));
+  }
+
+  &--left > ul {
+    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 3.5em), transparent calc(100% - 1.75em));
+    mask-image: linear-gradient(to left, #000 calc(100% - 3.5em), transparent calc(100% - 1.75em));
+  }
+
+  &--left&--right > ul {
+    -webkit-mask-image: linear-gradient(to right, transparent 1.75em, #000 3.5em, #000 calc(100% - 3.5em), transparent calc(100% - 1.75em));
+    mask-image: linear-gradient(to right, transparent 1.75em, #000 3.5em, #000 calc(100% - 3.5em), transparent calc(100% - 1.75em));
+  }
+}
+
+.CanelaUserNav-secondary {
+  font-size: 0.8706em;
+
+  li {
+    flex: 1 0 auto;
+  }
+
+  li > a .Button-label {
+    text-overflow: clip;
+  }
+}
+
+// Abaixo de 1024px a linha principal fica só com os ícones, maiores.
+@media (max-width: 1023px) {
+  .CanelaUserNav-primary li > a {
+    .Button-icon {
+      margin: 0;
+      font-size: 1.1487em;
+    }
+
+    .Button-label {
+      display: none;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Conteúdo das abas
+// ---------------------------------------------------------------------
+
+// Postagens, Curtidas, Menções: o `user-stream-item` do Discourse — avatar
+// de 48px, título do tópico como link, categoria e data embaixo e o trecho
+// recuado 56px, uma postagem por bloco com a borda entre eles.
+.CanelaUserPage .PostList-discussions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+}
+
+.CanelaStreamItem {
+  padding: 16px 0.53em;
+  border-bottom: 1px solid var(--cn-border);
+  background: var(--cn-surface);
+  font-size: 1em;
+  line-height: 1.4;
+
+  &-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  &-avatar {
+    flex: none;
+
+    .Avatar {
+      --size: 48px;
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+  }
+
+  &-details {
+    min-width: 0;
+  }
+
+  &-title a {
+    color: var(--cn-link);
+    word-break: break-word;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 8px;
+    color: var(--cn-primary-medium);
+
+    .CanelaBadges {
+      font-size: 0.8706em;
+    }
+  }
+
+  // `.relative-date`: --font-down-2 e a altura de linha pequena.
+  &-date {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7579em;
+    line-height: 1.1;
+    color: var(--cn-primary-medium);
+
+    &::before {
+      content: "•";
+      margin-right: 6px;
+      font-size: 0.7em;
+    }
+
+    &:first-child::before {
+      content: none;
+    }
+  }
+
+  &-excerpt {
+    margin: 12px 0 0 56px;
+    color: var(--cn-primary);
+    word-break: break-word;
+  }
+
+  // Aba Reações: o emoji dado e o avatar de quem reagiu, acima do trecho.
+  &-reaction {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 10px 0 0 56px;
+
+    .Avatar {
+      --size: 20px;
+      width: 20px;
+      height: 20px;
+      font-size: 9px;
+      line-height: 20px;
+    }
+  }
+
+  &-reactionEmoji {
+    display: inline-flex;
+    align-items: center;
+
+    img.emoji {
+      width: 1.25em;
+      height: 1.25em;
+      margin: 0;
+    }
+
+    .icon,
+    .CanelaStreamItem-likeIcon {
+      font-size: 1.1em;
+    }
+
+    // Curtida sem a reação "heart" do fof: o coração na cor de curtida.
+    .CanelaStreamItem-likeIcon {
+      color: var(--cn-love);
+    }
+  }
+}
+
+@media @phone {
+  .CanelaStreamItem-excerpt,
+  .CanelaStreamItem-reaction {
+    margin-left: 0;
+  }
+}
+
+.CanelaUserPage .PostList-loadMore,
+.CanelaUserPage .DiscussionList-loadMore {
+  margin-top: var(--cn-space-4);
+  text-align: center;
+}
+
+// ---------------------------------------------------------------------
+// Resumo (`.user-summary-page`)
+// ---------------------------------------------------------------------
+.CanelaUserSummary {
+  display: block;
+}
+
+// "ESTATÍSTICAS", "MELHORES TÓPICOS"…: o h3 do Discourse em caixa alta.
+.CanelaUserSummary-heading {
+  margin: 0 0 10px;
+  font-size: 1.17em;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--cn-primary);
+}
+
+.CanelaUserSummary-section {
+  margin-bottom: 20px;
+}
+
+// Os números em linha: valor em negrito grande, rótulo cinza.
+.CanelaUserSummary-statList {
+  margin: 10px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaUserSummary-stat {
+  display: inline-block;
+  margin: 0 10px 10px 0;
+  padding: 10px 14px 10px 0;
+
+  &-value {
+    font-size: 1.3195em;
+    font-weight: 700;
+    color: var(--cn-primary);
+  }
+
+  &-label {
+    color: var(--cn-primary-medium);
+  }
+
+  &-icon {
+    margin: 0 2px;
+    font-size: 0.9em;
+    color: var(--cn-love);
+  }
+}
+
+// Duas colunas de 50%, cada lista com 95% da largura.
+.CanelaUserSummary-columns {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.CanelaUserSummary-columns > .CanelaUserSummary-section {
+  width: 50%;
+}
+
+.CanelaSummaryList {
+  max-width: 95%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &-item {
+    margin: 10px 0;
+    padding: 5px 8px;
+    border-left: 2px solid var(--cn-primary-low);
+    overflow-wrap: break-word;
+  }
+
+  &-meta {
+    color: var(--cn-primary-medium);
+
+    .icon {
+      font-size: 0.9em;
+    }
+  }
+
+  &-likes .icon {
+    color: var(--cn-love);
+  }
+
+  // Linhas falsas enquanto a coluna carrega, na altura do texto de verdade.
+  &-fake {
+    display: inline-block;
+    height: 0.9em;
+    vertical-align: middle;
+  }
+
+  &-title {
+    color: var(--cn-link) !important;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// `.summary-user-list`: linhas de 45px com o avatar de 40px, o nome de
+// usuário em negrito, o nome em cinza e a contagem embaixo.
+.CanelaSummaryUsers {
+  max-width: 95%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 45px;
+    margin: 0 0 10px;
+  }
+
+  &-avatar {
+    flex: none;
+
+    .Avatar {
+      --size: 40px;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      line-height: 40px;
+    }
+  }
+
+  &-details {
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  &-names {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &-username {
+    color: var(--cn-primary) !important;
+    font-weight: 700;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &-name {
+    margin-left: 0.5em;
+    color: var(--cn-primary-medium);
+  }
+
+  &-count {
+    color: var(--cn-primary-medium);
+    font-size: 0.8706em;
+
+    .icon {
+      font-size: 0.9em;
+    }
+  }
+}
+
+.CanelaUserSummary-most-liked-by,
+.CanelaUserSummary-most-liked {
+  .CanelaSummaryUsers-count .icon {
+    color: var(--cn-love);
+  }
+}
+
+// `.top-categories-section`: a tabela sem bordas, com as contagens centradas.
+.CanelaSummaryCategories {
+  max-width: 95%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.5em;
+    border: 0;
+    text-align: left;
+  }
+
+  th {
+    color: var(--cn-primary-medium);
+    font-weight: 400;
+  }
+
+  &-count {
+    text-align: center !important;
+    color: var(--cn-link);
+  }
+
+  th&-count {
+    color: var(--cn-primary-medium);
+  }
+
+  &-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cn-primary) !important;
+    font-size: 0.8706em;
+  }
+
+  &-swatch {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+}
+
+.CanelaUserSummary-empty {
+  margin: 10px 0;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaUserSummary-more {
+  color: var(--cn-link);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular (< 768px): capa de 200px, avatar centrado sobre ela e tudo
+// centralizado, como o perfil do Discourse no celular
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaUserHero.UserCard > .darkenBackground > .container {
+    flex-wrap: wrap;
+  }
+
+  .CanelaUserHero-cover {
+    height: 200px;
+  }
+
+  .CanelaUserHero .UserCard-profile {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+  }
+
+  .CanelaUserHero--cover .UserCard-profile {
+    padding-top: 0;
+  }
+
+  .CanelaUserHero-avatar {
+    margin: 8px auto;
+  }
+
+  .CanelaUserHero--cover .CanelaUserHero-avatar {
+    margin-top: -60px;
+  }
+
+  .CanelaUserHero .UserCard-avatar {
+    margin: 0;
+  }
+
+  .CanelaAvatarFlair {
+    right: 2px;
+  }
+
+  .CanelaUserHero .UserCard-content {
+    width: 100%;
+  }
+
+  .CanelaUserHero .UserCard-info,
+  .CanelaUserHero .UserCard-identity.CanelaUserHero-username {
+    justify-content: center;
+  }
+
+  .CanelaUserHero .CanelaProfileBio {
+    text-align: center;
+
+    ul,
+    ol {
+      display: inline-block;
+      padding-left: 0;
+      text-align: left;
+    }
+  }
+
+  .CanelaUserHero .UserCard-controls {
+    flex: 1 1 25%;
+    justify-content: center;
+    max-width: none;
+    margin: 0 0 0.5em;
+  }
+
+  // Encolhido: avatar e nomes lado a lado, à esquerda.
+  .CanelaUserHero--collapsed {
+    .UserCard-profile {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .CanelaUserHero-avatar {
+      margin: 0;
+    }
+
+    .UserCard-avatar {
+      margin: 0 10px 10px 0;
+    }
+  }
+
+  .CanelaUserSummary-columns > .CanelaUserSummary-section {
+    width: 100%;
+  }
+}

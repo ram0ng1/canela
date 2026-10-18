@@ -1,0 +1,528 @@
+// =====================================================================
+// A linha do tempo do Discourse (topic-timeline do Horizon) sobre o
+// PostStreamScrubber do core: o menu do scrubber fica sempre aberto na
+// coluna da direita, com a data de criação em cima, o trilho de 1px na cor
+// de destaque, a alça de 8px com "1/11" e a data ao lado, e "4 h atrás"
+// embaixo. Abaixo, os botões redondos (responder, "…", notificações).
+//
+// Tudo sob .CanelaTopic--timeline: com a opção desligada o scrubber volta
+// ao visual do core.
+// =====================================================================
+
+// O texto do core é "1 de 11 posts"; o Discourse escreve "1/11". Os números
+// são os únicos com tamanho de fonte, o resto some com o font-size: 0.
+.canela-scrubber-count(@size; @separator) {
+  font-size: 0;
+
+  .Scrubber-index,
+  .Scrubber-count {
+    font-size: @size;
+  }
+
+  .Scrubber-index::after {
+    content: @separator;
+    white-space: pre;
+  }
+}
+
+// Botão redondo com borda — os controles da linha do tempo do Discourse.
+// Vale também para o "Responder", que é o principal do Flarum: na linha do
+// tempo ele é só mais um círculo, e o destaque fica no rodapé do tópico.
+.canela-round-button() {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38.78px;
+  height: 38px;
+  padding: 0;
+  border-radius: var(--cn-radius-pill);
+  border: 1px solid var(--cn-primary-300);
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  box-shadow: none;
+
+  .Button-icon,
+  .icon {
+    margin: 0;
+    color: var(--cn-primary-high);
+    font-size: 15px;
+  }
+
+  // O rótulo continua lá para leitores de tela.
+  .Button-label {
+    .canela-topic-sr-only();
+  }
+
+  .Button-caret {
+    display: none;
+  }
+
+  // O core troca o ícone pelo triângulo no botão do menu dividido; aqui o
+  // "…" é o próprio botão.
+  &.Dropdown-toggle .Button-icon {
+    display: inline-block;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    border-color: var(--cn-primary-low-mid);
+    color: var(--cn-primary);
+    box-shadow: none;
+  }
+}
+
+.canela-topic-sr-only() {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ---------------------------------------------------------------------
+// Desktop (a partir de 925px, como o Discourse): a coluna
+// ---------------------------------------------------------------------
+@media (min-width: 925px) {
+  .CanelaTopic--timeline .DiscussionPage-nav {
+    > ul {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--cn-space-2);
+
+      > li {
+        margin: 0;
+      }
+    }
+
+    // A linha do tempo primeiro, depois o atalho para as não lidas, e os
+    // botões numa fileira embaixo, como no Discourse.
+    .item-scrubber {
+      order: -2;
+      flex: 0 0 100%;
+    }
+
+    .item-canelaUnread {
+      order: -1;
+      flex: 0 0 100%;
+    }
+
+    // O core estica os botões e o SplitDropdown na largura da coluna.
+    .ButtonGroup,
+    :not(.ButtonGroup) > .Button {
+      width: auto;
+    }
+
+    .ButtonGroup {
+      display: inline-flex;
+      gap: var(--cn-space-2);
+    }
+
+    .ButtonGroup > .Button,
+    .ButtonGroup:not(.itemCount1) > .Button:first-of-type,
+    .ButtonGroup:not(.itemCount1) > .Dropdown-toggle,
+    .CanelaNotifications--compact > .Dropdown-toggle {
+      .canela-round-button();
+      margin: 0;
+    }
+
+    .Dropdown-menu {
+      min-width: 220px;
+    }
+
+    // Os botões redondos ficam 16px abaixo de "4 h atrás" (.timeline-footer-controls).
+    > ul > li:not(.item-scrubber):not(.item-canelaUnread) {
+      margin-top: var(--cn-space-2);
+    }
+
+    .CanelaNotifications-menu {
+      min-width: 300px;
+    }
+  }
+
+  .CanelaTopic--timeline {
+    .PostStreamScrubber {
+      margin: 0;
+    }
+
+    // O menu do scrubber, sempre aberto na coluna, herdava a sombra dos
+    // dropdowns (no escuro, uma caixa visível em volta da linha do tempo).
+    .PostStreamScrubber > .Dropdown-menu {
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    .Scrubber-first,
+    .Scrubber-last {
+      display: block;
+      height: auto;
+      padding: 0;
+      font-size: 16px;
+      line-height: 1.4;
+      text-align: left;
+      color: var(--cn-primary-medium);
+      background: none;
+      border-radius: 0;
+
+      .Button-icon {
+        display: none;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--cn-primary-high);
+        background: none;
+      }
+    }
+
+    .Scrubber-last {
+      margin-top: var(--cn-space-2);
+    }
+
+    // O trilho: a borda do próprio scrollbar, de ponta a ponta.
+    .Scrubber-scrollbar {
+      margin: var(--cn-space-2) 0 0 var(--cn-space-2);
+      border-left: 1px solid var(--cn-timeline-rail);
+    }
+
+    .Scrubber-before,
+    .Scrubber-after {
+      border-left: 0;
+    }
+
+    // A .timeline-padding do Discourse: a altura desliza (.15s ease-out),
+    // menos enquanto o leitor arrasta a alça.
+    .PostStreamScrubber:not(.dragging) {
+      .Scrubber-before,
+      .Scrubber-after,
+      .Scrubber-handle {
+        transition: height 0.15s ease-out;
+      }
+    }
+
+    .Scrubber-handle {
+      padding: 0;
+      margin-left: -3.5px;
+    }
+
+    // A alça do Horizon: 0.35em de largura, arredondada, na cor do trilho.
+    .Scrubber-bar {
+      width: 5.6px;
+      margin-left: 0.5px;
+      border-radius: 0.8em;
+      background: var(--cn-timeline-handle);
+      outline: 1px solid transparent;
+      transition: none;
+    }
+
+    .disabled .Scrubber-bar {
+      background: var(--cn-primary-low);
+    }
+
+    .Scrubber-info {
+      top: 50%;
+      left: var(--cn-space-4);
+      width: auto;
+      max-width: calc(100% - var(--cn-space-4));
+      max-height: 3em;
+      margin-top: 0;
+      overflow: hidden;
+      transform: translateY(-50%);
+      font-size: 16px;
+      line-height: 1.4;
+      white-space: nowrap;
+
+      strong {
+        .canela-scrubber-count(16px; "/");
+        display: block;
+        font-weight: 700;
+        color: var(--cn-primary);
+      }
+    }
+
+    .Scrubber-description {
+      font-size: 16px;
+      color: var(--cn-primary-medium);
+    }
+
+    // As não lidas: só o trecho tingido no trilho; a contagem fica no botão
+    // "↓ N não lidas" embaixo.
+    .Scrubber-unread {
+      border-left: 0;
+      padding: 0;
+      font-size: 0;
+      background-image: linear-gradient(to right, var(--cn-accent-low), transparent 70%);
+    }
+
+    .CanelaTimeline-unread {
+      height: auto;
+      padding: var(--cn-space-1) 0;
+      font-size: var(--cn-font-down-1);
+      color: var(--cn-link);
+      background: none;
+
+      .Button-icon {
+        color: inherit;
+      }
+
+      &:hover,
+      &:focus-visible {
+        background: none;
+        color: var(--cn-link);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// As cores da linha do tempo do Horizon: no claro, trilho e alça no mesmo
+// tom lavado da cor de destaque (o --tertiary-400); no escuro, os dois na cor
+// cheia.
+[data-theme^=light] {
+  --cn-timeline-handle: ~"color-mix(in srgb, var(--cn-accent) 26%, var(--cn-surface))";
+  --cn-timeline-rail: var(--cn-timeline-handle);
+}
+
+[data-theme^=dark] {
+  --cn-timeline-handle: var(--cn-accent);
+  --cn-timeline-rail: var(--cn-accent);
+}
+
+// ---------------------------------------------------------------------
+// Celular: o #topic-progress do Discourse — uma aba "1 / 11" grudada no
+// pé da tela, à direita, com o fundo que se tinge conforme a leitura — que
+// abre a linha do tempo como folha (timeline-fullscreen): título, categoria
+// e começo do primeiro post à esquerda, o trilho à direita.
+// ---------------------------------------------------------------------
+.CanelaTimelineSheet {
+  display: none;
+}
+
+@media (max-width: 924px) {
+  .CanelaTopic--timeline .PostStreamScrubber {
+    margin: 0;
+  }
+
+  .CanelaTopic--timeline .DiscussionPage-nav {
+    position: static;
+    margin: 0;
+    padding: 0;
+    border-bottom: 0;
+
+    > ul > li.item-scrubber {
+      margin: 0;
+    }
+  }
+
+  // Com o rodapé ligado, os controles do tópico estão lá embaixo, como no
+  // Discourse; no topo sobraria uma fileira de botões soltos.
+  .CanelaTopic--timeline.CanelaTopic--footer .DiscussionPage-nav > ul > li:not(.item-scrubber) {
+    display: none;
+  }
+
+  // Com o editor aberto, a aba sobe e encosta nele (o .with-topic-progress
+  // do Discourse usa bottom: var(--composer-height)).
+  .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle {
+    position: fixed;
+    right: 27px;
+    bottom: var(--cn-composer-height, 0px);
+    z-index: var(--zindex-header);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: auto;
+    min-width: 108px;
+    height: 44px;
+    margin: 0;
+    padding: 8px 16px;
+    box-sizing: border-box;
+    border: 1px solid var(--cn-accent-low);
+    border-bottom: 0;
+    border-radius: 0;
+    background: var(--cn-surface);
+    box-shadow: none;
+    color: var(--cn-link);
+    font-size: 0;
+    font-weight: 700;
+    overflow: hidden;
+
+    // O progresso: o fundo tingido cresce da esquerda para a direita.
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: calc(var(--cn-progress, 0) * 100%);
+      background: var(--cn-accent-low);
+      transition: width 0.15s ease-out;
+    }
+
+    .Scrubber-index,
+    .Scrubber-count {
+      position: relative;
+      font-size: 1.1487rem;
+      line-height: 1.4;
+    }
+
+    .Scrubber-index::after {
+      content: "/";
+      margin: 0 0.3em;
+    }
+
+    .icon {
+      display: none;
+    }
+  }
+
+  // A folha: largura toda, presa embaixo, sobe com max-height (.4s).
+  .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-menu {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 7em;
+    column-gap: 1em;
+    position: fixed;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0 1em;
+    overflow: hidden;
+    border: 0;
+    border-top: 1px solid var(--cn-border);
+    border-radius: 0;
+    background: var(--cn-surface);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.12);
+    visibility: hidden;
+    transition: max-height 0.3s ease-in, visibility 0s 0.3s;
+  }
+
+  .CanelaTopic--timeline .PostStreamScrubber.open > .Dropdown-menu {
+    max-height: 700px;
+    padding: 20px 1em;
+    visibility: visible;
+    transition: max-height 0.4s ease-out, visibility 0s;
+  }
+
+  .CanelaTimelineSheet {
+    display: block;
+    min-width: 0;
+    padding-left: 1em;
+  }
+
+  .CanelaTimelineSheet-title {
+    margin: 0 0 var(--cn-space-2);
+    font-size: 1.2853rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--cn-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .CanelaTimelineSheet-badges {
+    margin-bottom: var(--cn-space-2);
+    font-size: var(--cn-font-down-1);
+  }
+
+  .CanelaTimelineSheet-excerpt {
+    max-width: 650px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--cn-primary);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .CanelaTimelineSheet-user {
+    font-weight: 700;
+    color: var(--cn-primary-high);
+  }
+
+  // O trilho à direita, com os rótulos alinhados à direita dele.
+  .CanelaTopic--timeline .Scrubber {
+    text-align: right;
+  }
+
+  .CanelaTopic--timeline .Scrubber-first,
+  .CanelaTopic--timeline .Scrubber-last {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 0.5em 0;
+    text-align: right;
+    font-size: 1rem;
+    color: var(--cn-primary-medium);
+    background: none;
+
+    .Button-icon {
+      display: none;
+    }
+  }
+
+  .CanelaTopic--timeline .Scrubber-scrollbar {
+    margin: 0;
+    border-left: 0;
+    border-right: 1px solid var(--cn-timeline-rail);
+  }
+
+  .CanelaTopic--timeline .Scrubber-before,
+  .CanelaTopic--timeline .Scrubber-after {
+    border: 0;
+  }
+
+  .CanelaTopic--timeline .Scrubber-bar {
+    float: right;
+    width: 11px;
+    margin: 0 -6px 0 0;
+    border-radius: 0.8em;
+    background: var(--cn-timeline-handle);
+  }
+
+  .CanelaTopic--timeline .Scrubber-info {
+    top: 50%;
+    right: 1em;
+    left: auto;
+    width: auto;
+    margin: 0;
+    transform: translateY(-50%);
+    text-align: right;
+    font-size: 1rem;
+    line-height: 1.4;
+
+    strong {
+      .canela-scrubber-count(1rem; "/");
+      display: block;
+      color: var(--cn-primary);
+    }
+  }
+
+  .CanelaTopic--timeline .Scrubber-description {
+    color: var(--cn-primary-medium);
+  }
+}
+
+// O visitante não tem botões na linha do tempo do Discourse: ele responde
+// pelo "Responder" do fim do tópico.
+@media (min-width: 925px) {
+  .CanelaTopic--timeline.CanelaTopic--guest .DiscussionPage-nav .item-controls {
+    display: none;
+  }
+}
+
+// Com um item só no menu (o visitante só tem "Responder", que já é o botão
+// principal), o botão do menu sairia como um quadrado vazio ao lado.
+.DiscussionPage-nav .Dropdown--split.itemCount1 > .Dropdown-toggle {
+  display: none;
+}

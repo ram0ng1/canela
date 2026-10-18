@@ -1,0 +1,427 @@
+// =====================================================================
+// "Revisar" (/flags): a fila de revisão do Discourse (reviewables.scss),
+// dentro do cartão do tema. Cada `.reviewable-item` num fundo
+// primary-very-low, com o tipo em pílula, o tópico, o post e as ações.
+// =====================================================================
+
+.CanelaReview {
+  width: 100%;
+  min-width: 0;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-0);
+}
+
+.CanelaReview-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: var(--cn-space-4);
+}
+
+.CanelaReview-title {
+  margin: 0;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-3);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+// Os filtros como as abas da página de notificações (sublinhado no ativo).
+.CanelaReview-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    height: 38px;
+    padding: 0 0.65em;
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: transparent;
+    color: var(--cn-primary);
+    font: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0.125em;
+      background: transparent;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover);
+    }
+  }
+
+  .active button {
+    color: var(--cn-link);
+
+    &::after {
+      background: var(--cn-accent);
+    }
+  }
+}
+
+.CanelaReview-filterCount {
+  min-width: 1.4em;
+  padding: 0.1em 0.4em;
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-primary-low);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-2);
+  text-align: center;
+}
+
+.CanelaReview-empty {
+  padding: var(--cn-space-8) 0;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-up-1);
+  text-align: center;
+}
+
+.CanelaReview-more {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 4px;
+}
+
+// ---------------------------------------------------------------------
+// O item
+// ---------------------------------------------------------------------
+
+.CanelaReview .reviewable-item {
+  margin: 0 0 var(--cn-space-6);
+  padding: 1.5rem 1.5rem 1em;
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+  transition: opacity 0.2s;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &.is-busy {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  @media @phone {
+    padding: 1em;
+  }
+}
+
+.CanelaReview .reviewable-meta-data {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 0.5em;
+  width: 100%;
+  margin-bottom: 0.75em;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+
+  .reviewable-type {
+    padding: 0.25em 0.5em;
+    border-radius: 8px;
+    background: var(--cn-primary-high);
+    color: var(--cn-secondary);
+    font-size: var(--cn-font-down-2);
+    text-transform: uppercase;
+  }
+
+  .created-at {
+    margin-left: 0.5em;
+    margin-right: auto;
+
+    a {
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  .reviewable-status {
+    color: var(--cn-primary-high);
+    font-weight: 600;
+  }
+}
+
+.reviewable-queued-post .reviewable-meta-data .reviewable-type {
+  background: var(--cn-accent);
+}
+
+.CanelaReview-reasons {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+
+.CanelaReview .reviewable-score-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+
+  .icon {
+    color: var(--cn-danger);
+  }
+}
+
+.CanelaReview-reasonCount {
+  font-weight: 700;
+}
+
+.CanelaReview .post-topic {
+  width: 100%;
+  margin-bottom: 0.75em;
+  color: var(--cn-primary-medium);
+
+  .title-text {
+    display: block;
+    margin-bottom: 0.25em;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-up-2);
+    font-weight: 700;
+    line-height: 1.3;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      color: var(--cn-link);
+    }
+  }
+}
+
+.CanelaReview .post-contents-wrapper {
+  display: flex;
+  gap: 1em;
+  width: 100%;
+  margin-top: 1em;
+  word-break: break-word;
+
+  .created-by {
+    flex: 0 0 auto;
+    padding-top: 0.35em;
+
+    .Avatar {
+      --size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  @media @phone {
+    .created-by .Avatar {
+      --size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+
+.CanelaReview .post-contents {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.CanelaReview .post-information {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25em 0.75em;
+
+  .username {
+    color: var(--cn-primary-high);
+    font-weight: 700;
+    text-decoration: none;
+  }
+}
+
+.CanelaReview-hiddenLabel,
+.CanelaReview-postLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaReview-postLink {
+  margin-left: auto;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--cn-link);
+  }
+}
+
+.CanelaReview .post-body {
+  position: relative;
+  margin-top: 0.5em;
+  color: var(--cn-primary);
+  line-height: 1.5;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  pre,
+  code {
+    word-break: break-all;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  &.is-collapsed {
+    max-height: 50vh;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 25%;
+      background: linear-gradient(to bottom, transparent, var(--cn-primary-very-low));
+    }
+  }
+}
+
+.reviewable-item.is-hidden .post-body {
+  opacity: 0.6;
+}
+
+.CanelaReview .post-body__toggle-btn.Button {
+  display: flex;
+  margin: 0.5em auto 0;
+  font-size: var(--cn-font-down-1);
+}
+
+// Quem sinalizou: a tabela de pontuações do Discourse, sem a pontuação.
+.CanelaReview .reviewable-scores {
+  margin-top: 1rem;
+  overflow-x: auto;
+  color: var(--cn-primary-high);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    padding: 0.5em;
+    border-bottom: 1px solid var(--cn-border);
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+    font-weight: 400;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.5em;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .reviewable-score + .reviewable-score td,
+  .reviewable-score-detail + .reviewable-score td {
+    border-top: 1px solid var(--cn-border);
+  }
+
+  .user a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    max-width: 200px;
+    color: var(--cn-primary-high);
+    text-decoration: none;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .Avatar {
+      --size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .CanelaReview-reason .icon {
+    margin-right: 0.35em;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+  }
+
+  .CanelaReview-when {
+    color: var(--cn-primary-medium);
+  }
+
+  // No celular a tabela cabe na largura: o texto quebra em vez de rolar.
+  @media @phone {
+    th,
+    td {
+      padding: 0.4em 0.25em;
+      white-space: normal;
+    }
+
+    .user a {
+      max-width: 120px;
+    }
+  }
+
+  .reviewable-score-detail td {
+    padding-top: 0;
+    white-space: normal;
+  }
+
+  blockquote {
+    margin: 0;
+    padding: 0.5em 0.75em;
+    border-left: 3px solid var(--cn-primary-low);
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+    overflow-wrap: anywhere;
+  }
+}
+
+.CanelaReview .reviewable-score-reason {
+  margin: 1em 0 0;
+  color: var(--cn-primary-high);
+}
+
+.CanelaReview .reviewable-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1rem;
+
+  .Button {
+    white-space: nowrap;
+  }
+}

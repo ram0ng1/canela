@@ -1,0 +1,50 @@
+// Card do "Eu também": a lista de categorias e etiquetas em colunas, com a
+// cor de cada uma e as filhas recuadas sob a pai.
+
+.CanelaAdmin-tagPicker-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin: 0.5em 0;
+  font-weight: 600;
+
+  .Button--link {
+    padding: 0;
+    font-weight: normal;
+  }
+}
+
+.CanelaAdmin-tagPicker-list {
+  columns: 220px 3;
+  column-gap: 1.5em;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+
+  li {
+    break-inside: avoid;
+    padding: 2px 0;
+
+    &.is-child {
+      padding-left: 1.5em;
+    }
+  }
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+    font-weight: normal;
+    cursor: pointer;
+  }
+}
+
+.CanelaAdmin-tagPicker-swatch {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}

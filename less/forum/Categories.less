@@ -1,0 +1,388 @@
+// =====================================================================
+// Página de categorias (/tags): caixas em grade (print p2) ou tabela do
+// Discourse, e as etiquetas com a contagem (print p4-e). Medidas do CSS
+// computado de meta.discourse.org/categories e /tags.
+// =====================================================================
+
+// Em rem, como a lista: o body do tema é 15px e o Discourse mede em 16px.
+.CanelaCategoryBoxes,
+.CanelaCategoryTable,
+.CanelaTagCloud {
+  font-size: 1rem;
+}
+
+// ---------------------------------------------------------------------
+// Caixas
+// ---------------------------------------------------------------------
+.CanelaCategoryBoxes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+}
+
+// `.category-box-inner`: borda primary-low, raio grande, 16px de padding.
+// O Horizon acende a borda na cor de destaque no hover.
+.CanelaCategoryBox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-surface);
+  // Sem transição: no Meta a borda acende na hora (nenhuma regra de
+  // transition em `.category-box-inner`).
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--cn-accent);
+  }
+}
+
+// `.category-box-heading h3`: nome em --font-up-1 negrito, 8px até a descrição.
+.CanelaCategoryBox-title {
+  margin: 0 0 8px;
+  font-size: var(--cn-font-up-1);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.CanelaCategoryBox-link {
+  display: inline-flex;
+  align-items: center;
+  // No topo da linha: com o alinhamento pela base, o quadradinho vazio e o
+  // ícone davam linhas de base diferentes e os títulos ficavam 3px fora.
+  vertical-align: top;
+  gap: 6px;
+  max-width: 100%;
+  color: var(--cn-primary);
+  text-decoration: none;
+
+  // A caixa inteira é clicável: o link se estica sobre ela. Os links das
+  // filhas sobem acima dele (z-index) e continuam clicáveis.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      box-shadow: 0 0 0 1px var(--cn-accent);
+    }
+  }
+
+  // O ícone/quadradinho do badge (0.74em/0.75em) e 0.33em até o nome.
+  gap: 0.33em;
+
+  .CanelaCategorySymbol {
+    width: auto;
+    height: auto;
+
+    .icon {
+      font-size: 0.76em;
+    }
+  }
+}
+.CanelaCategoryBox-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaCategoryBox-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  margin: 0 0 16px;
+  font-size: var(--cn-font-0);
+  line-height: 1.4;
+  color: var(--cn-primary-high);
+  overflow-wrap: anywhere;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// `.subcategories`: 8px entre os badges, nome em primary e --font-down-1.
+.CanelaCategoryBox-children {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+
+  .CanelaCategoryBadge {
+    color: var(--cn-primary);
+  }
+}
+
+@media (max-width: 1199px) {
+  .CanelaCategoryBoxes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 999px) {
+  .CanelaCategoryBoxes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media @phone {
+  .CanelaCategoryBoxes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Tabela (layout "list")
+// ---------------------------------------------------------------------
+.CanelaCategoryTable {
+  width: 100%;
+  margin-top: var(--cn-space-4);
+  border-collapse: collapse;
+
+  th {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--cn-border);
+    font-size: var(--cn-font-down-1);
+    font-weight: normal;
+    color: var(--cn-primary-high);
+    text-align: left;
+  }
+
+  td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--cn-border);
+    vertical-align: top;
+  }
+
+  td.CanelaCategoryTable-category {
+    // A faixa colorida à esquerda das categorias do Discourse.
+    border-left: 6px solid var(--category-color, var(--cn-primary-low));
+  }
+}
+
+th.CanelaCategoryTable-topics,
+td.CanelaCategoryTable-topics {
+  width: 110px;
+  text-align: center;
+}
+td.CanelaCategoryTable-topics {
+  font-weight: 700;
+  color: var(--cn-primary-high);
+}
+th.CanelaCategoryTable-latest,
+td.CanelaCategoryTable-latest {
+  width: 34%;
+}
+
+.CanelaCategoryTable-name {
+  margin: 0;
+  font-size: var(--cn-font-up-1);
+  font-weight: 700;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cn-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+      color: var(--cn-primary);
+    }
+  }
+}
+.CanelaCategoryTable-description {
+  margin: 4px 0 0;
+  color: var(--cn-primary-high);
+  line-height: 1.45;
+}
+.CanelaCategoryTable-children {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaCategoryTable-latestInner {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.CanelaCategoryTable-latestTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--cn-primary);
+  overflow-wrap: anywhere;
+
+  &:hover {
+    color: var(--cn-link);
+  }
+}
+.CanelaCategoryTable-latestAge,
+.CanelaCategoryTable-none {
+  flex: 0 0 auto;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary-medium);
+}
+
+@media @phone {
+  th.CanelaCategoryTable-latest,
+  td.CanelaCategoryTable-latest {
+    display: none;
+  }
+
+  th.CanelaCategoryTable-topics,
+  td.CanelaCategoryTable-topics {
+    width: 64px;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Etiquetas (print p4-e e /tags do Meta): grupo com título de 18.7px, e as
+// etiquetas em caixas de 300px ("nome x 658"), 16px entre as linhas.
+// ---------------------------------------------------------------------
+.CanelaTagCloud {
+  margin-top: 16px;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--cn-border);
+}
+
+.CanelaTagCloud-title {
+  margin: 0 0 8px;
+  font-size: 1.17em;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--cn-primary);
+}
+
+.CanelaTagCloud-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(0, 300px));
+  gap: 16px 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaTagCloud-item {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.CanelaTagCloud-tag {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 0;
+  color: var(--cn-primary-high);
+  text-decoration: none;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .CanelaTagSymbol {
+    margin-right: 4px;
+    font-size: 0.9em;
+    color: var(--tag-color, var(--cn-primary-medium));
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary);
+    text-decoration: none;
+  }
+}
+
+.CanelaTagCloud-count {
+  flex: 0 0 auto;
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-primary);
+}
+
+@media (max-width: 999px) {
+  .CanelaTagCloud-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media @phone {
+  .CanelaTagCloud-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Página de etiquetas (/tags com os endereços do Discourse): `.tags-index`
+// do meta.discourse.org/tags — título de 24px, "Ordenar por contagem nome"
+// com a escolhida em negrito, a linha (hr) e a lista com borda embaixo.
+// ---------------------------------------------------------------------
+.CanelaTagsPage {
+  font-size: 1rem;
+}
+.CanelaTagsPage-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--cn-primary);
+}
+.CanelaTagsPage-sortOptions {
+  margin: 0 0 20px;
+  line-height: 1.4;
+  color: var(--cn-primary);
+}
+.CanelaTagsPage-sort {
+  color: var(--cn-link);
+  text-decoration: underline;
+
+  &.active {
+    font-weight: 700;
+  }
+
+  &:hover {
+    color: var(--cn-link);
+  }
+}
+.CanelaTagsPage-rule {
+  margin: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--cn-border);
+}
+.CanelaTagsPage .CanelaTagCloud {
+  margin-top: 32px;
+  padding: 0 0 16px;
+  border-top: 0;
+  border-bottom: 1px solid var(--cn-border);
+}
+.CanelaTagsPage-empty {
+  margin: 32px 0;
+  color: var(--cn-primary-medium);
+}

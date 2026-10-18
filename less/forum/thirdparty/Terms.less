@@ -1,0 +1,58 @@
+// ---------------------------------------------------------------------
+// fof/terms: as caixas de aceite do cadastro (o `.user-field.confirm` do
+// Discourse), o aviso legal e a gestão de termos nas configurações.
+// ---------------------------------------------------------------------
+.FoF-Terms-Check .checkbox {
+  // Bloco com a caixinha posicionada à esquerda (e não flex): o texto
+  // "Aceito" e o link da política são nós separados, e num flex viravam
+  // colunas soltas, com espaço dobrado entre eles e a quebra de linha errada.
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0 0 0 26px;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-down-1);
+  font-weight: normal;
+  line-height: 1.45;
+  text-align: left;
+
+  input[type="checkbox"] {
+    position: absolute;
+    top: 0.15em;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--cn-accent);
+    cursor: pointer;
+  }
+
+  a {
+    color: var(--cn-link);
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// O grupo do aceite fica colado aos campos de cima, como os campos extras
+// do cadastro do Discourse (`.user-field.confirm`).
+.SignUpModal .Form-group:has(> .FoF-Terms-Check) {
+  margin-top: -4px;
+}
+
+.FoF-Terms-SignUp-Legal.Alert {
+  padding: var(--cn-space-2) 0;
+  background: none;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  text-align: left;
+}
+
+.Fof-Terms-Policy-User-Settings-Management {
+  gap: var(--cn-space-2);
+  padding: var(--cn-space-2) 0;
+  border-bottom: 1px solid var(--cn-border);
+}

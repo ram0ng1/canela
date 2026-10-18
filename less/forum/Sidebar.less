@@ -1,0 +1,737 @@
+// =====================================================================
+// Barra lateral do Discourse (.sidebar-wrapper), medida no
+// meta.discourse.org: fundo da superfície, linhas de 2,3rem com o ícone numa
+// coluna de 24px, cinza neutro, hover tingido do destaque e o ativo em
+// cinza claro.
+// =====================================================================
+
+.CanelaSidebar {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--cn-primary-high);
+}
+
+// A barra global: fixa à esquerda, abaixo do cabeçalho.
+#canela-sidebar {
+  position: fixed;
+  top: var(--cn-header-height);
+  bottom: 0;
+  left: 0;
+  width: var(--cn-sidebar-width);
+  box-sizing: border-box;
+  background: var(--cn-surface);
+  border-right: 1px solid var(--cn-primary-low);
+  z-index: calc(~"var(--zindex-header) - 1");
+  transform: translateX(-100%);
+  visibility: hidden;
+  // O Discourse abre e fecha a barra encaixada sem animação (o desktop_theme
+  // do Meta zera a transição do .sidebar-animate).
+  transition: none;
+
+  .Canela--sidebarOpen & {
+    transform: none;
+    visibility: visible;
+  }
+}
+
+// O fundo "por trás" do painel do celular (.header-cloak).
+.CanelaSidebar-backdrop {
+  display: none;
+}
+
+.CanelaSidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.CanelaSidebar-sections {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--cn-space-2) var(--cn-space-4);
+  // A barra de rolagem só aparece com o mouse em cima: some 0,5s depois de
+  // sair, como o .sidebar-sections do Discourse.
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.25s ease-in-out 0.5s;
+
+  &:hover {
+    scrollbar-color: var(--cn-primary-100) transparent;
+    transition-delay: 0s;
+  }
+}
+
+// "Novo tópico" em largura total, no topo (só para quem está logado, como
+// no Discourse).
+.CanelaSidebar-newTopic {
+  margin: var(--cn-space-2) 0 var(--cn-space-4);
+
+  .Button {
+    width: 100%;
+    height: 38px;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+// Com rascunhos (fof/drafts): o botão dividido do Discourse — "✎ Novo
+// tópico" e o "⌄" grudados, da mesma cor, com uma linha fina entre eles.
+.CanelaSidebar-newTopic--split {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+
+  > .CanelaSidebar-newTopicButton {
+    flex: 1;
+    min-width: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .CanelaDraftsMenu {
+    position: static;
+    display: flex;
+    flex: none;
+  }
+
+  .CanelaDraftsMenu-toggle.Button {
+    width: 38px;
+    padding: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    box-shadow: inset 1px 0 0 ~"rgb(255 255 255 / 0.35)";
+
+    .Button-icon {
+      margin: 0;
+      font-size: 12px;
+    }
+
+    .Button-label {
+      display: none;
+    }
+  }
+}
+
+// Seções (.sidebar-section-wrapper): 4px em cima e embaixo e uma linha entre
+// elas; a primeira encosta no topo e a última não tem linha.
+.CanelaSidebar-section {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--cn-primary-low);
+
+  &:first-child,
+  .CanelaSidebar-newTopic + & {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+// Cabeçalho da seção: da altura de um link, seta numa coluna de 24px e o
+// título em versalete pequeno.
+.CanelaSidebar-sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--cn-row-height);
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  color: var(--cn-primary-high);
+  font-size: 0.7579rem;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:focus-visible {
+    background: var(--cn-hover-accent);
+    outline: 0;
+  }
+}
+
+.CanelaSidebar-sectionTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanelaSidebar-sectionCaret {
+  display: flex;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  font-size: 0.7579rem;
+  transition: none;
+
+  .collapsed & {
+    transform: rotate(-90deg);
+  }
+}
+
+.CanelaSidebar-sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Links: o LinkButton do core (seção da comunidade e itens de extensões) e os
+// links de categoria/etiqueta têm a mesma cara.
+.CanelaSidebar-sectionContent > li {
+  > .LinkButton,
+  > .Button,
+  > a,
+  > .Dropdown > .Dropdown-toggle,
+  // As conversas da IA vêm embrulhadas com o menu "…" ao lado.
+  > .CanelaAiSidebar-item > .LinkButton {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-2);
+    width: 100%;
+    height: var(--cn-row-height);
+    padding: 0 4px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: var(--cn-radius-pill);
+    background: transparent;
+    color: var(--cn-primary-high);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
+    box-shadow: none;
+    white-space: nowrap;
+    transition: none;
+
+    // O ícone mora numa coluna de 24px, centralizado (.sidebar-section-link-prefix).
+    > .Button-icon,
+    > .icon,
+    > .CanelaSidebar-linkIcon:not(.CanelaCategorySymbol) {
+      flex: 0 0 24px;
+      width: 24px;
+      margin: 0;
+      font-size: 16px;
+      text-align: center;
+      color: var(--cn-primary-high);
+    }
+
+    .Button-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .Button-caret {
+      display: none;
+    }
+
+    // Contagens que as extensões põem nos links (ex.: não lidas).
+    .Button-badge,
+    .Badge {
+      margin-left: auto;
+      color: var(--cn-sidebar-suffix);
+      font-size: 13px;
+      font-weight: 500;
+      background: none;
+    }
+
+    // Hover (--d-sidebar-highlight-*): fundo tingido e texto na cor do destaque.
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover-accent);
+      color: var(--cn-hover-accent-text);
+      outline: 0;
+
+      > .Button-icon,
+      > .icon:not(.CanelaCategorySymbol) {
+        color: var(--cn-hover-accent-text);
+      }
+    }
+
+    // Ativo (--d-sidebar-active-*): cinza claro e semi-negrito.
+    &[active='true'],
+    &.active {
+      background: var(--cn-primary-100);
+      color: var(--cn-primary-very-high);
+      font-weight: 600;
+
+      > .Button-icon,
+      > .icon:not(.CanelaCategorySymbol) {
+        color: var(--cn-primary-very-high);
+      }
+    }
+  }
+
+  &.Dropdown-separator,
+  &.Separator {
+    display: none;
+  }
+}
+
+// "Todas as categorias" e "Todas as etiquetas" em letra menor (font-down-1).
+.CanelaSidebar-sectionContent > li > .CanelaSidebar-link--all {
+  font-size: 0.8706rem;
+  line-height: 1.4;
+
+  > .Button-icon {
+    font-size: 0.8706rem;
+  }
+}
+
+// Ícone da etiqueta (o do Flarum, ou a etiqueta genérica), centrado na
+// coluna de 24px; na cor da etiqueta quando ela tem uma.
+.CanelaSidebar-sectionContent > li > .CanelaSidebar-tagLink > .CanelaTagSymbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--colored {
+    color: var(--tag-color);
+  }
+
+  .icon {
+    color: inherit;
+  }
+}
+
+// Símbolo da categoria: o ícone na cor dela, ou o quadradinho de 0,8em.
+.CanelaSidebar-tagLink .CanelaCategorySymbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  color: var(--category-color, var(--cn-primary-medium));
+  font-size: 16px;
+
+  .icon {
+    color: inherit !important;
+  }
+
+  &--square {
+    background: none;
+
+    &::before {
+      content: '';
+      width: 0.8em;
+      height: 0.8em;
+      border-radius: 2px;
+      background: var(--category-color, var(--cn-primary-medium));
+    }
+  }
+}
+
+// "Mais": dropdown aberto para a direita, a partir do item.
+.CanelaSidebar-more {
+  display: block;
+
+  .Dropdown-menu {
+    left: var(--cn-space-2);
+    right: auto;
+    min-width: 220px;
+  }
+}
+
+// Rodapé (.sidebar-footer-wrapper): grudado no pé, sem linha, com um degradê
+// em cima que mostra que a lista rola; os botões à direita.
+.CanelaSidebar-footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+  min-height: 45.9px;
+  padding: var(--cn-space-2);
+  box-sizing: border-box;
+  background: var(--cn-surface);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1.5em;
+    height: 1.5em;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--cn-surface));
+  }
+
+  // .sidebar-footer-actions-button: pílula pequena com o ícone em font-down-1.
+  .Button--icon,
+  .ThemeSwitcher > .Dropdown-toggle,
+  .CanelaColorMode > .Dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    padding: 0.25em 0.4em;
+    border: 0;
+    border-radius: var(--cn-radius-pill);
+    background: transparent;
+    color: var(--cn-primary-very-high);
+    box-shadow: none;
+    font-size: 16px;
+    line-height: 1;
+    gap: 0;
+    transition: none;
+
+    .Button-label {
+      display: none;
+    }
+
+    .Button-icon {
+      width: 1em;
+      margin: 0;
+      font-size: 0.8706rem;
+      line-height: 1;
+      text-align: center;
+      color: var(--cn-primary-high);
+    }
+
+    // `.sidebar-footer-actions-button:hover`: cinza leve, não a cor do tema.
+    &:hover,
+    &:focus-visible,
+    .open > & {
+      background: var(--cn-hover);
+
+      .Button-icon {
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  // Os menus do rodapé abrem para cima, como os do Discourse.
+  .CanelaColorMode .Dropdown-menu,
+  .CanelaPaletteSelector .Dropdown-menu {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: var(--cn-space-1);
+    min-width: 12em;
+    padding: 4px;
+  }
+
+  // Os menus se posicionam pelo rodapé (e não pelo botão): ancorados no
+  // botão, o do modo de cor passava da borda esquerda da barra e era cortado.
+  .CanelaColorMode,
+  .CanelaPaletteSelector {
+    position: static;
+  }
+
+  .CanelaColorMode .Dropdown-menu,
+  .CanelaPaletteSelector .Dropdown-menu {
+    right: auto;
+    left: var(--cn-space-2);
+    max-width: ~"calc(100% - (2 * var(--cn-space-2)))";
+  }
+
+  // A paleta, em texto, ocupa a sobra à esquerda ("Meta Branded ⌄").
+  .CanelaPaletteSelector {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-right: auto;
+  }
+
+  .CanelaPaletteSelector-toggle.Button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    height: auto;
+    padding: 0.25em 0.5em;
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: transparent;
+    color: var(--cn-primary-high);
+    box-shadow: none;
+    font-size: var(--cn-font-down-1);
+
+    .Button-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .Button-caret {
+      flex: 0 0 auto;
+      margin: 0;
+      font-size: 0.75em;
+      color: var(--cn-primary-medium);
+    }
+
+    &:hover,
+    &:focus-visible,
+    .open > & {
+      background: var(--cn-hover) !important;
+      color: var(--cn-primary);
+    }
+  }
+
+  .open > .CanelaColorMode-toggle.Button {
+    background: var(--cn-hover);
+  }
+
+  .Dropdown-menu > li > .CanelaColorMode-option,
+  .Dropdown-menu > li > .CanelaPaletteSelector-option {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0.5em 0.75em;
+    border-radius: var(--cn-radius);
+    font-size: var(--cn-font-0);
+
+    .Button-icon,
+    .CanelaPaletteSelector-dot {
+      margin: 0 10px 0 0 !important;
+    }
+
+    .Button-icon {
+      width: 1em;
+      font-size: 1rem;
+      color: var(--cn-primary-high);
+    }
+
+    .Button-label {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 10px;
+    }
+
+    // `--d-selected` do Discourse: um cinza leve, não a cor de destaque.
+    &.active,
+    &.active:hover {
+      background: var(--cn-primary-very-low, var(--cn-hover));
+      color: var(--cn-primary);
+      font-weight: 400;
+    }
+
+    &:hover {
+      background: var(--cn-hover);
+      color: var(--cn-primary);
+    }
+  }
+
+  .CanelaPaletteSelector-dot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 0.9em;
+    height: 0.9em;
+    border-radius: 50%;
+    background: var(--cn-accent);
+
+    &--hc {
+      background: linear-gradient(90deg, #000 50%, #fff 50%);
+      box-shadow: inset 0 0 0 1px var(--cn-primary-medium);
+    }
+  }
+
+  // Com o Wardrobe: "🖌 Canela ⌄", como o "🖌 Meta Branded ⌄" do Meta.
+  .CanelaPaletteSelector-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .CanelaPaletteSelector-brush {
+    flex: 0 0 auto;
+    font-size: 0.9em;
+    color: var(--cn-primary-medium);
+  }
+
+  // Título de cada seção do menu (Tema / Paleta de cores).
+  .Dropdown-menu > li > .CanelaPaletteSelector-heading {
+    display: block;
+    padding: 0.5em 0.75em 0.25em;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-2);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  // O ThemeSwitcher do core vira só o ícone, abrindo para cima.
+  .ThemeSwitcher {
+    .Button-label,
+    .Button-caret {
+      display: none;
+    }
+
+    .Dropdown-menu {
+      top: auto;
+      bottom: 100%;
+      right: 0;
+      left: auto;
+      margin-bottom: var(--cn-space-1);
+    }
+  }
+}
+
+// Cabeçalho da seção com o lápis de personalizar, que só aparece no hover.
+.CanelaSidebar-sectionHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-right: 4px;
+  border-radius: var(--cn-radius);
+
+  &:hover .CanelaSidebar-sectionEdit,
+  .CanelaSidebar-sectionEdit:focus-visible {
+    opacity: 1;
+  }
+}
+
+.CanelaSidebar-sectionEdit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  color: var(--cn-primary-high);
+  font-size: 0.8706rem;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.25s, background 0.25s;
+
+  &:hover {
+    color: var(--cn-hover-accent-text);
+  }
+
+  &:focus-visible {
+    background: var(--cn-primary-300);
+    outline: 0;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Celular: o painel do hambúrguer (.menu-panel), por cima de tudo, com o
+// fundo escurecido atrás.
+// ---------------------------------------------------------------------
+@media @phone {
+  #canela-sidebar {
+    top: 0;
+    width: ~"min(360px, 80vw)";
+    padding: var(--cn-space-2);
+    border: 1px solid var(--cn-primary-low);
+    box-shadow: var(--cn-panel-shadow);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: calc(~"var(--zindex-header) + 2");
+
+    // Abre deslizando da esquerda em 200ms (ease-out), como o .menu-panel do
+    // Discourse; fecha na hora.
+    .Canela--sidebarOverlay & {
+      animation: canela-panel-in 0.2s ease-out both;
+    }
+
+    .CanelaSidebar-inner {
+      height: auto;
+    }
+
+    .CanelaSidebar-sections {
+      overflow: visible;
+      padding: 0;
+    }
+
+    .CanelaSidebar-newTopic {
+      margin: 0 0 var(--cn-space-2);
+    }
+
+    // No painel as seções não têm linha entre elas, só o respiro.
+    .CanelaSidebar-section {
+      padding: 0;
+      margin-bottom: 1.2rem;
+      border-bottom: 0;
+    }
+
+    .CanelaSidebar-footer {
+      padding: var(--cn-space-2);
+
+      &::before {
+        display: none;
+      }
+    }
+
+    // O teclado não tem atalhos no celular.
+    .CanelaSidebar-footerShortcuts {
+      display: none;
+    }
+  }
+
+  .Canela--sidebarOverlay ~ .CanelaSidebar-backdrop,
+  .Canela--sidebarOverlay .CanelaSidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: var(--cn-cloak);
+    z-index: calc(~"var(--zindex-header) + 1");
+    animation: canela-fade-in 0.2s ease-out both;
+  }
+}
+
+@keyframes canela-panel-in {
+  from { transform: translateX(-100%); }
+  to { transform: none; }
+}
+
+@keyframes canela-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// Quem pede menos movimento recebe o painel já aberto (o Discourse faz a
+// animação durar 0ms nesse caso).
+@media (prefers-reduced-motion: reduce) {
+  #canela-sidebar,
+  .CanelaSidebar-backdrop {
+    animation-duration: 0s !important;
+  }
+}
+
+// Janela de personalizar a seção.
+.CanelaSidebarCustomize-list {
+  max-height: 50vh;
+  margin: 0 0 var(--cn-space-4);
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+
+  li {
+    border-bottom: 1px solid var(--cn-border);
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-2);
+    margin: 0;
+    padding: var(--cn-space-2) var(--cn-space-1);
+    cursor: pointer;
+  }
+
+  .CanelaSidebarCustomize-item--child label {
+    padding-left: var(--cn-space-6);
+  }
+}
+
+.CanelaSidebarCustomize-actions {
+  display: flex;
+  gap: var(--cn-space-2);
+}

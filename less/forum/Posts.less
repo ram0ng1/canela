@@ -1,0 +1,1486 @@
+// =====================================================================
+// Posts no jeito do Discourse (Horizon), medidos em meta.discourse.org a
+// 1440px: coluna do avatar de 45px (o avatar de 48px transborda 3px, como
+// lá) que acompanha a rolagem; cabeçalho de 16px com o nome de usuário em
+// negrito cinza; corpo em 16px/1.5 com 12px de respiro dos lados; barra de
+// ações redonda, de 38px, só de ícones (e "Responder" com texto); separador
+// fino entre os posts; posts de evento como as "small actions".
+// =====================================================================
+
+// Na raiz, e não só no tópico: o conteúdo formatado também aparece no
+// perfil e na busca.
+[data-theme^=light],
+[data-theme^=dark] {
+  // O --love do Discourse: o coração das curtidas não usa a cor do tema.
+  --cn-topic-love: #fa6c8d;
+  --cn-topic-love-low: ~"color-mix(in srgb, var(--cn-topic-love) 15%, var(--cn-surface))";
+  // O fundo e a barra das citações (--d-post-aside-*): no escuro o Discourse
+  // clareia bem mais do que o "muito baixo" da paleta.
+  --cn-post-aside-bg: var(--cn-primary-very-low);
+  --cn-post-aside-border: var(--cn-primary-300);
+  // O texto dos posts acompanha o "tamanho do texto" do leitor (extras).
+  --cn-post-font: calc(16px * var(--cn-text-scale, 1));
+}
+
+.CanelaTopic {
+  // --topic-avatar-width e --topic-body-width-padding do Discourse.
+  --cn-post-avatar: 45px;
+  --cn-post-gap: 12px;
+}
+
+[data-theme^=dark] {
+  --cn-post-aside-bg: ~"color-mix(in srgb, var(--cn-primary) 17%, var(--cn-surface))";
+  --cn-post-aside-border: ~"color-mix(in srgb, var(--cn-primary) 35%, var(--cn-surface))";
+}
+
+// ---------------------------------------------------------------------
+// Conteúdo formatado (posts, prévias, posts embutidos) — o .cooked
+// ---------------------------------------------------------------------
+.canela-cooked() {
+  font-size: var(--cn-post-font);
+  line-height: 1.5;
+  color: var(--cn-primary);
+  overflow-wrap: break-word;
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  p,
+  ol,
+  ul,
+  dl,
+  table,
+  details {
+    margin: 0 0 1em;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
+  ul,
+  ol {
+    margin: 1em 0 1em 1.25em;
+    padding-left: 1.25em;
+  }
+
+  li > ul,
+  li > ol {
+    margin: 0;
+  }
+
+  li > p {
+    margin: 0 0 1em;
+  }
+
+  // Links do Discourse: só a cor, sem o sublinhado nem o negrito do core.
+  a {
+    color: var(--cn-link);
+    font-weight: inherit;
+    border-bottom: 0;
+    text-decoration: none;
+    overflow-wrap: break-word;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: none;
+    }
+  }
+
+  // Os títulos em rem, como no Discourse: não crescem dentro de citações.
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 2rem 0 0.67rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: normal;
+    color: var(--cn-primary);
+  }
+
+  h1 {
+    font-size: calc(1.5157rem * var(--cn-text-scale, 1));
+  }
+
+  h2 {
+    font-size: calc(1.3195rem * var(--cn-text-scale, 1));
+  }
+
+  h3 {
+    font-size: calc(1.1487rem * var(--cn-text-scale, 1));
+  }
+
+  h4 {
+    font-size: calc(1rem * var(--cn-text-scale, 1));
+  }
+
+  h5 {
+    font-size: calc(0.8706rem * var(--cn-text-scale, 1));
+  }
+
+  h6 {
+    font-size: calc(0.7579rem * var(--cn-text-scale, 1));
+  }
+
+  strong,
+  b {
+    font-weight: 700;
+  }
+
+  hr {
+    margin: 1em 0;
+    border: 0;
+    border-top: 1px solid var(--cn-primary-low);
+  }
+
+  // Citação: a barra de 5px à esquerda sobre o fundo levemente sombreado.
+  blockquote {
+    margin: 1em 0;
+    padding: 0.75em;
+    border: 0;
+    border-left: 5px solid var(--cn-post-aside-border);
+    border-radius: 0;
+    background: var(--cn-post-aside-bg);
+    color: var(--cn-primary);
+    font-size: inherit;
+    overflow-wrap: break-word;
+
+    > *:first-child {
+      margin-top: 0 !important;
+    }
+
+    > *:last-child {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  code {
+    padding: 2px 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: 0.875em;
+    line-height: 1.3077;
+    color: var(--cn-primary);
+    background: var(--cn-primary-100);
+    border-radius: var(--cn-radius);
+  }
+
+  pre {
+    position: relative;
+    margin: 1em 0;
+    padding: 0;
+    max-height: 2000px;
+    border: 0;
+    border-radius: var(--cn-radius);
+    background: none;
+    overflow: hidden;
+
+    code {
+      display: block;
+      padding: 12px;
+      max-height: 500px;
+      overflow: auto;
+      color: var(--cn-primary-very-high);
+      background: var(--cn-primary-100);
+      border-radius: var(--cn-radius);
+      font-size: 0.875em;
+      line-height: 1.3077;
+      white-space: pre;
+    }
+  }
+
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0 0.5em;
+    min-width: 24px;
+    margin: 0 0.15em;
+    padding: 0.15em 0.6em;
+    box-sizing: border-box;
+    border: 1px solid var(--cn-primary-low-mid);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    background: var(--cn-primary-very-low);
+    font-family: inherit;
+    font-size: var(--cn-font-down-1);
+    line-height: 1.6;
+    color: var(--cn-primary);
+    box-shadow: none;
+  }
+
+  // Tabela do Discourse: cabeçalho em negrito sem fundo, linha grossa no
+  // topo do corpo e uma fina entre as linhas; rola quando passa do post.
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+
+    thead th {
+      padding: 0 3px 2px 0.5em;
+      text-align: left;
+      font-weight: 700;
+      color: var(--cn-primary);
+    }
+
+    tbody {
+      border-top: 3px solid var(--cn-primary-low);
+    }
+
+    tr {
+      border-bottom: 1px solid var(--cn-primary-low);
+    }
+
+    td {
+      padding: 3px 3px 3px 0.5em;
+    }
+  }
+
+  img:not(.emoji) {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  img.emoji {
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    vertical-align: -0.1em;
+  }
+
+  iframe,
+  video {
+    max-width: 100%;
+  }
+
+  video {
+    max-height: 500px;
+  }
+
+  // O [details] do Discourse: caixa cinza, triângulo de texto, sem negrito.
+  details {
+    position: relative;
+    margin: 0 0 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0;
+    background: var(--cn-primary-very-low);
+
+    &:not([open]):hover,
+    &:not([open]):focus-within {
+      background: var(--cn-hover);
+    }
+
+    summary {
+      display: block;
+      cursor: pointer;
+      font-weight: 400;
+      outline: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::before {
+        content: "►";
+        margin-right: 0.25em;
+      }
+    }
+
+    &[open] > summary::before {
+      content: "▼";
+    }
+  }
+
+  mark {
+    background: var(--cn-highlight);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  // Menções: a pílula cinza do Discourse (.mention).
+  .UserMention,
+  .PostMention {
+    display: inline-block;
+    padding: 0.2em 0.34em;
+    border: 0;
+    border-radius: 0.6em;
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+    font-size: 0.93em;
+    font-weight: 400;
+    line-height: 1;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-primary-200);
+      color: var(--cn-primary);
+      text-decoration: none;
+    }
+
+    // O "↪" que o mentions põe antes das menções de post.
+    &::before {
+      display: none;
+    }
+  }
+
+  .UserMention--deleted,
+  .PostMention--deleted {
+    opacity: 0.6;
+  }
+
+  .CanelaMention-unavailable {
+    color: var(--cn-primary-medium);
+    font-style: italic;
+  }
+
+  // A menção que só marca "respondendo a" (o Discourse mostra isso no
+  // cabeçalho do post, e não no texto).
+  .CanelaReplyMarker {
+    display: none;
+  }
+
+  // Prévia de link (onebox) genérica: caixa com borda.
+  aside.onebox,
+  .onebox {
+    display: block;
+    margin: 0 0 1em;
+    padding: 12px 16px;
+    border: 1px solid var(--cn-border);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+  }
+
+  // Citação de outro post (o aside.quote do Discourse): o tema põe o
+  // cabeçalho "avatar Fulano:" dentro do blockquote que o mentions gera.
+  blockquote.CanelaQuote {
+    padding: 0.8em 0.75em 0.75em;
+  }
+
+  .CanelaQuote-title {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--cn-space-2);
+    margin: 0 0 0.75em;
+    color: var(--cn-primary-high);
+    user-select: none;
+
+    .Avatar {
+      .Avatar--size(24px);
+      flex-shrink: 0;
+    }
+  }
+
+  .CanelaQuote-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 24px;
+
+    a.PostMention,
+    a.PostMention:hover {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      background: none;
+      color: var(--cn-primary-high);
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
+  .CanelaQuote-controls {
+    display: flex;
+    align-items: center;
+    min-height: 24px;
+    margin-left: auto;
+    color: var(--cn-primary-low-mid);
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-left: 0.3em;
+      color: var(--cn-primary-low-mid);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--cn-primary-high);
+      }
+    }
+
+    .icon {
+      font-size: 0.8em;
+    }
+  }
+}
+
+.Post-body,
+.CanelaEmbeddedPost-body {
+  .canela-cooked();
+}
+
+// ---------------------------------------------------------------------
+// O post
+// ---------------------------------------------------------------------
+.CanelaTopic {
+  .Post {
+    padding: 13px 0 20px;
+    border-radius: 0;
+  }
+
+  // O separador do core (::after de cada item) é a borda de cima dos posts
+  // do Discourse: ponta a ponta do stream, na cor das bordas do conteúdo.
+  .PostStream-item:has(+ .PostStream-item)::after {
+    width: 100%;
+    background-color: var(--cn-border);
+  }
+
+  .Post-header {
+    margin: 0;
+    padding: 0 0 4px;
+    font-size: var(--cn-post-font);
+    line-height: 1.4;
+
+    &,
+    a,
+    .Button--text.Button--link {
+      color: var(--cn-primary-medium);
+    }
+
+    > ul {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      column-gap: 0.33em;
+      row-gap: 2px;
+
+      > li {
+        display: inline-flex;
+        align-items: center;
+        margin: 0;
+        min-width: 0;
+      }
+    }
+
+    // Esquerda: nome e nomes secundários; direita: "em resposta a", lápis, data.
+    .item-user {
+      order: 1;
+    }
+
+    .item-canelaNames {
+      order: 2;
+    }
+
+    .item-canelaReplyTo {
+      order: 3;
+      margin-right: 2em;
+    }
+
+    .item-edited {
+      order: 4;
+      margin-right: 0.5em;
+    }
+
+    .item-meta {
+      order: 5;
+    }
+
+    .item-toggle {
+      order: 6;
+    }
+
+    > ul > li.item-canelaNames,
+    > ul > li.item-user:not(:has(~ li.item-canelaNames)) {
+      margin-right: auto;
+    }
+
+    // O título do usuário (.user-title) vem depois dos nomes, como no
+    // Discourse — sem ordem, ele caía antes do nome. Quando existe, é ele
+    // quem empurra a data para a direita.
+    .item-canelaUserTitle {
+      order: 2;
+      margin-right: auto;
+    }
+
+    > ul > li.item-canelaNames:has(~ li.item-canelaUserTitle),
+    > ul > li.item-user:not(:has(~ li.item-canelaNames)):has(~ li.item-canelaUserTitle) {
+      margin-right: 0;
+    }
+
+    .item-canelaNames + .item-canelaUserTitle,
+    .item-user + .item-canelaUserTitle {
+      margin-left: 0.33em;
+    }
+
+    // Cinza e reto, como o .user-title do Discourse (o itálico é do perfil).
+    .CanelaPostUserTitle {
+      font-size: inherit;
+      font-style: normal;
+      color: var(--cn-primary-medium);
+    }
+  }
+
+  .PostUser-name {
+    font-size: inherit;
+    line-height: inherit;
+
+    &,
+    a {
+      font-weight: 700;
+      font-size: inherit;
+      color: var(--cn-primary-high);
+    }
+  }
+
+  .CanelaPostNames {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.33em;
+    min-width: 0;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+
+  .CanelaPostNames-username {
+    color: var(--cn-primary-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .PostMeta .Button--text {
+    font-size: inherit;
+    color: var(--cn-primary-medium);
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--cn-primary-high);
+    }
+  }
+
+  .CanelaPostEdited {
+    color: var(--cn-primary-medium);
+    font-size: 0.9em;
+    cursor: default;
+  }
+
+  // "↪ [avatar] Fulano" (o reply-to-tab): abre o post respondido acima deste.
+  .CanelaReplyTo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cn-space-1);
+    max-width: 400px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cn-primary-medium);
+    font: inherit;
+    cursor: pointer;
+    overflow: hidden;
+
+    .Avatar {
+      .Avatar--size(20px);
+    }
+
+    .CanelaReplyTo-icon {
+      color: var(--cn-primary-medium);
+      font-size: 0.85em;
+    }
+
+    &:hover,
+    &:focus-visible,
+    &--open {
+      color: var(--cn-primary-high);
+    }
+  }
+
+  .Post--hidden {
+    .Post-header,
+    .PostUser-name a {
+      color: var(--cn-primary-medium);
+    }
+
+    &:not(.revealContent) {
+      padding: var(--cn-space-2) 0;
+    }
+
+    // O core puxa a barra para a linha do cabeçalho com margem negativa (a
+    // barra dele flutua à direita); a do tema é uma linha própria embaixo, e
+    // a margem a jogava em cima da data. Aqui ela fica no fluxo, só com os
+    // controles de moderação.
+    .Post-actions {
+      margin-top: 0;
+      margin-bottom: 0;
+      opacity: 1;
+    }
+
+    &:not(.revealContent) .Post-actions {
+      margin-top: var(--cn-space-1);
+    }
+
+    // O "…" que mostra o conteúdo oculto: um ícone discreto, como os da barra.
+    .Post-header .item-toggle .Button--more {
+      height: 24px;
+      padding: 0 6px;
+      border: 0;
+      border-radius: var(--cn-radius-sm, 4px);
+      --button-bg: transparent;
+      --button-color: var(--cn-primary-medium);
+      background: transparent;
+      color: var(--cn-primary-medium);
+
+      &:hover,
+      &:focus-visible {
+        --button-bg-hover: var(--cn-primary-low);
+        --button-color-hover: var(--cn-primary-high);
+        background: var(--cn-primary-low);
+        color: var(--cn-primary-high);
+      }
+    }
+
+    &.revealContent .Post-header .item-toggle .Button--more {
+      background: var(--cn-primary-low);
+      color: var(--cn-primary-high);
+    }
+  }
+
+  // A "time-gap" do Discourse ("3 meses depois"): uma small action sem ícone.
+  .PostStream-timeGap {
+    padding: var(--cn-space-3) 0 var(--cn-space-3) calc(var(--cn-post-avatar) + var(--cn-post-gap));
+    text-transform: none;
+    font-size: var(--cn-post-font);
+    font-weight: 400;
+    color: var(--cn-primary-high);
+  }
+
+  .LoadingPost .fakeText {
+    background: var(--cn-primary-low);
+  }
+
+  .TypingUsersContainer {
+    margin: var(--cn-space-3) 0 0;
+    padding: var(--cn-space-2) var(--cn-space-3);
+    border-radius: var(--cn-radius);
+    background: var(--cn-primary-very-low);
+    font-size: var(--cn-font-down-1);
+
+    .TypingUsers {
+      color: var(--cn-primary-high);
+    }
+  }
+}
+
+@media @tablet-up {
+  .CanelaTopic {
+    .Post-container {
+      grid-template-columns: var(--cn-post-avatar) minmax(0, 1fr);
+      column-gap: 0;
+    }
+
+    // O corpo do Discourse tem 12px de respiro dos dois lados (690px de texto).
+    .Post-main {
+      padding: 0 var(--cn-post-gap);
+    }
+
+    // O avatar desce junto com a leitura de um post longo (sticky-avatar).
+    .Post-side {
+      padding-top: 4px;
+    }
+
+    // O sticky cria um contexto de empilhamento próprio: com z-index, o
+    // tooltip do flair não fica sob o conteúdo dos posts vizinhos.
+    .CanelaPostAvatar {
+      z-index: 3;
+      position: sticky;
+      top: calc(var(--cn-header-height) + 13px);
+      width: 48px;
+      height: 48px;
+    }
+
+    .Post-side .Post-avatar {
+      .Avatar--size(48px);
+    }
+
+    .Post-body {
+      padding: 16px 0 4px;
+    }
+
+    .CommentPost:not(.Post--hidden) {
+      min-height: 0;
+    }
+
+    // As badges de grupo viram o "flair" no canto do avatar; no desktop elas
+    // moram ao lado do avatar (para acompanhar a rolagem), não no cabeçalho.
+    .Post-header .PostUser-badges {
+      display: none;
+    }
+  }
+}
+
+// O flair: o primeiro grupo com ícone, 20px, no canto de baixo do avatar.
+.CanelaPostAvatar {
+  position: relative;
+  display: block;
+}
+
+.CanelaPostAvatar-flair {
+  position: absolute;
+  // Acima do avatar (e o tooltip do grupo, que mora aqui dentro, junto).
+  z-index: 2;
+  right: -4px;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: 0;
+
+  > li {
+    display: none;
+  }
+
+  // Só o primeiro grupo que tem ícone (grupo sem ícone, como "Membro", não
+  // desenha um círculo vazio).
+  > li:has(.icon) {
+    display: block;
+  }
+
+  > li:has(.icon) ~ li {
+    display: none;
+  }
+
+  .Badge {
+    .Badge--size(20px);
+    box-shadow: 0 0 0 2px var(--cn-surface);
+  }
+}
+
+// A presença: um pontinho no canto de cima do avatar (o flair fica no de
+// baixo), com um anel da cor do cartão. O ícone do core vira só a bolinha.
+.CanelaPostAvatar-online,
+.CanelaTopic .Post-header .UserOnline {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--online-user-circle-color, #2ecc71);
+  box-shadow: 0 0 0 2px var(--cn-surface);
+  line-height: 0;
+  pointer-events: none;
+
+  .UserOnline {
+    display: contents;
+  }
+
+  .icon {
+    display: none;
+  }
+}
+
+.CanelaPostAvatar-online {
+  top: 0;
+  right: 0;
+}
+
+// No cabeçalho, o ponto do core ficava antes do nome. No desktop o avatar do
+// cabeçalho está escondido (a presença vai no avatar ao lado); no celular o
+// avatar mora no cabeçalho, e o ponto vai para o canto dele (media @phone).
+@media @tablet-up {
+  .CanelaTopic .Post-header .UserOnline {
+    display: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Ícones depois do nome (utils/userIcons: o selo de verificado, o emoji do
+// status) — os "poster icons" do Discourse: na linha do texto, do tamanho
+// dele, logo depois do nome, sem empurrar o nome.
+// ---------------------------------------------------------------------
+.CanelaUserIcons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  flex-shrink: 0;
+  line-height: 1;
+  vertical-align: middle;
+  font-weight: normal;
+}
+
+.CanelaTopic .Post-header .PostUser-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  min-width: 0;
+
+  .CanelaStatusEmoji--post {
+    margin-left: 0;
+  }
+}
+
+.CanelaReplyTo .CanelaUserIcons {
+  margin-left: -0.1em;
+}
+
+// No post embutido o nome empurrava a data para a direita: agora quem
+// empurra são os ícones, que vêm depois dele.
+.CanelaEmbeddedPost-header {
+  .CanelaEmbeddedPost-name:has(+ .CanelaUserIcons) {
+    margin-right: 0;
+  }
+
+  .CanelaUserIcons {
+    align-self: center;
+    margin-left: ~"calc(0.25em - var(--cn-space-2))";
+    margin-right: auto;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Barra de ações (só quando o tema a monta: há .CanelaPostAction dentro)
+// ---------------------------------------------------------------------
+.Post-actions:has(.CanelaPostAction) {
+  float: none;
+  position: relative;
+  margin: 20px 0 0;
+  opacity: 1;
+
+  > ul {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    > li {
+      margin: 0;
+    }
+  }
+
+  // À esquerda: a contagem de curtidas e "N respostas"; "Responder" sempre o
+  // último à direita.
+  .item-canelaLikeCount {
+    order: -20;
+  }
+
+  .item-canelaReplies {
+    order: -10;
+  }
+
+  .item-canelaReplies,
+  .item-canelaLikeCount:not(:has(~ .item-canelaReplies)) {
+    margin-right: auto;
+  }
+
+  .item-reply {
+    order: 10;
+  }
+}
+
+// O core esconde as ações até o hover no desktop; no Discourse elas ficam.
+@media @tablet-up {
+  .no-touch .Post-actions:has(.CanelaPostAction) {
+    opacity: 1;
+  }
+}
+
+.CanelaPostAction.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  height: 38px;
+  padding: 8px 0.65em;
+  border: 1px solid transparent;
+  border-radius: var(--cn-radius-pill);
+  background: none;
+  color: var(--cn-primary-low-mid);
+  font-size: 16px;
+  line-height: 1;
+  box-shadow: none;
+
+  .Button-icon {
+    margin: 0;
+    color: inherit;
+    font-size: 16px;
+  }
+
+  // O hover do Discourse (--d-post-control-background--hover): cinza
+  // primary-low, nunca a cor de destaque — nem depois do clique (o link
+  // "copiado" fica com o mouse em cima).
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    outline: none;
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
+    box-shadow: none;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &[disabled],
+  &.disabled {
+    opacity: 1;
+    cursor: not-allowed;
+    background: none;
+    color: var(--cn-primary-low-mid);
+  }
+}
+
+.CanelaPostAction.Button--icon {
+  width: 38.78px;
+  padding: 8px 0;
+}
+
+.item-canelaControl-hide .CanelaPostAction:hover,
+.item-canelaControl-delete .CanelaPostAction:hover {
+  background: var(--cn-danger);
+  color: #fff;
+}
+
+// "Responder" (o botão "create" do Discourse): o único com texto, mais escuro.
+.CanelaPostAction--reply.Button {
+  color: var(--cn-primary-high);
+
+  .Button-label {
+    display: inline;
+  }
+}
+
+// "N respostas ▾": cinza médio; aberto, ganha o fundo cinza.
+.CanelaPostAction--replies.Button {
+  margin-right: var(--cn-space-2);
+  color: var(--cn-primary-medium);
+  white-space: nowrap;
+
+  .CanelaPostAction-chevron {
+    margin-left: 0;
+    font-size: var(--cn-font-down-1);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: none;
+    color: var(--cn-primary);
+
+    .CanelaPostAction-chevron {
+      color: var(--cn-primary-high);
+    }
+  }
+
+  &.active,
+  &[aria-expanded="true"] {
+    background: var(--cn-primary-low);
+    color: var(--cn-primary-high);
+  }
+}
+
+// O coração: rosa ao passar o mouse e depois de curtido.
+.CanelaLike-toggle.Button {
+  &:not([disabled]):hover,
+  &:not([disabled]):focus-visible {
+    background: var(--cn-topic-love-low);
+    color: var(--cn-topic-love);
+  }
+
+  &.CanelaLike--liked {
+    color: var(--cn-topic-love);
+  }
+}
+
+// A batida do coração ao curtir (heartBump, .4s, do Discourse).
+@keyframes canelaHeartBump {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.5);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .CanelaLike--bump .Button-icon {
+    animation: canelaHeartBump 0.4s;
+  }
+}
+
+// A contagem à esquerda (o resumo de reações do Meta): coração cheio e o
+// número em cinza claro.
+.CanelaLikeCount.Button {
+  height: 34px;
+  padding: 1px 6px;
+  gap: 0;
+
+  // O emoji ❤️ do Discourse (twemoji), não o rosa do botão de curtir.
+  .Button-icon {
+    color: #dd2e44;
+  }
+
+  .CanelaLikeCount-number {
+    padding: 8px 0 8px 10px;
+  }
+
+  &:hover,
+  &:focus-visible,
+  &.active {
+    background: none;
+    box-shadow: none;
+    color: var(--cn-primary);
+  }
+}
+
+// O link: copiado, o ícone vira um "certo" por um instante.
+.CanelaPostAction--copied.Button .Button-icon {
+  color: var(--cn-success);
+}
+
+// ---------------------------------------------------------------------
+// Rodapé do post: quem curtiu e respostas embutidas
+// ---------------------------------------------------------------------
+// Só com a barra do tema: o rodapé do core (altura zero ao lado das ações
+// flutuando à direita) não comporta a fileira de avatares nem as respostas.
+.Post-actions:has(.CanelaPostAction) ~ .Post-footer {
+  display: block;
+  height: auto;
+  margin: 0;
+
+  &:empty {
+    display: none;
+  }
+
+  > ul > li {
+    margin: var(--cn-space-2) 0 0;
+  }
+
+  &,
+  a {
+    color: var(--cn-primary-medium);
+  }
+
+  // As listas das extensões que continuam (com as opções do tema desligadas).
+  .Post-likedBy,
+  .Post-mentionedBy {
+    font-size: var(--cn-font-down-1);
+  }
+}
+
+// Os posts embutidos do Discourse: sem caixa, ligados ao post por uma linha
+// vertical fina que passa atrás dos avatares.
+.CanelaEmbedded {
+  position: relative;
+
+  .LoadingIndicator {
+    margin: var(--cn-space-3) auto;
+  }
+
+  .CanelaEmbeddedPost {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: 9px;
+
+    .Avatar {
+      .Avatar--size(48px);
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // "Em resposta a": acima do post, a linha desce até ele.
+  &--top {
+    margin: 0 0 var(--cn-space-3);
+
+    .CanelaEmbeddedPost {
+      padding: 0 0 var(--cn-space-6);
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 24px;
+        bottom: 0;
+        left: 24px;
+        width: 1px;
+        background: var(--cn-border);
+      }
+    }
+  }
+
+  // As respostas: abaixo, recuadas, a linha sobe até o post.
+  &--bottom {
+    max-width: calc(100% - 66px);
+    margin: var(--cn-space-2) 0 var(--cn-space-6);
+
+    .CanelaEmbeddedPost {
+      padding: 15px 0 calc(var(--cn-space-8) + var(--cn-space-2)) 9px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: calc(-1 * var(--cn-space-6));
+        bottom: 0;
+        left: 32px;
+        width: 1px;
+        background: var(--cn-border);
+      }
+
+      &:last-of-type::before {
+        bottom: auto;
+        height: calc(100% - 24px);
+      }
+    }
+  }
+}
+
+.CanelaEmbedded-more.Button {
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  padding: var(--cn-space-1) var(--cn-space-2);
+  font-size: var(--cn-font-down-1);
+  color: var(--cn-link);
+  background: none;
+}
+
+.CanelaEmbeddedPost-main {
+  position: relative;
+  min-width: 0;
+}
+
+.CanelaEmbeddedPost-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--cn-space-2);
+  font-size: var(--cn-post-font);
+  line-height: 1.4;
+}
+
+.CanelaEmbeddedPost-name {
+  margin-right: auto;
+  font-weight: 700;
+  color: var(--cn-primary-high);
+}
+
+.CanelaEmbeddedPost-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cn-space-1);
+  color: var(--cn-primary-medium);
+
+  // O core esconde ícones de links no rodapé do post; a seta é o próprio link.
+  .Post-footer & .icon {
+    display: inline-block;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary-high);
+    text-decoration: none;
+  }
+}
+
+.CanelaEmbeddedPost-body {
+  margin-top: var(--cn-space-1);
+  padding-top: var(--cn-space-2);
+}
+
+// ---------------------------------------------------------------------
+// Posts de evento: a "small action" do Discourse — ícone cinza grande na
+// coluna do avatar e o texto em cinza ao lado.
+// ---------------------------------------------------------------------
+.CanelaTopic .EventPost {
+  padding: 0 0 var(--cn-space-3);
+
+  .Post-container {
+    align-items: start;
+  }
+
+  .Post-side {
+    display: flex;
+    justify-content: center;
+    padding-top: var(--cn-space-4);
+  }
+
+  .EventPost-icon {
+    float: none;
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    background: none;
+    color: var(--cn-primary-low-mid);
+    font-size: 1.5199em;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .EventPost-info {
+    padding-top: 1.15em;
+    font-size: var(--cn-post-font);
+    line-height: 1.4;
+    color: var(--cn-primary-high);
+
+    a {
+      color: var(--cn-primary-high);
+      font-weight: 400;
+    }
+  }
+}
+
+@media @phone {
+  .CanelaTopic .EventPost {
+    padding-left: 44px;
+
+    .EventPost-icon {
+      margin-left: -44px;
+      margin-top: 0;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------
+// Destaque do post-alvo (/d/x/N): o background-fade-highlight do Discourse
+// — o corpo do post (não o avatar) na cor de destaque clara, que esmaece.
+// ---------------------------------------------------------------------
+@keyframes canelaHighlight {
+  0% {
+    background-color: var(--cn-accent-low);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .CanelaTopic .PostStream-item.CanelaHighlight .Post-main {
+    animation: canelaHighlight 2.5s ease-out;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Botão "Citar" que o mentions mostra sobre o texto selecionado
+// ---------------------------------------------------------------------
+.PostQuoteButton.Button {
+  --button-bg: var(--cn-surface);
+  --button-color: var(--cn-primary);
+  --button-bg-hover: var(--cn-hover);
+  --button-color-hover: var(--cn-primary);
+  z-index: var(--zindex-dropdown);
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+  box-shadow: var(--cn-shadow-dropdown);
+  font-size: 14px;
+
+  .Button-icon {
+    color: var(--cn-accent);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    color: var(--cn-primary);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Caixa "Responder…" no fim do stream e o "Ninguém está digitando" do
+// realtime: o Discourse não tem nenhum dos dois — responde-se pelo botão do
+// rodapé do tópico ou do post. O aviso de digitação só aparece quando alguém
+// está mesmo digitando.
+// ---------------------------------------------------------------------
+.CanelaTopic .PostStream-item:has(> .ReplyPlaceholder),
+.CanelaTopic .TypingUsersContainer:not(.TypingUsersContainer-active) {
+  display: none;
+}
+
+.CanelaTopic .PostStream-item:has(+ .PostStream-item > .ReplyPlaceholder)::after {
+  display: none;
+}
+
+// Posts de evento (trancou, fixou, renomeou, mudou tags…): o Discourse não os
+// mostra como o Flarum; o toggle "topic_event_posts" do admin os traz de volta.
+.Canela--noEventPosts .PostStream-item:has(> .EventPost) {
+  display: none;
+}
+
+// ---------------------------------------------------------------------
+// Celular (o .topic-post do Discourse até 640px): avatar de 48px no
+// cabeçalho, nomes empilhados em 14px, corpo na largura toda.
+// ---------------------------------------------------------------------
+@media @phone {
+  .CanelaTopic {
+    .Post {
+      padding: 15px 0 8px;
+    }
+
+    // O avatar à esquerda, fora do fluxo; à direita, o nome com a data na
+    // primeira linha e o nome secundário e o grupo empilhados embaixo.
+    .Post-header {
+      position: relative;
+      min-height: 48px;
+      margin-bottom: 12px;
+      padding: 0 0 0 56px;
+      font-size: calc(0.8706rem * var(--cn-text-scale, 1));
+      line-height: 1.2;
+
+      > ul {
+        align-items: flex-start;
+        column-gap: 0.26em;
+        row-gap: 0;
+      }
+
+      .PostUser,
+      .PostUser-name {
+        position: static;
+      }
+
+      .Post-avatar {
+        .Avatar--size(48px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+      }
+
+      // A presença no canto de cima do avatar do cabeçalho.
+      .UserOnline {
+        top: 0;
+        left: 36px;
+      }
+
+      .item-user {
+        order: 1;
+      }
+
+      .item-canelaReplyTo,
+      .item-edited,
+      .item-meta {
+        order: 2;
+      }
+
+      .item-canelaReplyTo {
+        margin: 0 0 0 auto;
+      }
+
+      > ul > li.item-canelaNames,
+      > ul > li.item-canelaNames:has(~ li.item-canelaUserTitle) {
+        margin-right: 0;
+      }
+
+      // O nome sempre empurra a data para a direita na primeira linha — também
+      // sem nome secundário (antes a data colava no nome: "beatriz 7 h").
+      > ul > li.item-user,
+      > ul > li.item-user:not(:has(~ li.item-canelaNames)),
+      > ul > li.item-user:not(:has(~ li.item-canelaNames)):has(~ li.item-canelaUserTitle) {
+        margin-right: auto;
+      }
+
+      .item-canelaReplyTo ~ .item-edited,
+      .item-canelaReplyTo ~ .item-meta {
+        margin-left: 0;
+      }
+
+      .item-canelaNames {
+        order: 3;
+        flex-basis: 100%;
+      }
+
+      // No celular o título empilha embaixo dos nomes, como no Discourse.
+      .item-canelaUserTitle,
+      .item-canelaNames + .item-canelaUserTitle,
+      .item-user + .item-canelaUserTitle {
+        order: 4;
+        flex-basis: 100%;
+        margin: 0;
+        line-height: 1.2;
+      }
+    }
+
+    // O flair do avatar lateral não tem onde ficar: no celular o avatar mora
+    // no cabeçalho e o flair é o das badges dele (senão sobrava um segundo
+    // ícone solto no canto direito, acima da data). O mesmo vale para o
+    // ponto de presença: no celular ele vai no avatar do cabeçalho.
+    .Post-side .CanelaPostAvatar-flair,
+    .Post-side .CanelaPostAvatar-online {
+      display: none;
+    }
+
+    .CanelaPostNames {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      white-space: normal;
+    }
+
+    .CanelaPostNames-username {
+      font-weight: 700;
+    }
+
+    .CanelaPostNames-username {
+      line-height: 1.2;
+    }
+
+    .PostStream-timeGap {
+      padding-left: 0;
+    }
+  }
+
+  .Post-actions:has(.CanelaPostAction) {
+    margin-top: var(--cn-space-3);
+
+    > ul {
+      gap: 0;
+    }
+  }
+}
+
+// No Discourse só tem flair quem pertence a um grupo com ícone: grupo sem
+// ícone (como "Membro") não desenha um círculo vazio no avatar.
+.PostUser-badges li:not(:has(.icon)) {
+  display: none;
+}
+
+@media @phone {
+  // O flair no canto de baixo do avatar de 48px do cabeçalho.
+  .CanelaTopic .Post-header .PostUser-badges {
+    position: absolute;
+    top: 28px;
+    left: 32px;
+    width: auto;
+    margin: 0;
+
+    > li:has(.icon) ~ li {
+      display: none;
+    }
+
+    .Badge {
+      .Badge--size(20px);
+      box-shadow: 0 0 0 2px var(--cn-surface);
+    }
+  }
+}

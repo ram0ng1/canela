@@ -1,0 +1,943 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#2 \$callback of method Flarum\\Extend\\Console\:\:schedule\(\) expects \(callable\(Illuminate\\Console\\Scheduling\\Event\)\: void\)\|class\-string, Closure\(mixed\)\: Illuminate\\Console\\Scheduling\\Event given\.$#'
+			identifier: argument.type
+			count: 1
+			path: extend/badges.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Console/EmbedTopicsCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Console/GenerateGistsCommand.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\Discussion\\Discussion\:\:\$tags\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Ai/Embeddings/RelatedController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Embeddings/RelatedController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:with\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Embeddings/RelatedController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Embeddings/RelatedTopics.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Flarum\\Post\\Post, Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Embeddings/RelatedTopics.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\Database\\AbstractModel\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Ai/Helper/HelperController.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\Database\\AbstractModel\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Ai/Helper/HelperController.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\Database\\AbstractModel\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Ai/Helper/HelperController.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\Database\\AbstractModel\:\:\$parent_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Ai/Helper/HelperController.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\Database\\AbstractModel\:\:\$position\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Ai/Helper/HelperController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Tags\\Tag\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Helper/HelperController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\<string, mixed\>, Closure\(Ramon\\Canela\\Ai\\Conversation\)\: array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Ai/Http/Conversations/ListConversationsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\<string, mixed\>, Closure\(Ramon\\Canela\\Ai\\Message\)\: array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Ai/Http/Conversations/ShowConversationController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Ai\\Llm\\ChunkSink\:\:getSize\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Ai/Llm/ChunkSink.php
+
+		-
+			message: '#^Anonymous function has an unused use \$onChunk\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: src/Ai/Llm/HttpTransport.php
+
+		-
+			message: '#^Comparison operation "\<" between 0 and 200 is always true\.$#'
+			identifier: smaller.alwaysTrue
+			count: 1
+			path: src/Ai/Llm/HttpTransport.php
+
+		-
+			message: '#^Comparison operation "\>\=" between \*NEVER\* and 300 results in an error\.$#'
+			identifier: greaterOrEqual.invalid
+			count: 1
+			path: src/Ai/Llm/HttpTransport.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: src/Ai/Llm/HttpTransport.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: src/Ai/Llm/HttpTransport.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Summaries/SummaryController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Flarum\\Post\\Post, Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Summaries/TopicSummarizer.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>display_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Ai/Summaries/TopicSummarizer.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>content" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Ai/Tools/ForumSearchTool.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Tools/ReadTopicTool.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Flarum\\Post\\Post, Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Tools/ReadTopicTool.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>display_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Ai/Tools/ReadTopicTool.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Contracts\\View\\Factory\:\:shared\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Auth/ResetPasswordContent.php
+
+		-
+			message: '#^Call to an undefined static method Flarum\\User\\PasswordToken\:\:findOrFail\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Auth/ResetPasswordContent.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:orWhereHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Badges/Api/BadgeResource.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Badges\\Api\\BadgeResource\:\:creating\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Badges/Api/BadgeResource.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Badges\\Api\\BadgeResource\:\:saving\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Badges/Api/BadgeResource.php
+
+		-
+			message: '#^Parameter \#2 \$users of method Flarum\\Notification\\NotificationSyncer\:\:sync\(\) expects array\<Flarum\\User\\User\>, array\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Badges/BadgeGranter.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:getQueryGrammar\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Badges/BadgeQueries.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:query\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Badges/BadgeQueries.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Badges\\Notification\\BadgeGrantedBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Badges/Notification/BadgeGrantedBlueprint.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:getSchemaBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Badges/SystemBadges.php
+
+		-
+			message: '#^Access to an undefined property Flarum\\User\\User\:\:\$suspended_until\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Badges/TrustLevel/UserMetrics.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\User\\User\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Badges/UserBadgeVisibility.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:toBase\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Badges/UserBadgeVisibility.php
+
+		-
+			message: '#^Static property Ramon\\Canela\\Bookmarks\\Api\\BookmarkBuffer\:\:\$loaded \(array\<int, array\<int, Ramon\\Canela\\Bookmarks\\Bookmark\|null\>\>\) does not accept array\<int, array\<int, Flarum\\Database\\AbstractModel\|stdClass\|null\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Bookmarks/Api/BookmarkBuffer.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Bookmarks/Api/BookmarkResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Ramon\\Canela\\Bookmarks\\Bookmark\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Bookmarks/Api/BookmarkResource.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Bookmarks\\Api\\BookmarkResource\:\:creating\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Bookmarks/Api/BookmarkResource.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:with\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Bookmarks/Console/SendBookmarkReminders.php
+
+		-
+			message: '#^Parameter \#2 \$post of class Ramon\\Canela\\Bookmarks\\Notification\\BookmarkReminderBlueprint constructor expects Flarum\\Post\\Post, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Bookmarks/Console/SendBookmarkReminders.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Bookmarks\\Notification\\BookmarkReminderBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Bookmarks/Notification/BookmarkReminderBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\ChannelActionController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/ChannelActionController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\<string, mixed\>, Closure\(Ramon\\Canela\\Chat\\Model\\Thread\)\: array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/ChannelActionController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:sortBy\(\) expects array\<array\{string, ''asc''\|''desc''\|SortDirection\}\|\(callable\(stdClass, int\)\: mixed\)\|\(callable\(stdClass, stdClass\)\: mixed\)\|string\>\|\(callable\(stdClass, int\)\: mixed\)\|int\|string, Closure\(Ramon\\Canela\\Chat\\Model\\Message\)\: \(int\|false\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/ChannelActionController.php
+
+		-
+			message: '#^Parameter \#1 \$messages of method Ramon\\Canela\\Chat\\ChatPresenter\:\:messages\(\) expects iterable\<Ramon\\Canela\\Chat\\Model\\Message\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/ChannelActionController.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:search\(\) expects \(callable\(stdClass, int\)\: bool\)\|stdClass, Closure\(Ramon\\Canela\\Chat\\Model\\Pin\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/ChannelActionController.php
+
+		-
+			message: '#^Parameter \#4 \$membership of method Ramon\\Canela\\Chat\\ChatPresenter\:\:thread\(\) expects Ramon\\Canela\\Chat\\Model\\ThreadMembership\|null, stdClass\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/ChannelActionController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\ChannelController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/ChannelController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\ChannelsController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/ChannelsController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\ChannelsController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/ChannelsController.php
+
+		-
+			message: '#^Parameter \#1 \$channels of method Ramon\\Canela\\Chat\\ChatPresenter\:\:channels\(\) expects iterable\<Ramon\\Canela\\Chat\\Model\\Channel\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/ChannelsController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\DirectMessagesController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/DirectMessagesController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\DirectMessagesController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/DirectMessagesController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MembersController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MembersController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MembersController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MembersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:sortBy\(\) expects array\<array\{string, ''asc''\|''desc''\|SortDirection\}\|\(callable\(stdClass, int\)\: mixed\)\|\(callable\(stdClass, stdClass\)\: mixed\)\|string\>\|\(callable\(stdClass, int\)\: mixed\)\|int\|string, Closure\(Flarum\\User\\User\)\: \(int\|string\|false\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/MembersController.php
+
+		-
+			message: '#^Parameter \#1 \$users of method Ramon\\Canela\\Chat\\ChatPresenter\:\:addLoadedUsers\(\) expects iterable\<Flarum\\User\\User\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/MembersController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MembershipController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MembershipController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MessageActionController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MessageActionController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MessageActionController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MessageActionController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MessageController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MessageController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MessageController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MessageController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MessagesController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MessagesController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\MessagesController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/MessagesController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:getQuery\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Chat/Api/SearchController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\SearchController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/SearchController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\SearchController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/SearchController.php
+
+		-
+			message: '#^Parameter \#1 \$messages of method Ramon\\Canela\\Chat\\ChatPresenter\:\:messages\(\) expects iterable\<Ramon\\Canela\\Chat\\Model\\Message\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/SearchController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\StateController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/StateController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\StateController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/StateController.php
+
+		-
+			message: '#^Parameter \#1 \$channels of method Ramon\\Canela\\Chat\\ChatPresenter\:\:channels\(\) expects iterable\<Ramon\\Canela\\Chat\\Model\\Channel\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/StateController.php
+
+		-
+			message: '#^Parameter \#1 \$query of method Ramon\\Canela\\Chat\\ChatAccess\:\:scopeVisibleChannels\(\) expects Illuminate\\Database\\Eloquent\\Builder\<Ramon\\Canela\\Chat\\Model\\Channel\>, Illuminate\\Database\\Query\\Builder given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/StateController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\ThreadController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/ThreadController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\ThreadController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/ThreadController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UpdatesController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UpdatesController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UpdatesController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UpdatesController.php
+
+		-
+			message: '#^Parameter \#1 \$messages of method Ramon\\Canela\\Chat\\ChatPresenter\:\:messages\(\) expects iterable\<Ramon\\Canela\\Chat\\Model\\Message\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Chat/Api/UpdatesController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UploadController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UploadController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UploadController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UploadController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UserThreadsController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UserThreadsController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UserThreadsController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UserThreadsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\<string, mixed\>, Closure\(Ramon\\Canela\\Chat\\Model\\Thread\)\: array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/UserThreadsController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UsersController\:\:respond\(\) never returns Psr\\Http\\Message\\ResponseInterface so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UsersController.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Api\\UsersController\:\:respond\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Api/UsersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:filter\(\) expects \(callable\(stdClass, int\)\: bool\)\|null, Closure\(Flarum\\User\\User\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/UsersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:sortBy\(\) expects array\<array\{string, ''asc''\|''desc''\|SortDirection\}\|\(callable\(stdClass, int\)\: mixed\)\|\(callable\(stdClass, stdClass\)\: mixed\)\|string\>\|\(callable\(stdClass, int\)\: mixed\)\|int\|string, Closure\(Flarum\\User\\User\)\: \(0\|1\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/UsersController.php
+
+		-
+			message: '#^Parameter \#1 \$users of method Ramon\\Canela\\Chat\\ChatPresenter\:\:addLoadedUsers\(\) expects iterable\<Flarum\\User\\User\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/Api/UsersController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Tags\\Tag\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Chat/ChatAccess.php
+
+		-
+			message: '#^Offset 1 on array\{non\-falsy\-string, '''', non\-falsy\-string\}\|array\{non\-falsy\-string, non\-falsy\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Chat/ChatFormatter.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<string,stdClass\>\:\:map\(\) expects callable\(stdClass, lowercase\-string\)\: int, static\-Closure\(Flarum\\User\\User\)\: int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatFormatter.php
+
+		-
+			message: '#^Parameter \#1 \$keyBy of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:keyBy\(\) expects array\|\(callable\(stdClass, int\)\: lowercase\-string\)\|string, static\-Closure\(Flarum\\User\\User\)\: lowercase\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatFormatter.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: \(Flarum\\User\\User\|null\), Closure\(Ramon\\Canela\\Chat\\Model\\Membership\)\: \(Flarum\\User\\User\|null\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatNotifier.php
+
+		-
+			message: '#^Parameter \#1 \$threads of method Ramon\\Canela\\Chat\\ChatPresenter\:\:threadPreviews\(\) expects array\<Ramon\\Canela\\Chat\\Model\\Thread\>, array\<stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatPresenter.php
+
+		-
+			message: '#^Parameter \#4 \$reactions of method Ramon\\Canela\\Chat\\ChatPresenter\:\:message\(\) expects Illuminate\\Support\\Collection\<int, Ramon\\Canela\\Chat\\Model\\Reaction\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatPresenter.php
+
+		-
+			message: '#^Parameter \#5 \$uploads of method Ramon\\Canela\\Chat\\ChatPresenter\:\:message\(\) expects Illuminate\\Support\\Collection\<int, Ramon\\Canela\\Chat\\Model\\Upload\>, Illuminate\\Support\\Collection\<int, stdClass\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatPresenter.php
+
+		-
+			message: '#^Parameter \#6 \$pin of method Ramon\\Canela\\Chat\\ChatPresenter\:\:message\(\) expects Ramon\\Canela\\Chat\\Model\\Pin\|null, stdClass\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatPresenter.php
+
+		-
+			message: '#^Parameter \#7 \$inReplyTo of method Ramon\\Canela\\Chat\\ChatPresenter\:\:message\(\) expects Ramon\\Canela\\Chat\\Model\\Message\|null, stdClass\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Chat/ChatPresenter.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Notification\\ChatMentionBlueprint\:\:getFromUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Notification/ChatMentionBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Notification\\ChatMentionBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Notification/ChatMentionBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Notification\\ChatMessageBlueprint\:\:getFromUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Notification/ChatMessageBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Notification\\ChatMessageBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Chat/Notification/ChatMessageBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Chat\\Upload\\ChatUploads\:\:disk\(\) should return Illuminate\\Contracts\\Filesystem\\Cloud but returns Illuminate\\Contracts\\Filesystem\\Filesystem\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Chat/Upload/ChatUploads.php
+
+		-
+			message: '#^Property Ramon\\Canela\\Chat\\Upload\\ChatUploads\:\:\$disk \(Illuminate\\Contracts\\Filesystem\\Cloud\|null\) does not accept Illuminate\\Contracts\\Filesystem\\Filesystem\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Chat/Upload/ChatUploads.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Group\\Group\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Community/Api/ListDirectoryController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Group\\Group\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Community/Api/ListGroupActivityController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Post\\Post\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Community/Api/ListGroupActivityController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Group\\Group\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Community/Api/ShowAboutController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\User\\User\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Community/Api/ShowAboutController.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Flarum\\Locale\\TranslatorInterface and ''getLocale'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Community/Api/ShowGuidelinesController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\User\\User\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Community/Directory.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Post\\Post\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Gaps/Listener/NotifyPostEdited.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Post\\Post\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Gaps/Listener/NotifyTopicLinked.php
+
+		-
+			message: '#^Instanceof between Flarum\\Post\\CommentPost and Flarum\\Post\\CommentPost will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Gaps/Listener/NotifyTopicLinked.php
+
+		-
+			message: '#^Call to an undefined method Flarum\\Discussion\\Discussion\:\:tags\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Gaps/NotFound/NotFoundPage.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Gaps/NotFound/NotFoundPage.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Gaps\\Notification\\InviteAcceptedBlueprint\:\:getFromUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Gaps/Notification/InviteAcceptedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Gaps\\Notification\\InviteAcceptedBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Gaps/Notification/InviteAcceptedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Gaps\\Notification\\PostEditedBlueprint\:\:getFromUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Gaps/Notification/PostEditedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Gaps\\Notification\\PostEditedBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Gaps/Notification/PostEditedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Gaps\\Notification\\TopicLinkedBlueprint\:\:getFromUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Gaps/Notification/TopicLinkedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Gaps\\Notification\\TopicLinkedBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Gaps/Notification/TopicLinkedBlueprint.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Gaps/UnreadTags.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Post\\Post\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Links/Api/RecordLinkClickController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/MeToo/Api/ToggleMeTooController.php
+
+		-
+			message: '#^Call to an undefined static method Flarum\\Group\\Group\:\:find\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Messages/Api/DialogActions.php
+
+		-
+			message: '#^Call to an undefined static method Flarum\\Messages\\DialogMessage\:\:find\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Messages/Api/DialogActions.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:each\(\) expects callable\(stdClass, int\)\: mixed, Closure\(Flarum\\User\\User\)\: void given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Messages/Api/DialogActions.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:filter\(\) expects \(callable\(stdClass, int\)\: bool\)\|null, Closure\(Flarum\\User\\User\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Messages/Api/DialogActions.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:map\(\) expects callable\(stdClass, int\)\: array\{dialog_id\: int, user_id\: int, joined_at\: Carbon\\Carbon, last_read_message_id\: int\}, Closure\(Flarum\\User\\User\)\: array\{dialog_id\: int, user_id\: int, joined_at\: Carbon\\Carbon, last_read_message_id\: int\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Messages/Api/DialogActions.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name_plural" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Messages/Api/DialogActions.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>user_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Messages/Api/DialogFields.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>user_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Messages/Api/LeaveDialog.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:getQueryGrammar\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Messages/Api/UserFields.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:contains\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: bool\)\|Illuminate\\Database\\Eloquent\\Model\|int\|string, Closure\(Flarum\\User\\User\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Messages/Listener/ConvertToGroupConversation.php
+
+		-
+			message: '#^Call to an undefined static method Flarum\\User\\User\:\:find\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Messages/Listener/CreateGroupConversation.php
+
+		-
+			message: '#^Parameter \#1 \$user of static method Flarum\\Messages\\Access\\MessagingPermission\:\:canReply\(\) expects Flarum\\User\\User, stdClass given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Messages/Listener/CreateGroupConversation.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Messages\\Reactions\\MessageReactedBlueprint\:\:getFromUser\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Messages/Reactions/MessageReactedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Messages\\Reactions\\MessageReactedBlueprint\:\:getSubject\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Messages/Reactions/MessageReactedBlueprint.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Profile\\ProfileImageUploader\:\:disk\(\) should return Illuminate\\Contracts\\Filesystem\\Cloud but returns Illuminate\\Contracts\\Filesystem\\Filesystem\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Profile/ProfileImageUploader.php
+
+		-
+			message: '#^Property Ramon\\Canela\\Profile\\ProfileImageUploader\:\:\$disk \(Illuminate\\Contracts\\Filesystem\\Cloud\|null\) does not accept Illuminate\\Contracts\\Filesystem\\Filesystem\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Profile/ProfileImageUploader.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Stats/Api/Controller/RecordReadTimeController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Post\\Post\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Stats/Api/Controller/RecordReadTimeController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Stats/TopicCounter.php
+
+		-
+			message: '#^Parameter \#2 \$callback of method Illuminate\\Database\\Query\\Builder\:\:when\(\) expects \(callable\(Illuminate\\Database\\Query\\Builder, Carbon\\Carbon\)\: Illuminate\\Database\\Eloquent\\Builder\)\|null, Closure\(Illuminate\\Database\\Eloquent\\Builder, mixed\)\: Illuminate\\Database\\Eloquent\\Builder given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Stats/TopicCounter.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:getQueryGrammar\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Stats/TopicViewStats.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:getQueryGrammar\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Stats/VisitRecorder.php
+
+		-
+			message: '#^Method Ramon\\Canela\\Stats\\VisitRecorder\:\:cappedSum\(\) should return Illuminate\\Database\\Query\\Expression but returns Illuminate\\Contracts\\Database\\Query\\Expression\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Stats/VisitRecorder.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\ConnectionInterface\:\:getSchemaBuilder\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Support/SchemaCache.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Query\\Builder\:\:toBase\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/UserSummary/ShowUserSummaryController.php

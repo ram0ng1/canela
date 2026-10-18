@@ -1,0 +1,109 @@
+// ---------------------------------------------------------------------
+// Cliques em links (recurso links): o `.badge.clicks` ao lado do link no
+// post, os "Links populares" do mapa do tópico e os "Melhores links" do
+// resumo do perfil.
+// ---------------------------------------------------------------------
+
+// O número ao lado do link: a pílula cinza do Discourse
+// (`.badge.badge-notification.clicks`), em --font-down-2, alinhada ao topo.
+.CanelaLinkClicks,
+.CanelaTopicMap-linkClicks.clicks,
+.CanelaSummaryLinks-clicks {
+  display: inline-block;
+  position: relative;
+  top: -1px;
+  min-width: 0.5em;
+  margin-left: 2px;
+  padding: 0.15em 0.4em 0.1em;
+  border-radius: 10px;
+  background: var(--cn-primary-low);
+  color: var(--cn-primary-medium);
+  font-size: 0.75em;
+  font-weight: normal;
+  line-height: 1.2;
+  text-align: center;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+// "Links populares": cliques, título e domínio numa linha, o título cortado
+// com reticências.
+.CanelaTopicMap-links {
+  margin: 0;
+  padding: 0.25em 1rem 0;
+  list-style: none;
+}
+
+.CanelaTopicMap-link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding: 0.35em 0;
+  min-width: 0;
+}
+
+// A coluna dos cliques: larga o bastante para "1,5 mil", vazia sem cliques.
+.CanelaTopicMap-linkCount {
+  flex: 0 0 3.25em;
+  text-align: right;
+
+  .CanelaTopicMap-linkClicks {
+    margin-left: 0;
+    top: 0;
+    vertical-align: baseline;
+  }
+}
+
+.CanelaTopicMap-linkTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--cn-link);
+  word-break: break-all;
+}
+
+.CanelaTopicMap-linkDomain {
+  flex: 0 0 auto;
+  max-width: 35%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--cn-primary-medium);
+  font-size: 0.8em;
+}
+
+.CanelaTopicMap-linksMore {
+  margin: 0.25em 1rem 0;
+  padding: 0;
+  color: var(--cn-link) !important;
+}
+
+// "Melhores links" do resumo: o link em cima, o tópico embaixo.
+.CanelaSummaryLinks-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CanelaSummaryLinks-clicks {
+  margin: 0 0.25em 0 0;
+  top: 0;
+  vertical-align: baseline;
+}
+
+.CanelaSummaryLinks-link {
+  // Uma linha só, com reticências, como o `.top-links` do Discourse.
+  display: inline-block;
+  max-width: ~"calc(100% - 3.5em)";
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  color: var(--cn-link);
+}
+
+.CanelaSummaryLinks .CanelaSummaryLinks-topic {
+  color: var(--cn-primary-medium);
+  font-size: 0.875em;
+}
