@@ -19,6 +19,7 @@ import CommentPost from 'flarum/forum/components/CommentPost';
 import { gaps } from '../settings';
 import { t } from '../../utils/settings';
 import { copyText } from '../utils/clipboard';
+import { dateFormat } from '../../utils/intl';
 
 const DONE = 'canelaDecorated';
 /** Quanto tempo o "copiado!" fica no botão. */
@@ -231,7 +232,7 @@ function zonedToDate(date: string, time: string, zone: string): Date | null {
 
   try {
     // A diferença entre o fuso pedido e o UTC naquele instante (horário de verão incluso).
-    const parts = new Intl.DateTimeFormat('en-US', {
+    const parts = dateFormat('en-US', {
       timeZone: zone,
       hourCycle: 'h23',
       year: 'numeric',
@@ -271,7 +272,7 @@ function decorateLocalDates(body: HTMLElement): void {
     span.classList.add('CanelaLocalDate');
     span.title = [span.textContent || '', zone].filter(Boolean).join(': ');
     span.innerHTML = '<i aria-hidden="true" class="icon fas fa-globe"></i> ';
-    span.appendChild(document.createTextNode(new Intl.DateTimeFormat(locale, options).format(moment)));
+    span.appendChild(document.createTextNode(dateFormat(locale, options).format(moment)));
   });
 }
 

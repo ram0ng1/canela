@@ -22,9 +22,29 @@ export function forumInt(attributeName: string, fallback: number): number {
   return Number.isFinite(value) && value > 0 ? Math.floor(value) : fallback;
 }
 
+/**
+ * As traduções sem parâmetros já prontas: o idioma não muda com a página
+ * aberta, e o formatador de mensagens do Flarum (ICU) refazia cada rótulo em
+ * todo redesenho (centenas por página).
+ */
+const plainTexts = new Map<string, string>();
+
 /** Atalho para a tradução do tema já como string (títulos, aria-label…). */
 export function t(key: string, params: Record<string, unknown> = {}): string {
-  return app.translator.trans(`ramon-canela.forum.${key}`, params, true) as string;
+  const plain = Object.keys(params).length === 0;
+
+  if (plain) {
+    const cached = plainTexts.get(key);
+
+    if (cached !== undefined) return cached;
+  }
+
+  const text = app.translator.trans(`ramon-canela.forum.${key}`, params, true) as string;
+
+  // Só guarda o que achou: antes de as traduções carregarem, a chave volta crua.
+  if (plain && text !== `ramon-canela.forum.${key}`) plainTexts.set(key, text);
+
+  return text;
 }
 
 export function isExtensionEnabled(id: string): boolean {

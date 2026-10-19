@@ -5,6 +5,7 @@
  * entre eles.
  */
 import app from 'flarum/forum/app';
+import { dateFormat } from './intl';
 
 const MINUTE = 60 * 1000;
 const HOUR = 60 * MINUTE;
@@ -19,7 +20,7 @@ function activeLocale(): string {
 
 export function formatWith(date: Date, options: Intl.DateTimeFormatOptions): string {
   try {
-    return new Intl.DateTimeFormat(activeLocale(), options).format(date);
+    return dateFormat(activeLocale(), options).format(date);
   } catch {
     // Código de idioma que o navegador não conhece: o formato do sistema serve.
     return date.toLocaleDateString(undefined, options);

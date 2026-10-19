@@ -57,27 +57,23 @@ function numericAttribute(discussion: Discussion, names: string[]): number | nul
   return null;
 }
 
-/** Todos os posts do tópico, se já estiverem carregados; senão, null. */
-function allPosts(discussion: Discussion): Post[] | null {
+/**
+ * Os posts já carregados do tópico, numa passada só pelo store (o mapa roda a
+ * cada redesenho, e aparece duas vezes nos tópicos longos): `all` diz se são
+ * todos (para os totais) ou só parte (os avatares podem ser parciais).
+ */
+function loadedPosts(discussion: Discussion): { posts: Post[]; all: boolean } {
   const posts: Post[] = [];
+  let all = true;
 
   for (const id of discussion.postIds()) {
     const post = app.store.getById<Post>('posts', id);
 
-    if (!post) return null;
-
-    posts.push(post);
+    if (post) posts.push(post);
+    else all = false;
   }
 
-  return posts;
-}
-
-/** Os posts já carregados (para os avatares, que podem ser parciais). */
-function loadedPosts(discussion: Discussion): Post[] {
-  return discussion
-    .postIds()
-    .map((id) => app.store.getById<Post>('posts', id))
-    .filter((post): post is Post => !!post);
+  return { posts, all };
 }
 
 const VIEW_ATTRIBUTES = ['viewCount', 'views', 'view_count'];
@@ -123,15 +119,15 @@ export default class TopicMap extends Component<TopicMapAttrs> {
     const position = this.attrs.position || 'op';
     const views = numericAttribute(discussion, VIEW_ATTRIBUTES);
 
-    const posts = allPosts(discussion);
-    const comments = posts ? posts.filter((post) => post.contentType() === 'comment' && !post.isHidden()) : null;
-    const users = numericAttribute(discussion, ['participantCount', 'participantsCount']) ?? (comments ? posters(comments).length : null);
+    const loaded = loadedPosts(discussion);
+    const visible = loaded.posts.filter((post) => post.contentType() === 'comment' && !post.isHidden());
+    const top = posters(visible);
+    // Os totais só com todos os posts na mão; os avatares servem com parte.
+    const comments = loaded.all ? visible : null;
+    const users = numericAttribute(discussion, ['participantCount', 'participantsCount']) ?? (comments ? top.length : null);
     const likes =
       numericAttribute(discussion, ['canelaLikeCount']) ??
       (comments && isExtensionEnabled('flarum-likes') ? comments.reduce((sum, post) => sum + likesOf(post), 0) : null);
-
-    const visible = loadedPosts(discussion).filter((post) => post.contentType() === 'comment' && !post.isHidden());
-    const top = posters(visible);
 
     const stats: Mithril.Children[] = [];
 

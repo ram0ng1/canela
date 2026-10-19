@@ -20,13 +20,13 @@ import type ItemList from 'flarum/common/utils/ItemList';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 
-import UserSummaryPage from './UserSummaryPage';
 import { forumBool, t } from '../utils/settings';
 
 export default function installSummary() {
+  // A página do Resumo desce só quando alguém abre a aba (chunk próprio).
   app.routes['user.summary'] = {
     path: '/u/:username/summary',
-    component: UserSummaryPage,
+    component: () => import('./UserSummaryPage'),
     resolverClass: UserPageResolver,
   } as any;
 
