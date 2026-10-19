@@ -63,7 +63,9 @@ final class DiscussionMarkUnreadField
 
                     $discussion->afterSave(function (Discussion $discussion) use ($actor, $value, $ready): void {
                         $state = $discussion->stateFor($actor);
-                        $number = max(0, $value);
+                        // Antes do último comentário, no máximo: a leitura conta os
+                        // posts de evento, `last_post_number` só os comentários.
+                        $number = max(0, min($value, (int) $discussion->last_post_number - 1));
 
                         // Só volta: avançar a leitura é trabalho do core.
                         if ($state->exists && $number < (int) $state->last_read_post_number) {

@@ -151,8 +151,12 @@ export default class TopicFooter extends Component<TopicFooterAttrs> {
    */
   unreadButton(discussion: Discussion) {
     const lastRead = discussion.lastReadPostNumber() || 0;
+    // Antes do último comentário: a leitura conta também os posts de evento
+    // ("fixou a discussão"), e o `lastPostNumber` só os comentários. Voltar
+    // uma posição a partir de um evento no fim deixava o tópico lido.
+    const target = Math.min(lastRead, discussion.lastPostNumber() || lastRead) - 1;
 
-    if (!app.forum.attribute('canelaMarkUnread') || lastRead < 1) return null;
+    if (!app.forum.attribute('canelaMarkUnread') || lastRead < 1 || target < 0) return null;
 
     return (
       <Button
@@ -163,10 +167,10 @@ export default class TopicFooter extends Component<TopicFooterAttrs> {
           this.markingUnread = true;
 
           discussion
-            .save({ canelaMarkUnread: lastRead - 1 } as any)
+            .save({ canelaMarkUnread: target } as any)
             .then(() => {
               // A data vale contra "marcar tudo como lido" (topic/markUnread.ts).
-              discussion.pushAttributes({ lastReadPostNumber: lastRead - 1, canelaMarkedUnreadAt: new Date().toISOString() });
+              discussion.pushAttributes({ lastReadPostNumber: target, canelaMarkedUnreadAt: new Date().toISOString() });
               m.route.set(app.route('index'));
             })
             .catch(() => {})
