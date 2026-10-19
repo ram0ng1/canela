@@ -452,6 +452,19 @@ const CORE_CARDS: CardDef[] = [
           'Pinta as contagens em laranja ou vermelho quando estão bem acima das demais, como o mapa de calor do Discourse.'
         )}
         {toggle('list_excerpts', 'Resumo das discussões fixadas', 'Abaixo do título, o começo da primeira postagem das discussões fixadas.')}
+        <AdminSelect
+          settingKey="canela.list_status_icons"
+          label={trans(`${KEY}.list_status_icons_label`, 'Ícones antes do título')}
+          help={trans(
+            `${KEY}.list_status_icons_help`,
+            'O alfinete de fixada, a estrela de acompanhando e os demais ícones de situação ao lado do título.'
+          )}
+          options={{
+            muted: trans(`${KEY}.list_status_icons_muted`, 'Atual: em cinza, como o Discourse'),
+            colored: trans(`${KEY}.list_status_icons_colored`, 'Colorido: cada ícone com a sua cor'),
+          }}
+          default="muted"
+        />
       </>
     ),
   },

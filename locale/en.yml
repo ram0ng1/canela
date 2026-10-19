@@ -91,6 +91,10 @@ ramon-canela:
       list_heat_help: Paints the counts orange or red when they are well above the rest, like the Discourse heatmap.
       list_excerpts_label: Excerpt of pinned discussions
       list_excerpts_help: Below the title, the start of the first post of pinned discussions.
+      list_status_icons_label: Icons before the title
+      list_status_icons_help: The pinned pin, the following star and the other status icons next to the title.
+      list_status_icons_muted: 'Current: gray, like Discourse'
+      list_status_icons_colored: 'Colored: each icon in its own color'
       section_categories_page: Tags page
       categories_layout_label: Layout
       categories_layout_help: How the page with all tags presents them.

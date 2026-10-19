@@ -357,7 +357,9 @@
   align-items: center;
   gap: 4px;
   margin-right: 6px;
-  vertical-align: 1px;
+  // Centro dos ícones no centro das maiúsculas do título (em `em` para
+  // acompanhar o tamanho da fonte do título).
+  vertical-align: -0.15em;
   color: var(--cn-primary-medium);
 
   .Badge {
@@ -373,6 +375,25 @@
     .Badge-icon {
       font-size: 16px;
     }
+  }
+}
+
+// Opção "Colorido" do admin: cada ícone na sua cor, a estrela preenchida.
+.CanelaTopic-status--colored {
+  .Badge--sticky {
+    color: var(--cn-accent);
+  }
+
+  .Badge--following {
+    color: #f5a524;
+
+    svg {
+      fill: currentColor;
+    }
+  }
+
+  .Badge--locked {
+    color: var(--cn-danger);
   }
 }
 

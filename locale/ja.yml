@@ -91,6 +91,10 @@ ramon-canela:
       list_heat_help: Discourse のヒートマップのように、他より大幅に多い数値をオレンジや赤で表示します。
       list_excerpts_label: 固定スレッドの抜粋
       list_excerpts_help: タイトルの下に、固定スレッドの最初の投稿の冒頭を表示します。
+      list_status_icons_label: タイトル前のアイコン
+      list_status_icons_help: 固定のピン、フォロー中の星など、タイトルの横に表示される状態アイコン。
+      list_status_icons_muted: '現在：Discourse のようにグレー'
+      list_status_icons_colored: 'カラー：アイコンごとに色分け'
       section_categories_page: タグページ
       categories_layout_label: レイアウト
       categories_layout_help: すべてのタグのページでの表示方法です。
