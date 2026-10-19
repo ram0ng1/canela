@@ -527,11 +527,19 @@
   display: none;
 }
 
-// Celular: os painéis do cabeçalho (perfil, notificações, idioma) descem por
-// cima da página, mas a aba "7 / 7" é fixa no mesmo nível do cabeçalho e
-// vinha depois no DOM, aparecendo por cima deles. Some enquanto um está aberto.
-@media @phone {
-  .App:has(.App-header :is(.Dropdown.open, .CanelaUserMenuWrap--open)) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle {
+// Celular e tablet (onde a aba fica presa no pé da tela): a aba "7 / 7" é
+// fixa no nível do cabeçalho e vem depois no DOM, então aparecia por cima do
+// que abre por cima da página — os painéis do cabeçalho (perfil,
+// notificações, idioma), as folhas dos menus (ações do post, data, controles
+// do tópico), a busca em tela cheia, o painel do hambúrguer e os modais.
+// Some enquanto um deles está aberto (o menu da própria aba não conta).
+@media (max-width: 924px) {
+  .App:has(.App-header .Dropdown.open) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle,
+  .App:has(.CanelaUserMenuWrap--open) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle,
+  .App:has(.Dropdown.open:not(.PostStreamScrubber)) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle,
+  .App:has(.CanelaSearchMenu--open) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle,
+  body:has(.ModalManager .Modal) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle,
+  .App.Canela--sidebarOverlay .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle {
     visibility: hidden;
   }
 }
