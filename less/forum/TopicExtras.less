@@ -117,7 +117,12 @@ button.CanelaTopicMap-stat {
   align-items: center;
   gap: 0.25em;
   min-width: 2em;
+  // 3px de folga em volta (desfeita pela margem negativa): o overflow esconde
+  // as linhas que quebram, mas cortava o anel de online dos avatares.
+  box-sizing: content-box;
   height: 2em;
+  margin: -3px;
+  padding: 3px;
   overflow: hidden;
 
   .Avatar {

@@ -287,9 +287,11 @@
     grid-template-areas: "icon main badge" "price price price";
   }
 
+  // Relativo: o tooltip "Já possui" (::after/::before, absolutos) sai embaixo
+  // do ✓; estático, ele ia parar no meio do cartão.
   .MpShop-ownedBadge {
     grid-area: badge;
-    position: static;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -300,6 +302,20 @@
     color: #fff;
     box-shadow: none;
     transform: none;
+
+    // O ✓ fica na ponta direita do cartão: o tooltip se alinha pela direita
+    // dele (centrado, passaria da borda), e a setinha fica sob o ✓.
+    &::after,
+    &:hover::after {
+      left: auto;
+      right: -4px;
+      transform: none;
+    }
+
+    &::before,
+    &:hover::before {
+      transform: translateX(-50%);
+    }
   }
 
   // A descrição: 3 linhas, cinza, como a da caixa da categoria.
@@ -2207,4 +2223,55 @@
   }
 }
 
+}
+
+// Estrelas das avaliações: o tema troca o <i class="fa-star"> por um SVG do
+// Lucide, que a folha do marketplace (feita para o <i>) não alcança. Sem isto a
+// estrela marcada ficava igual à vazia e o clique parecia não fazer nada.
+[data-theme] {
+  .MpProduct-stars .CanelaLucide,
+  .MpProduct-reviewFormStars .CanelaLucide {
+    color: var(--cn-primary-low-mid);
+    fill: none;
+
+    &.active {
+      color: var(--mp-warning, #f59e0b);
+      fill: currentColor;
+    }
+  }
+
+  .MpProduct-stars .CanelaLucide {
+    width: 14px;
+    height: 14px;
+  }
+
+  // A linha das estrelas do formulário embaixo do rótulo, com área de clique
+  // maior que o desenho.
+  .MpProduct-reviewForm > label {
+    display: block;
+  }
+
+  .MpProduct-reviewFormStars {
+    display: flex;
+    gap: 2px;
+    margin: 4px 0 12px;
+
+    .CanelaLucide {
+      box-sizing: content-box;
+      width: 22px;
+      height: 22px;
+      padding: 3px;
+      border-radius: var(--cn-radius-sm, 6px);
+      cursor: pointer;
+      transition: transform 0.1s;
+
+      &:hover {
+        background: var(--cn-hover);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+  }
 }
