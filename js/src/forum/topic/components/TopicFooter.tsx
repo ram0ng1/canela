@@ -158,7 +158,8 @@ export default class TopicFooter extends Component<TopicFooterAttrs> {
           discussion
             .save({ canelaMarkUnread: lastRead - 1 } as any)
             .then(() => {
-              discussion.pushAttributes({ lastReadPostNumber: lastRead - 1 });
+              // A data vale contra "marcar tudo como lido" (topic/markUnread.ts).
+              discussion.pushAttributes({ lastReadPostNumber: lastRead - 1, canelaMarkedUnreadAt: new Date().toISOString() });
               m.route.set(app.route('index'));
             })
             .catch(() => {})

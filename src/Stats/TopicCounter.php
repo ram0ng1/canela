@@ -7,9 +7,11 @@ namespace Ramon\Canela\Stats;
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Ramon\Canela\Topic\MarkUnread;
 
 /**
  * As contagens "Novos (N)" e "Não lidos (N)" do Discourse para quem entrou.
@@ -28,7 +30,8 @@ final class TopicCounter
 
     public function __construct(
         private readonly StatsSettings $settings,
-        private readonly ExtensionManager $extensions
+        private readonly ExtensionManager $extensions,
+        private readonly SettingsRepositoryInterface $repository,
     ) {
     }
 
@@ -120,9 +123,17 @@ final class TopicCounter
                 ->whereColumn('discussion_user.discussion_id', 'discussions.id')
                 ->where('discussion_user.user_id', $actor->id)
                 ->whereNotNull('discussion_user.last_read_post_number')
-                ->whereColumn('discussion_user.last_read_post_number', '<', 'discussions.last_post_number'))
-            // "Marcar tudo como lido" zera também o que já tinha sido aberto.
-            ->when($actor->marked_all_as_read_at, fn (Builder $query, $markedAt) => $query->where('discussions.last_posted_at', '>', $markedAt));
+                ->whereColumn('discussion_user.last_read_post_number', '<', 'discussions.last_post_number')
+                // "Marcar tudo como lido" zera também o que já tinha sido
+                // aberto — menos o que a pessoa marcou como não lido depois.
+                ->when($actor->marked_all_as_read_at, fn (QueryBuilder $query, $markedAt) => $query->where(
+                    fn (QueryBuilder $query) => $query
+                        ->where('discussions.last_posted_at', '>', $markedAt)
+                        ->when(
+                            MarkUnread::ready($this->repository),
+                            fn (QueryBuilder $query) => $query->orWhere('discussion_user.'.MarkUnread::COLUMN, '>', $markedAt)
+                        )
+                )));
     }
 
     /**
