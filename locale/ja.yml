@@ -434,13 +434,13 @@ ramon-canela:
         stats_notice: 数値は公開コンテンツのみを集計し、30分ごとに再計算されます。
         section_legal: ガイドライン、利用規約、プライバシー
         guidelines_enabled_label: ガイドラインページ（/guidelines）
-        guidelines_enabled_help: フォーラムのコミュニティルール。概要の隣のタブとサイドバーの「その他」メニューに表示されます。Discourse と同様に、/faq も同じページに移動します。
+        guidelines_enabled_help: フォーラムのコミュニティルール。概要の隣のタブとサイドバーの「その他」メニューに表示されます。Discourse と同様に、/faq も同じページに移動します。内容があるときだけ表示されます：下の文章を書くか、fof/pages のページを選んでください。
         guidelines_page_label: fof/pages のページ
         guidelines_page_none: "なし：下のテキストを使う"
-        guidelines_page_help: ページを選ぶと、/guidelines はそのページの内容を表示し（fof/pages の公開設定に従います）、下のテキストは使われなくなります。内容は fof/pages で編集します。
+        guidelines_page_help: ページを選ぶと、/guidelines はそのページの内容を表示し（fof/pages の公開設定に従います）、下のテキストは使われなくなります。内容は fof/pages で編集します。テキストが空の場合、作成されるページは Discourse のガイドラインを参考にしたテーマのテンプレートから始まります。
         guidelines_page_create: 現在のテキストで「ガイドライン」ページを作成
         guidelines_text_label: ガイドラインの文章
-        guidelines_text_help: 空欄にすると、Discourse のガイドラインを参考にしたテーマのデフォルト文章を使用します。Markdown と BBCode に対応。HTML タグを含む場合は HTML として扱われます。
+        guidelines_text_help: Markdown と BBCode に対応。HTML タグを含む場合は HTML として扱われます。空欄で fof/pages のページもない場合、ガイドラインページは表示されません。
         section_about_pages: 概要エリアのページ
         about_pages_help: 'fof/pages のページを好きなだけ「概要」と「ガイドライン」の横のタブとして追加できます。どのページもルールのレイアウト(タイトル、セクション目次、カード)で表示されます。'
         about_pages_list_help: 各ページはリストの順に「概要」と「ガイドライン」の後ろのタブになり、/about/id-slug でガイドラインと同じレイアウトで表示されます。ラベルが空ならページのタイトルを使います。アイコンは Font Awesome のクラスです。fof/pages で非表示または制限されたページは、閲覧できる人にだけ表示されます。

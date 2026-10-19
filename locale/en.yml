@@ -434,13 +434,13 @@ ramon-canela:
         stats_notice: The numbers only count public content and are recalculated every 30 minutes.
         section_legal: Guidelines, terms and privacy
         guidelines_enabled_label: Guidelines page (/guidelines)
-        guidelines_enabled_help: The forum's community rules, in a tab next to About and in the sidebar "More" menu. /faq leads to the same page, as in Discourse.
+        guidelines_enabled_help: The forum's community rules, in a tab next to About and in the sidebar "More" menu. /faq leads to the same page, as in Discourse. The page only shows up with content (the text below or a fof/pages page).
         guidelines_page_label: fof/pages page
         guidelines_page_none: "None: use the text below"
-        guidelines_page_help: With a page chosen, /guidelines shows its content (with fof/pages own visibility) and the text below no longer applies. The content is then edited in fof/pages.
+        guidelines_page_help: With a page chosen, /guidelines shows its content (with fof/pages own visibility) and the text below no longer applies. The content is then edited in fof/pages. With the text empty, the created page starts from the theme's template, inspired by Discourse's guidelines.
         guidelines_page_create: 'Create the "Guidelines" page with the current text'
         guidelines_text_label: Guidelines text
-        guidelines_text_help: Leave empty to use the theme's default text, inspired by Discourse's guidelines. Accepts Markdown and BBCode; with HTML tags, it goes as HTML.
+        guidelines_text_help: Accepts Markdown and BBCode; with HTML tags, it goes as HTML. Empty and without a fof/pages page, the Guidelines page doesn't show up.
         section_about_pages: About area pages
         about_pages_help: 'Add as many fof/pages pages as you like as tabs next to About and Guidelines, each one with the rules layout: title, section index and cards.'
         about_pages_list_help: Each page becomes a tab after About and Guidelines, in list order, at /about/id-slug and with the same layout as the Guidelines. An empty label uses the page title; the icon is a Font Awesome class. Hidden or restricted pages in fof/pages only show to people who can see them.

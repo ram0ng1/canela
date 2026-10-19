@@ -91,7 +91,10 @@ export default class CanelaSidebar extends IndexSidebar {
   }
 
   /** O lápis de personalizar a seção, como no Discourse. */
+  /** Personalizar a barra lateral é só para quem está logado: visitante não vê o lápis. */
   editAttrs(section: SidebarSectionName) {
+    if (!app.session.user) return {};
+
     return {
       editLabel: t(section === 'categories' ? 'sidebar.customize_categories' : 'sidebar.customize_tags'),
       onEdit: () => app.modal.show(() => import('./SidebarCustomizeModal'), { section }),
@@ -271,7 +274,7 @@ export default class CanelaSidebar extends IndexSidebar {
   moreDropdown(moved: Mithril.Children[] = [], entries: { key: string; label: string; icon?: string }[] = []): Mithril.Children {
     const more = this.moreItems();
 
-    if (entries.length) {
+    if (entries.length && app.session.user) {
       more.add(
         'customizeCommunity',
         <Button icon="fas fa-pencil" onclick={() => app.modal.show(() => import('./CommunityCustomizeModal'), { entries, onsave: () => m.redraw() })}>

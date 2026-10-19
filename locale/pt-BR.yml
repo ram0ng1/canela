@@ -434,13 +434,13 @@ ramon-canela:
         stats_notice: Os números contam só o que é público e são recalculados a cada 30 minutos.
         section_legal: Diretrizes, termos e privacidade
         guidelines_enabled_label: Página Diretrizes (/guidelines)
-        guidelines_enabled_help: As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse.
+        guidelines_enabled_help: As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).
         guidelines_page_label: Página do fof/pages
         guidelines_page_none: "Nenhuma: usar o texto abaixo"
-        guidelines_page_help: Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages.
+        guidelines_page_help: Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema, inspirado nas diretrizes do Discourse.
         guidelines_page_create: 'Criar a página "Diretrizes" com o texto atual'
         guidelines_text_label: Texto das diretrizes
-        guidelines_text_help: Deixe vazio para usar o texto padrão do tema, inspirado nas diretrizes do Discourse. Aceita Markdown e BBCode; com tags HTML, vai como HTML.
+        guidelines_text_help: Aceita Markdown e BBCode; com tags HTML, vai como HTML. Vazio e sem página do fof/pages, a página Diretrizes não aparece.
         section_about_pages: Páginas da área Sobre
         about_pages_help: 'Acrescente quantas páginas do fof/pages quiser como abas ao lado de Sobre e Diretrizes, cada uma com o layout de regras: título, índice de seções e cartões.'
         about_pages_list_help: Cada página vira uma aba depois de Sobre e Diretrizes, na ordem da lista, com o endereço /about/id-slug e o mesmo layout das Diretrizes. O rótulo vazio usa o título da página; o ícone é uma classe do Font Awesome. Páginas ocultas ou restritas no fof/pages só aparecem para quem pode vê-las.

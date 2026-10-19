@@ -13,6 +13,9 @@ function storageKey(section: SidebarSectionName): string {
 }
 
 export function getSidebarPicks(section: SidebarSectionName): string[] | null {
+  // Personalizar é só para quem está logado: visitante vê a barra padrão.
+  if (!app.session.user) return null;
+
   try {
     const raw = localStorage.getItem(storageKey(section));
     const parsed = raw ? JSON.parse(raw) : null;
@@ -41,6 +44,8 @@ function communityKey(): string {
 }
 
 export function getCommunityMore(): string[] {
+  if (!app.session.user) return [];
+
   try {
     const parsed = JSON.parse(localStorage.getItem(communityKey()) || '[]');
 

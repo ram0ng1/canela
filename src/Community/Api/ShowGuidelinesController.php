@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Community\Api;
 
+use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
@@ -27,8 +28,8 @@ use Ramon\Canela\Community\GuidelinesPage;
 /**
  * GET /api/canela-guidelines — as "Diretrizes" (/guidelines e /faq do
  * Discourse). Com o fof/pages e uma página escolhida no admin, o conteúdo dela
- * (com a visibilidade do próprio fof/pages); senão o texto do admin, ou o
- * padrão do tema no idioma do fórum.
+ * (com a visibilidade do próprio fof/pages); senão o texto do admin. Sem
+ * nenhum dos dois, 404: o modelo do tema só serve para criar a página.
  */
 final class ShowGuidelinesController implements RequestHandlerInterface
 {
@@ -54,9 +55,14 @@ final class ShowGuidelinesController implements RequestHandlerInterface
 
         $custom = trim((string) $this->settings->get(Community::GUIDELINES_TEXT));
 
+        // Sem texto nem página visível, não há diretrizes: nada de texto padrão.
+        if ($custom === '') {
+            throw new RouteNotFoundException();
+        }
+
         return new JsonResponse([
-            'html' => $this->text->render($custom !== '' ? $custom : $this->pages->defaultMarkdown(), $request),
-            'custom' => $custom !== '',
+            'html' => $this->text->render($custom, $request),
+            'custom' => true,
         ]);
     }
 
