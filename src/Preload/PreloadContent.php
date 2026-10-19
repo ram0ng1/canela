@@ -102,7 +102,7 @@ final class PreloadContent
             // Os emblemas (só os campos da grade, `LIST_FIELDS` do JS) e, para quem
             // está logado, quais a pessoa já ganhou (`loadOwnedBadgeIds()`).
             'canela.badges' => array_merge(
-                [['/badges', ['sort' => 'position', 'fields' => ['badges' => self::BADGE_LIST_FIELDS]]]],
+                [['/canela-badges', ['sort' => 'position', 'fields' => ['canela-badges' => self::BADGE_LIST_FIELDS]]]],
                 $guest ? [] : [self::ownedBadges((string) $actor->id)]
             ),
             default => [],
@@ -118,18 +118,18 @@ final class PreloadContent
     /** `loadOwnedBadgeIds()`: só a ligação de cada concessão com o emblema. */
     private static function ownedBadges(string $userId): array
     {
-        return ['/user-badges', [
+        return ['/canela-user-badges', [
             'filter' => ['user' => $userId],
             'page' => ['limit' => 100, 'total' => 0],
             'include' => 'badge',
-            'fields' => ['user-badges' => 'badge', 'badges' => 'slug'],
+            'fields' => ['canela-user-badges' => 'badge', 'canela-badges' => 'slug'],
         ]];
     }
 
     /** `loadUserBadges()`: até 100 concessões. */
     private static function userBadges(string $userId): array
     {
-        return ['/user-badges', ['filter' => ['user' => $userId], 'page' => ['limit' => 100, 'total' => 0]]];
+        return ['/canela-user-badges', ['filter' => ['user' => $userId], 'page' => ['limit' => 100, 'total' => 0]]];
     }
 
     /**
@@ -187,7 +187,7 @@ final class PreloadContent
             }
 
             // `BookmarksUserPage`: sem busca, a primeira página de 20.
-            return $own ? [['/bookmarks', ['include' => implode(',', $include), 'page' => ['offset' => 0, 'limit' => 20]]]] : [];
+            return $own ? [['/canela-bookmarks', ['include' => implode(',', $include), 'page' => ['offset' => 0, 'limit' => 20]]]] : [];
         }
 
         if ($filter === 'badges') {

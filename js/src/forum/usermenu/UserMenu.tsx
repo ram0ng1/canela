@@ -222,7 +222,7 @@ export default class UserMenu extends Component<UserMenuAttrs> {
       );
     }
 
-    if (user && forumBool('canelaBookmarksEnabled', false) && app.routes['user.bookmarks']) {
+    if (user && forumBool('canelaBookmarksEnabled', false) && app.routes['canela.user.bookmarks']) {
       items.add(
         'bookmarks',
         {
@@ -231,7 +231,7 @@ export default class UserMenu extends Component<UserMenuAttrs> {
           title: umText('tabs.bookmarks'),
           titleWithUnread: (count) => umText('tabs.bookmarks_with_unread', { count }),
           count: () => unreadCount({ types: BOOKMARK_TYPES }),
-          href: () => app.route('user.bookmarks', { username: user.slug() }),
+          href: () => app.route('canela.user.bookmarks', { username: user.slug() }),
           types: BOOKMARK_TYPES,
           panel: () => <BookmarksPanel />,
         },

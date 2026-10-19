@@ -28,7 +28,7 @@ use Tobyz\JsonApiServer\Pagination\OffsetPagination;
 use Tobyz\JsonApiServer\Pagination\Pagination;
 
 /**
- * `/api/bookmarks`: os marcadores do ator.
+ * `/api/canela-bookmarks`: os marcadores do ator.
  *
  * - GET lista (filtros `q` e `reminder`, ordens `createdAt`, `updatedAt` e
  *   `reminderAt`), com o post, o tópico e o autor incluídos.
@@ -51,7 +51,10 @@ final class BookmarkResource extends AbstractDatabaseResource
     #[\Override]
     public function type(): string
     {
-        return 'bookmarks';
+        // Com prefixo: o tipo vira o nome das rotas (`bookmarks.index`), e outra
+        // extensão de marcadores com o tipo `bookmarks` derrubaria o fórum no
+        // boot ("Route bookmarks.index already exists").
+        return 'canela-bookmarks';
     }
 
     #[\Override]

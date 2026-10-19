@@ -35,7 +35,7 @@ use Ramon\Canela\Badges\SystemBadges;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
 /**
- * `/api/badges`: a página /badges e o admin de emblemas (como o /admin/badges
+ * `/api/canela-badges`: a página /badges e o admin de emblemas (como o /admin/badges
  * do Discourse).
  *
  * Quem não é admin só vê emblemas ligados; na listagem, também só os
@@ -66,7 +66,10 @@ final class BadgeResource extends AbstractDatabaseResource
     #[\Override]
     public function type(): string
     {
-        return 'badges';
+        // Com prefixo: o tipo vira o nome das rotas (`badges.index`), e outra
+        // extensão de emblemas com o tipo `badges` derrubava o fórum no boot
+        // ("Route badges.index already exists").
+        return 'canela-badges';
     }
 
     #[\Override]

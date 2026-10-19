@@ -41,7 +41,7 @@ export default class BadgePage extends BadgesBasePage {
 
     // O Show traz a descrição longa, que a listagem da página /badges não traz.
     app.store
-      .find<Badge>('badges', id)
+      .find<Badge>('canela-badges', id)
       .then((badge) => {
         this.badge = badge;
         this.updateTitle();
@@ -57,7 +57,7 @@ export default class BadgePage extends BadgesBasePage {
     this.loading = true;
 
     app.store
-      .find<UserBadge[]>('user-badges', {
+      .find<UserBadge[]>('canela-user-badges', {
         filter: { badge: badgeId },
         include: 'badge,user,post,post.discussion',
         page: { offset, limit: PAGE_SIZE },

@@ -19,7 +19,7 @@ declare(strict_types=1);
  * - Os emblemas automáticos do núcleo do Discourse que o Flarum consegue
  *   detectar (SystemBadges), concedidos por eventos e por `canela:badges`,
  *   agendado uma vez por dia.
- * - API `badges` e `user-badges`, a notificação "Ganhou …" e as páginas
+ * - API `canela-badges` e `canela-user-badges`, a notificação "Ganhou …" e as páginas
  *   /badges e /badges/:id/:slug.
  */
 

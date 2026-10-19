@@ -2,7 +2,7 @@ import Model from 'flarum/common/Model';
 
 export type BadgeType = 'gold' | 'silver' | 'bronze';
 
-/** Um emblema (`/api/badges`). O nome e as descrições já vêm traduzidos pelo servidor. */
+/** Um emblema (`/api/canela-badges`). O nome e as descrições já vêm traduzidos pelo servidor. */
 export default class Badge extends Model {
   slug() {
     return Model.attribute<string>('slug').call(this);
@@ -13,7 +13,7 @@ export default class Badge extends Model {
   description() {
     return Model.attribute<string | null>('description').call(this);
   }
-  /** Só vem na página do emblema (`GET /api/badges/:id`). */
+  /** Só vem na página do emblema (`GET /api/canela-badges/:id`). */
   longDescription() {
     return Model.attribute<string | null | undefined>('longDescription').call(this);
   }

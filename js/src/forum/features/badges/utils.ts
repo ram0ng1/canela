@@ -84,8 +84,13 @@ export const LIST_FIELDS = 'slug,name,description,icon,imageUrl,type,grouping,gr
 export function loadOwnedBadgeIds(user: User): Promise<Set<string>> {
   return app.store
     .find<UserBadge[]>(
-      'user-badges',
-      { filter: { user: user.id()! }, page: { limit: 100, total: 0 }, include: 'badge', fields: { 'user-badges': 'badge', badges: 'slug' } } as any,
+      'canela-user-badges',
+      {
+        filter: { user: user.id()! },
+        page: { limit: 100, total: 0 },
+        include: 'badge',
+        fields: { 'canela-user-badges': 'badge', 'canela-badges': 'slug' },
+      } as any,
       undefined,
       { errorHandler: () => {} } as any
     )
@@ -111,7 +116,7 @@ export function loadUserBadges(user: User, { refresh = false } = {}): Promise<Us
 
   if (refresh || !cache.has(key)) {
     const request = app.store
-      .find<UserBadge[]>('user-badges', { filter: { user: key }, page: { limit: 100, total: 0 } } as any, undefined, {
+      .find<UserBadge[]>('canela-user-badges', { filter: { user: key }, page: { limit: 100, total: 0 } } as any, undefined, {
         errorHandler: () => {},
       } as any)
       .then((result) => result.slice())

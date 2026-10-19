@@ -76,7 +76,7 @@ class RecalculateButton extends AdminComponent {
     this.done = false;
 
     app
-      .request({ method: 'POST', url: `${apiUrl()}/badges/recalculate` })
+      .request({ method: 'POST', url: `${apiUrl()}/canela-badges/recalculate` })
       .then(() => (this.done = true))
       .catch(() => {})
       .finally(() => {

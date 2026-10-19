@@ -347,7 +347,7 @@ export class BookmarksPanel extends Component {
     const include = ['post', 'post.discussion', 'post.user'];
 
     app.store
-      .find<any[]>('bookmarks', { include: include.join(','), page: { limit: 20 } } as any)
+      .find<any[]>('canela-bookmarks', { include: include.join(','), page: { limit: 20 } } as any)
       .then((results: any) => {
         this.bookmarks = Array.isArray(results) ? results.slice() : [];
       })
@@ -389,7 +389,7 @@ export class BookmarksPanel extends Component {
     return [
       <ul className="CanelaUserMenu-list">{items}</ul>,
       PanelBottom({
-        showAllHref: app.routes['user.bookmarks'] ? app.route('user.bookmarks', { username: user.slug() }) : null,
+        showAllHref: app.routes['canela.user.bookmarks'] ? app.route('canela.user.bookmarks', { username: user.slug() }) : null,
         showAllTitle: umText('view_all_bookmarks'),
         dismiss: reminders.length ? () => dismissNotifications({ types: BOOKMARK_TYPES }) : null,
         dismissTitle: umText('dismiss_bookmarks_tooltip'),

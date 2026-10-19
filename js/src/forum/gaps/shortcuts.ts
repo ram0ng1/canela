@@ -325,7 +325,7 @@ function runSequence(prefix: string, key: string, shift: boolean): boolean {
         if (user) m.route.set(app.route('index', { sort: 'unread' }));
         return !!user;
       case 'b':
-        if (user && (app.routes as any)['user.bookmarks']) m.route.set(app.route('user.bookmarks', { username: user.slug() }));
+        if (user && (app.routes as any)['canela.user.bookmarks']) m.route.set(app.route('canela.user.bookmarks', { username: user.slug() }));
         return !!user;
       case 'm':
         if (user && (app.routes as any)['messages']) m.route.set(app.route('messages'));

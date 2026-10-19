@@ -24,7 +24,7 @@ export default class BadgesPage extends BadgesBasePage {
     if (!badgesEnabled()) return;
 
     app.store
-      .find<Badge[]>('badges', { sort: 'position', fields: { badges: LIST_FIELDS } } as any)
+      .find<Badge[]>('canela-badges', { sort: 'position', fields: { 'canela-badges': LIST_FIELDS } } as any)
       .then((badges) => (this.badges = badges.slice()))
       .catch(() => (this.badges = []))
       .finally(() => m.redraw());

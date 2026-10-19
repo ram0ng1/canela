@@ -1,5 +1,5 @@
 /*
- * Acesso do admin de emblemas à API (`/api/badges`, `/api/user-badges`). O
+ * Acesso do admin de emblemas à API (`/api/canela-badges`, `/api/canela-user-badges`). O
  * admin não tem os modelos do fórum, então lê e grava o JSON:API direto.
  */
 import app from 'flarum/admin/app';
@@ -64,40 +64,42 @@ export function request<T = any>(options: Record<string, any>): Promise<T> {
 }
 
 export function loadBadges(): Promise<BadgeRow[]> {
-  return request<{ data: BadgeRow[] }>({ method: 'GET', url: `${apiUrl()}/badges`, params: { sort: 'position' } }).then((response) => response.data);
+  return request<{ data: BadgeRow[] }>({ method: 'GET', url: `${apiUrl()}/canela-badges`, params: { sort: 'position' } }).then(
+    (response) => response.data
+  );
 }
 
 export function saveBadge(id: string | null, attributes: Partial<BadgeAttributes>): Promise<BadgeRow> {
   return request<{ data: BadgeRow }>({
     method: id ? 'PATCH' : 'POST',
-    url: id ? `${apiUrl()}/badges/${id}` : `${apiUrl()}/badges`,
-    body: { data: { type: 'badges', ...(id ? { id } : {}), attributes } },
+    url: id ? `${apiUrl()}/canela-badges/${id}` : `${apiUrl()}/canela-badges`,
+    body: { data: { type: 'canela-badges', ...(id ? { id } : {}), attributes } },
   }).then((response) => response.data);
 }
 
 export function deleteBadge(id: string): Promise<unknown> {
-  return request({ method: 'DELETE', url: `${apiUrl()}/badges/${id}` });
+  return request({ method: 'DELETE', url: `${apiUrl()}/canela-badges/${id}` });
 }
 
 export function restoreSystemBadges(): Promise<number> {
-  return request<{ meta: { restored: number } }>({ method: 'POST', url: `${apiUrl()}/badges/restore-system` }).then(
+  return request<{ meta: { restored: number } }>({ method: 'POST', url: `${apiUrl()}/canela-badges/restore-system` }).then(
     (response) => response.meta?.restored ?? 0
   );
 }
 
 export function grantBadge(badgeId: string, username: string, reason: string): Promise<unknown> {
-  return request({ method: 'POST', url: `${apiUrl()}/user-badges/grant`, body: { badgeId: Number(badgeId), username, reason } });
+  return request({ method: 'POST', url: `${apiUrl()}/canela-user-badges/grant`, body: { badgeId: Number(badgeId), username, reason } });
 }
 
 export function revokeGrant(id: string): Promise<unknown> {
-  return request({ method: 'DELETE', url: `${apiUrl()}/user-badges/${id}` });
+  return request({ method: 'DELETE', url: `${apiUrl()}/canela-user-badges/${id}` });
 }
 
 /** Uma página de concessões de um emblema, com o usuário de cada uma. */
 export function loadGrants(badgeId: string, offset: number): Promise<{ rows: GrantRow[]; hasMore: boolean }> {
   return request<any>({
     method: 'GET',
-    url: `${apiUrl()}/user-badges`,
+    url: `${apiUrl()}/canela-user-badges`,
     params: { filter: { badge: badgeId }, include: 'user', page: { offset, limit: 30 } },
   }).then((response) => {
     const users = new Map<string, any>();
