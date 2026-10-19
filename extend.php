@@ -76,6 +76,7 @@ $forumSettings = [
     'canela.list_views' => ['canelaListViews', true, 'boolval'],
     'canela.list_heat' => ['canelaListHeat', true, 'boolval'],
     'canela.list_excerpts' => ['canelaListExcerpts', true, 'boolval'],
+    'canela.list_status_icons' => ['canelaListStatusIcons', 'muted', null],
 
     // Página de categorias
     'canela.categories_layout' => ['canelaCategoriesLayout', 'boxes', null],
