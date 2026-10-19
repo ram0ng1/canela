@@ -130,6 +130,10 @@ html[data-theme^=dark] {
 // conteúdo (`.CanelaMp-card`, que aqui não desenha caixa nenhuma).
 // ---------------------------------------------------------------------
 body:has(.Canela.MarketplacePage) {
+  &::before {
+    display: none;
+  }
+
   background-color: var(--cn-surface);
   background-image: none;
 

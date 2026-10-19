@@ -258,6 +258,15 @@ body :is(.ChatComposer-shell, .ChatBrowse-search, .ChatSearch-bar, .ChatAddMembe
 // Página cheia (full-page-chat): sem o fundo tingido nem as peças que
 // flutuam atrás, a conversa ocupando a área inteira do conteúdo.
 // ---------------------------------------------------------------------
+// O fundo tingido mora no <html> (Core.less): mesma força, e esta vem depois.
+html body.ChatFullPage {
+  background-color: var(--cn-surface);
+
+  &::before {
+    display: none;
+  }
+}
+
 body.ChatFullPage {
   background-color: var(--cn-surface);
   background-image: none;
@@ -1994,6 +2003,14 @@ body.ChatFullPage {
 }
 
 // A página inteira na superfície lisa, como a do chat.
+html body.CanelaRamonChatSurface {
+  background-color: var(--cn-surface);
+
+  &::before {
+    display: none;
+  }
+}
+
 body.CanelaRamonChatSurface {
   background-color: var(--cn-surface);
   background-image: none;

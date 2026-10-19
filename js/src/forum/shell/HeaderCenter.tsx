@@ -52,19 +52,38 @@ export function watchHeaderTopic() {
 }
 
 export default class HeaderCenter extends Component {
+  shown = false;
+
   view(): Mithril.Children {
     const discussion = currentDiscussion();
 
     // Ao trocar de página, o estado é refeito antes de desenhar.
     if (!discussion && showingTopic) showingTopic = false;
 
+    this.shown = !!discussion && showingTopic;
+
     if (discussion && showingTopic) return this.topic(discussion);
 
     return forumBool('canelaHeaderSearch', true) ? <HeaderSearch state={app.search.state} /> : null;
   }
 
+  oncreate() {
+    this.markHeader();
+  }
+
   onupdate() {
+    this.markHeader();
     schedule();
+  }
+
+  /**
+   * A classe no cabeçalho com o título do tópico nele (Header.less,
+   * Mobile.less), no lugar de `.App-header:has(.CanelaHeaderTopic)`: o
+   * `:has()` fazia o navegador reavaliar o cabeçalho a cada mudança dentro
+   * dele. Corre depois do patch e antes da pintura, sem quadro trocado.
+   */
+  markHeader() {
+    document.getElementById('header')?.classList.toggle('CanelaHeader--topic', this.shown);
   }
 
   topic(discussion: Discussion): Mithril.Children {

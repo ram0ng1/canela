@@ -138,6 +138,20 @@ function layoutBox(element: HTMLElement, parent: HTMLElement): { left: number; t
   return { left, top, width: element.offsetWidth, height: element.offsetHeight };
 }
 
+/**
+ * O post com um menu aberto sobe acima dos seguintes (Components.less). A
+ * classe substitui `.PostStream-item:has(.Dropdown.open)`: com o `:has()`, o
+ * navegador reavaliava cada post a cada post carregado na rolagem.
+ */
+const POST_OPEN_CLASS = 'CanelaPost--menuOpen';
+
+function markPost(dropdown: HTMLElement, open: boolean): void {
+  // Um menu que sumiu aberto (o post redesenhado) não deixa a classe para trás.
+  if (open) document.querySelectorAll(`.${POST_OPEN_CLASS}`).forEach((item) => item.classList.remove(POST_OPEN_CLASS));
+
+  dropdown.closest('.PostStream-item')?.classList.toggle(POST_OPEN_CLASS, open);
+}
+
 export default function installDropdownArrow(): void {
   // jQuery: o Bootstrap do core dispara os eventos do dropdown por ela.
   $(document)
@@ -150,12 +164,16 @@ export default function installDropdownArrow(): void {
       if (event.target !== this) return;
 
       this.querySelector(':scope > .Dropdown-menu')?.classList.remove('Dropdown-menu--top');
+      markPost(this, true);
     })
     .on('shown.bs.dropdown', '.Dropdown', function (this: HTMLElement, event: JQuery.TriggeredEvent) {
       // Só o dropdown que abriu (o evento sobe pelos dropdowns de fora).
       if (event.target === this) placeArrow(this);
     })
     .on('hidden.bs.dropdown', '.Dropdown', function (this: HTMLElement, event: JQuery.TriggeredEvent) {
-      if (event.target === this) removeArrow(this);
+      if (event.target !== this) return;
+
+      removeArrow(this);
+      markPost(this, false);
     });
 }

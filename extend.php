@@ -211,6 +211,34 @@ $settings = (new Extend\Settings())
     ->registerLessConfigVar('config-canela-loader-color', LoaderLess::COLOR, static fn ($value): string => LoaderLess::color($value))
     ->registerLessConfigVar('config-canela-loader-scale', LoaderLess::SIZE, static fn ($value): string => LoaderLess::scale($value));
 
+// As folhas das extensões de terceiros (less/forum/thirdparty/*) só entram
+// com a extensão habilitada: habilitar ou desabilitar uma extensão já
+// recompila a folha. A chave não existe; só o nome da extensão decide.
+foreach ([
+    'config-canela-tp-links' => ['fof-links'],
+    'config-canela-tp-follow-tags' => ['fof-follow-tags'],
+    'config-canela-tp-upload' => ['fof-upload'],
+    'config-canela-tp-oauth' => ['fof-oauth'],
+    'config-canela-tp-terms' => ['fof-terms'],
+    'config-canela-tp-formatting' => ['fof-formatting'],
+    'config-canela-tp-thumbnails' => ['fof-discussion-thumbnail'],
+    'config-canela-tp-moderation' => ['fof-split', 'fof-merge-discussions', 'fof-ignore-users'],
+    'config-canela-tp-verified' => ['ramon-verified'],
+    'config-canela-tp-profile-cover' => ['forumaker-profile-cover'],
+] as $var => $extensions) {
+    $settings->registerLessConfigVar($var, 'canela.thirdparty_less', static function () use ($extensions): string {
+        $manager = resolve(\Flarum\Extension\ExtensionManager::class);
+
+        foreach ($extensions as $id) {
+            if ($manager->isEnabled($id)) {
+                return 'true';
+            }
+        }
+
+        return 'false';
+    });
+}
+
 foreach ($forumSettings as $key => [$attributeName, $default, $cast]) {
     $settings->default($key, $default)->serializeToForum($attributeName, $key, $cast);
 }

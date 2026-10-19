@@ -5,15 +5,16 @@
 //
 // Os seletores são globais, e não presos ao `.Canela`: modais, alertas e
 // tooltips moram fora do #app (#modal, #alerts, body). Por isso a forma dos
-// botões vem de uma variável na raiz, ligada pelo `:has()` à classe que a
-// casca põe no #app quando a opção "botões em pílula" está ativa.
+// botões vem de uma variável na raiz, ligada à classe que a casca põe no
+// <html> quando a opção "botões em pílula" está ativa (sem `:has()`, que
+// faria o documento inteiro recalcular a cada mudança no #app).
 // =====================================================================
 
 :root {
   --cn-button-radius: var(--cn-radius);
 }
 
-:root:has(#app.Canela--pillButtons) {
+:root.CanelaRoot--pill {
   --cn-button-radius: var(--cn-radius-pill);
 }
 
@@ -1390,8 +1391,8 @@ textarea.FormControl {
 // Um menu aberto dentro de um post (data do post, "…", reações) fica acima
 // da linha do tempo e dos posts seguintes: o post cria contexto de
 // empilhamento (isolation/sticky) e a coluna da linha do tempo vem depois
-// no DOM, pintando por cima.
-.PostStream-item:has(.Dropdown.open),
+// no DOM, pintando por cima. No post, a classe vem do dropdownArrow.ts.
+.PostStream-item.CanelaPost--menuOpen,
 .MessageStream-item:has(.Dropdown.open),
 .CanelaMessagePost:has(.Dropdown.open),
 .CanelaMessagePost .Post-main:has(.Dropdown.open) {
@@ -1403,7 +1404,7 @@ textarea.FormControl {
 // cima de tudo: com 20, o post prendia a folha abaixo do cabeçalho (que
 // ficava claro, por cima do escurecido) e da aba "1 / n" da linha do tempo.
 @media @phone {
-  .PostStream-item:has(.Dropdown.open),
+  .PostStream-item.CanelaPost--menuOpen,
   .MessageStream-item:has(.Dropdown.open),
   .CanelaMessagePost:has(.Dropdown.open),
   .CanelaMessagePost .Post-main:has(.Dropdown.open) {

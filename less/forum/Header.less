@@ -436,7 +436,7 @@
 // Discourse): ocupa do fim do logo até os ícones da direita.
 // ---------------------------------------------------------------------
 @media @tablet-up {
-  .CanelaHeader-center:has(.CanelaHeaderTopic) {
+  .CanelaHeader--topic .CanelaHeader-center {
     grid-column: ~"2 / 5";
     justify-self: stretch;
     max-width: none;
@@ -520,7 +520,7 @@
 
 // No celular o título toma o lugar do logo e da lupa.
 @media @phone {
-  .Canela .App-header:has(.CanelaHeaderTopic) {
+  .Canela .App-header.CanelaHeader--topic {
     .Header-title {
       display: none;
     }
