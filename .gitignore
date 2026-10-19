@@ -4,6 +4,7 @@ composer.lock
 js/dist-typings
 .phpunit.cache
 CLAUDE.md
+.claude
 
 # Notas internas (não vão para o repositório público)
 docs/DISCOURSE-PARITY.md
