@@ -122,7 +122,9 @@ function shapePage(this: any, vnode: any): void {
   addClass(main, 'ChatPage-main--section');
 
   if (Array.isArray(vnode.children)) {
-    vnode.children = vnode.children.filter((child: any) => !(child && child.attrs && /ChatToolbar(Back|Title)/.test(String(child.attrs.className || ''))));
+    vnode.children = vnode.children.filter(
+      (child: any) => !(child && child.attrs && /ChatToolbar(Back|Title)/.test(String(child.attrs.className || '')))
+    );
   }
 }
 

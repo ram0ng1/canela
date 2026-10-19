@@ -526,3 +526,12 @@
 .DiscussionPage-nav .Dropdown--split.itemCount1 > .Dropdown-toggle {
   display: none;
 }
+
+// Celular: os painéis do cabeçalho (perfil, notificações, idioma) descem por
+// cima da página, mas a aba "7 / 7" é fixa no mesmo nível do cabeçalho e
+// vinha depois no DOM, aparecendo por cima deles. Some enquanto um está aberto.
+@media @phone {
+  .App:has(.App-header :is(.Dropdown.open, .CanelaUserMenuWrap--open)) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle {
+    visibility: hidden;
+  }
+}

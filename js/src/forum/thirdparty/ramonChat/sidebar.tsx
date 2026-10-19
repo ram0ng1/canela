@@ -169,7 +169,9 @@ export default function installRamonChatSidebar(): void {
 
     if (channels.length) channelItems.push(...channels.map(channelLink));
     else if (state.channelsLoaded)
-      channelItems.push(emptyLink('chatBrowse', 'fas fa-list', t('chat.no_public_channels_cta'), () => openRoute('chat.browse'), app.route('chat.browse')));
+      channelItems.push(
+        emptyLink('chatBrowse', 'fas fa-list', t('chat.no_public_channels_cta'), () => openRoute('chat.browse'), app.route('chat.browse'))
+      );
 
     items.add(
       'ramonChatChannels',

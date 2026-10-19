@@ -88,7 +88,7 @@ final class MeTooPushJob extends AbstractJob
             $others = array_values(array_filter($connected, fn (int $id): bool => $id > 0 && $id !== $this->actorId));
 
             if (! $public && $others) {
-                $others = User::query()->whereIn('id', $others)->get()
+                $others = User::query()->findMany($others)
                     ->filter(static fn (User $user): bool => $audience->canSeeDiscussion($discussion->id, $user))
                     ->map(static fn (User $user): int => (int) $user->id)
                     ->values()
@@ -120,10 +120,14 @@ final class MeTooPushJob extends AbstractJob
         } catch (\Throwable $error) {
             // Só a falha de conexão silencia os próximos envios; um erro de
             // outro tipo fica no log e não atrapalha o clique seguinte.
-            if ($error instanceof \Pusher\PusherException || $error instanceof \GuzzleHttp\Exception\TransferException) {
-                $this->markDown($cache, $error->getMessage());
+            // Por nome: o pusher/pusher-php-server só existe com o flarum/realtime.
+            $message = $error->getMessage();
+            $connectionFailed = is_a($error, 'Pusher\PusherException') || $error instanceof \GuzzleHttp\Exception\TransferException;
+
+            if ($connectionFailed) {
+                $this->markDown($cache, $message);
             } else {
-                error_log('[ramon/canela] me too: entrega em tempo real falhou: '.$error->getMessage());
+                error_log('[ramon/canela] me too: entrega em tempo real falhou: '.$message);
             }
         }
     }

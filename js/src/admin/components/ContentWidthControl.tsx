@@ -144,7 +144,9 @@ export default class ContentWidthControl extends AdminComponent {
                 this.loaded = false;
               }}
             >
-              {page === 'index' ? trans(`${KEY}.content_width_preview_index`, 'Início') : trans(`${KEY}.content_width_preview_discussion`, 'Discussão')}
+              {page === 'index'
+                ? trans(`${KEY}.content_width_preview_index`, 'Início')
+                : trans(`${KEY}.content_width_preview_discussion`, 'Discussão')}
             </button>
           ))}
         </div>

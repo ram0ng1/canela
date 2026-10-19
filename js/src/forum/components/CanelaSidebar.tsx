@@ -274,10 +274,7 @@ export default class CanelaSidebar extends IndexSidebar {
     if (entries.length) {
       more.add(
         'customizeCommunity',
-        <Button
-          icon="fas fa-pencil"
-          onclick={() => app.modal.show(() => import('./CommunityCustomizeModal'), { entries, onsave: () => m.redraw() })}
-        >
+        <Button icon="fas fa-pencil" onclick={() => app.modal.show(() => import('./CommunityCustomizeModal'), { entries, onsave: () => m.redraw() })}>
           {t('sidebar.customize_community')}
         </Button>,
         5

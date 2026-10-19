@@ -765,3 +765,13 @@
     display: none !important;
   }
 }
+
+// Celular: o carrinho (ramon/marketplace) e o chat (ramon/chat) saem do
+// cabeçalho, que fica apertado; os dois continuam na barra lateral (Loja >
+// Carrinho e Chat).
+@media @phone {
+  .Canela .Header-secondary .Header-controls > li.item-marketplace-cart,
+  .Canela .Header-secondary .Header-controls > li.item-chat {
+    display: none;
+  }
+}

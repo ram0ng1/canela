@@ -347,5 +347,14 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
  * sublinhado e o clique do link.
  */
 function dotted(items: Mithril.Children[]): Mithril.Children[] {
-  return items.flatMap((item, index) => (index === 0 ? [item] : [<span className="CanelaUserCard-sep" aria-hidden="true">•</span>, item]));
+  return items.flatMap((item, index) =>
+    index === 0
+      ? [item]
+      : [
+          <span className="CanelaUserCard-sep" aria-hidden="true">
+            •
+          </span>,
+          item,
+        ]
+  );
 }

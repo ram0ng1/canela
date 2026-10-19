@@ -16,16 +16,16 @@ const ChatPage = () => import('./components/chatUi').then((ui) => ({ default: ui
 import { ChatMentionNotification, ChatMessageNotification } from './notifications';
 
 const routes = new Extend.Routes()
-    .add('canela.chat', '/chat', ChatPage)
-    .add('canela.chat.browse', '/chat/browse', ChatPage)
-    .add('canela.chat.browseFilter', '/chat/browse/:filter', ChatPage)
-    .add('canela.chat.newMessage', '/chat/new-message', ChatPage)
-    .add('canela.chat.channels', '/chat/channels', ChatPage)
-    .add('canela.chat.directMessages', '/chat/direct-messages', ChatPage)
-    .add('canela.chat.threads', '/chat/threads', ChatPage)
-    .add('canela.chat.search', '/chat/search', ChatPage)
-    .add('canela.chat.channel', '/chat/c/:slug/:id', ChatPage)
-    .add('canela.chat.channelSub', '/chat/c/:slug/:id/:rest...', ChatPage);
+  .add('canela.chat', '/chat', ChatPage)
+  .add('canela.chat.browse', '/chat/browse', ChatPage)
+  .add('canela.chat.browseFilter', '/chat/browse/:filter', ChatPage)
+  .add('canela.chat.newMessage', '/chat/new-message', ChatPage)
+  .add('canela.chat.channels', '/chat/channels', ChatPage)
+  .add('canela.chat.directMessages', '/chat/direct-messages', ChatPage)
+  .add('canela.chat.threads', '/chat/threads', ChatPage)
+  .add('canela.chat.search', '/chat/search', ChatPage)
+  .add('canela.chat.channel', '/chat/c/:slug/:id', ChatPage)
+  .add('canela.chat.channelSub', '/chat/c/:slug/:id/:rest...', ChatPage);
 
 /**
  * Com outra extensão de chat ligada (ramon/chat) o endereço /chat é dela: o

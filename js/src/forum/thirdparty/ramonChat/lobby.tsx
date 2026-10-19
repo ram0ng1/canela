@@ -59,7 +59,9 @@ function activity(date: Date | null | undefined): string {
   if (days === 0) return formatWith(date, { hour: '2-digit', minute: '2-digit' });
   if (days === 1) return ct('chat_message_separator.yesterday');
 
-  return formatWith(date, { day: 'numeric', month: 'short' }).replace(/\./g, '').replace(/\sde\s/g, ' ');
+  return formatWith(date, { day: 'numeric', month: 'short' })
+    .replace(/\./g, '')
+    .replace(/\sde\s/g, ' ');
 }
 
 /** O texto da última mensagem, sem marcação, com o autor nas MDs em grupo. */
@@ -97,7 +99,7 @@ function row(channel: RamonChannel, subtitle: string): Mithril.Children {
   const direct = channel.isDirect();
   const mentions = channel.unreadMentionsCount() ?? 0;
   const unread = channel.hasUnread();
-  const urgent = direct ? (channel.isMuted() ? 0 : channel.unreadCount() ?? 0) : mentions;
+  const urgent = direct ? (channel.isMuted() ? 0 : (channel.unreadCount() ?? 0)) : mentions;
 
   return (
     <li key={id} className="CanelaRamonChatLobby-item">
@@ -110,7 +112,9 @@ function row(channel: RamonChannel, subtitle: string): Mithril.Children {
           openChannel(id);
         }}
       >
-        <span className={classList('CanelaRamonChatLobby-icon', { '--avatar': direct })}>{ramonChannelIcon(channel, 'CanelaRamonChatLobby-glyph')}</span>
+        <span className={classList('CanelaRamonChatLobby-icon', { '--avatar': direct })}>
+          {ramonChannelIcon(channel, 'CanelaRamonChatLobby-glyph')}
+        </span>
         <span className="CanelaRamonChatLobby-main">
           <span className="CanelaRamonChatLobby-name">
             <span className="CanelaRamonChatLobby-label">{channel.displayName()}</span>
@@ -138,7 +142,11 @@ export default class ChatLobby extends Component<ChatLobbyAttrs> {
 
     const state = chatState();
 
-    if (state && !state.channelsLoaded && !state.channelsLoading) state.loadChannels().then(() => m.redraw(), () => {});
+    if (state && !state.channelsLoaded && !state.channelsLoading)
+      state.loadChannels().then(
+        () => m.redraw(),
+        () => {}
+      );
   }
 
   view(): Mithril.Children {
