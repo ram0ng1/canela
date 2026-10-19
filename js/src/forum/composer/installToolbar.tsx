@@ -30,6 +30,7 @@ import type Mithril from 'mithril';
 
 import { editorComposer } from '../features/composer/common';
 import { t } from '../utils/settings';
+import { morphComposer } from './morph';
 
 export interface MoreAction {
   icon: string;
@@ -104,7 +105,7 @@ class RichToggle extends Component {
         aria-checked={rich ? 'true' : 'false'}
         aria-label={label}
         title={label}
-        onclick={() => setRichMode(!rich)}
+        onclick={() => morphComposer(() => setRichMode(!rich))}
       >
         <span className="CanelaRichToggle-slider">
           <span className="CanelaRichToggle-left" aria-hidden="true">
