@@ -4,19 +4,16 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../../../site.php';
-
-use Flarum\Foundation\InstalledSite;
 use Flarum\Discussion\Discussion;
 use Flarum\Post\CommentPost;
-use Flarum\User\User;
 use Flarum\Tags\Tag;
+use Flarum\User\User;
 use Illuminate\Support\Carbon;
 
-/** @var InstalledSite|null $site */
-$site = $site ?? null;
-$app  = ($site ?? require __DIR__ . '/../../../site.php')->bootApp();
-$app->getContainer()->make(\Illuminate\Database\ConnectionInterface::class);
+// O workflow copia este arquivo para a raiz do Flarum de teste (./seed.php),
+// ao lado do site.php: subir o app dá acesso ao Eloquent já configurado.
+$site = require __DIR__.'/site.php';
+$site->bootApp();
 
 $admin = User::query()->where('username', 'admin')->firstOrFail();
 
@@ -37,7 +34,7 @@ if (class_exists(Tag::class)) {
 // Discussões (30) com 1 post cada
 $now = Carbon::now();
 for ($i = 1; $i <= 30; $i++) {
-    $title = sprintf('Discussion %02d — benchmark seed', $i);
+    $title = sprintf('Discussion %02d: benchmark seed', $i);
     if (Discussion::query()->where('title', $title)->exists()) continue;
 
     $disc = Discussion::start($title, $admin);

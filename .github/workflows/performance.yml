@@ -118,7 +118,7 @@ jobs:
         working-directory: ${{ env.FLARUM_TEST_DIR }}
         run: |
           php flarum extension:enable flarum-tags || true
-          php flarum extension:enable ramon-canela || true
+          php flarum extension:enable ramon-canela
           php flarum cache:clear
           php flarum assets:publish
 
@@ -148,7 +148,7 @@ jobs:
           urls: |
             http://127.0.0.1:8080/
             http://127.0.0.1:8080/tags
-            http://127.0.0.1:8080/discussions
+            http://127.0.0.1:8080/all
           configPath: ${{ env.EXT_DIR }}/.github/lighthouserc.json
           uploadArtifacts: false
           temporaryPublicStorage: false
