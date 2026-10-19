@@ -10,13 +10,14 @@ import app from 'flarum/forum/app';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import Button from 'flarum/common/components/Button';
 import Dropdown from 'flarum/common/components/Dropdown';
+import classList from 'flarum/common/utils/classList';
 import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
 import type Discussion from 'flarum/common/models/Discussion';
 import type Post from 'flarum/common/models/Post';
 
 import TopicNotifications, { notificationReason } from './TopicNotifications';
 import { canSubscribe } from '../ui';
-import { isExtensionEnabled, t } from '../../utils/settings';
+import { forumBool, isExtensionEnabled, t } from '../../utils/settings';
 import { openShare } from '../../gaps/topic/share';
 import { bookmarksEnabled } from '../../features/bookmarks/actions';
 import { toggleTopicBookmark, topicIsBookmarked } from '../../features/bookmarks/index';
@@ -92,7 +93,13 @@ export default class TopicFooter extends Component<TopicFooterAttrs> {
         </div>
 
         {canSubscribe() && (
-          <div className="CanelaTopicFooter-notifications">
+          // Desligado no admin, some só no computador, onde o sino da linha do
+          // tempo faz o mesmo (TopicExtras.less); no celular é o único.
+          <div
+            className={classList('CanelaTopicFooter-notifications', {
+              'CanelaTopicFooter-notifications--optional': !forumBool('canelaTopicFooterNotifications', false),
+            })}
+          >
             <TopicNotifications discussion={discussion} />
             <p className="CanelaTopicFooter-reason">{notificationReason(discussion)}</p>
           </div>

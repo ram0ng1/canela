@@ -1138,3 +1138,12 @@ button.CanelaTopicMap-stat {
     border-color: transparent var(--cn-surface) transparent transparent;
   }
 }
+
+// "Acompanhar no rodapé" desligado no admin: no computador, com a linha do
+// tempo à vista, o sino dela já faz o mesmo e o do rodapé sai. Abaixo de
+// 925px (a linha do tempo vira a aba "1 / n"), o do rodapé é o único e fica.
+@media (min-width: 925px) {
+  .CanelaTopic--timeline .CanelaTopicFooter-notifications--optional {
+    display: none;
+  }
+}

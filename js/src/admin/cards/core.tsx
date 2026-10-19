@@ -642,8 +642,14 @@ const CORE_CARDS: CardDef[] = [
       'topic_footer',
       'Responder, compartilhar e acompanhar depois da última postagem, como no Discourse. Acompanhar precisa da extensão Subscriptions.'
     ),
-    keywords: 'rodapé footer botões buttons responder reply compartilhar share acompanhar follow subscriptions',
+    keywords: 'rodapé footer botões buttons responder reply compartilhar share acompanhar follow subscriptions acompanhando notificações',
     master: 'canela.topic_footer',
+    body: () =>
+      toggle(
+        'topic_footer_notifications',
+        'Acompanhar no rodapé (computador)',
+        'O botão "Acompanhando" e a frase do nível de notificação abaixo dos botões do rodapé. No computador o sino da linha do tempo já faz o mesmo; no celular e no tablet o do rodapé sempre aparece, porque é o único.'
+      ),
   },
   {
     id: 'suggested',
