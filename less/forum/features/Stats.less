@@ -53,7 +53,10 @@
   max-width: ~"min(400px, calc(100vw - 32px))";
 
   // Com os números lado a lado, o menu encolhe ao conteúdo (min-width: unset).
-  &:has(.CanelaTopicViews) {
+  // O carregando também: largo, ele encolhia logo depois na frente da pessoa
+  // (na maioria dos tópicos vêm os números, e não o gráfico).
+  &:has(.CanelaTopicViews),
+  &:has(.LoadingIndicator) {
     width: max-content;
     min-width: 0;
   }

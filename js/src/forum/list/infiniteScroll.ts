@@ -13,6 +13,8 @@ import { forumBool } from '../utils/settings';
 interface Watched {
   canelaObserver?: IntersectionObserver;
   canelaTarget?: Element | null;
+  /** Páginas e carregamento na última conferência (onupdate). */
+  canelaChecked?: string;
 }
 
 function stateOf(list: DiscussionList): DiscussionListState | undefined {
@@ -82,7 +84,15 @@ export default function installInfiniteScroll(): void {
 
     // Uma página curta pode terminar de carregar com o fim ainda visível: o
     // observador não dispara de novo sem mudança de interseção, então confere.
+    // Só quando uma página chega (ou o carregamento termina): medir a posição
+    // força o layout, e a lista redesenha à toa a cada interação.
     const target = this.canelaTarget;
+    const state = stateOf(this);
+    const signature = state ? `${state.getPages().length}:${state.isLoadingNext() ? 1 : 0}:${state.isInitialLoading() ? 1 : 0}` : '';
+
+    if (signature === this.canelaChecked) return;
+
+    this.canelaChecked = signature;
 
     if (target && forumBool('canelaListInfiniteScroll', true)) {
       const rect = target.getBoundingClientRect();

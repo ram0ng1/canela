@@ -48,21 +48,21 @@ final class UserActivity
             return $this->memo[$id];
         }
 
+        // A tabela já é por dia: o recente é a mesma soma com a data de corte,
+        // na mesma consulta.
         $visits = $this->db->table(VisitRecorder::TABLE)
             ->where('user_id', $id)
-            ->selectRaw('COUNT(*) AS days, COALESCE(SUM(time_read), 0) AS time_read, COALESCE(SUM(posts_read), 0) AS posts_read')
+            ->selectRaw(
+                'COUNT(*) AS days, COALESCE(SUM(time_read), 0) AS time_read, COALESCE(SUM(posts_read), 0) AS posts_read, '
+                .'COALESCE(SUM(CASE WHEN visited_at >= ? THEN time_read ELSE 0 END), 0) AS recent_time_read',
+                [Carbon::now()->subDays(self::RECENT_DAYS)->toDateString()]
+            )
             ->first();
-
-        // A tabela já é por dia: o recente é a mesma soma com a data de corte.
-        $recent = $this->db->table(VisitRecorder::TABLE)
-            ->where('user_id', $id)
-            ->where('visited_at', '>=', Carbon::now()->subDays(self::RECENT_DAYS)->toDateString())
-            ->sum('time_read');
 
         $summary = [
             'daysVisited' => (int) ($visits->days ?? 0),
             'timeRead' => (int) ($visits->time_read ?? 0),
-            'recentTimeRead' => (int) $recent,
+            'recentTimeRead' => (int) ($visits->recent_time_read ?? 0),
             'postsRead' => (int) ($visits->posts_read ?? 0),
             // Uma linha por (tópico, usuário) em canela_topic_views: COUNT já é "distintos".
             'topicsViewed' => $this->db->table(TopicViewRecorder::TABLE)->where('user_id', $id)->count(),

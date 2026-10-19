@@ -140,6 +140,11 @@ JS;
     private const SCRIPT = <<<'JS'
 (function (c) {
   try {
+    // O fundo tingido e os botões em pílula leem a classe no <html> (Core.less,
+    // Components.less): já existe agora, antes do primeiro desenho do body.
+    var root = document.documentElement.classList;
+    if (c.classes.indexOf('Canela--tinted') >= 0) root.add('CanelaRoot--tinted');
+    if (c.classes.indexOf('Canela--pillButtons') >= 0) root.add('CanelaRoot--pill');
     var open = false;
     if (c.sidebar && window.matchMedia('(min-width: 768px)').matches) {
       var stored = null;

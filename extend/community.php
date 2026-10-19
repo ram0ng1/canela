@@ -21,7 +21,12 @@ use Flarum\Api\Resource\ForumResource;
 use Flarum\Api\Resource\GroupResource;
 use Flarum\Api\Schema;
 use Flarum\Extend;
+use Flarum\Group\Event\Deleted as GroupDeleted;
 use Flarum\Settings\Event\Saving;
+use Flarum\User\Event\Deleted as UserDeleted;
+use Flarum\User\Event\GroupsChanged;
+use Flarum\User\Event\Registered as UserRegistered;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Ramon\Canela\Community\AboutPages;
 use Ramon\Canela\Community\Api\ShowAboutPageController;
 use Ramon\Canela\Community\Content\AboutPageContent;
@@ -122,7 +127,14 @@ return [
             if (array_key_exists(Community::ABOUT_PAGES, $event->settings)) {
                 $event->settings[Community::ABOUT_PAGES] = AboutPages::normalize($event->settings[Community::ABOUT_PAGES]);
             }
-        }),
+        })
+        // A contagem de membros dos grupos (GroupFields) fica no cache: sai
+        // quando alguém entra ou sai de um grupo, ou quando uma conta ou um
+        // grupo é apagado.
+        ->listen(GroupsChanged::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY))
+        ->listen(UserRegistered::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY))
+        ->listen(UserDeleted::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY))
+        ->listen(GroupDeleted::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY)),
 
     (new Extend\ApiResource(GroupResource::class))
         ->fields(GroupFields::class),

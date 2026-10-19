@@ -15,12 +15,21 @@ body {
 
 // O fundo do meta.discourse.org: a cor quase branca puxada para o destaque,
 // com um degradê que desce do topo e termina 260px antes do pé da janela
-// (.meta-bg + .meta-bg-gradient, ambos fixos).
-body:has(.Canela--tinted) {
+// (.meta-bg + .meta-bg-gradient, ambos fixos). O degradê mora num
+// pseudo-elemento fixo, e não no `background-attachment: fixed` do body: esse
+// repinta a página inteira a cada quadro de rolagem. A classe vem no <html>
+// (PreBootShell e installShell), sem `:has()` na raiz.
+html.CanelaRoot--tinted body {
   background-color: var(--cn-page-bg);
-  background-image: linear-gradient(var(--cn-page-gradient) 0, var(--cn-page-bg) ~"calc(100% - 260px)");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(var(--cn-page-gradient) 0, var(--cn-page-bg) ~"calc(100% - 260px)");
+  }
 }
 
 // As peças coloridas e desfocadas que flutuam atrás do conteúdo no Meta

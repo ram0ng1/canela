@@ -30,6 +30,19 @@ function tagItems(children: unknown, depth = 0): void {
   }
 }
 
+/**
+ * Editar usuário só vira modal largo com cinco campos ou mais (o próprio
+ * usuário, ou quem só mexe nos grupos, vê três ou quatro). A classe fazia o
+ * papel de `.EditUserModal:has(.Form-body > :nth-child(5))`: um `:nth-child`
+ * dentro de `:has()` fazia o navegador reavaliar o modal a cada elemento
+ * inserido em qualquer lugar da página (os posts carregados na rolagem).
+ */
+function markLong(element: Element | undefined): void {
+  const body = element?.querySelector('.Form-body');
+
+  element?.classList.toggle('CanelaModal--long', !!body && body.children.length >= 5);
+}
+
 export default function installModalLayout(): void {
   // Módulos carregados sob demanda: estendidos pelo nome.
   for (const module of MODALS) {
@@ -37,4 +50,11 @@ export default function installModalLayout(): void {
       tagItems([vdom]);
     });
   }
+
+  extend('flarum/common/components/EditUserModal' as any, 'oncreate', function (this: any) {
+    markLong(this.element);
+  });
+  extend('flarum/common/components/EditUserModal' as any, 'onupdate', function (this: any) {
+    markLong(this.element);
+  });
 }

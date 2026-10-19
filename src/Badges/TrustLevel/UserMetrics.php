@@ -109,11 +109,15 @@ final class UserMetrics
         }
 
         if ($capabilities->visits()) {
-            $visits = $db->table('canela_user_visits')->where('user_id', $user->id);
-            $this->postsRead = (int) (clone $visits)->sum('posts_read');
+            // Uma consulta só para as três somas (eram três).
+            $visits = $db->table('canela_user_visits')
+                ->where('user_id', $user->id)
+                ->selectRaw('COUNT(*) as days, COALESCE(SUM(posts_read), 0) as posts, COALESCE(SUM(time_read), 0) as seconds')
+                ->first();
+            $this->postsRead = (int) ($visits->posts ?? 0);
             // `time_read` em segundos, como o do Discourse.
-            $this->timeReadMinutes = intdiv((int) (clone $visits)->sum('time_read'), 60);
-            $this->daysVisited = (clone $visits)->count();
+            $this->timeReadMinutes = intdiv((int) ($visits->seconds ?? 0), 60);
+            $this->daysVisited = (int) ($visits->days ?? 0);
         } else {
             $this->postsRead = (int) $this->readStates($db, $user)->sum('discussion_user.last_read_post_number');
             $this->daysVisited = intdiv($this->minutesSinceJoin, 60 * 24);

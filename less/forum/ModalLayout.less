@@ -92,8 +92,8 @@
 
 // Editar usuário: só vira modal largo quando tem campos para isso (o próprio
 // usuário, ou quem só mexe nos grupos, vê três ou quatro itens e o modal
-// continua pequeno).
-.EditUserModal:has(.Form-body > :nth-child(5)) {
+// continua pequeno). A classe vem do js/src/forum/shell/modalLayout.ts.
+.EditUserModal.CanelaModal--long {
   .cn-modal-long();
 
   // Conta primeiro, depois o perfil, e por fim o texto "Sobre mim", as

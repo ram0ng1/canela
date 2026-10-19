@@ -56,12 +56,23 @@ final class VisitRecorder
 
         $today = Carbon::now()->toDateString();
 
-        $this->ensureDay($user, $today, $mobile);
+        // Quase sempre a linha do dia já existe (a visita a criou): o UPDATE
+        // vai direto, e ela só é criada quando ele não acha nada. Antes era um
+        // INSERT ignorado e o UPDATE, a cada 30 s de cada leitor.
+        if ($this->addToDay($user, $today, $seconds, $posts) === 0) {
+            $this->ensureDay($user, $today, $mobile);
+            $this->addToDay($user, $today, $seconds, $posts);
+        }
+    }
 
-        // O teto no próprio UPDATE: vale mesmo com duas abas somando ao mesmo
-        // tempo, o que um "lê, soma, grava" no PHP não garantiria. CASE em vez
-        // de LEAST porque o SQLite, que o Flarum 2 também aceita, não tem LEAST.
-        $this->db->table(self::TABLE)
+    /**
+     * O teto no próprio UPDATE: vale mesmo com duas abas somando ao mesmo
+     * tempo, o que um "lê, soma, grava" no PHP não garantiria. CASE em vez de
+     * LEAST porque o SQLite, que o Flarum 2 também aceita, não tem LEAST.
+     */
+    private function addToDay(User $user, string $today, int $seconds, int $posts): int
+    {
+        return $this->db->table(self::TABLE)
             ->where('user_id', $user->id)
             ->where('visited_at', $today)
             ->update([

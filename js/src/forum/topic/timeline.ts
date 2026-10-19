@@ -98,6 +98,33 @@ export default function installTimeline(): void {
     listener.callback = (top: number) => requestAnimationFrame(() => callback(top));
   });
 
+  // O primeiro post sem varrer o store inteiro (isto roda a cada redesenho da
+  // linha do tempo): a relação da discussão ou o primeiro id do tópico.
+  const firstPostOf = (discussion: any): Post | null => {
+    const related = discussion.firstPost?.() as Post | false | undefined;
+
+    if (related) return related;
+
+    const first = app.store.getById<Post>('posts', discussion.postIds?.()[0]);
+
+    return first && first.number() === 1 ? first : null;
+  };
+
+  // O começo do post em texto puro (o `contentPlain` analisa o HTML inteiro),
+  // guardado enquanto o conteúdo for o mesmo.
+  const excerpts = new WeakMap<Post, { html: string; text: string }>();
+  const excerptOf = (post: Post): string => {
+    const html = post.contentHtml() || '';
+    const cached = excerpts.get(post);
+
+    if (cached && cached.html === html) return cached.text;
+
+    const text = (post.contentPlain() || '').trim().slice(0, 400);
+    excerpts.set(post, { html, text });
+
+    return text;
+  };
+
   // A folha da linha do tempo no celular (timeline-fullscreen): à esquerda o
   // título, a categoria e o começo do primeiro post; à direita o trilho.
   extend('flarum/forum/components/PostStreamScrubber', 'view', function (this: any, vnode: any) {
@@ -108,9 +135,9 @@ export default function installTimeline(): void {
 
     if (!menu || !discussion || !Array.isArray(menu.children)) return;
 
-    const firstPost = app.store.all<Post>('posts').find((post) => post.discussion() === discussion && post.number() === 1) || null;
+    const firstPost = firstPostOf(discussion);
     const author = firstPost ? firstPost.user() : null;
-    const excerpt = (firstPost?.contentPlain() || '').trim().slice(0, 400);
+    const excerpt = firstPost ? excerptOf(firstPost) : '';
 
     menu.children.unshift(
       m('.CanelaTimelineSheet', [

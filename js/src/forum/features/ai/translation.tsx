@@ -30,6 +30,7 @@ import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
 import { aiApiUrl } from './state';
+import { displayNames } from '../../utils/intl';
 
 interface TranslationInfo {
   locale: string | null;
@@ -120,7 +121,7 @@ function languageName(code: string | null | undefined): string {
   if (!code) return '';
 
   try {
-    const name = new Intl.DisplayNames([app.translator.getLocale() || 'en'], { type: 'language' }).of(code) || code;
+    const name = displayNames([app.translator.getLocale() || 'en'], { type: 'language' }).of(code) || code;
 
     return name.charAt(0).toLocaleUpperCase() + name.slice(1);
   } catch {
@@ -158,6 +159,9 @@ function enqueue(kind: Kind, model: Post | Discussion | undefined | null): void 
   if (asked.has(key)) return;
 
   asked.add(key);
+  // Um lote novo começa a contagem de novo: sem isso, depois que um tópico
+  // desistia, todos os seguintes na mesma visita ganhavam uma rodada só.
+  rounds = 0;
 
   if (kind === 'p') {
     queue.posts.set(model.id()!, model as Post);
@@ -171,7 +175,29 @@ function enqueue(kind: Kind, model: Post | Discussion | undefined | null): void 
 
 function schedule(delay: number): void {
   window.clearTimeout(timer);
-  timer = window.setTimeout(flush, delay);
+  timer = window.setTimeout(flushWhenVisible, delay);
+}
+
+/** Com a aba escondida, espera ela voltar: ninguém está lendo a tradução. */
+function flushWhenVisible(): void {
+  if (!document.hidden) {
+    flush();
+    return;
+  }
+
+  const resume = () => {
+    if (document.hidden) return;
+
+    document.removeEventListener('visibilitychange', resume);
+    flush();
+  };
+
+  document.addEventListener('visibilitychange', resume);
+}
+
+/** Espera crescente enquanto o servidor responde "pendente": 1,5 s, 3 s, 6 s, 12 s… */
+function pendingDelay(): number {
+  return Math.min(12000, 1500 * 2 ** Math.max(0, rounds - 1));
 }
 
 async function flush(): Promise<void> {
@@ -241,7 +267,7 @@ async function flush(): Promise<void> {
 
   if (!pending || advanced || ++rounds <= MAX_ROUNDS) {
     if (advanced) rounds = 0;
-    schedule(response?.retryAfter ? response.retryAfter * 1000 : advanced ? 200 : pending ? 1500 : 50);
+    schedule(response?.retryAfter ? response.retryAfter * 1000 : advanced ? 200 : pending ? pendingDelay() : 50);
   } else {
     // Desistiu por agora: some o "traduzindo…"; o próximo carregamento tenta de novo.
     queue.posts.forEach((_post, id) => working.delete(id));

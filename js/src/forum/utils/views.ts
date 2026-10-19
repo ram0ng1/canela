@@ -16,6 +16,7 @@ import app from 'flarum/forum/app';
 import type Mithril from 'mithril';
 
 import { forumInt, t } from './settings';
+import { numberFormat } from './intl';
 
 export type ViewsHeat = 'low' | 'med' | 'high' | null;
 
@@ -38,7 +39,7 @@ function locale(): string {
 /** `I18n.toNumber(value, { precision })` do Discourse: casas fixas, com o separador do idioma. */
 export function localNumber(value: number, precision = 0): string {
   try {
-    return new Intl.NumberFormat(locale(), { minimumFractionDigits: precision, maximumFractionDigits: precision }).format(value);
+    return numberFormat(locale(), { minimumFractionDigits: precision, maximumFractionDigits: precision }).format(value);
   } catch {
     return value.toFixed(precision);
   }

@@ -23,7 +23,7 @@ import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 
 import CanelaSidebar from '../../components/CanelaSidebar';
-import UserSummaryPage from '../../user/UserSummaryPage';
+import type UserSummaryPage from '../../user/UserSummaryPage';
 import UserStats from '../../user/UserStats';
 import FeaturedBadges from './components/FeaturedBadges';
 import SummaryBadges from './components/SummaryBadges';
@@ -84,7 +84,8 @@ export default function installBadges() {
     items.add('canelaBadges', <FeaturedBadges user={user} />, -10);
   });
 
-  extend(UserSummaryPage.prototype, 'sectionItems', function (this: UserSummaryPage, items: ItemList<Mithril.Children>) {
+  // Pelo caminho: a página do Resumo é um chunk, e o extend vale quando ele chega.
+  extend('ext:ramon/canela/forum/user/UserSummaryPage', 'sectionItems', function (this: UserSummaryPage, items: ItemList<Mithril.Children>) {
     if (!this.user || !badgesEnabled() || !forumBool('canelaBadgesSummary', true)) return;
 
     items.add('badges', <SummaryBadges user={this.user} />, 85);

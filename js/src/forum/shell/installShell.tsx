@@ -71,6 +71,11 @@ export default function installShell() {
       }).split(' ')
     );
 
+    // As mesmas duas no <html> (o PreBootShell já as pôs; aqui para o caso de
+    // a página vir sem ele): o fundo tingido e o raio dos botões leem dali.
+    document.documentElement.classList.toggle('CanelaRoot--tinted', forumBool('canelaTintedBackground', true));
+    document.documentElement.classList.toggle('CanelaRoot--pill', forumBool('canelaPillButtons', true));
+
     mountHeader(sidebarEnabled);
     watchColoredAccents();
     installColorMode();
@@ -259,5 +264,13 @@ function installInlineHero() {
     }
 
     return items;
+  });
+
+  // O cartão com o hero dentro ganha uma classe (Shell.less), no lugar de
+  // `.Page-container:has(> .Page-hero--inline)`: o `:has()` no ancestral do
+  // tópico inteiro fazia o navegador recalcular o estilo a cada post
+  // carregado na rolagem (~150 ms por gesto, medido no /d/1).
+  extend(PageStructure.prototype, 'container', function (this: PageStructure, vnode: any) {
+    if (isInline(this) && vnode?.attrs) vnode.attrs.className = `${vnode.attrs.className || ''} Page-container--inlineHero`;
   });
 }

@@ -9,10 +9,48 @@
 // cor de destaque misturada à superfície, no claro e no escuro.
 // =====================================================================
 
+// Os mixins ficam fora das guardas: cada bloco `& when` abaixo é um escopo
+// próprio, e todos usam estes dois.
+// Rolagem fina de todas as áreas roláveis do chat (o mixin chat-scrollbar).
+.cn-chat-scrollbar() {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cn-primary-low) transparent;
+  overscroll-behavior: contain;
+}
+
+// O ponto azul e o número verde (c-unread-indicator / -urgent).
+.cn-chat-unread-indicator() {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 1em;
+  box-sizing: content-box;
+  background: var(--cn-accent);
+  color: var(--cn-secondary);
+  font-size: var(--cn-font-down-2);
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  transition: border-color linear 0.15s;
+
+  &.-urgent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1em;
+    width: min-content;
+    min-width: 0.6em;
+    padding: 0.21em 0.42em;
+    background: var(--cn-success);
+  }
+}
+
 // Só com o recurso ligado (@config-canela-chat, registrada no extend.php) —
 // ou com o ramon/chat no lugar dele: a integração (thirdparty/ramonChat)
 // desenha a lista de canais, as abas de baixo e as barras com estas mesmas
-// classes, para as telas ficarem idênticas às do chat do tema.
+// classes, para as telas ficarem idênticas às do chat do tema. As seções que
+// o ramon/chat nunca desenha (a mensagem por dentro, as reações, os fios, a
+// busca, o criador de conversa...) ficam num bloco só com o chat do tema.
 & when (@config-canela-chat = true), (@config-ramon-chat = true) {
 
 [data-theme^=light],
@@ -42,46 +80,17 @@
   --chat-hover: ~"oklch(from var(--cn-accent) 24% calc(c * 0.3) h)";
 }
 
-// Rolagem fina de todas as áreas roláveis do chat (o mixin chat-scrollbar).
-.chat-scrollbar() {
-  scrollbar-width: thin;
-  scrollbar-color: var(--cn-primary-low) transparent;
-  overscroll-behavior: contain;
-}
-
-// O ponto azul e o número verde (c-unread-indicator / -urgent).
-.chat-unread-indicator() {
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 1em;
-  box-sizing: content-box;
-  background: var(--cn-accent);
-  color: var(--cn-secondary);
-  font-size: var(--cn-font-down-2);
-  text-align: center;
-  cursor: default;
-  user-select: none;
-  transition: border-color linear 0.15s;
-
-  &.-urgent {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 1em;
-    width: min-content;
-    min-width: 0.6em;
-    padding: 0.21em 0.42em;
-    background: var(--cn-success);
-  }
-}
-
 .c-unread-indicator,
 .chat-channel-unread-indicator,
 .chat-thread-list-item-unread-indicator,
 .chat-pinned-bar__unread-indicator {
-  .chat-unread-indicator();
+  .cn-chat-unread-indicator();
 }
+
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
 
 // ---------------------------------------------------------------------
 // Ícone do cabeçalho
@@ -151,6 +160,10 @@
     border: 1px solid var(--cn-primary-very-low);
   }
 }
+
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
 
 // ---------------------------------------------------------------------
 // Ícone, nome e título do canal
@@ -473,7 +486,7 @@
   min-height: 1px;
   box-sizing: border-box;
   overflow-y: auto;
-  .chat-scrollbar();
+  .cn-chat-scrollbar();
   animation: chat-fade-in 0.15s ease-out;
 
   .c-channel-settings {
@@ -493,7 +506,7 @@
 .channels-list,
 .channels-list-container {
   position: relative;
-  .chat-scrollbar();
+  .cn-chat-scrollbar();
 }
 
 .channels-list-container {
@@ -750,6 +763,11 @@
   }
 }
 
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
+
 // ---------------------------------------------------------------------
 // A conversa (chat-channel)
 // ---------------------------------------------------------------------
@@ -833,7 +851,7 @@
   margin: 0 1px 0 0;
   box-sizing: border-box;
   overflow-y: scroll;
-  .chat-scrollbar();
+  .cn-chat-scrollbar();
   transition: padding-top 0.2s ease-in-out;
 }
 
@@ -938,6 +956,10 @@
     border-top: 1px solid var(--chat-danger-medium);
   }
 }
+
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
 
 // ---------------------------------------------------------------------
 // A mensagem
@@ -1314,6 +1336,11 @@
   font-weight: 700;
 }
 
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
+
 // ---------------------------------------------------------------------
 // Reações
 // ---------------------------------------------------------------------
@@ -1397,6 +1424,10 @@
     opacity: 0;
   }
 }
+
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
 
 // ---------------------------------------------------------------------
 // Ações ao passar o mouse
@@ -1625,6 +1656,11 @@
     transform: translateY(100%);
   }
 }
+
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
 
 // ---------------------------------------------------------------------
 // Indicador do fio debaixo da original
@@ -1956,6 +1992,10 @@
   border: 2px solid var(--cn-surface);
 }
 
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
+
 // ---------------------------------------------------------------------
 // Composer
 // ---------------------------------------------------------------------
@@ -2030,7 +2070,7 @@ textarea.chat-composer__input {
   resize: none;
   white-space: pre-wrap !important;
   appearance: none;
-  .chat-scrollbar();
+  .cn-chat-scrollbar();
 
   &:focus {
     outline: none;
@@ -2377,6 +2417,11 @@ textarea.chat-composer__input {
   text-align: center;
 }
 
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
+
 // ---------------------------------------------------------------------
 // Cartão de prévia (quem ainda não entrou no canal) e status do canal
 // ---------------------------------------------------------------------
@@ -2530,6 +2575,10 @@ textarea.chat-composer__input {
     transform: translateX(100%);
   }
 }
+
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
 
 // ---------------------------------------------------------------------
 // Fios: lista e painel
@@ -2697,6 +2746,11 @@ textarea.chat-composer__input {
     background: var(--cn-accent);
   }
 }
+
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
 
 // ---------------------------------------------------------------------
 // Fixadas, busca
@@ -3223,6 +3277,10 @@ textarea.chat-composer__input {
   }
 }
 
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
+
 // ---------------------------------------------------------------------
 // Informações e configurações do canal
 // ---------------------------------------------------------------------
@@ -3442,6 +3500,11 @@ textarea.chat-composer__input {
   }
 }
 
+}
+
+// Daqui em diante, só com o chat do tema: o ramon/chat não desenha nada disto.
+& when (@config-canela-chat = true) {
+
 // ---------------------------------------------------------------------
 // Barra lateral: seções "Canais" e "Mensagens diretas"
 // ---------------------------------------------------------------------
@@ -3544,6 +3607,10 @@ textarea.chat-composer__input {
     max-width: 420px;
   }
 }
+
+}
+
+& when (@config-canela-chat = true), (@config-ramon-chat = true) {
 
 // ---------------------------------------------------------------------
 // Página cheia

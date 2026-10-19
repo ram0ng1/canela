@@ -6,8 +6,10 @@
 import Extend from 'flarum/common/extenders';
 import UserPageResolver from 'flarum/forum/resolvers/UserPageResolver';
 
-// Páginas carregadas sob demanda (chunk próprio): não pesam na primeira carga.
-const NotificationsUserPage = () => import('./NotificationsUserPage');
+import { loadMenu } from './lazy';
+
+// Sob demanda, no chunk do menu do usuário (que já tem a lista de notificações).
+const NotificationsUserPage = () => loadMenu().then((chunk) => ({ default: chunk.NotificationsUserPage }));
 
 export default [
   new Extend.Routes() //

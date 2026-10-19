@@ -24,6 +24,21 @@ const loadChart = once(() => import('./TopicViewsChart').then((mod) => mod.defau
 let TopicViewsChart: any = null;
 let chartFailed = false;
 
+/**
+ * Busca os números (e o gráfico) antes do clique, ao passar o mouse ou focar
+ * "visualizações": o menu abre já com o conteúdo, sem o carregando que o fazia
+ * mudar de tamanho na frente da pessoa.
+ */
+export function prefetchTopicViews(discussion: Discussion, views: number): void {
+  if (!TopicViewsChart && !chartFailed) {
+    loadChart()
+      .then((chart) => (TopicViewsChart = chart))
+      .catch(() => (chartFailed = true));
+  }
+
+  if (!cachedViewStats(discussion)) fetchViewStats(discussion, views).catch(() => {});
+}
+
 export default class TopicViewsMenu extends Component<TopicViewsMenuAttrs> {
   data?: ViewStatsResponse;
   loading = true;

@@ -36,8 +36,14 @@ final class SystemUser
     /** O domínio reservado `.invalid` (RFC 2606): nenhum e-mail chega lá. */
     public const EMAIL_DOMAIN = 'system.invalid';
 
-    /** Uma consulta por requisição; `false` = já procurou e não existe. */
-    private User|false|null $user = null;
+    private ?User $user = null;
+
+    /**
+     * Para qual id configurado o `$user` foi buscado (false: nenhum ainda).
+     * Uma instância por processo (SystemServiceProvider): num processo longo
+     * (a fila), o usuário guardado vale enquanto o id for o mesmo.
+     */
+    private int|false|null $loadedFor = false;
 
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
@@ -59,12 +65,14 @@ final class SystemUser
 
     public function get(): ?User
     {
-        if ($this->user === null) {
-            $id = $this->id();
-            $this->user = ($id ? User::query()->find($id) : null) ?? false;
+        $id = $this->id();
+
+        if ($this->loadedFor !== $id) {
+            $this->user = $id ? User::query()->find($id) : null;
+            $this->loadedFor = $id;
         }
 
-        return $this->user ?: null;
+        return $this->user;
     }
 
     public function is(User|int|null $user): bool
@@ -78,6 +86,7 @@ final class SystemUser
     public function forget(): void
     {
         $this->user = null;
+        $this->loadedFor = false;
     }
 
     /**
@@ -121,6 +130,7 @@ final class SystemUser
 
         $this->settings->set(self::SETTING, (string) $user->id);
         $this->user = $user;
+        $this->loadedFor = (int) $user->id;
 
         return $user;
     }
