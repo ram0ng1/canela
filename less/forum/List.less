@@ -307,10 +307,20 @@
   overflow: visible;
   overflow-wrap: anywhere;
 
-  // O core põe negrito nos não lidos; o Discourse marca com a bolinha.
+  // O core põe negrito nos não lidos; aqui fica um semibold, junto com o
+  // fundo da linha (abaixo).
   .DiscussionList:not(.DiscussionList--searchResults) .unread & {
-    font-weight: normal;
+    font-weight: 600;
   }
+}
+
+// Não lido: a linha inteira num tom claro da cor do tema, além da bolinha
+// ou da pílula — mais fácil de achar na lista que só o ponto. Vale para a
+// lista de tópicos (a classe fica no conteúdo da linha) e para a de mensagens
+// (na própria linha). A busca fica como está.
+.DiscussionList:not(.DiscussionList--searchResults) .DiscussionListItem:has(> .DiscussionListItem-content.unread),
+.DiscussionListItem.CanelaMessagesItem.unread {
+  background: ~"color-mix(in srgb, var(--cn-accent) 7%, transparent)";
 }
 .CanelaTopic-title {
   color: inherit;
