@@ -795,6 +795,7 @@ ramon-canela:
         original_language: この投稿は元々 {language} で書かれました。
         title_original_language: このタイトルは元々 {language} で書かれました。
         click_to_show_original: クリックして原文を表示します。
+        translating: 翻訳中…
         click_to_show_translation: クリックして翻訳を表示します。
         disclaimer: AI による翻訳は正確でない場合があります。
         show_original_all: 原文を表示

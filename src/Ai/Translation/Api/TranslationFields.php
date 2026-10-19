@@ -142,7 +142,10 @@ final class TranslationFields
                     'title' => null,
                     // Idioma por detectar também conta: o pedido detecta (com a
                     // IA, em lote) e grava, e o próximo carregamento já sabe.
-                    'translatable' => $html === null && ($locale === null || ContentTranslator::differs($locale, $target)) && $this->hasBudget(),
+                    'translatable' => $html === null
+                        && ContentTranslator::fits($post)
+                        && ($locale === null || ContentTranslator::differs($locale, $target))
+                        && $this->hasBudget(),
                 ];
             }
 
@@ -169,13 +172,18 @@ final class TranslationFields
             if (! isset($this->states[$key])) {
                 ['locale' => $stored, 'translation' => $row] = $resolve();
 
-                $locale = $stored ? (string) $stored->locale : $this->detector->detect((string) $discussion->title);
+                // O próprio título primeiro (um título em português sobre uma
+                // postagem em inglês é português); sem idioma claro, o da
+                // primeira postagem.
+                $locale = $this->detector->detect((string) $discussion->title) ?? ($stored ? (string) $stored->locale : null);
                 $title = $row && $row->source_hash === $hash ? (string) $row->title : null;
+                // A "tradução" igual ao original (já estava no idioma): não há o que alternar.
+                $same = $title !== null && ContentTranslator::sameText($title, (string) $discussion->title);
 
                 $this->states[$key] = [
                     'locale' => $title !== null ? (string) $row->source_locale : $locale,
                     'html' => null,
-                    'title' => $title,
+                    'title' => $same ? null : $title,
                     'translatable' => $title === null && ($locale === null || ContentTranslator::differs($locale, $target)) && $this->hasBudget(),
                 ];
             }

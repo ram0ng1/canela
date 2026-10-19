@@ -795,6 +795,7 @@ ramon-canela:
         original_language: This post was originally written in {language}.
         title_original_language: This title was originally written in {language}.
         click_to_show_original: Click to show the original.
+        translating: Translating…
         click_to_show_translation: Click to show the translation.
         disclaimer: AI-generated translations may be inaccurate.
         show_original_all: Show original content

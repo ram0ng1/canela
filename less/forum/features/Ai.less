@@ -1143,10 +1143,11 @@
   margin-right: 0.5em;
 }
 
-// No celular a primeira linha é nome … lápis, 文A, data (Posts.less, @phone).
+// No celular a primeira linha é nome … lápis, 文A, data (Posts.less, @phone:
+// "em resposta a" 2, lápis 3, data 4). Mesma ordem do lápis, e depois dele no DOM.
 @media @phone {
   .CanelaTopic .Post-header .item-canelaTranslated {
-    order: 2;
+    order: 3;
     margin-right: 0.3em;
   }
 }
@@ -1167,6 +1168,14 @@
     line-height: 1;
     cursor: pointer;
 
+    // Um caractere invisível dá ao botão a linha de base de um texto: na
+    // linha do cabeçalho alinhada pela base (celular), o ícone fica no meio
+    // da data, e não com a borda de baixo na base dela.
+    &::before {
+      content: "\200b";
+      width: 0;
+    }
+
     &:hover,
     &:focus-visible {
       color: var(--cn-primary-high);
@@ -1176,6 +1185,12 @@
   // Mostrando o original: o ícone fica apagado, como o Discourse faz.
   &.is-original &-button {
     opacity: 0.55;
+  }
+
+  // Traduzindo: o ícone girando, sem clique.
+  &.is-working &-button {
+    cursor: default;
+    opacity: 0.7;
   }
 
   &-tip {
@@ -1211,28 +1226,6 @@
   &-disclaimer {
     color: var(--cn-primary-medium);
     font-size: 0.9em;
-  }
-}
-
-// O título com o 文A na mesma linha; o ícone acompanha o tamanho do texto.
-.CanelaTitleTranslated {
-  display: flex;
-  align-items: center;
-  gap: 0 0.4em;
-
-  > :first-child {
-    flex: 0 1 auto;
-    min-width: 0;
-  }
-
-  > .CanelaTranslated .CanelaTranslated-button {
-    font-size: 1.1rem;
-  }
-
-  > .CanelaTranslated .CanelaTranslated-tip {
-    right: auto;
-    left: 0;
-    font-size: 0.875rem;
   }
 }
 
