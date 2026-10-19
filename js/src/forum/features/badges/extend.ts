@@ -19,15 +19,15 @@ import BadgeGrantedNotification from './components/BadgeGrantedNotification';
  */
 export default [
   new Extend.Store() //
-    .add('badges', Badge)
-    .add('user-badges', UserBadge),
+    .add('canela-badges', Badge)
+    .add('canela-user-badges', UserBadge),
 
   new Extend.Routes()
     .add('canela.badges', '/badges', BadgesPage)
     .add('canela.badge', '/badges/:id/:slug', BadgePage)
     // O servidor aceita o endereço sem o slug; o roteador precisa da rota também.
     .add('canela.badge.short', '/badges/:id', BadgePage)
-    .add('user.badges', '/u/:username/badges', UserBadgesPage, UserPageResolver as any),
+    .add('canela.user.badges', '/u/:username/badges', UserBadgesPage, UserPageResolver as any),
 
   new Extend.Notification() //
     .add('canelaBadgeGranted', BadgeGrantedNotification),

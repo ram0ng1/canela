@@ -15,14 +15,14 @@ import BookmarkReminderNotification from './components/BookmarkReminderNotificat
 
 export default [
   new Extend.Store() //
-    .add('bookmarks', Bookmark),
+    .add('canela-bookmarks', Bookmark),
 
   // O servidor já atende `/u/{username}[/{filter}]` com a página do perfil:
   // a URL abre direto, sem rota nova no PHP.
   // O cast: a tipagem do core 2.0.1 não aceita o UserPageResolver aqui, embora
   // o próprio flarum/likes o use do mesmo jeito.
   new Extend.Routes() //
-    .add('user.bookmarks', '/u/:username/bookmarks', BookmarksUserPage, UserPageResolver as any),
+    .add('canela.user.bookmarks', '/u/:username/bookmarks', BookmarksUserPage, UserPageResolver as any),
 
   new Extend.Notification() //
     .add('canelaBookmarkReminder', BookmarkReminderNotification),

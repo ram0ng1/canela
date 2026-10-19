@@ -33,14 +33,14 @@ use Ramon\Canela\Badges\UserBadgeVisibility;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
 /**
- * `/api/user-badges`: os emblemas de alguém (`filter[user]`) ou quem ganhou
+ * `/api/canela-user-badges`: os emblemas de alguém (`filter[user]`) ou quem ganhou
  * um emblema (`filter[badge]`), os mais recentes primeiro.
  *
  * A listagem passa pelo UserBadgeSearcher (o Flarum filtra por searcher, não
  * pelo recurso), que aplica a mesma visibilidade do `scope()` daqui.
  *
- * O admin concede à mão (`POST /user-badges/grant`, o "Award badge" do
- * Discourse) e revoga (`DELETE /user-badges/:id`).
+ * O admin concede à mão (`POST /canela-user-badges/grant`, o "Award badge" do
+ * Discourse) e revoga (`DELETE /canela-user-badges/:id`).
  *
  * @extends AbstractDatabaseResource<UserBadge>
  */
@@ -58,7 +58,8 @@ final class UserBadgeResource extends AbstractDatabaseResource
     #[\Override]
     public function type(): string
     {
-        return 'user-badges';
+        // Com prefixo, como o `canela-badges` (ver BadgeResource::type()).
+        return 'canela-user-badges';
     }
 
     #[\Override]
@@ -128,7 +129,7 @@ final class UserBadgeResource extends AbstractDatabaseResource
                 ->type('users')
                 ->includable(),
             Schema\Relationship\ToOne::make('badge')
-                ->type('badges')
+                ->type('canela-badges')
                 ->includable(),
             // A postagem que rendeu o emblema; a visibilidade dela é a do
             // recurso de posts, aplicada na inclusão.

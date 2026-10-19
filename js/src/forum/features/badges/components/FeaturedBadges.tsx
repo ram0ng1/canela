@@ -49,7 +49,7 @@ export default class FeaturedBadges extends Component<FeaturedBadgesAttrs> {
           <BadgeChip badge={badge} count={count} username={user.username()} />
         ))}
         {more > 0 && (
-          <Link className="CanelaFeaturedBadges-more" href={app.route('user.badges', { username: user.slug() })}>
+          <Link className="CanelaFeaturedBadges-more" href={app.route('canela.user.badges', { username: user.slug() })}>
             {t('badges.more', { count: more })}
           </Link>
         )}

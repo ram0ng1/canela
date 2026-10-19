@@ -54,12 +54,12 @@ export function bookmarkRecord(post: Post): Bookmark | null {
 
   if (!state) return null;
 
-  const existing = app.store.getById<Bookmark>('bookmarks', state.id);
+  const existing = app.store.getById<Bookmark>('canela-bookmarks', state.id);
 
   if (existing) return existing;
 
   return app.store.pushObject<Bookmark>({
-    type: 'bookmarks',
+    type: 'canela-bookmarks',
     id: state.id,
     attributes: {
       name: state.name,
@@ -106,7 +106,7 @@ function attributesFor(changes: BookmarkChanges): Record<string, unknown> {
 /** Marca o post (ou atualiza o marcador, se já houver um). */
 export function createBookmark(post: Post, changes: BookmarkChanges = {}): Promise<Bookmark> {
   return withBusy(post, () =>
-    app.store.createRecord<Bookmark>('bookmarks').save({
+    app.store.createRecord<Bookmark>('canela-bookmarks').save({
       ...attributesFor(changes),
       relationships: { post },
     } as any)

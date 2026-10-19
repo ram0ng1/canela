@@ -1399,6 +1399,18 @@ textarea.FormControl {
   z-index: 20;
 }
 
+// No celular o menu vira a folha do pé da tela, com o fundo escurecido por
+// cima de tudo: com 20, o post prendia a folha abaixo do cabeçalho (que
+// ficava claro, por cima do escurecido) e da aba "1 / n" da linha do tempo.
+@media @phone {
+  .PostStream-item:has(.Dropdown.open),
+  .MessageStream-item:has(.Dropdown.open),
+  .CanelaMessagePost:has(.Dropdown.open),
+  .CanelaMessagePost .Post-main:has(.Dropdown.open) {
+    z-index: var(--zindex-modal);
+  }
+}
+
 // Tooltips laterais (ex.: o "⌄" dos rascunhos) numa linha só: são rótulos
 // curtos, e o cálculo de posição à direita os espremia em várias linhas.
 .tooltip.right .tooltip-inner,

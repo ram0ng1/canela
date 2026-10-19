@@ -279,7 +279,7 @@ export default class BookmarksUserPage<Attrs extends IUserPageAttrs = IUserPageA
     m.redraw();
 
     app.store
-      .find<Bookmark[]>('bookmarks', {
+      .find<Bookmark[]>('canela-bookmarks', {
         filter: this.query.trim() ? { q: this.query.trim() } : {},
         include: include.join(','),
         page: { offset, limit: PAGE_SIZE },

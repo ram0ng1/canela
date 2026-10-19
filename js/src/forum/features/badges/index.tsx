@@ -58,7 +58,7 @@ export default function installBadges() {
 
     items.add(
       'badges',
-      <LinkButton href={app.route('user.badges', { username: this.user.slug() })} icon="fas fa-certificate">
+      <LinkButton href={app.route('canela.user.badges', { username: this.user.slug() })} icon="fas fa-certificate">
         {t('badges.nav')}
       </LinkButton>,
       20

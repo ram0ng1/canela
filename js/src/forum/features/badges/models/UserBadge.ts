@@ -4,7 +4,7 @@ import type Post from 'flarum/common/models/Post';
 
 import type Badge from './Badge';
 
-/** Uma concessão (`/api/user-badges`): quem ganhou, qual emblema, por qual postagem. */
+/** Uma concessão (`/api/canela-user-badges`): quem ganhou, qual emblema, por qual postagem. */
 export default class UserBadge extends Model {
   grantedAt() {
     return Model.attribute<Date | null, string | null>('grantedAt', Model.transformDate).call(this);

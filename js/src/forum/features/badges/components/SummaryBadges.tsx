@@ -49,7 +49,7 @@ export default class SummaryBadges extends Component<SummaryBadgesAttrs> {
           ))}
         </ul>
         {badges.length > LIMIT && (
-          <LinkButton className="Button Button--link CanelaUserSummary-more" href={app.route('user.badges', { username: user.slug() })}>
+          <LinkButton className="Button Button--link CanelaUserSummary-more" href={app.route('canela.user.badges', { username: user.slug() })}>
             {t('badges.more_badges')}
           </LinkButton>
         )}

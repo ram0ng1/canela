@@ -165,7 +165,7 @@ function addProfileTab() {
 
     items.add(
       'canelaBookmarks',
-      <LinkButton href={app.route('user.bookmarks', { username: this.user.slug() })} icon="far fa-bookmark">
+      <LinkButton href={app.route('canela.user.bookmarks', { username: this.user.slug() })} icon="far fa-bookmark">
         {t('bookmarks.page.nav')}
       </LinkButton>,
       75
@@ -181,7 +181,7 @@ function addSessionItem() {
 
     items.add(
       'canelaBookmarks',
-      <LinkButton icon="far fa-bookmark" href={app.route('user.bookmarks', { username: user.slug() })}>
+      <LinkButton icon="far fa-bookmark" href={app.route('canela.user.bookmarks', { username: user.slug() })}>
         {t('bookmarks.page.nav')}
       </LinkButton>,
       // Logo abaixo de "Perfil" (100) e acima de "Configurações" (50).

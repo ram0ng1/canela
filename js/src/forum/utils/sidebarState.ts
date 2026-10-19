@@ -49,6 +49,14 @@ export function applySidebarState(): void {
 
   app.classList.toggle(OPEN_CLASS, isSidebarOpen());
   app.classList.toggle(OVERLAY_CLASS, !isDocked() && overlayOpen);
+
+  // Painel fechado com um menu aberto (navegou, Esc): a rolagem volta ao normal.
+  if (!overlayOpen) {
+    const aside = document.getElementById('canela-sidebar');
+
+    aside?.classList.remove('CanelaSidebar--menuOpen');
+    aside?.style.removeProperty('--canela-panel-scroll');
+  }
 }
 
 export function toggleSidebar(): void {
