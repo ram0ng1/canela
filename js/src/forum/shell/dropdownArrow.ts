@@ -1,7 +1,7 @@
 /*
  * A seta dos menus que abrem de um botão só com ícone (o sino de acompanhar,
- * o ⋮ do tópico e das postagens…): um bico na borda do menu apontando para o
- * botão, para ficar claro de onde ele saiu.
+ * o ⋮ do tópico e das postagens…) e de alguns de texto (ALSO): um bico na
+ * borda do menu apontando para o botão, para ficar claro de onde ele saiu.
  *
  * O Dropdown do core dispara `shown.bs.dropdown` depois de decidir se o menu
  * abre para cima (`--top`) e de que lado (`--right`); este ouvinte, no
@@ -23,6 +23,12 @@ const HEIGHT = 13;
 const EDGE = 14;
 /** O vão entre o botão e o menu com a seta (o mesmo da margem no LESS). */
 const GAP = 10;
+
+/**
+ * Menus de botão com texto que também levam a seta: o "Acompanhando ▾" do
+ * rodapé do tópico (o mesmo menu do sino, que já tem seta).
+ */
+const ALSO = '.CanelaNotifications';
 
 /** O botão é só um ícone (sem texto visível)? */
 function iconOnly(toggle: HTMLElement): boolean {
@@ -53,7 +59,7 @@ function placeArrow(dropdown: HTMLElement): void {
   const toggle = dropdown.querySelector<HTMLElement>(':scope > .Dropdown-toggle');
   const menu = dropdown.querySelector<HTMLElement>(':scope > .Dropdown-menu');
 
-  if (!toggle || !menu || !iconOnly(toggle)) return;
+  if (!toggle || !menu || !(iconOnly(toggle) || dropdown.matches(ALSO))) return;
 
   const menuStyle = getComputedStyle(menu);
 
