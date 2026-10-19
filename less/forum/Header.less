@@ -293,8 +293,8 @@
     }
   }
 
-  // Idioma: a pílula de borda cinza do Discourse ("PT ⌄") com a bandeira
-  // redonda do brechó antes do código, 8px antes dos ícones.
+  // Idioma: a pílula de borda cinza do Discourse ("PT ⌄"), 8px antes dos
+  // ícones.
   > li.item-locale {
     margin-right: 8px;
   }
@@ -308,7 +308,7 @@
     width: auto !important;
     height: 33px !important;
     min-width: 0;
-    padding: 0 8px 0 6px !important;
+    padding: 0 8px 0 10px !important;
     gap: 4px;
     border: 1px solid var(--cn-shell-icon) !important;
     border-radius: var(--cn-radius-pill) !important;
@@ -629,29 +629,10 @@
 }
 
 // ---------------------------------------------------------------------
-// O balão do seletor de idioma (brechó): só as bandeiras redondas, numa
-// fileira do tamanho do conteúdo, com a seta apontando para o botão. O nome
-// do idioma é o nome acessível; o atual tem o anel na cor de destaque.
+// O balão do seletor de idioma: os nomes dos idiomas numa coluna do tamanho
+// do conteúdo, com a seta apontando para o botão; o atual em negrito, com ✓.
+// Sem bandeiras: bandeira é de país, não de idioma.
 // ---------------------------------------------------------------------
-.CanelaFlag {
-  display: block;
-  flex: none;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 0 1px var(--cn-primary-low);
-
-  // Sem bandeira para o idioma: selo com as duas letras do código.
-  &--code {
-    display: inline-grid;
-    place-items: center;
-    font-size: 10px;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--cn-primary);
-    background: var(--cn-primary-very-low);
-  }
-}
-
 .CanelaLocale {
   position: relative;
 
@@ -712,7 +693,7 @@
   }
 }
 
-// Cada idioma: a bandeira, o nome e o código em cinza à direita.
+// Cada idioma: o nome, o código em cinza e o ✓ do atual à direita.
 .CanelaLocale .CanelaLocale-menu .CanelaLocale-option {
   display: flex;
   align-items: center;
@@ -751,12 +732,17 @@
     text-transform: uppercase;
   }
 
+  // Mesma largura com e sem o ✓: os códigos ficam alinhados.
+  .CanelaLocale-check {
+    flex: none;
+    width: 1em;
+    color: var(--cn-accent);
+    font-size: var(--cn-font-down-2);
+    text-align: center;
+  }
+
   &--current {
     font-weight: 600;
-
-    .CanelaFlag {
-      box-shadow: 0 0 0 2px var(--cn-surface), 0 0 0 4px var(--cn-accent);
-    }
   }
 }
 

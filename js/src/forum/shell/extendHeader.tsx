@@ -1,6 +1,6 @@
 /*
  * Ajustes nos controles da direita do cabeçalho para ficarem como os do
- * Discourse: o idioma vira a bandeira redonda (como no brechó), o "Entrar" ganha o ícone e o
+ * Discourse: o idioma vira a pílula com o código ("PT ⌄"), o "Entrar" ganha o ícone e o
  * seletor de tema sai do cabeçalho quando o rodapé da barra lateral já o
  * oferece.
  */
@@ -11,7 +11,7 @@ import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
 import { forumBool } from '../utils/settings';
-import LocaleFlags from './LocaleFlags';
+import LocaleSwitcher from './LocaleSwitcher';
 
 export default function extendHeader() {
   // O fof/drafts põe uma pena (DraftsDropdown, chave `Drafts`) no cabeçalho.
@@ -34,9 +34,9 @@ export default function extendHeader() {
     }
 
     if (items.has('locale')) {
-      // O seletor do brechó: a bandeira do idioma atual num botão redondo e,
-      // aberto, as bandeiras dos idiomas num balão com seta.
-      items.setContent('locale', LocaleFlags());
+      // O seletor de idioma: o código do idioma atual numa pílula e, aberto,
+      // os nomes dos idiomas num balão com seta.
+      items.setContent('locale', LocaleSwitcher());
 
       // Para o visitante, o Discourse põe o "PT" depois de Cadastrar-se/Entrar;
       // logado, ele vem antes dos ícones.
