@@ -27,7 +27,7 @@ import type Mithril from 'mithril';
 
 import { forumBool, isExtensionEnabled, t } from '../../utils/settings';
 import { formatViews, viewsLabel } from '../../utils/views';
-import TopicViewsMenu from '../../features/stats/views/TopicViewsMenu';
+import TopicViewsMenu, { prefetchTopicViews } from '../../features/stats/views/TopicViewsMenu';
 import { discussionLinks, trackClick, type TopicLink } from '../../features/links/data';
 
 export interface TopicMapAttrs extends ComponentAttrs {
@@ -196,10 +196,18 @@ export default class TopicMap extends Component<TopicMapAttrs> {
         className={classList('CanelaTopicMap-stat', `CanelaTopicMap-stat--${key}`, { active: this.open === menu })}
         aria-expanded={this.open === menu ? 'true' : 'false'}
         onclick={(event: MouseEvent) => this.toggle(menu, event.currentTarget as HTMLElement)}
+        onpointerenter={menu === 'views' ? (event: Event & { redraw?: boolean }) => this.prefetchViews(event, value) : undefined}
+        onfocus={menu === 'views' ? (event: Event & { redraw?: boolean }) => this.prefetchViews(event, value) : undefined}
       >
         {content}
       </button>
     );
+  }
+
+  /** O menu de visualizações abre já com os números (TopicViewsMenu). */
+  prefetchViews(event: Event & { redraw?: boolean }, views: number): void {
+    event.redraw = false;
+    prefetchTopicViews(this.attrs.discussion, views);
   }
 
   toggle(menu: MenuKey, trigger: HTMLElement) {

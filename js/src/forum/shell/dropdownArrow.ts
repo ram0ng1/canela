@@ -141,6 +141,16 @@ function layoutBox(element: HTMLElement, parent: HTMLElement): { left: number; t
 export default function installDropdownArrow(): void {
   // jQuery: o Bootstrap do core dispara os eventos do dropdown por ela.
   $(document)
+    // O core mede se o menu cabe embaixo SEM tirar antes o `--top` da vez
+    // anterior (Dropdown.tsx): aberto para cima, ele "cabe", perde a classe e
+    // abre para baixo (cortado); na vez seguinte não cabe e volta para cima,
+    // alternando a cada clique. Sem a classe antes de abrir, a conta parte
+    // sempre da posição normal, embaixo do botão.
+    .on('show.bs.dropdown', '.Dropdown', function (this: HTMLElement, event: JQuery.TriggeredEvent) {
+      if (event.target !== this) return;
+
+      this.querySelector(':scope > .Dropdown-menu')?.classList.remove('Dropdown-menu--top');
+    })
     .on('shown.bs.dropdown', '.Dropdown', function (this: HTMLElement, event: JQuery.TriggeredEvent) {
       // Só o dropdown que abriu (o evento sobe pelos dropdowns de fora).
       if (event.target === this) placeArrow(this);
