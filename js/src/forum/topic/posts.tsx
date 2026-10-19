@@ -234,7 +234,10 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
 
     if (!parent && !parentUser && !requestedParents.has(parentId)) {
       requestedParents.add(parentId);
-      app.store.find('posts', parentId).then(() => m.redraw(), () => {});
+      app.store.find('posts', parentId).then(
+        () => m.redraw(),
+        () => {}
+      );
     }
 
     const name = parentUser ? username(parentUser) : mentioned;

@@ -29,7 +29,16 @@ import type Mithril from 'mithril';
 
 import { menuIcon } from './icons';
 import { DEFAULT_TAB, userMenu } from './state';
-import { CHAT_TYPES, RAMON_CHAT_TYPES, LIKE_TYPES, MESSAGE_TYPES, BOOKMARK_TYPES, REPLY_TYPES, unreadCount, type NotificationFilter } from './notifications';
+import {
+  CHAT_TYPES,
+  RAMON_CHAT_TYPES,
+  LIKE_TYPES,
+  MESSAGE_TYPES,
+  BOOKMARK_TYPES,
+  REPLY_TYPES,
+  unreadCount,
+  type NotificationFilter,
+} from './notifications';
 import { BookmarksPanel, MessagesPanel, NotificationsPanel, ProfilePanel, ReviewPanel, emptyStates, isMessagesEnabled, um, umText } from './panels';
 import { forumBool } from '../utils/settings';
 import { thirdParty } from '../thirdparty/settings';

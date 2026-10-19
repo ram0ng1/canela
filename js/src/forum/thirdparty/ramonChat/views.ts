@@ -85,7 +85,9 @@ export function messageTime(date: Date): string {
 
   if (startOfDay(date) === startOfDay(new Date())) return time;
 
-  return `${formatWith(date, { day: 'numeric', month: 'short' }).replace(/\./g, '').replace(/\sde\s/g, ' ')} ${time}`;
+  return `${formatWith(date, { day: 'numeric', month: 'short' })
+    .replace(/\./g, '')
+    .replace(/\sde\s/g, ' ')} ${time}`;
 }
 
 /** Acha o primeiro vnode com esta classe (a árvore de uma mensagem é pequena). */

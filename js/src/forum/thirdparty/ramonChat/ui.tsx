@@ -35,7 +35,11 @@ function startOfDay(date: Date): number {
 function shortTime(date: Date): string {
   const time = formatWith(date, { hour: '2-digit', minute: '2-digit' });
 
-  return startOfDay(date) === startOfDay(new Date()) ? time : formatWith(date, { day: 'numeric', month: 'short' }).replace(/\./g, '').replace(/\sde\s/g, ' ');
+  return startOfDay(date) === startOfDay(new Date())
+    ? time
+    : formatWith(date, { day: 'numeric', month: 'short' })
+        .replace(/\./g, '')
+        .replace(/\sde\s/g, ' ');
 }
 
 /** O ponto (há não lidas) ou o número verde (menções e MDs), como o UnreadIndicator interno. */
@@ -162,7 +166,7 @@ export class ChatFooter extends Component<ChatFooterAttrs> {
     const direct = state?.directChannels() || [];
     const publicUrgent = channels.reduce((n, c) => n + (c.unreadMentionsCount() ?? 0), 0);
     const publicUnread = channels.some((c) => c.hasUnread());
-    const dmUrgent = direct.reduce((n, c) => n + (c.isMuted() ? 0 : c.unreadCount() ?? 0), 0);
+    const dmUrgent = direct.reduce((n, c) => n + (c.isMuted() ? 0 : (c.unreadCount() ?? 0)), 0);
 
     const tab = (name: ChatTab, icon: string, label: string, indicator: Mithril.Children) => (
       <button
@@ -226,7 +230,7 @@ export class ChannelRow extends Component<ChannelRowAttrs> {
     const direct = channel.isDirect();
     const mentions = channel.unreadMentionsCount() ?? 0;
     const unread = channel.hasUnread();
-    const urgent = direct ? (channel.isMuted() ? 0 : channel.unreadCount() ?? 0) : mentions;
+    const urgent = direct ? (channel.isMuted() ? 0 : (channel.unreadCount() ?? 0)) : mentions;
     const active = !inDrawer && chatState()?.activeChannelId === id && String(app.current.get('routeName') || '').startsWith('chat.channel');
     const last: any = (channel as any).lastMessage?.();
     const lastAt: Date | null = (channel as any).lastMessageAt?.() || null;
@@ -251,7 +255,9 @@ export class ChannelRow extends Component<ChannelRowAttrs> {
         }}
       >
         <div className={classList('chat-channel-row__content', direct ? 'is-dm' : 'is-category')}>
-          <div className={classList('chat-channel-icon', direct ? '--avatar' : '--emoji')}>{ramonChannelIcon(channel, 'CanelaRamonChatListIcon')}</div>
+          <div className={classList('chat-channel-icon', direct ? '--avatar' : '--emoji')}>
+            {ramonChannelIcon(channel, 'CanelaRamonChatListIcon')}
+          </div>
           <div className="chat-channel-row__info">
             <div className="chat-channel-row__name-container">
               <div className="chat-channel-name">

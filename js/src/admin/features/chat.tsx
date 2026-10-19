@@ -120,7 +120,10 @@ const cards: CardDef[] = [
     // nem carrega) e o tema só adapta o visual e a barra lateral.
     lockedBy: () =>
       isExtensionEnabled('ramon-chat')
-        ? trans(`${KEY}.replaced_by_ramon_chat`, 'O ramon/chat está habilitado: ele substitui o chat do tema, que fica desligado. O tema adapta o visual e a barra lateral dele.')
+        ? trans(
+            `${KEY}.replaced_by_ramon_chat`,
+            'O ramon/chat está habilitado: ele substitui o chat do tema, que fica desligado. O tema adapta o visual e a barra lateral dele.'
+          )
         : null,
     body: () => (
       <>

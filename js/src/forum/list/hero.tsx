@@ -50,9 +50,7 @@ export default function installHero(): void {
       return (
         <header className="Hero CanelaCategoryHero CanelaFollowingHero">
           <div className="container">
-            <h1 className="CanelaCategoryHero-title">
-              {app.translator.trans('flarum-subscriptions.forum.index.following_link')}
-            </h1>
+            <h1 className="CanelaCategoryHero-title">{app.translator.trans('flarum-subscriptions.forum.index.following_link')}</h1>
           </div>
         </header>
       );
