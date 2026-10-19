@@ -640,8 +640,12 @@
 
     // Abre deslizando da esquerda em 200ms (ease-out), como o .menu-panel do
     // Discourse; fecha na hora.
+    // `backwards`, não `both`: terminada a animação o painel volta ao
+    // `transform: none` da regra. Com o transform que sobrava, os menus
+    // `position: fixed` lá dentro (a folha do celular) se posicionavam pelo
+    // painel, e não pela tela, e abriam fora da tela com o painel rolado.
     .Canela--sidebarOverlay & {
-      animation: canela-panel-in 0.2s ease-out both;
+      animation: canela-panel-in 0.2s ease-out backwards;
     }
 
     .CanelaSidebar-inner {
@@ -669,6 +673,20 @@
 
       &::before {
         display: none;
+      }
+
+      // Os menus do rodapé viram a folha que sobe do pé da tela, como todos
+      // os menus no celular. O "abre para cima" (bottom: 100%) do desktop,
+      // num menu `position: fixed`, mandava o menu para fora da tela.
+      .CanelaColorMode .Dropdown-menu,
+      .CanelaPaletteSelector .Dropdown-menu,
+      .ThemeSwitcher .Dropdown-menu {
+        top: auto;
+        bottom: 0;
+        margin: 0;
+        min-width: 0;
+        max-width: none;
+        padding: 4px;
       }
     }
 

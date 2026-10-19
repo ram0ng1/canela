@@ -408,7 +408,7 @@ function vnodeText(node: any): string {
  * O menu do "Mais" abre para FORA da barra lateral: a barra rola (overflow) e
  * cortava o menu. Com position: fixed ele sai dela, colado ao botão, com uma
  * setinha apontando para o "Mais" (como um submenu), e sobe se não couber até
- * o fim da tela.
+ * o fim da tela. No celular, é a folha que sobe do pé da tela.
  */
 function placeMoreMenu(): void {
   requestAnimationFrame(() => {
@@ -417,18 +417,26 @@ function placeMoreMenu(): void {
 
     if (!toggle || !menu) return;
 
-    const rect = toggle.getBoundingClientRect();
-    const phone = window.innerWidth < 768;
+    // No celular o menu é a folha que sobe do pé da tela, como os outros
+    // menus (o CSS do core cuida disso): sem posição calculada aqui.
+    if (window.innerWidth < 768) {
+      menu.classList.remove('CanelaSidebar-moreMenu--side');
+      ['position', 'top', 'right', 'bottom', 'left', '--canela-more-arrow'].forEach((prop) => menu.style.removeProperty(prop));
 
-    menu.classList.toggle('CanelaSidebar-moreMenu--side', !phone);
+      return;
+    }
+
+    const rect = toggle.getBoundingClientRect();
+
+    menu.classList.add('CanelaSidebar-moreMenu--side');
     menu.style.position = 'fixed';
     menu.style.right = 'auto';
     menu.style.bottom = 'auto';
     menu.style.top = '0px';
-    menu.style.left = `${phone ? rect.left : rect.right + 10}px`;
+    menu.style.left = `${rect.right + 10}px`;
 
     const height = menu.offsetHeight;
-    const wanted = phone ? rect.bottom + 4 : rect.top + rect.height / 2 - 22;
+    const wanted = rect.top + rect.height / 2 - 22;
     const top = Math.max(8, Math.min(wanted, window.innerHeight - height - 8));
 
     menu.style.top = `${top}px`;
