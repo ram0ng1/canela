@@ -1478,8 +1478,11 @@
       font-size: calc(0.8706rem * var(--cn-text-scale, 1));
       line-height: 1.2;
 
+      // A primeira linha alinhada pela linha de base do texto: o nome, o
+      // número de edições e a data ficam exatamente na mesma linha, mesmo com
+      // tamanhos de fonte e alturas de caixa diferentes.
       > ul {
-        align-items: flex-start;
+        align-items: baseline;
         column-gap: 0.26em;
         row-gap: 0;
       }
@@ -1514,10 +1517,37 @@
         order: 1;
       }
 
-      .item-canelaReplyTo,
-      .item-edited,
-      .item-meta {
+      // Na mesma ordem do computador: "em resposta a", o lápis da edição e a
+      // data (antes a data vinha antes do lápis: "15 h ✎ 1").
+      .item-canelaReplyTo {
         order: 2;
+      }
+
+      .item-edited {
+        order: 3;
+      }
+
+      .item-meta {
+        order: 4;
+      }
+
+      // Sem a altura e o recuo de botão (o lápis tinha 19px): só o texto, para
+      // a linha de base dele ser a mesma do nome.
+      .CanelaPostEdited,
+      .PostMeta > .Dropdown-toggle {
+        height: auto;
+        padding: 0;
+        line-height: inherit;
+      }
+
+      // A linha de base do botão vem do número, não do lápis (que só tem a
+      // borda de baixo como base e subia o número em quase 2px).
+      .CanelaPostEdited {
+        align-items: baseline;
+
+        > .icon {
+          align-self: center;
+        }
       }
 
       .item-canelaReplyTo {
@@ -1543,7 +1573,7 @@
       }
 
       .item-canelaNames {
-        order: 3;
+        order: 5;
         flex-basis: 100%;
       }
 
@@ -1551,7 +1581,7 @@
       .item-canelaUserTitle,
       .item-canelaNames + .item-canelaUserTitle,
       .item-user + .item-canelaUserTitle {
-        order: 4;
+        order: 6;
         flex-basis: 100%;
         margin: 0;
         line-height: 1.2;
@@ -1902,4 +1932,20 @@
 .CanelaTopic .Post--hidden:not(.revealContent) .Post-side > .CanelaPostAvatar {
   display: block;
   opacity: 0.5;
+}
+
+// Computador: com apelido (flarum/nicknames) o cabeçalho do post mostra só o
+// nome de exibição, sem o nome de usuário ao lado. No celular ele continua,
+// empilhado embaixo do nome. Sem ele, o nome é quem empurra a data para a
+// direita (ou o título do usuário, quando existe).
+@media @tablet-up {
+  .Post-header {
+    > ul > li.item-canelaNames {
+      display: none;
+    }
+
+    > ul > li.item-user:not(:has(~ li.item-canelaUserTitle)) {
+      margin-right: auto;
+    }
+  }
 }

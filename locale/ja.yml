@@ -434,13 +434,13 @@ ramon-canela:
         stats_notice: 数値は公開コンテンツのみを集計し、30分ごとに再計算されます。
         section_legal: ガイドライン、利用規約、プライバシー
         guidelines_enabled_label: ガイドラインページ（/guidelines）
-        guidelines_enabled_help: フォーラムのコミュニティルール。概要の隣のタブとサイドバーの「その他」メニューに表示されます。Discourse と同様に、/faq も同じページに移動します。
+        guidelines_enabled_help: フォーラムのコミュニティルール。概要の隣のタブとサイドバーの「その他」メニューに表示されます。Discourse と同様に、/faq も同じページに移動します。内容があるときだけ表示されます：下の文章を書くか、fof/pages のページを選んでください。
         guidelines_page_label: fof/pages のページ
         guidelines_page_none: "なし：下のテキストを使う"
-        guidelines_page_help: ページを選ぶと、/guidelines はそのページの内容を表示し（fof/pages の公開設定に従います）、下のテキストは使われなくなります。内容は fof/pages で編集します。
+        guidelines_page_help: ページを選ぶと、/guidelines はそのページの内容を表示し（fof/pages の公開設定に従います）、下のテキストは使われなくなります。内容は fof/pages で編集します。テキストが空の場合、作成されるページは Discourse のガイドラインを参考にしたテーマのテンプレートから始まります。
         guidelines_page_create: 現在のテキストで「ガイドライン」ページを作成
         guidelines_text_label: ガイドラインの文章
-        guidelines_text_help: 空欄にすると、Discourse のガイドラインを参考にしたテーマのデフォルト文章を使用します。Markdown と BBCode に対応。HTML タグを含む場合は HTML として扱われます。
+        guidelines_text_help: Markdown と BBCode に対応。HTML タグを含む場合は HTML として扱われます。空欄で fof/pages のページもない場合、ガイドラインページは表示されません。
         section_about_pages: 概要エリアのページ
         about_pages_help: 'fof/pages のページを好きなだけ「概要」と「ガイドライン」の横のタブとして追加できます。どのページもルールのレイアウト(タイトル、セクション目次、カード)で表示されます。'
         about_pages_list_help: 各ページはリストの順に「概要」と「ガイドライン」の後ろのタブになり、/about/id-slug でガイドラインと同じレイアウトで表示されます。ラベルが空ならページのタイトルを使います。アイコンは Font Awesome のクラスです。fof/pages で非表示または制限されたページは、閲覧できる人にだけ表示されます。
@@ -701,7 +701,7 @@ ramon-canela:
         profile_cover_upload_label: 画像のアップロードを許可
         profile_cover_upload_help: 画像は縮小され（カバーは 2000px、カードは 900px）、WebP に変換されて assets/canela-covers に保存されます。無効の場合は https の画像アドレスのみ受け付けます。
         cover_notice: 外部アドレスは https である必要があります。訪問者のブラウザーは画像を相手のサイトから直接読み込みます。
-        cover_forumaker_notice: 'forumaker/profile-cover が有効です。カバーとカードの背景はこの拡張機能から表示されます（連携 → プロフィールカバー）。ここでアップロードした画像は保存されたままですが、拡張機能が有効な間は表示も変更もされません。'
+        cover_forumaker_notice: 'forumaker/profile-cover が有効です。プロフィールカバーはこの拡張機能から表示されます（連携 → プロフィールカバー）。カードの背景は引き続きテーマのものです。独自の背景がない場合、カードはそのカバーのサムネイルを使います。ここでアップロードしたカバーは保存されたままですが、拡張機能が有効な間は表示されません。'
       stats:
         section_links: リンクのクリック
         stats_links_enabled_label: リンクのクリックを数える
@@ -2005,7 +2005,7 @@ ramon-canela:
         card_label: ユーザーカードの背景
         card_help: 誰かがあなたのアバターをクリックしたときに開くカードで、名前の背景に表示されます。
         cover_edit: カバーを編集
-        cover_forumaker_help: プロフィール上部のワイドな画像で、ユーザーカードの背景にも表示されます。エディターでアップロード、削除、表示する部分の選択ができます。
+        cover_forumaker_help: プロフィール上部のワイドな画像で、カード専用の背景を選んでいない場合はユーザーカードの背景にも表示されます。エディターでアップロード、削除、表示する部分の選択ができます。
         no_image: 画像なし
         upload: 画像をアップロード
         remove_image: 画像を削除

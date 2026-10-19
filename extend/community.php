@@ -32,6 +32,7 @@ use Ramon\Canela\Community\Api\ListGroupActivityController;
 use Ramon\Canela\Community\Api\ShowAboutController;
 use Ramon\Canela\Community\Api\ShowGuidelinesController;
 use Ramon\Canela\Community\Community;
+use Ramon\Canela\Community\GuidelinesPage;
 use Ramon\Canela\Community\Content\CommunityPage;
 use Ramon\Canela\Community\Http\LegalPageRedirect;
 use Ramon\Canela\Community\LegalPages;
@@ -52,8 +53,14 @@ return [
         ->default(Community::ABOUT_SHOW_STAFF, true)
         ->default(Community::ABOUT_SHOW_STATS, true)
         // Diretrizes, Termos e Privacidade (as abas do Sobre do Discourse).
-        ->default(Community::GUIDELINES_ENABLED, true)
-        ->serializeToForum('canelaGuidelinesEnabled', Community::GUIDELINES_ENABLED, 'boolval')
+        // Desligadas por padrão, e ligadas só aparecem com conteúdo (o texto ou
+        // uma página do fof/pages): sem isso, nada de aba, link ou /guidelines.
+        ->default(Community::GUIDELINES_ENABLED, false)
+        ->serializeToForum(
+            'canelaGuidelinesEnabled',
+            Community::GUIDELINES_ENABLED,
+            static fn (mixed $enabled): bool => (bool) $enabled && resolve(GuidelinesPage::class)->hasContent()
+        )
         ->default(Community::GUIDELINES_TEXT, '')
         ->default(Community::ABOUT_PAGES, '[]')
         ->default(Community::TOS_URL, '')

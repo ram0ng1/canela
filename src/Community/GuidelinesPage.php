@@ -40,6 +40,22 @@ final class GuidelinesPage
     }
 
     /** A página escolhida, se existir e o ator puder vê-la. */
+    /**
+     * Há conteúdo definido pelo admin: o texto das diretrizes ou uma página do
+     * fof/pages escolhida. Sem isso a página não existe (404), mesmo ligada —
+     * o modelo do tema só serve para criar a página no admin.
+     */
+    public function hasContent(): bool
+    {
+        if (trim((string) $this->settings->get(Community::GUIDELINES_TEXT)) !== '') {
+            return true;
+        }
+
+        $id = (int) $this->settings->get(Community::GUIDELINES_PAGE);
+
+        return $id > 0 && $this->available() && Page::query()->whereKey($id)->exists();
+    }
+
     public function find(User $actor): ?Page
     {
         $id = (int) $this->settings->get(Community::GUIDELINES_PAGE);

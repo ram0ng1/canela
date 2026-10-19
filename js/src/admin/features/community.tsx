@@ -141,7 +141,7 @@ class GuidelinesPagePicker extends AdminComponent {
         <p className="helpText">
           {trans(
             `${KEY}.guidelines_page_help`,
-            'Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages.'
+            'Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema, inspirado nas diretrizes do Discourse.'
           )}
         </p>
         {!page && (
@@ -219,7 +219,7 @@ const COMMUNITY_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.guidelines_enabled_label`, 'Página Diretrizes (/guidelines)'),
     description: help(
       'guidelines_enabled',
-      'As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse.'
+      'As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).'
     ),
     keywords: 'diretrizes guidelines faq regras rules convivência',
     master: 'canela.guidelines_enabled',
@@ -229,7 +229,7 @@ const COMMUNITY_CARDS: CardDef[] = [
         {text(
           'guidelines_text',
           'Texto das diretrizes',
-          'Deixe vazio para usar o texto padrão do tema, inspirado nas diretrizes do Discourse. Aceita Markdown e BBCode; com tags HTML, vai como HTML.',
+          'Aceita Markdown e BBCode; com tags HTML, vai como HTML. Vazio e sem página do fof/pages, a página Diretrizes não aparece.',
           { multiline: true }
         )}
         {viewLink('/guidelines')}

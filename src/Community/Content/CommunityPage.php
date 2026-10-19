@@ -15,9 +15,11 @@ namespace Ramon\Canela\Community\Content;
 
 use Closure;
 use Flarum\Frontend\Document;
+use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Locale\TranslatorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Community\Community;
+use Ramon\Canela\Community\GuidelinesPage;
 
 /**
  * O conteúdo das rotas /about, /u e /g no servidor: o título da aba (que o
@@ -43,6 +45,11 @@ final class CommunityPage
     public function render(Document $document, string $settingKey, string $titleKey): void
     {
         $this->community->assertEnabled($settingKey);
+
+        // As diretrizes só existem com conteúdo definido no admin.
+        if ($settingKey === Community::GUIDELINES_ENABLED && ! resolve(GuidelinesPage::class)->hasContent()) {
+            throw new RouteNotFoundException();
+        }
 
         $document->title = $this->translator->trans("ramon-canela.forum.community.$titleKey");
     }

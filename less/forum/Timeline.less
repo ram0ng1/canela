@@ -543,3 +543,11 @@
     visibility: hidden;
   }
 }
+
+// Celular com uma barra de abas fixa no pé da tela (ernestdefoe/mobile-tab,
+// 60px): a aba "1 / n" sobe para cima dela, em vez de ficar escondida atrás.
+@media @phone {
+  .App:has(.MobileTab-bar) .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle {
+    bottom: 60px;
+  }
+}

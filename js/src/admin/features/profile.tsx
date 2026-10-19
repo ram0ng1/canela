@@ -111,7 +111,7 @@ const PROFILE_CARDS: CardDef[] = [
           <AdminNotice icon="fas fa-panorama">
             {trans(
               `${KEY}.cover_forumaker_notice`,
-              'A forumaker/profile-cover está ativa: a capa e o fundo do cartão vêm dela (Integrações → Capa do perfil). As imagens enviadas aqui ficam guardadas, mas não aparecem nem podem ser trocadas enquanto ela mandar.'
+              'A forumaker/profile-cover está ativa: a capa do perfil vem dela (Integrações → Capa do perfil). O fundo do cartão continua do tema; sem um fundo próprio, o cartão usa a miniatura da capa dela. A capa enviada aqui fica guardada, mas não aparece enquanto ela mandar.'
             )}
           </AdminNotice>
         )}

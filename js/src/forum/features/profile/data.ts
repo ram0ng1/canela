@@ -36,16 +36,26 @@ export function profileField(field: ProfileField): boolean {
 }
 
 /**
- * As imagens internas do tema (capa e fundo do cartão) valem na tela. Com a
- * forumaker/profile-cover ativa a capa vem dela, e as internas ficam só no
- * banco: sem campo nas Configurações nem limpeza na moderação.
+ * A capa interna do tema vale na tela. Com a forumaker/profile-cover ativa a
+ * capa larga vem dela, e a interna fica só no banco: sem campo nas
+ * Configurações nem limpeza na moderação.
  */
 export function internalCoverEnabled(): boolean {
   return profileField('cover') && !thirdParty.profileCover();
 }
 
+/**
+ * O fundo do cartão (mini-perfil) do tema. Vale também com a
+ * forumaker/profile-cover: ela só cuida da capa larga, e sem um fundo próprio
+ * o cartão usa a miniatura da capa dela.
+ */
+export function cardBackgroundEnabled(): boolean {
+  return profileField('cover');
+}
+
+/** O envio de arquivo dos campos de imagem do tema (a capa interna e o fundo do cartão). */
 export function coverUploadEnabled(): boolean {
-  return internalCoverEnabled() && forumBool('canelaProfileCoverUpload', true);
+  return cardBackgroundEnabled() && forumBool('canelaProfileCoverUpload', true);
 }
 
 export function bioMaxLength(): number {
@@ -137,13 +147,16 @@ export function userCoverUrl(user: User): string | null {
 }
 
 /**
- * O fundo do cartão. Com a forumaker é a mesma capa, na miniatura dela
- * (`cover_thumbnail`, que só existe com as miniaturas ligadas lá).
+ * O fundo do cartão: o que a pessoa escolheu no tema. Com a forumaker, sem um
+ * fundo próprio, é a capa dela, na miniatura (`cover_thumbnail`, que só
+ * existe com as miniaturas ligadas lá).
  */
 export function userCardBackgroundUrl(user: User): string | null {
-  if (thirdParty.profileCover()) return safeImageUrl(str(user, 'cover_thumbnail') || str(user, 'cover'));
+  const own = cardBackgroundEnabled() ? safeImageUrl(str(user, 'canelaCardBackgroundUrl')) : null;
 
-  return profileField('cover') ? safeImageUrl(str(user, 'canelaCardBackgroundUrl')) : null;
+  if (own || !thirdParty.profileCover()) return own;
+
+  return safeImageUrl(str(user, 'cover_thumbnail') || str(user, 'cover'));
 }
 
 /**

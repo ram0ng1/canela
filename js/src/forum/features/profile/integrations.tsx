@@ -26,6 +26,7 @@ import {
   bioMaxLength,
   canEditProfile,
   canEditTitle,
+  cardBackgroundEnabled,
   internalCoverEnabled,
   profileEnabled,
   profileField,
@@ -195,8 +196,9 @@ export function installEditUserModal() {
 
     const clears = [
       userStatus(user) ? checkbox(draft.clearStatus, t('profile.moderation.clear_status')) : null,
-      // Com a forumaker as imagens na tela são dela: o "…" do perfil já traz o editor dela.
-      internalCoverEnabled() && (userCoverUrl(user) || userCardBackgroundUrl(user))
+      // Com a forumaker a capa larga é dela (o "…" do perfil já traz o editor
+      // dela); aqui só entram as imagens do tema: a capa interna e o fundo do cartão.
+      (internalCoverEnabled() && userCoverUrl(user)) || (cardBackgroundEnabled() && user.attribute<string | null>('canelaCardBackgroundUrl'))
         ? checkbox(draft.clearImages, t('profile.moderation.clear_images'))
         : null,
     ].filter(Boolean);
@@ -224,9 +226,9 @@ export function installEditUserModal() {
       data.canelaStatusUntil = null;
     }
 
-    if (internalCoverEnabled() && draft.clearImages()) {
-      data.canelaCoverUrl = null;
-      data.canelaCardBackgroundUrl = null;
+    if (draft.clearImages()) {
+      if (internalCoverEnabled()) data.canelaCoverUrl = null;
+      if (cardBackgroundEnabled()) data.canelaCardBackgroundUrl = null;
     }
   });
 }
