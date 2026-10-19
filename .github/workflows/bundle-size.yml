@@ -2,14 +2,14 @@ name: Bundle Size
 
 # Mede o tamanho dos bundles JS (js/dist/**.js, bruto + gzip, incluindo os
 # chunks sob demanda). Em PR, compara com a linha de base do último push em
-# master e comenta as diferenças. Só informa — não bloqueia o merge.
+# main e comenta as diferenças. Só informa — não bloqueia o merge.
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 # §35.13 C1 — default-deny do GITHUB_TOKEN.
@@ -61,17 +61,17 @@ jobs:
           retention-days: 14
           overwrite: true
 
-      - name: Subir artefato (master baseline)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      - name: Subir artefato (main baseline)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: bundle-master
+          name: bundle-main
           path: bundle-size.json
           retention-days: 90
           overwrite: true
 
   compare:
-    name: Comparar PR vs master
+    name: Comparar PR vs main
     needs: measure
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -99,15 +99,15 @@ jobs:
           name: bundle-pr-${{ github.event.pull_request.number }}
           path: pr
 
-      # Cross-workflow-run: último artefato 'bundle-master' do último run com
-      # sucesso do bundle-size.yml em master.
-      - name: Baixar baseline do master
+      # Cross-workflow-run: último artefato 'bundle-main' do último run com
+      # sucesso do bundle-size.yml em main.
+      - name: Baixar baseline do main
         uses: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151  # v21
         with:
           workflow: bundle-size.yml
           workflow_conclusion: success
-          branch: master
-          name: bundle-master
+          branch: main
+          name: bundle-main
           path: baseline
           if_no_artifact_found: warn
 

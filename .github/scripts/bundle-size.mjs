@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Mede e compara o tamanho dos bundles JS da extensão (js/dist/**.js), raw e
 // gzip. Espelha o fluxo do compare-lhci.mjs: na PR compara contra a baseline
-// do master e gera um markdown com deltas 🟢/🔴. Report-only (não trava o CI).
+// do main e gera um markdown com deltas 🟢/🔴. Report-only (não trava o CI).
 //
 // Uso:
 //   node bundle-size.mjs measure <distDir> <outJson>
@@ -78,7 +78,7 @@ if (cmd === 'compare') {
 
   // Veredito no topo, sobre o gzip total (o que pesa na transferência).
   if (!base) {
-    lines.push('> Não há baseline do `master` ainda. Os números abaixo são da PR; a comparação delta começa no próximo merge.', '');
+    lines.push('> Não há baseline do `main` ainda. Os números abaixo são da PR; a comparação delta começa no próximo merge.', '');
   } else {
     const d = pr.total.gzip - base.total.gzip;
     const pct = base.total.gzip !== 0 ? (d / base.total.gzip) * 100 : 0;
@@ -112,7 +112,7 @@ if (cmd === 'compare') {
     `| **Total** | **${kb(pr.total.gzip)}** | **${baseTotalGzip}** | ${base ? deltaCell(pr.total.gzip, base.total.gzip) : '—'} | **${kb(pr.total.raw)}** | ${base ? deltaCell(pr.total.raw, base.total.raw) : '—'} |`
   );
   lines.push('');
-  lines.push('<sub>gzip nível 9. 🟢 = menor que o master · 🔴 = maior. Report-only — não bloqueia o merge.</sub>');
+  lines.push('<sub>gzip nível 9. 🟢 = menor que o main · 🔴 = maior. Report-only — não bloqueia o merge.</sub>');
 
   process.stdout.write(lines.join('\n') + '\n');
   process.exit(0);
