@@ -188,13 +188,18 @@
   }
 }
 
+// A aba aberta na cor do tema, com o texto próprio dela (contraste garantido
+// no claro e no escuro). Antes era cinza com o ícone preto.
 .CanelaUserMenu-tab.active .CanelaUserMenu-tabIcon {
-  color: var(--cn-primary);
-  background-color: var(--cn-primary-100);
+  color: var(--cn-accent-text);
+  background-color: var(--cn-accent);
 }
 
+// No hover o fundo é um tom claro do tema: o ícone escurece para a cor do
+// texto, em vez do cinza médio que quase sumia nele.
 .CanelaUserMenu-tab:not(.active):hover .CanelaUserMenu-tabIcon,
 .CanelaUserMenu-tab:not(.active):focus-visible .CanelaUserMenu-tabIcon {
+  color: var(--cn-primary);
   background-color: var(--cn-hover);
 }
 
