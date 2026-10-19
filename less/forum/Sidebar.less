@@ -694,6 +694,18 @@
     .CanelaSidebar-footerShortcuts {
       display: none;
     }
+
+    // Um menu aberto (a folha do pé da tela): o painel para de rolar, senão o
+    // Safari do iOS recorta a folha pelo tamanho do painel. O conteúdo sobe o
+    // quanto estava rolado, e nada se mexe atrás do fundo escurecido (ver
+    // keepPanelMenusOnScreen no installShell).
+    &.CanelaSidebar--menuOpen {
+      overflow: visible;
+
+      > .CanelaSidebar-inner {
+        margin-top: calc(-1 * var(--canela-panel-scroll, 0px));
+      }
+    }
   }
 
   .Canela--sidebarOverlay ~ .CanelaSidebar-backdrop,

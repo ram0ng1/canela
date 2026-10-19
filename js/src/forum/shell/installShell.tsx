@@ -78,6 +78,36 @@ export default function installShell() {
   removeDiscussionPane();
 }
 
+/**
+ * No celular os menus do painel (Mais, paleta, modo de cor) são a folha que
+ * sobe do pé da tela, com `position: fixed`. O Safari do iOS recorta um
+ * elemento fixo pelos limites de quem rola por cima dele: com o painel como
+ * área de rolagem (`overflow-y: auto`), a folha saía do tamanho do painel, e
+ * não da tela. Enquanto um menu está aberto o painel deixa de rolar (a classe
+ * tira o overflow) e o conteúdo fica parado onde estava; ao fechar, a rolagem
+ * volta para o mesmo ponto.
+ */
+function keepPanelMenusOnScreen(aside: HTMLElement) {
+  const OPEN = 'CanelaSidebar--menuOpen';
+  let scrollTop = 0;
+
+  $(aside).on('shown.bs.dropdown', '.Dropdown', () => {
+    if (!document.getElementById('app')?.classList.contains('Canela--sidebarOverlay')) return;
+
+    scrollTop = aside.scrollTop;
+    aside.style.setProperty('--canela-panel-scroll', `${scrollTop}px`);
+    aside.classList.add(OPEN);
+  });
+
+  $(aside).on('hidden.bs.dropdown', '.Dropdown', () => {
+    if (!aside.classList.contains(OPEN) || aside.querySelector('.Dropdown.open')) return;
+
+    aside.classList.remove(OPEN);
+    aside.style.removeProperty('--canela-panel-scroll');
+    aside.scrollTop = scrollTop;
+  });
+}
+
 function mountSidebar(appElement: HTMLElement) {
   const aside = document.createElement('aside');
   aside.id = 'canela-sidebar';
@@ -88,6 +118,8 @@ function mountSidebar(appElement: HTMLElement) {
   appElement.insertBefore(aside, document.getElementById('app-navigation'));
 
   m.mount(aside, { view: () => <CanelaSidebar /> });
+
+  keepPanelMenusOnScreen(aside);
 
   // No painel sobreposto (tablet), escolher um destino fecha o painel.
   aside.addEventListener('click', (event) => {

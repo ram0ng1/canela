@@ -1489,6 +1489,13 @@
         position: static;
       }
 
+      // Sem a margem do <h3> (1em em cima e embaixo): o nome fica na linha da
+      // data, e o nome de usuário do flarum/nicknames logo embaixo dele, sem o
+      // vão de quase uma linha que sobrava entre os dois.
+      .PostUser-name {
+        margin: 0;
+      }
+
       .Post-avatar {
         .Avatar--size(48px);
         position: absolute;
