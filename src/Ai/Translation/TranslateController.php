@@ -83,6 +83,12 @@ final class TranslateController implements RequestHandlerInterface
             ]);
         }
 
+        // Folga para a parte que já estava no modelo quando o tempo do pedido
+        // acabou (ContentTranslator::TIME_BUDGET); o padrão do PHP é 30 s.
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(120);
+        }
+
         // Os títulos primeiro: uma chamada só para todos, e é o que se vê primeiro.
         $discussions = $discussionIds ? $this->translator->translateTitles($actor, $discussionIds, $target) : [];
         $posts = $postIds ? $this->translator->translatePosts($actor, $postIds, $target) : [];

@@ -7,10 +7,12 @@
  * faltam em lote (POST /canela/ai/translate) — a leitura nunca espera o modelo.
  *
  * A tradução entra pelo próprio modelo (`contentHtml()` e `title()`), então
- * aparece em todo lugar que mostra o post ou o título; o 文A ao lado da data
- * alterna aquela postagem, e o botão redondo da linha do tempo alterna o
- * tópico inteiro (lembrado neste navegador, como o "mostrar original" do
- * Discourse). Editar o título sempre parte do título original.
+ * aparece em todo lugar que mostra o post ou o título; o 文A à esquerda da
+ * data alterna aquela postagem (na primeira, também o título do tópico), e o
+ * botão redondo da linha do tempo alterna o tópico inteiro (lembrado neste
+ * navegador, como o "mostrar original" do Discourse). Enquanto uma postagem
+ * está sendo traduzida, um ícone girando fica no lugar do 文A. Editar o
+ * título sempre parte do título original.
  */
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
@@ -71,11 +73,12 @@ function showing(kind: Kind, id: string | undefined): boolean {
   return allOriginal ? flipped.has(`${kind}${id}`) : !flipped.has(`${kind}${id}`);
 }
 
-function flip(kind: Kind, id: string): void {
-  const key = `${kind}${id}`;
-
-  if (flipped.has(key)) flipped.delete(key);
-  else flipped.add(key);
+/** Vira juntos (o 文A da primeira postagem vira também o título). */
+function flip(keys: string[]): void {
+  keys.forEach((key) => {
+    if (flipped.has(key)) flipped.delete(key);
+    else flipped.add(key);
+  });
 
   m.redraw();
 }
@@ -132,6 +135,8 @@ function languageName(code: string | null | undefined): string {
 const queue = { posts: new Map<string, Post>(), discussions: new Map<string, Discussion>() };
 /** Já pedidos nesta página, pela versão do conteúdo: não pede duas vezes o mesmo. */
 const asked = new Set<string>();
+/** Postagens na fila ou no modelo agora: mostram o "traduzindo…". */
+const working = new Set<string>();
 let timer = 0;
 let rounds = 0;
 
@@ -154,8 +159,12 @@ function enqueue(kind: Kind, model: Post | Discussion | undefined | null): void 
 
   asked.add(key);
 
-  if (kind === 'p') queue.posts.set(model.id()!, model as Post);
-  else queue.discussions.set(model.id()!, model as Discussion);
+  if (kind === 'p') {
+    queue.posts.set(model.id()!, model as Post);
+    working.add(model.id()!);
+  } else {
+    queue.discussions.set(model.id()!, model as Discussion);
+  }
 
   schedule(250);
 }
@@ -185,19 +194,28 @@ async function flush(): Promise<void> {
       errorHandler: () => {},
     });
   } catch {
+    posts.forEach((post) => working.delete(post.id()!));
+    m.redraw();
+
     return;
   }
 
   let pending = false;
+  /** O servidor traduziu mais uma parte de alguma postagem longa. */
+  let advanced = false;
 
   posts.forEach((post) => {
     const result = response?.posts?.[post.id()!];
 
     if (result?.html) {
+      working.delete(post.id()!);
       post.pushAttributes({ canelaTranslation: result.html, canelaLocale: result.locale, canelaTranslatable: false });
     } else if (result?.pending) {
       pending = true;
+      advanced = advanced || !!result.partial;
       queue.posts.set(post.id()!, post);
+    } else {
+      working.delete(post.id()!);
     }
   });
 
@@ -215,11 +233,21 @@ async function flush(): Promise<void> {
   m.redraw();
 
   // O que sobrou deste lote (ou ficou pendente) vai na próxima rodada; o
-  // limite de rodadas segura um servidor que só responde "pendente".
+  // limite de rodadas segura um servidor que só responde "pendente". Uma
+  // postagem longa que avançou uma parte não gasta rodada: segue logo.
   const more = queue.posts.size > 0 || queue.discussions.size > 0;
 
-  if (more && (!pending || ++rounds <= MAX_ROUNDS)) {
-    schedule(pending ? (response?.retryAfter ? response.retryAfter * 1000 : 1500) : 50);
+  if (!more) return;
+
+  if (!pending || advanced || ++rounds <= MAX_ROUNDS) {
+    if (advanced) rounds = 0;
+    schedule(response?.retryAfter ? response.retryAfter * 1000 : advanced ? 200 : pending ? 1500 : 50);
+  } else {
+    // Desistiu por agora: some o "traduzindo…"; o próximo carregamento tenta de novo.
+    queue.posts.forEach((_post, id) => working.delete(id));
+    queue.posts.clear();
+    queue.discussions.clear();
+    m.redraw();
   }
 }
 
@@ -227,8 +255,11 @@ async function flush(): Promise<void> {
 // Interface
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** O 文A: tooltip com o idioma original e o aviso; clicar alterna. */
-function indicator(kind: Kind, id: string, locale: string | null | undefined): Mithril.Children {
+/**
+ * O 文A: tooltip com o idioma original e o aviso; clicar alterna. `keys` são
+ * os itens que viram juntos (a postagem e, na primeira, o título).
+ */
+function indicator(kind: Kind, id: string, locale: string | null | undefined, keys: string[] = [`${kind}${id}`]): Mithril.Children {
   const translated = showing(kind, id);
   const language = languageName(locale);
   const what = app.translator.trans(`ramon-canela.forum.ai.translation.${kind === 'p' ? 'original_language' : 'title_original_language'}`, {
@@ -246,7 +277,7 @@ function indicator(kind: Kind, id: string, locale: string | null | undefined): M
         onclick={(event: MouseEvent) => {
           event.preventDefault();
           event.stopPropagation();
-          flip(kind, id);
+          flip(keys);
         }}
       >
         <Icon name="fas fa-language" />
@@ -256,6 +287,19 @@ function indicator(kind: Kind, id: string, locale: string | null | undefined): M
           {what} {action}
         </span>
         <span className="CanelaTranslated-disclaimer">{app.translator.trans('ramon-canela.forum.ai.translation.disclaimer')}</span>
+      </span>
+    </span>
+  );
+}
+
+/** O "traduzindo…": a postagem está na fila ou no modelo. */
+function translating(): Mithril.Children {
+  const label = app.translator.trans('ramon-canela.forum.ai.translation.translating') as string;
+
+  return (
+    <span className="CanelaTranslated is-working" role="status" aria-label={label} title={label}>
+      <span className="CanelaTranslated-button">
+        <Icon name="fas fa-spinner fa-spin" />
       </span>
     </span>
   );
@@ -292,8 +336,10 @@ export default function installTranslation(): void {
   extend(CommentPost.prototype, 'oninit', function (this: CommentPost) {
     (this as any).subtree?.check(() => {
       const post = this.attrs.post;
+      const discussion = post.number() === 1 ? post.discussion() : null;
+      const title = discussion ? `${showing('d', discussion.id())}:${!!titleTranslation(discussion)}` : '';
 
-      return `${showing('p', post.id())}:${!!postTranslation(post)}`;
+      return `${showing('p', post.id())}:${!!postTranslation(post)}:${working.has(post.id()!)}:${title}`;
     });
   });
 
@@ -305,37 +351,34 @@ export default function installTranslation(): void {
     enqueue('p', this.attrs.post);
   });
 
+  // O 文A à esquerda da data (a ordem visual é do LESS). Na primeira postagem
+  // ele vale também para o título do tópico: um ícone só, perto do que mudou,
+  // em vez de outro solto na ponta da linha do título.
   extend(CommentPost.prototype, 'headerItems', function (this: CommentPost, items: ItemList<Mithril.Children>) {
     const post = this.attrs.post;
 
-    if (!info() || !postTranslation(post) || (this as any).isEditing?.()) return;
+    if (!info() || (this as any).isEditing?.()) return;
 
-    // Antes da data no DOM; a ordem visual (lápis, 文A, data) é do LESS.
-    items.add('canelaTranslated', indicator('p', post.id()!, post.attribute<string>('canelaLocale')), 1);
+    const discussion = post.number() === 1 ? post.discussion() : null;
+    const title = discussion && titleTranslation(discussion) ? discussion : null;
+    const keys: string[] = [];
+
+    if (postTranslation(post)) keys.push(`p${post.id()}`);
+    if (title) keys.push(`d${title.id()}`);
+
+    if (keys.length) {
+      const [kind, id, locale]: [Kind, string, string | null] = postTranslation(post)
+        ? ['p', post.id()!, post.attribute<string>('canelaLocale')]
+        : ['d', title!.id()!, title!.attribute<string>('canelaTitleLocale')];
+
+      items.add('canelaTranslated', indicator(kind, id, locale, keys), 1);
+    } else if (working.has(post.id()!)) {
+      items.add('canelaTranslated', translating(), 1);
+    }
   });
 
   extend(DiscussionHero.prototype, 'oncreate', function (this: DiscussionHero) {
     enqueue('d', this.attrs.discussion);
-  });
-
-  extend(DiscussionHero.prototype, 'items', function (this: DiscussionHero, items: ItemList<Mithril.Children>) {
-    const discussion = this.attrs.discussion;
-
-    if (!info() || !discussion || !titleTranslation(discussion) || !items.has('title')) return;
-
-    const title = items.get('title') as any;
-
-    // Durante a edição do título (gaps/topic/titleEditor) não há o que alternar.
-    if (title?.tag === 'form') return;
-
-    // No mesmo item do título, para o 文A ficar na linha dele.
-    items.setContent(
-      'title',
-      <div className="CanelaTitleTranslated">
-        {title}
-        {indicator('d', discussion.id()!, discussion.attribute<string>('canelaTitleLocale'))}
-      </div>
-    );
   });
 
   extend(DiscussionListItem.prototype, 'oncreate', function (this: DiscussionListItem) {
