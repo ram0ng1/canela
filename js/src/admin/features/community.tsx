@@ -3,11 +3,14 @@
  */
 import app from 'flarum/admin/app';
 import Link from 'flarum/common/components/Link';
+import Button from 'flarum/common/components/Button';
+import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 
 import { AdminComponent, trans, getBool, getStr, saveSetting } from '../util';
 import { AdminNotice, SubDivider } from '../components/AdminCard';
 import AdminToggle from '../components/AdminToggle';
 import type { CardDef } from '../types';
+import AboutPagesEditor from './aboutPages';
 
 const KEY = 'ramon-canela.admin.settings.community';
 
@@ -71,6 +74,85 @@ const toggle = (name: string, label: string, help: string) => (
 const text = (name: string, label: string, help: string, extra: Record<string, any> = {}) => (
   <AdminTextField settingKey={`canela.${name}`} label={trans(`${KEY}.${name}_label`, label)} help={trans(`${KEY}.${name}_help`, help)} {...extra} />
 );
+
+/**
+ * Com o fof/pages: qual página vira as Diretrizes, e o botão que cria a página
+ * "Diretrizes" com o texto atual. Escolhida uma página, o texto abaixo deixa
+ * de valer e o conteúdo passa a ser editado no fof/pages.
+ */
+class GuidelinesPagePicker extends AdminComponent {
+  pages: { id: string; title: string }[] | null = null;
+  creating = false;
+
+  oninit(vnode: any) {
+    super.oninit(vnode);
+    this.load();
+  }
+
+  load() {
+    app
+      .request<any>({ method: 'GET', url: `${app.forum.attribute('apiUrl')}/pages`, params: { 'page[limit]': 50 } })
+      .then((res) => {
+        this.pages = (res?.data || []).map((p: any) => ({ id: String(p.id), title: String(p.attributes?.title || p.id) }));
+        m.redraw();
+      })
+      .catch(() => {
+        this.pages = [];
+        m.redraw();
+      });
+  }
+
+  create() {
+    this.creating = true;
+    app
+      .request<{ pageId: number }>({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/canela-guidelines/page` })
+      .then((res) => {
+        app.data.settings['canela.guidelines_page'] = String(res.pageId);
+        this.load();
+      })
+      .finally(() => {
+        this.creating = false;
+        m.redraw();
+      });
+  }
+
+  view() {
+    const current = getStr('canela.guidelines_page');
+    const page = this.pages?.find((p) => p.id === current);
+
+    return (
+      <div className="Form-group CanelaAdmin-guidelinesPage">
+        <label>{trans(`${KEY}.guidelines_page_label`, 'Página do fof/pages')}</label>
+        <select
+          className="FormControl"
+          value={current}
+          disabled={this.pages === null}
+          onchange={(e: Event) => {
+            const value = (e.target as HTMLSelectElement).value;
+            app.data.settings['canela.guidelines_page'] = value;
+            saveSetting({ 'canela.guidelines_page': value });
+          }}
+        >
+          <option value="">{trans(`${KEY}.guidelines_page_none`, 'Nenhuma: usar o texto abaixo')}</option>
+          {(this.pages || []).map((p) => (
+            <option value={p.id}>{p.title}</option>
+          ))}
+        </select>
+        <p className="helpText">
+          {trans(
+            `${KEY}.guidelines_page_help`,
+            'Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages.'
+          )}
+        </p>
+        {!page && (
+          <Button className="Button" loading={this.creating} disabled={this.pages === null} onclick={() => this.create()}>
+            {trans(`${KEY}.guidelines_page_create`, 'Criar a página "Diretrizes" com o texto atual')}
+          </Button>
+        )}
+      </div>
+    );
+  }
+}
 
 /** Um link para a página no fórum, para conferir o resultado. */
 const viewLink = (path: string) => (
@@ -143,6 +225,7 @@ const COMMUNITY_CARDS: CardDef[] = [
     master: 'canela.guidelines_enabled',
     body: () => (
       <>
+        {isExtensionEnabled('fof-pages') && <GuidelinesPagePicker />}
         {text(
           'guidelines_text',
           'Texto das diretrizes',
@@ -152,6 +235,19 @@ const COMMUNITY_CARDS: CardDef[] = [
         {viewLink('/guidelines')}
       </>
     ),
+  },
+  {
+    id: 'about_pages',
+    group: 'community',
+    icon: 'fas fa-folder-plus',
+    title: () => trans(`${KEY}.section_about_pages`, 'Páginas da área Sobre'),
+    description: help(
+      'about_pages',
+      'Acrescente quantas páginas do fof/pages quiser como abas ao lado de Sobre e Diretrizes, cada uma com o layout de regras: título, índice de seções e cartões.'
+    ),
+    keywords: 'páginas pages fof abas tabs sobre about diretrizes guidelines extras personalizadas custom ordem order ícone icon rótulo label',
+    extensions: ['fof-pages'],
+    body: () => <AboutPagesEditor />,
   },
   {
     id: 'legal',

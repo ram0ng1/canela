@@ -45,6 +45,8 @@ export const topicSettings = {
   userCard: () => forumBool('canelaUserCard', true),
   postActions: () => forumBool('canelaPostActions', true),
   embeddedReplies: () => forumBool('canelaEmbeddedReplies', true) && isExtensionEnabled('flarum-mentions'),
+  /** O "em resposta a" numa linha embaixo do nome, como no avocado (canela.topic_reply_to_style). */
+  replyToLine: () => app.forum?.attribute('canelaTopicReplyToStyle') === 'avocado' && isExtensionEnabled('flarum-mentions'),
   newRepliesBar: () => forumBool('canelaNewRepliesBar', true) && isExtensionEnabled('flarum-realtime'),
 };
 

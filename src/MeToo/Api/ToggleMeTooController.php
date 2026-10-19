@@ -19,12 +19,14 @@ use Flarum\Http\RequestUtil;
 use Flarum\Post\Exception\FloodingException;
 use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Ramon\Canela\MeToo\Event\Toggled;
 use Ramon\Canela\MeToo\MeToo;
 
 /**
@@ -41,6 +43,7 @@ final class ToggleMeTooController implements RequestHandlerInterface
     public function __construct(
         private readonly MeToo $meToo,
         private readonly Cache $cache,
+        private readonly Dispatcher $events,
     ) {
     }
 
@@ -71,7 +74,17 @@ final class ToggleMeTooController implements RequestHandlerInterface
             throw new FloodingException();
         }
 
-        return new JsonResponse($this->meToo->toggle($discussion, $actor));
+        $result = $this->meToo->toggle($discussion, $actor);
+
+        // Quem ouve (a entrega em tempo real, com o flarum/realtime) não pode
+        // desfazer o clique: a marcação já está gravada e a resposta sai igual.
+        try {
+            $this->events->dispatch(new Toggled($discussion, $actor, $result['mine'], $result['count']));
+        } catch (\Throwable $error) {
+            error_log('[ramon/canela] me too: aviso da troca falhou: '.$error->getMessage());
+        }
+
+        return new JsonResponse($result);
     }
 
     /** Janela fixa de uma hora: a chave muda a cada hora e vence sozinha. */

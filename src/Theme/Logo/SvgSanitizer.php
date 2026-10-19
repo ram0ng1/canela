@@ -36,10 +36,18 @@ final class SvgSanitizer
         'fefunca', 'fefuncb', 'fefuncg', 'fefuncr', 'femorphology', 'feturbulence',
     ];
 
+    /**
+     * Animação declarativa (SMIL), aceita só quando quem chama pede: o
+     * indicador de carregamento vira imagem no CSS (onde nada executa), e boa
+     * parte dos SVGs de "loader" prontos anima com `<animate>`. O logo não
+     * precisa disso e continua sem.
+     */
+    private const ANIMATION_ELEMENTS = ['animate', 'animatetransform', 'animatemotion', 'set', 'mpath'];
+
     /** `url(` que não aponta para um `#id` do próprio arquivo. */
     private const EXTERNAL_URL = '/url\(\s*["\x27]?\s*(?!#)/i';
 
-    public static function sanitize(string $svg): ?string
+    public static function sanitize(string $svg, bool $allowAnimation = false): ?string
     {
         if (trim($svg) === '' || stripos($svg, '<!ENTITY') !== false || stripos($svg, '<!DOCTYPE') !== false) {
             return null;
@@ -57,21 +65,25 @@ final class SvgSanitizer
             return null;
         }
 
-        self::clean($root);
+        self::clean($root, $allowAnimation);
 
         return $document->saveXML($root) ?: null;
     }
 
-    private static function clean(DOMElement $element): void
+    private static function clean(DOMElement $element, bool $allowAnimation = false): void
     {
         foreach (iterator_to_array($element->childNodes) as $child) {
             if ($child instanceof DOMElement) {
-                if (! in_array(strtolower($child->localName), self::ELEMENTS, true)) {
+                $name = strtolower($child->localName);
+                $allowed = in_array($name, self::ELEMENTS, true)
+                    || ($allowAnimation && in_array($name, self::ANIMATION_ELEMENTS, true) && self::safeAnimation($child));
+
+                if (! $allowed) {
                     $element->removeChild($child);
                     continue;
                 }
 
-                self::clean($child);
+                self::clean($child, $allowAnimation);
             } elseif ($child->nodeType === XML_PI_NODE || $child->nodeType === XML_COMMENT_NODE) {
                 $element->removeChild($child);
             }
@@ -110,6 +122,17 @@ final class SvgSanitizer
     private static function cssEscaped(string $css): bool
     {
         return str_contains($css, '\\');
+    }
+
+    /**
+     * Um `<animate>`/`<set>` que mexe em `href` ou num evento (`on*`) troca o
+     * destino de um link ou cria um handler depois da limpeza: sai inteiro.
+     */
+    private static function safeAnimation(DOMElement $element): bool
+    {
+        $target = strtolower(trim($element->getAttribute('attributeName')));
+
+        return ! str_contains($target, 'href') && ! str_starts_with($target, 'on');
     }
 
     private static function safeHref(string $value): bool

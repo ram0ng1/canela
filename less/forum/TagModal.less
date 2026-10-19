@@ -1,0 +1,341 @@
+// ---------------------------------------------------------------------
+// Modal de tags do flarum/tags ("Editar tags", `TagSelectionModal`), no
+// desenho do seletor de tags do composer: o campo é um `.FormControl` com as
+// escolhidas em pílulas, a lista tem o símbolo na cor da tag e o texto na cor
+// normal, e o rodapé leva o switch à esquerda e o botão à direita. O JS que
+// desenha o miolo está em js/src/forum/composer/tagModal.tsx.
+// ---------------------------------------------------------------------
+
+// Um pouco mais largo que o modal simples: o nome e a descrição numa coluna
+// cabem sem quebrar a cada palavra.
+@media @tablet-up {
+  .CanelaTagModal.Modal {
+    max-width: 560px;
+  }
+
+  .CanelaTagModal .Modal-content {
+    max-height: ~"calc(100dvh - 48px)";
+  }
+}
+
+// Cabeçalho fixo, a lista é a única parte que rola e o rodapé fica à vista.
+.CanelaTagModal {
+  .Modal-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    > form {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+  }
+
+  .Modal-header,
+  .Modal-alert,
+  .Modal-footer {
+    flex: none;
+  }
+
+  // "Editar tags" numa linha e o título da discussão embaixo, menor e cinza.
+  .Modal-header h3 {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 2px;
+    min-width: 0;
+  }
+}
+
+.CanelaTagModal-title {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanelaTagModal-subtitle {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--cn-font-down-1);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaTagModal .Modal-body.CanelaTagModal-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+// O campo: o `.FormControl` do tema (borda de 1px, foco na cor de destaque),
+// com as pílulas e a busca na mesma linha; a altura mínima é a de um campo, e
+// as pílulas não mudam o tamanho dele enquanto cabem numa linha.
+.CanelaTagModal .TagsInput.CanelaTagModal-input {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  height: auto;
+  min-height: var(--cn-control-height);
+  padding: 3px 8px;
+  overflow: visible;
+  border: 1px solid var(--cn-primary-300);
+  border-radius: var(--cn-radius);
+  background-color: var(--cn-surface);
+  box-shadow: none;
+  outline: none;
+  cursor: text;
+
+  &:hover:not(.focus) {
+    border-color: var(--cn-primary-low-mid);
+  }
+
+  // O flarum/tags põe o anel grosso do navegador no `:focus-within`.
+  &:focus-within,
+  &.focus {
+    border-color: var(--cn-accent);
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.CanelaTagModal-search,
+.CanelaTagModal-search:focus {
+  flex: 1 1 auto;
+  min-width: 6ch;
+  max-width: 100%;
+  height: 28px;
+  margin: 0;
+  padding: 0 2px;
+  border: 0 !important;
+  outline: none;
+  box-shadow: none;
+  background: transparent !important;
+  color: var(--cn-primary);
+  font: inherit;
+  font-size: 16px;
+
+  &::placeholder {
+    color: var(--cn-primary-medium);
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+// A pílula da tag escolhida: a do seletor do composer, com o símbolo.
+.CanelaSelectKit-chip.CanelaTagModal-chip {
+  flex: none;
+  gap: 5px;
+  max-width: 100%;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  line-height: 1;
+
+  .CanelaCategorySymbol {
+    font-size: 13px;
+  }
+
+  // O ícone do × é cinza; o da tag fica na cor dela.
+  .CanelaCategorySymbol .icon {
+    color: inherit;
+  }
+
+  > .icon {
+    font-size: 11px;
+  }
+}
+
+.CanelaTagModal-chipName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// A lista: as linhas vão de borda a borda do modal.
+.CanelaTagList {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: ~"min(420px, 55dvh)";
+  margin: 8px ~"calc(-1 * var(--cn-modal-pad-x))" 0;
+  padding: 0 0 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cn-primary-low) transparent;
+}
+
+.CanelaTagList-heading {
+  padding: 10px var(--cn-modal-pad-x) 4px;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: default;
+
+  &:not(:first-child) {
+    margin-top: 6px;
+    border-top: 1px solid var(--cn-primary-low);
+  }
+}
+
+.CanelaTagList-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px var(--cn-modal-pad-x);
+  color: var(--cn-primary);
+  cursor: pointer;
+
+  &.selected {
+    background: ~"color-mix(in srgb, var(--cn-accent) 7%, transparent)";
+  }
+
+  // `active` é a linha do teclado e do mouse (o flarum/tags a move nos dois).
+  &.active {
+    background: var(--cn-hover);
+  }
+
+  // Filhas: recuadas, com uma guia fina na altura do símbolo do pai; as
+  // linhas encostam umas nas outras, então a guia fica contínua.
+  &.child {
+    padding-left: ~"calc(var(--cn-modal-pad-x) + 26px)";
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: ~"calc(var(--cn-modal-pad-x) + 7px)";
+      width: 1px;
+      background: var(--cn-primary-low);
+    }
+  }
+}
+
+// O símbolo do tema (ícone na cor da tag ou o quadradinho), alinhado à
+// primeira linha do nome.
+.CanelaTagList-symbol {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 21px;
+  font-size: 15px;
+}
+
+.CanelaTagList-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.CanelaTagList-name {
+  font-size: 15px;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+
+  mark {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font-weight: 700;
+  }
+}
+
+.CanelaTagList-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.35;
+}
+
+.CanelaTagList-check {
+  flex: none;
+  align-self: center;
+  color: var(--cn-accent);
+  font-size: 14px;
+  visibility: hidden;
+
+  .selected > & {
+    visibility: visible;
+  }
+}
+
+.CanelaTagList-empty {
+  padding: 16px 0;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// Rodapé: "Ignorar requisitos" à esquerda e o botão à direita.
+.CanelaTagModal .Modal-footer.CanelaTagModal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px var(--cn-modal-pad-x);
+  border-top: 1px solid var(--cn-primary-low);
+  background: var(--cn-surface);
+}
+
+.CanelaTagModal-bypass.Checkbox {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaTagModal-submit.Button {
+  flex: none;
+  margin-left: auto;
+}
+
+// Celular: o modal em tela cheia (e não a folha de 85% dos outros), a lista
+// ocupa o que sobra e o rodapé fica embaixo.
+@media @phone {
+  // O core reserva a faixa da barra de rolagem dos dois lados do gerenciador
+  // de modais; em tela cheia (nada a rolar ali) ela só deixaria tiras do
+  // fundo à mostra.
+  .ModalManager:has(> .CanelaTagModal) {
+    overflow: hidden;
+    scrollbar-gutter: auto;
+  }
+
+  .CanelaTagModal .Modal-content {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  .CanelaTagList {
+    max-height: none;
+  }
+
+  .CanelaTagModal .Modal-footer.CanelaTagModal-footer {
+    padding-bottom: ~"calc(12px + env(safe-area-inset-bottom))";
+  }
+}

@@ -29,7 +29,6 @@ import PostControls from 'flarum/forum/utils/PostControls';
 import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
 import PostModel from 'flarum/common/models/Post';
 import username from 'flarum/common/helpers/username';
-import userOnline from 'flarum/common/helpers/userOnline';
 import humanTime from 'flarum/common/utils/humanTime';
 import extractText from 'flarum/common/utils/extractText';
 import classList from 'flarum/common/utils/classList';
@@ -47,6 +46,9 @@ import { copyLink } from '../utils/topicShare';
 import { decorateQuotes } from './quotes';
 import { userIcons } from '../utils/userIcons';
 import { heartIcon, openWhoReacted, type ReactorEntry } from './components/WhoReactedPopover';
+
+/** Posts respondidos já pedidos ao servidor (para não buscar de novo a cada redesenho). */
+const requestedParents = new Set<string>();
 
 export default function installPosts(): void {
   extend(CommentPost.prototype, 'oninit', function (this: any) {
@@ -66,15 +68,14 @@ export default function installPosts(): void {
 
     const user = this.attrs.post.user();
     const badges = user ? user.badges().toArray() : [];
-    // A presença mora no avatar, como um pontinho no canto (o flair fica no
-    // canto de baixo); no cabeçalho ela empurrava o nome para a direita.
-    const online = user ? userOnline(user) : null;
+    // A presença como no meta.discourse.org (plugin who's online, modo "ring"):
+    // um anel verde em volta do avatar, sem pontinho.
+    const online = !!user && user.isOnline();
 
     items.setContent(
       'avatar',
-      <div className="CanelaPostAvatar">
+      <div className={online ? 'CanelaPostAvatar CanelaPostAvatar--online' : 'CanelaPostAvatar'}>
         {items.get('avatar')}
-        {online ? <span className="CanelaPostAvatar-online">{online}</span> : null}
         {badges.length ? <ul className="CanelaPostAvatar-flair badges">{listItems(badges)}</ul> : null}
       </div>
     );
@@ -98,7 +99,10 @@ export default function installPosts(): void {
     const body = this.element?.querySelector?.('.Post-body');
 
     if (body) {
-      decorateQuotes(body, this.attrs.post, topicSettings.embeddedReplies() ? replyMarkerId(this.attrs.post) : null);
+      // A menção que marca a resposta sai do texto quando o "em resposta a"
+      // mora no cabeçalho (nos dois estilos dele).
+      const replyInHeader = topicSettings.embeddedReplies() || topicSettings.replyToLine();
+      decorateQuotes(body, this.attrs.post, replyInHeader ? replyMarkerId(this.attrs.post) : null);
       markUnavailableMentions(body);
     }
   });
@@ -206,26 +210,56 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
     );
   }
 
-  if (!topicSettings.embeddedReplies()) return;
+  // O "em resposta a" do avocado: uma linha embaixo do nome ("↳ Em resposta
+  // a [avatar] Fulano") no lugar do "↩ Fulano" à direita do cabeçalho.
+  const line = topicSettings.replyToLine();
+  const embedded = topicSettings.embeddedReplies();
+
+  if (!embedded && !line) return;
 
   const parentId = parentPostId(model);
 
-  if (parentId && !isPreviousPost(model, parentId)) {
+  // Na linha do avocado ele aparece também quando o post respondido é o de
+  // cima; o do Discourse só quando não é (logo acima, ele é óbvio).
+  if (parentId && (line || !isPreviousPost(model, parentId))) {
     const ui = postUi(post);
     const parent = app.store.getById<PostModel>('posts', parentId);
-    const parentUser = parent ? parent.user() : null;
-    const name = parentUser ? username(parentUser) : mentionText(model, parentId);
+    const mentioned = mentionText(model, parentId);
+    // O post respondido pode não estar carregado (fora da página atual do
+    // stream): o autor sai do store pelo nome da menção e, se nem ele estiver,
+    // o post é buscado uma vez para o avatar aparecer.
+    const parentUser =
+      (parent ? parent.user() : null) ||
+      (typeof mentioned === 'string' ? app.store.getBy<any>('users', 'username', mentioned.replace(/^@/, '')) || null : null);
+
+    if (!parent && !parentUser && !requestedParents.has(parentId)) {
+      requestedParents.add(parentId);
+      app.store.find('posts', parentId).then(() => m.redraw(), () => {});
+    }
+
+    const name = parentUser ? username(parentUser) : mentioned;
+
+    // Com as respostas embutidas o clique abre o post respondido acima deste;
+    // sem elas (só na linha do avocado), leva até ele.
+    const onclick = () => {
+      if (embedded) {
+        togglePostUi(ui, 'parent');
+      } else if (parent) {
+        m.route.set(app.route.post(parent));
+      }
+    };
 
     items.add(
       'canelaReplyTo',
       <button
         type="button"
-        className={classList('CanelaReplyTo', { 'CanelaReplyTo--open': ui.parent })}
-        aria-expanded={ui.parent ? 'true' : 'false'}
+        className={classList('CanelaReplyTo', { 'CanelaReplyTo--open': embedded && ui.parent, 'CanelaReplyTo--line': line })}
+        aria-expanded={embedded ? (ui.parent ? 'true' : 'false') : undefined}
         title={t('topic.post.in_reply_to')}
-        onclick={() => togglePostUi(ui, 'parent')}
+        onclick={onclick}
       >
-        <Icon name="fas fa-share" className="CanelaReplyTo-icon" />
+        <Icon name={line ? 'fas fa-reply' : 'fas fa-share'} className="CanelaReplyTo-icon" />
+        {line ? <span className="CanelaReplyTo-label">{t('topic.post.reply_to_label')}</span> : null}
         {parentUser ? <Avatar user={parentUser} /> : null}
         <span className="CanelaReplyTo-name">{name}</span>
         {userIcons(parentUser || null, 'replyTo')}
@@ -493,27 +527,30 @@ function addMore(component: any, post: PostModel, ui: PostUi, items: ItemList<Mi
   // botões numa linha (pedido do usuário).
   items.add(
     'canelaMore',
-    <Dropdown
-      className="CanelaPostMore"
-      buttonClassName="Button Button--icon Button--flat CanelaPostAction CanelaPostAction--more"
-      menuClassName="Dropdown-menu--right"
-      icon="fas fa-ellipsis-h"
-      caretIcon=""
-      label=""
-      accessibleToggleLabel={t('topic.post.show_more')}
-      // O post só redesenha quando `ui.version` muda (SubtreeRetainer):
-      // sem isto, o menu não reabria na segunda vez.
-      onshow={() => {
-        ui.version++;
-        m.redraw();
-      }}
-      onhide={() => {
-        ui.version++;
-        m.redraw();
-      }}
-    >
-      {list}
-    </Dropdown>,
+    // A dica do "…" some com o menu aberto (ficaria por cima dos itens).
+    <Tooltip text={t('topic.post.more_short')} tooltipVisible={ui.more ? false : undefined}>
+      <Dropdown
+        className="CanelaPostMore"
+        buttonClassName="Button Button--icon Button--flat CanelaPostAction CanelaPostAction--more"
+        menuClassName="Dropdown-menu--right"
+        icon="fas fa-ellipsis-h"
+        caretIcon=""
+        label=""
+        accessibleToggleLabel={t('topic.post.show_more')}
+        // O post só redesenha quando `ui.version` muda (SubtreeRetainer):
+        // sem isto, o menu não reabria na segunda vez.
+        onshow={() => {
+          togglePostUi(ui, 'more', true);
+          m.redraw();
+        }}
+        onhide={() => {
+          togglePostUi(ui, 'more', false);
+          m.redraw();
+        }}
+      >
+        {list}
+      </Dropdown>
+    </Tooltip>,
     -50
   );
 }
@@ -578,14 +615,17 @@ class ShareAction {
       }
     };
 
+    // Logo depois de copiar, o retorno "Link copiado!" (motion/feedback)
+    // ocupa o lugar da dica em cima do botão.
     return (
-      <Button
-        className={classList('Button Button--icon Button--flat CanelaPostAction CanelaPostAction--share', { 'CanelaPostAction--copied': ui.share })}
-        icon="fas fa-link"
-        aria-label={t('topic.post.share')}
-        title={t('topic.post.share')}
-        onclick={copy}
-      />
+      <Tooltip text={t('topic.post.share_short')} tooltipVisible={ui.share ? false : undefined}>
+        <Button
+          className={classList('Button Button--icon Button--flat CanelaPostAction CanelaPostAction--share', { 'CanelaPostAction--copied': ui.share })}
+          icon="fas fa-link"
+          aria-label={t('topic.post.share')}
+          onclick={copy}
+        />
+      </Tooltip>
     );
   }
 }

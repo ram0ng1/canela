@@ -181,6 +181,36 @@ ramon-canela:
       logo_colored_help: アップロードしたロゴを形だけにして、アクセントカラー（タグのページやスレッドではタグの色）で塗ります。SVG か透明背景の PNG で最もきれいに表示されます。
       loading_slider_label: 上部の読み込みバー
       loading_slider_help: Discourse のように、ページ移動時にページが届くまで画面上部に細いバーが流れます。Flarum の「読み込み中…」の通知の代わりです。
+      loader:
+        title: 読み込みインジケーター
+        help: 何かを読み込んでいる間に表示される図柄です。一覧、投稿、プロフィール、モーダル、メニュー、ボタン、エディター、拡張機能、ページの初回読み込みで使われます。Flarum の灰色のリングをアニメーション SVG に置き換えます。
+        keywords: 読み込み ローディング loading loader spinner preloader インジケーター svg アニメーション
+        style_label: デザイン
+        style_default: Flarum の標準
+        style_avocado: Avocado
+        style_orbital: オービタル
+        style_ring: Discourse のリング
+        style_dots: ドット
+        style_bars: バー
+        style_pulse: パルス
+        style_custom: 独自の SVG
+        custom_label: SVG コード
+        custom_help: アニメーション SVG のコードを貼り付けるか、.svg ファイル（64 KB まで）をアップロードします。保存前にサーバーで整理され、スクリプト、イベント、外部リンクは削除されます。CSS と SMIL のアニメーションは残ります。
+        custom_upload: SVG ファイルをアップロード
+        custom_apply: SVG を適用
+        custom_clear: 削除
+        custom_too_big: ファイルが 64 KB を超えています。
+        custom_not_svg: ファイルが SVG ではないようです。
+        custom_empty: このデザインを使うには SVG を貼り付けるかアップロードしてください。それまでは Flarum のスピナーのままです。
+        tint_label: インジケーターの色で塗る
+        tint_help: SVG を形だけにして、下の色（ボタン内では文字色）で塗ります。オフにするとファイル本来の色のままです。
+        color_label: 色
+        color_help: 色を選ばない場合はテーマのアクセント色（プライマリ、タグページではタグの色）になります。ボタン内ではボタンの文字色に従います。
+        color_primary: テーマの色を使う
+        size_label: サイズ
+        size_help: "Flarum のスピナーに対する大きさで、{min}% から {max}% まで。ボタン内では文字に合わせます。"
+        preview: プレビュー
+        notice: インジケーターを変更するとフォーラムの CSS が再コンパイルされます。保存には数秒かかります。
       toast_auto_close_label: 自動で閉じるトースト
       toast_auto_close_help: Discourse のトーストのように、隅に出る通知（「保存しました」「リンクをコピーしました」など）がタイマーバー付きで数秒後に消えます。オフにすると、閉じるまで表示されます。
       user_menu_label: Discourse のユーザーメニュー
@@ -193,8 +223,30 @@ ramon-canela:
       post_actions_help: Discourse のように、各投稿のバーにいいね、リンクのコピー、ブックマーク、返信と、残りを展開する「…」を表示します。オフにすると、Flarum の操作メニューに戻ります。
       embedded_replies_label: 埋め込み返信
       embedded_replies_help: Discourse のように、各投稿の「N 件の返信」でその直下に返信を開き、引用元の投稿を上に表示します。
+      post_style_label: 投稿のスタイル
+      post_style_help: 'タイムライン付きでは、投稿は Discourse と同じままで、avocado テーマのような縦線が投稿のアバター同士をつなぎ、イベントの通知を通り、時間の間隔（「1 か月後」）を円で示します。タブレット以上の幅で有効で、スマートフォンでは投稿は変わりません。'
+      post_style_discourse: Discourse（標準）
+      post_style_direct: タイムライン付き（avocado スタイル）
+      topic_reply_to_style_label: 投稿の「返信先」
+      topic_reply_to_style_help: 'ほかの投稿への返信で、返信先をどう表示するかです。Discourse ではヘッダーの右に「↩ 名前」（返信先が直前の投稿でないときだけ）。avocado では名前の下に「↳ 返信先 [アバター] 名前」の行をすべての返信に表示します。クリックすると返信先の投稿を表示します。'
+      topic_reply_to_style_discourse: 'Discourse（標準: ヘッダーの右に ↩ 名前）'
+      topic_reply_to_style_avocado: 名前の下の行（avocado スタイル）
       new_replies_bar_label: 新着返信のお知らせ
       new_replies_bar_help: Discourse のように、スレッドを読んでいる途中でリアルタイムに返信が届くと「N 件の新しい返信があります」のバーが表示され、そこへ移動できます。
+      content_width_label: 'コンテンツの幅'
+      content_width_default: 'デフォルト'
+      content_width_wide: '広い'
+      content_width_wider: 'さらに広い'
+      content_width_90: '90%'
+      content_width_full: '全幅'
+      content_width_custom: 'カスタム'
+      content_width_reset: 'デフォルト'
+      content_width_help: 'コンテンツカード（一覧、スレッド、プロフィール）の最大幅です。スレッドでは投稿の列も一緒に広がります。デフォルトは Discourse と同じ 1110px で、90% と全幅は画面に合わせます。プレビューは 1440px の画面で実際のフォーラムを表示します。'
+      content_width_caption: '1440px の画面'
+      content_width_preview_index: 'ホーム'
+      content_width_preview_discussion: 'スレッド'
+      topic_sticky_avatar_label: 投稿のアバターを固定
+      topic_sticky_avatar_help: '長い投稿では、作成者のアバターがスクロールに追従し、投稿の最後まで表示されます（avocado テーマと同様）。パソコンのみ。'
       topic_event_posts_label: イベント投稿
       topic_event_posts_help: 「スレッドをロックしました」「スレッドを固定しました」などの Flarum のお知らせをスレッド内に表示します。Discourse ではこのようには表示されません。
       badges:
@@ -383,8 +435,23 @@ ramon-canela:
         section_legal: ガイドライン、利用規約、プライバシー
         guidelines_enabled_label: ガイドラインページ（/guidelines）
         guidelines_enabled_help: フォーラムのコミュニティルール。概要の隣のタブとサイドバーの「その他」メニューに表示されます。Discourse と同様に、/faq も同じページに移動します。
+        guidelines_page_label: fof/pages のページ
+        guidelines_page_none: "なし：下のテキストを使う"
+        guidelines_page_help: ページを選ぶと、/guidelines はそのページの内容を表示し（fof/pages の公開設定に従います）、下のテキストは使われなくなります。内容は fof/pages で編集します。
+        guidelines_page_create: 現在のテキストで「ガイドライン」ページを作成
         guidelines_text_label: ガイドラインの文章
         guidelines_text_help: 空欄にすると、Discourse のガイドラインを参考にしたテーマのデフォルト文章を使用します。Markdown と BBCode に対応。HTML タグを含む場合は HTML として扱われます。
+        section_about_pages: 概要エリアのページ
+        about_pages_help: 'fof/pages のページを好きなだけ「概要」と「ガイドライン」の横のタブとして追加できます。どのページもルールのレイアウト(タイトル、セクション目次、カード)で表示されます。'
+        about_pages_list_help: 各ページはリストの順に「概要」と「ガイドライン」の後ろのタブになり、/about/id-slug でガイドラインと同じレイアウトで表示されます。ラベルが空ならページのタイトルを使います。アイコンは Font Awesome のクラスです。fof/pages で非表示または制限されたページは、閲覧できる人にだけ表示されます。
+        about_pages_add: ページを追加…
+        about_pages_none_left: fof/pages のページはすべてリストにあります
+        about_pages_missing: 'ページ #{id} (見つかりません)'
+        about_pages_label: タブのラベル
+        about_pages_icon: アイコン (任意)
+        about_pages_up: 上へ
+        about_pages_down: 下へ
+        about_pages_remove: 概要エリアから外す
         tos_url_label: 利用規約のアドレス
         tos_url_help: 「利用規約」タブと /tos はここに移動します。名前に「terms」を含む FoF Terms のポリシーが優先されます。
         privacy_url_label: プライバシーポリシーのアドレス
@@ -1427,6 +1494,10 @@ ramon-canela:
         edit_poll: 投票を編集
         action_create_topic: スレッドの作成
         create_topic_desc: 新しいスレッドを作成します
+    tag_modal:
+      edit_title: タグを編集
+      primary_heading: プライマリタグ
+      secondary_heading: セカンダリタグ
     modals:
       login_title: おかえりなさい
       signup_title: アカウントを作成
@@ -2024,6 +2095,8 @@ ramon-canela:
       customize_categories: タグをカスタマイズ
       customize_tags: セカンダリタグをカスタマイズ
       customize_filter: 絞り込み…
+      customize_community: カスタマイズ
+      customize_community_help: '「その他」に移す項目のチェックを外してください。この設定はこのブラウザに保存されます。'
       customize_save: 保存
       customize_reset: デフォルトに戻す
       keyboard_shortcuts: キーボードショートカット
@@ -2131,6 +2204,7 @@ ramon-canela:
       upload:
         uploading: '{count, plural, one {ファイルをアップロード中…} other {# 件のファイルをアップロード中…}}'
       wiki:
+        author_role: 作成者
         column_article: '記事'
         categories: 'カテゴリ'
         all_categories: 'すべてのカテゴリ'
@@ -2139,6 +2213,7 @@ ramon-canela:
         edited_by: '{name} が編集'
         edits_title: '{date} に最終編集'
         history_title: '版の履歴'
+        history_failed: 'この記事の版を読み込めませんでした。'
         close: '閉じる'
         more: 'その他の操作'
         created: '作成'
@@ -2170,6 +2245,10 @@ ramon-canela:
       post:
         mention_unavailable: "表示できない投稿"
         in_reply_to: '返信先: クリックで投稿を表示'
+        reply_to_label: 返信先
+        remove_reply: 返信先を外す
+        share_short: リンクをコピー
+        more_short: その他の操作
         replies: '{count, plural, one {# 件の返信} other {# 件の返信}}'
         more_replies: '{count, plural, one {さらに # 件の返信を表示} other {さらに # 件の返信を表示}}'
         like: この投稿にいいね
@@ -2403,6 +2482,8 @@ ramon-canela:
         other: その他
         private: '通知は個人的なものです。あなた自身のプロフィールにのみ表示されます。'
   api:
+    loader:
+      invalid_svg: ファイルが有効な SVG ではないか、整理後に 64 KB を超えています。
     ai:
       errors:
         generic: AI が現在応答できません。しばらくしてからもう一度お試しください。

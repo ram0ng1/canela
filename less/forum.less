@@ -32,6 +32,7 @@
 @import "forum/UserMenu.less";
 @import "forum/Review.less";
 @import "forum/Composer.less";
+@import "forum/TagModal.less";
 @import "forum/Search.less";
 @import "forum/Settings.less";
 @import "forum/User.less";
@@ -56,6 +57,8 @@
 
 // Movimento do Discourse (por último: ajusta spinner, dicas e toasts)
 @import "forum/Motion.less";
+// Indicador de carregamento com SVG (depois do Motion, que ajusta o anel).
+@import "forum/Loader.less";
 
 // Extensões de terceiros (FoF) no visual do Discourse
 @import "forum/thirdparty/BestAnswer.less";
@@ -77,6 +80,10 @@
 @import "forum/thirdparty/Marketplace.generated.less";
 @import "forum/thirdparty/Marketplace.less";
 @import "forum/thirdparty/MarketplacePages.less";
+
+// Estilo das postagens "Direto" (o modo de conversa do avocado): depois das
+// extensões de terceiros, porque refaz a barra de ações que elas repaginam.
+@import "forum/PostDirect.less";
 
 // Modais de formulário longo: largos, em colunas, com o salvar fixo (por
 // último: vence os tamanhos dos modais do core e das extensões).

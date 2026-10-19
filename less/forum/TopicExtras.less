@@ -767,10 +767,14 @@ button.CanelaTopicMap-stat {
   }
 }
 
+// O nome não corta se houver espaço: quebra em até duas linhas antes de cair
+// nas reticências (nomes de exibição costumam ter nome e sobrenome).
 .CanelaUserCard-username {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
   font-size: inherit;
   font-weight: 700;
   line-height: 1.2;
@@ -793,6 +797,12 @@ button.CanelaTopicMap-stat {
   flex: 0 0 auto;
   min-width: 150px;
   max-width: 225px;
+
+  // Só o "…" (sem "Mensagem"/"Conversar"): não reserva a largura dos botões,
+  // que sobrava vazia e espremia o nome.
+  &:not(:has(> .Button)) {
+    min-width: 0;
+  }
 
   > .Button,
   > .Dropdown {
@@ -886,14 +896,8 @@ button.CanelaTopicMap-stat {
   color: var(--cn-link);
 }
 
-.CanelaUserCard-online {
-  color: var(--cn-primary);
-
-  .icon {
-    margin-right: var(--cn-space-1);
-    font-size: 10px;
-    color: var(--online-user-circle-color);
-  }
+.CanelaUserCard-online .CanelaUserCard-onlineNow {
+  color: var(--online-user-circle-color, #2ecc71);
 }
 
 // Os emblemas: pílulas de borda fina com o ícone colorido, e "Mais N".
@@ -1091,5 +1095,44 @@ button.CanelaTopicMap-stat {
   .PostStream-timeGap,
   .PostStream-afterFirstPost {
     display: none;
+  }
+}
+
+// "•" entre os itens das linhas de fatos e de metadados do cartão.
+.CanelaUserCard-facts > * + *::before,
+.CanelaUserCard-metadata > * + *::before {
+  content: '•';
+  margin-right: 0.5em;
+  color: var(--cn-primary-low-mid);
+  text-decoration: none;
+}
+
+
+// A setinha à esquerda do cartão, apontando para o avatar de onde ele veio
+// (a altura vem do JS em --usercard-arrow). Dois triângulos: a borda e, por
+// cima, o preenchimento na cor do cartão.
+.CanelaUserCard.CanelaUserCard--arrow {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: var(--usercard-arrow, 40px);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  &::before {
+    left: -10px;
+    border-width: 9px 10px 9px 0;
+    border-color: transparent var(--cn-border) transparent transparent;
+  }
+
+  &::after {
+    left: -9px;
+    border-width: 8px 9px 8px 0;
+    border-color: transparent var(--cn-surface) transparent transparent;
   }
 }

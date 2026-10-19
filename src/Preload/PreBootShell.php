@@ -70,6 +70,8 @@ final class PreBootShell
             'Canela--noSidebar' => ! $sidebar,
             'Canela--headerSearch' => $bool('canelaHeaderSearch', true),
             'Canela--noEventPosts' => ! $bool('canelaTopicEventPosts', false),
+            // A linha do tempo ligando os avatares (less/forum/PostDirect.less).
+            'Canela--postDirect' => ($attrs['canelaPostStyle'] ?? null) === 'direct',
         ]));
 
         $config = json_encode([
@@ -97,6 +99,20 @@ final class PreBootShell
         // servidor conhece; o visitante que escolheu claro/escuro guarda a
         // escolha no sessionStorage, que o core só lê no boot do JS. Sem isto,
         // a página pintava no modo do sistema e trocava depois (escuro → claro).
+        // A largura do cartão de conteúdo escolhida no admin, antes da primeira
+        // pintura (aplicada no JS, o cartão mudaria de tamanho depois do boot).
+        // Aceita px (960–1800) ou as opções "90%" e "100%" (largura toda).
+        $raw = trim((string) $this->settings->get('canela.content_width'));
+        $width = match (true) {
+            $raw === '90%', $raw === '100%' => $raw,
+            ctype_digit($raw) && (int) $raw >= 960 && (int) $raw <= 1800 && (int) $raw !== 1110 => ((int) $raw).'px',
+            default => null,
+        };
+
+        if ($width !== null) {
+            $document->head[] = '<style>:root{--cn-main-max:'.$width.'}</style>';
+        }
+
         // Como no core, a escolha do visitante só vale com o padrão do fórum em "auto".
         if (($this->settings->get('color_scheme') ?? 'auto') === 'auto') {
             $document->head[] = '<script>'.self::THEME_SCRIPT.'</script>';

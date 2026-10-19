@@ -15,6 +15,8 @@ import AdminToggle from '../components/AdminToggle';
 import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
 import { PalettePreview } from '../components/PalettePreview';
+import LoaderPicker from '../components/LoaderPicker';
+import ContentWidthControl from '../components/ContentWidthControl';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings';
@@ -66,6 +68,14 @@ const CORE_CARDS: CardDef[] = [
         </div>
       </>
     ),
+  },
+  {
+    id: 'content-width',
+    group: 'appearance',
+    icon: 'fas fa-arrows-left-right',
+    title: () => trans(`${KEY}.content_width_label`, 'Largura do conteúdo'),
+    keywords: 'largura width conteúdo content cartão card box tamanho size largo wide',
+    body: () => <ContentWidthControl />,
   },
   {
     id: 'font',
@@ -183,6 +193,21 @@ const CORE_CARDS: CardDef[] = [
     ),
     keywords: 'carregamento loading barra bar progresso progress topo top navegação transição',
     master: 'canela.loading_slider',
+  },
+  {
+    // As chaves canela.loader_* são variáveis do LESS (extend.php): o desenho
+    // escolhido vai para a folha do fórum e troca todo LoadingIndicator.
+    id: 'loader',
+    group: 'appearance',
+    icon: 'fas fa-spinner',
+    title: () => trans(`${KEY}.loader.title`, 'Indicador de carregamento'),
+    description: () =>
+      trans(
+        `${KEY}.loader.help`,
+        'O desenho que aparece enquanto algo carrega: na lista, nos posts, no perfil, nos modais, nos menus, nos botões, no editor, nas extensões e na primeira carga da página. Troque o anel cinza do Flarum por um SVG animado.'
+      ),
+    keywords: 'carregamento carregando loading loader spinner preloader indicador svg animado animação girando avocado',
+    body: () => <LoaderPicker />,
   },
   {
     id: 'toast-auto-close',
@@ -413,9 +438,14 @@ const CORE_CARDS: CardDef[] = [
           'Avatares de quem participou',
           'Os avatares do autor e de quem respondeu por último ao lado de cada discussão, como a coluna de participantes do Discourse.'
         )}
-        {toggle('list_views', 'Coluna de visualizações', 'O número de visualizações de cada discussão, contado pelo card Visualizações de discussão.', {
-          dependsOn: 'canela.stats_views_enabled',
-        })}
+        {toggle(
+          'list_views',
+          'Coluna de visualizações',
+          'O número de visualizações de cada discussão, contado pelo card Visualizações de discussão.',
+          {
+            dependsOn: 'canela.stats_views_enabled',
+          }
+        )}
         {toggle(
           'list_heat',
           'Destacar contagens altas',
@@ -491,6 +521,57 @@ const CORE_CARDS: CardDef[] = [
     ),
   },
   {
+    // O post do Discourse com a linha do tempo do avocado ligando os avatares
+    // (less/forum/PostDirect.less, pela classe Canela--postDirect). Vale para
+    // todos: a escolha é só do admin.
+    id: 'post-style',
+    group: 'topic',
+    icon: 'fas fa-comments',
+    title: () => trans(`${KEY}.post_style_label`, 'Estilo das postagens'),
+    keywords:
+      'estilo style postagens posts discussão discussion direto direct avocado discourse linha do tempo timeline avatar conversa conversation',
+    body: () => (
+      <AdminSelect
+        settingKey="canela.post_style"
+        label={trans(`${KEY}.post_style_label`, 'Estilo das postagens')}
+        help={trans(
+          `${KEY}.post_style_help`,
+          'Com a linha do tempo, os posts continuam iguais aos do Discourse, mas uma linha vertical, como a do tema avocado, liga os avatares de um post ao outro, passa pelos avisos de evento e marca com um círculo os intervalos de tempo ("um mês depois"). A partir do tablet; no celular o post fica igual.'
+        )}
+        options={{
+          discourse: trans(`${KEY}.post_style_discourse`, 'Discourse (padrão)'),
+          direct: trans(`${KEY}.post_style_direct`, 'Com a linha do tempo (estilo avocado)'),
+        }}
+        default="discourse"
+      />
+    ),
+  },
+  {
+    // O "em resposta a" do avocado (uma linha embaixo do nome), independente
+    // da linha do tempo e das respostas embutidas.
+    id: 'reply-to-style',
+    group: 'topic',
+    icon: 'fas fa-reply',
+    title: () => trans(`${KEY}.topic_reply_to_style_label`, '"Em resposta a" nas postagens'),
+    keywords: 'em resposta a in reply to resposta reply menção mention cabeçalho header avocado discourse linha line',
+    extensions: ['flarum-mentions'],
+    body: () => (
+      <AdminSelect
+        settingKey="canela.topic_reply_to_style"
+        label={trans(`${KEY}.topic_reply_to_style_label`, '"Em resposta a" nas postagens')}
+        help={trans(
+          `${KEY}.topic_reply_to_style_help`,
+          'Como a postagem que responde a outra mostra a quem responde. No Discourse, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
+        )}
+        options={{
+          discourse: trans(`${KEY}.topic_reply_to_style_discourse`, 'Discourse (padrão: ↩ nome à direita do cabeçalho)'),
+          avocado: trans(`${KEY}.topic_reply_to_style_avocado`, 'Linha abaixo do nome (estilo avocado)'),
+        }}
+        default="discourse"
+      />
+    ),
+  },
+  {
     id: 'post-actions',
     group: 'topic',
     icon: 'fas fa-ellipsis',
@@ -539,6 +620,18 @@ const CORE_CARDS: CardDef[] = [
     ),
     keywords: 'eventos event posts trancou fixou locked pinned renomeou renamed avisos',
     master: 'canela.topic_event_posts',
+  },
+  {
+    id: 'sticky-avatar',
+    group: 'topic',
+    icon: 'fas fa-user-pen',
+    title: () => trans(`${KEY}.topic_sticky_avatar_label`, 'Avatar fixo nos posts'),
+    description: help(
+      'topic_sticky_avatar',
+      'Em posts longos, o avatar do autor acompanha a rolagem e fica visível até o fim do post, como no tema avocado. Só no computador.'
+    ),
+    keywords: 'avatar fixo sticky acompanha rolagem scroll fixed avatar post longo',
+    master: 'canela.topic_sticky_avatar',
   },
   {
     id: 'topic-footer',

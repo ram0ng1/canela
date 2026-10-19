@@ -93,6 +93,9 @@ final class PreloadContent
             // "Novos (N)" e "Não lidos (N)" da tag: as do fórum todo já vêm no fórum.
             'tag' => $guest || ! isset($params['slug']) ? [] : [['/canela-counts', ['tag' => (string) $params['slug']]]],
             'canela.about' => [['/canela-about', []]],
+            // `GuidelinesPage` e `AboutExtraPage` (a mesma página de regras).
+            'canela.guidelines', 'canela.faq' => [['/canela-guidelines', []]],
+            'canela.about_page' => preg_match('/^(\d+)/', (string) ($params['page'] ?? ''), $match) ? [['/canela-about-pages/'.$match[1], []]] : [],
             // `CategoriesPage` → `app.tagList.load([...])`.
             'canela.categories' => $this->extensions->isEnabled('flarum-tags') ? [['/tags', ['include' => 'children,lastPostedDiscussion,parent']]] : [],
             'canela.users' => [$this->directoryRequest($params)],

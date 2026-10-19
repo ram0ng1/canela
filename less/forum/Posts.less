@@ -329,6 +329,55 @@
     }
   }
 
+  // Menção de grupo: a mesma pílula, tingida pela cor do grupo (--color, que
+  // o flarum/mentions põe no estilo), com o ícone num círculo cheio na frente.
+  .GroupMention {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.18em 0.5em 0.18em 0.22em;
+    border: 1px solid ~"color-mix(in oklch, var(--color, var(--cn-primary-medium)) 28%, transparent)";
+    border-radius: 999px;
+    background: ~"color-mix(in oklch, var(--color, var(--cn-primary-medium)) 12%, var(--cn-surface))";
+    color: ~"color-mix(in oklch, var(--color, var(--cn-primary)) 78%, var(--cn-primary))";
+    font-size: 0.93em;
+    font-weight: 600;
+    line-height: 1.2;
+    vertical-align: baseline;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: ~"color-mix(in oklch, var(--color, var(--cn-primary-medium)) 20%, var(--cn-surface))";
+    }
+
+    .GroupMention-name {
+      color: inherit;
+    }
+
+    // O ícone do grupo vem depois do nome no HTML: vai para a frente.
+    .icon {
+      order: -1;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.35em;
+      height: 1.35em;
+      margin: 0;
+      padding: 0.25em;
+      border-radius: 50%;
+      background: var(--color, var(--cn-primary-medium));
+      color: #fff;
+      font-size: 0.85em;
+      line-height: 1;
+    }
+
+    // Sem ícone, a pílula não precisa do recuo da esquerda.
+    &:not(:has(.icon)) {
+      padding-left: 0.5em;
+    }
+  }
+
   .UserMention--deleted,
   .PostMention--deleted {
     opacity: 0.6;
@@ -530,6 +579,7 @@
     }
   }
 
+  // O nome do autor em preto (a cor do texto), não no cinza do cabeçalho.
   .PostUser-name {
     font-size: inherit;
     line-height: inherit;
@@ -538,7 +588,7 @@
     a {
       font-weight: 700;
       font-size: inherit;
-      color: var(--cn-primary-high);
+      color: var(--cn-primary);
     }
   }
 
@@ -601,6 +651,51 @@
     &:focus-visible,
     &--open {
       color: var(--cn-primary-high);
+    }
+  }
+
+  // O "em resposta a" do avocado (canela.topic_reply_to_style): uma linha
+  // própria embaixo do nome, "↳ Em resposta a [avatar] Fulano", em cinza com
+  // o nome em negrito.
+  // Logo abaixo do nome, sem o respiro de uma linha inteira entre os dois.
+  .Post-header > ul > li.item-canelaReplyTo:has(> .CanelaReplyTo--line) {
+    order: 10;
+    flex-basis: 100%;
+    margin: -6px 0 0;
+  }
+
+  .CanelaReplyTo--line {
+    max-width: 100%;
+    gap: 5px;
+    font-size: var(--cn-font-down-1);
+    font-weight: 600;
+    line-height: 1.3;
+
+    // O "Responder" virado: a seta do "↳".
+    .CanelaReplyTo-icon {
+      flex: none;
+      font-size: 1em;
+      transform: rotate(180deg);
+    }
+
+    .Avatar {
+      flex: none;
+    }
+
+    .CanelaReplyTo-name {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--cn-primary-high);
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &:hover .CanelaReplyTo-label,
+    &:focus-visible .CanelaReplyTo-label,
+    &.CanelaReplyTo--open .CanelaReplyTo-label {
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
   }
 
@@ -692,17 +787,17 @@
       padding: 0 var(--cn-post-gap);
     }
 
-    // O avatar desce junto com a leitura de um post longo (sticky-avatar).
     .Post-side {
       padding-top: 4px;
     }
 
-    // O sticky cria um contexto de empilhamento próprio: com z-index, o
-    // tooltip do flair não fica sob o conteúdo dos posts vizinhos.
+    // O z-index cria um contexto de empilhamento próprio: o tooltip do flair
+    // não fica sob o conteúdo dos posts vizinhos. Fixo (sticky) só com a
+    // opção "Avatar fixo nos posts" do admin (.Canela--stickyAvatar).
     .CanelaPostAvatar {
       z-index: 3;
-      position: sticky;
-      top: calc(var(--cn-header-height) + 13px);
+      position: relative;
+      top: auto;
       width: 48px;
       height: 48px;
     }
@@ -1114,11 +1209,12 @@
     .CanelaEmbeddedPost {
       padding: 0 0 var(--cn-space-6);
 
+      // A linha passa da caixa e desce até perto do nome do post de baixo.
       &::before {
         content: "";
         position: absolute;
         top: 24px;
-        bottom: 0;
+        bottom: calc(-1 * (var(--cn-space-3) + 14px));
         left: 24px;
         width: 1px;
         background: var(--cn-border);
@@ -1205,55 +1301,89 @@
 }
 
 // ---------------------------------------------------------------------
-// Posts de evento: a "small action" do Discourse — ícone cinza grande na
-// coluna do avatar e o texto em cinza ao lado.
+// Posts de evento: a "small action" do Discourse, numa linha compacta: o
+// ícone pequeno num círculo na coluna do avatar, o avatar de quem fez e o
+// texto em cinza com o nome em negrito.
 // ---------------------------------------------------------------------
 .CanelaTopic .EventPost {
-  padding: 0 0 var(--cn-space-3);
+  min-height: 32px;
+  padding: 0.5em 0;
 
   .Post-container {
-    align-items: start;
+    align-items: center;
   }
 
   .Post-side {
     display: flex;
     justify-content: center;
-    padding-top: var(--cn-space-4);
+    padding-top: 0;
   }
 
+  // Igual aos eventos das mensagens (.CanelaDialogEvent): o ícone solto, em
+  // cinza claro, sem círculo nem borda (o fundo da superfície só corta a linha
+  // do tempo do estilo Direto em volta dele).
+  // O ícone é um <svg> (Lucide): sem largura/altura explícitas ele esticava
+  // até a coluna do avatar (45px). 1em, no tamanho do texto do evento × 1.1.
   .EventPost-icon {
+    position: relative;
+    z-index: 1;
     float: none;
     display: block;
-    width: auto;
-    height: auto;
+    flex: none;
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
     margin: 0;
-    background: none;
+    // O fundo da superfície com folga em cima e embaixo interrompe a linha do
+    // tempo do estilo com a linha: ela chega ao ícone e continua depois dele.
+    padding: 5px 2px;
+    border: 0;
+    background: var(--cn-surface);
     color: var(--cn-primary-low-mid);
-    font-size: 1.5199em;
+    font-size: calc(var(--cn-font-down-1) * 1.1);
     line-height: 1;
-    text-align: center;
+  }
+
+  .Post-body,
+  .Post-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    min-width: 0;
+  }
+
+  .EventPost-avatar {
+    --size: 20px;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    line-height: 20px;
   }
 
   .EventPost-info {
-    padding-top: 1.15em;
-    font-size: var(--cn-post-font);
+    padding-top: 0;
+    font-size: var(--cn-font-down-1);
     line-height: 1.4;
-    color: var(--cn-primary-high);
+    color: var(--cn-primary-medium);
 
     a {
       color: var(--cn-primary-high);
-      font-weight: 400;
+      font-weight: 600;
+    }
+
+    time {
+      color: var(--cn-primary-medium);
     }
   }
 }
 
 @media @phone {
   .CanelaTopic .EventPost {
-    padding-left: 44px;
+    padding-left: 0;
 
     .EventPost-icon {
-      margin-left: -44px;
-      margin-top: 0;
+      margin: 0;
     }
   }
 }
@@ -1481,6 +1611,275 @@
     .Badge {
       .Badge--size(20px);
       box-shadow: 0 0 0 2px var(--cn-surface);
+    }
+  }
+}
+
+// O "…" dos posts de evento (excluir o aviso): discreto, cinza e sem fundo,
+// e só aparece ao passar o mouse na linha (ou com o menu aberto / em foco).
+.CanelaTopic .EventPost {
+  .Post-controls {
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    .Dropdown-toggle {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background: none !important;
+      color: var(--cn-primary-medium);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-hover) !important;
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  &:hover .Post-controls,
+  .Post-controls:focus-within,
+  .Post-controls.open {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .CanelaTopic .EventPost .Post-controls {
+    opacity: 1;
+  }
+}
+
+// Eventos seguidos ficam juntos, como na lista de eventos das mensagens:
+// sem o fio entre um e outro (só antes do primeiro e depois do último).
+.CanelaTopic .PostStream-item:has(> .EventPost):has(+ .PostStream-item > .EventPost)::after {
+  display: none;
+}
+
+// Um fio ligando o ícone do evento ao avatar de quem fez, na altura do meio:
+// do lado direito do ícone (centrado na coluna) até 3px antes do avatar (a
+// coluna do avatar e o conteúdo ficam a 12px um do outro).
+.CanelaTopic .EventPost .Post-side {
+  position: relative;
+  align-self: stretch;
+  align-items: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 0.5 * var(--cn-font-down-1) * 1.1 + 4px);
+    right: -9px;
+    height: 1px;
+    background: var(--cn-primary-low-mid);
+    transform: translateY(-0.5px);
+  }
+}
+
+// O "…" do evento na linha do texto, centrado na altura, menor e sem
+// deslocamento (o core o posiciona como o dos posts normais).
+.CanelaTopic .EventPost .Post-controls {
+  position: static;
+  float: none;
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  margin: 0 0 0 2px;
+
+  .Dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1;
+  }
+}
+
+// Avatar fixo (admin: topic_sticky_avatar): nos posts longos o avatar
+// acompanha a rolagem, logo abaixo do cabeçalho, até o fim do post.
+.Canela--stickyAvatar .CanelaTopic .CanelaPostAvatar {
+  position: sticky;
+  top: calc(var(--cn-header-height, 52px) + 13px);
+}
+
+// O "…" mora em aside.Post-actions > ul > li (blocos e inline-block do core):
+// a linha de base deslocava o botão para cima. Tudo em flex, centrado.
+.CanelaTopic .EventPost .Post-actions {
+  position: static;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+
+  > ul,
+  > ul > li {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+  }
+}
+
+// Sem o pontinho de presença nos posts (o core ainda o põe no cabeçalho no
+// celular): quem está online aparece no cartão e no perfil, em texto.
+.CanelaTopic .Post-header .UserOnline {
+  display: none !important;
+}
+
+// Online, como no meta.discourse.org (discourse-whos-online, "ring"): um anel
+// verde em volta do avatar do post, separado dele por 1px da cor do cartão.
+.CanelaPostAvatar--online .Post-avatar,
+.CanelaPostAvatar--online > a .Avatar {
+  box-shadow:
+    0 0 0 1px var(--cn-surface),
+    0 0 0 3px var(--online-user-circle-color, var(--cn-success));
+}
+
+// O mesmo anel, mais fino, nos avatares do mapa da discussão.
+.CanelaTopicMap-poster--online .Avatar {
+  box-shadow:
+    0 0 0 1px var(--cn-surface),
+    0 0 0 2px var(--online-user-circle-color, var(--cn-success));
+}
+
+// O post ainda carregando (LoadingPost do core: header com avatar e uma
+// barra, corpo com três barras) com as medidas do post real, para nada
+// pular quando ele chega (medido a 1440px e a 390px contra um post de verdade):
+//   - tablet/desktop: 13px de respiro em cima, o avatar 4px abaixo (o
+//     padding da .Post-side) na coluna de 45px, o nome no meio do cabeçalho
+//     de 58px, o texto a 16px do cabeçalho em linhas de 24px (16px/1.5) e,
+//     embaixo, o espaço da barra de ações (20 + 38) e os 20px do post;
+//   - celular: o avatar no cabeçalho de 48px, o nome ao lado dele (56px),
+//     o texto na largura toda 12px abaixo e o espaço das ações (12 + 38 + 8).
+// Cada barra fica no meio da linha de texto que ela representa.
+.CanelaTopic .LoadingPost {
+  --cn-skel-line: calc(var(--cn-post-font, 16px) * 1.5);
+  padding: 13px 0 78px;
+  animation: none;
+
+  .Post-header {
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  .Post-header .Avatar,
+  .PostUser-avatar {
+    position: static;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    float: none;
+  }
+
+  .Post-header .fakeText {
+    display: block;
+    width: 180px;
+    max-width: 60%;
+    height: 14px;
+    margin: 0;
+    border-radius: 6px;
+  }
+
+  .Post-body {
+    margin: 0;
+    padding: 16px 0 4px;
+
+    // Cada barra ocupa a altura de uma linha, com 12px pintados no meio
+    // (o fundo só na caixa do conteúdo): sem margens que se somem ou colapsem.
+    .fakeText {
+      display: block;
+      box-sizing: border-box;
+      height: var(--cn-skel-line);
+      margin: 0;
+      padding: ~"calc((var(--cn-skel-line) - 12px) / 2)" 0;
+      background-clip: content-box;
+      border-radius: 6px;
+
+      &:nth-child(1) { width: 92%; }
+      &:nth-child(2) { width: 84%; }
+      &:nth-child(3) { width: 55%; }
+    }
+  }
+}
+
+@media @tablet-up {
+  .CanelaTopic .LoadingPost {
+    display: grid;
+    grid-template-columns: var(--cn-post-avatar, 45px) minmax(0, 1fr);
+    grid-template-rows: 58px auto;
+    column-gap: var(--cn-post-gap, 12px);
+
+    .Post-header {
+      display: contents;
+    }
+
+    .Post-header .Avatar,
+    .PostUser-avatar {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: start;
+      margin-top: 4px;
+    }
+
+    // O nome real (22px de altura) começa 16px abaixo do topo do cabeçalho.
+    .Post-header .fakeText {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: start;
+      margin-top: 20px;
+    }
+
+    // Os 12px de respiro à direita do corpo real (.Post-main).
+    .Post-body {
+      grid-column: 2;
+      grid-row: 2;
+      margin-right: var(--cn-post-gap, 12px);
+    }
+  }
+
+  // Com a linha do tempo, o avatar é um nó centrado nela, como o real.
+  .Canela--postDirect .CanelaTopic .LoadingPost .PostUser-avatar {
+    margin-left: ~"calc((var(--cn-post-avatar, 45px) - 48px) / 2)";
+    box-shadow: 0 0 0 4px var(--cn-direct-ring);
+  }
+}
+
+@media @phone {
+  .CanelaTopic .LoadingPost {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-rows: 48px auto;
+    column-gap: 8px;
+    padding: 15px 0 58px;
+
+    .Post-header {
+      display: contents;
+    }
+
+    .Post-header .Avatar,
+    .PostUser-avatar {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    // O nome ao lado do avatar (56px da borda), no meio da altura dele.
+    .Post-header .fakeText {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: center;
+    }
+
+    // O texto na largura toda, 12px abaixo do cabeçalho.
+    .Post-body {
+      grid-column: ~"1 / -1";
+      grid-row: 2;
+      padding: 12px 0 0;
     }
   }
 }

@@ -20,6 +20,7 @@ const ORDER: string[] = [
   'text-size',
   'announcement',
   'loading-slider',
+  'loader',
   'toast-auto-close',
   // Cabeçalho e barra lateral
   'header-search',
@@ -43,6 +44,8 @@ const ORDER: string[] = [
   'infinite-scroll',
   'categories-page',
   // Tópico
+  'post-style',
+  'reply-to-style',
   'post-actions',
   'embedded-replies',
   'post-content',
@@ -82,6 +85,7 @@ const ORDER: string[] = [
   // Comunidade
   'about',
   'guidelines',
+  'about_pages',
   'legal',
   'directory',
   'groups',

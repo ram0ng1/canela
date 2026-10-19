@@ -353,21 +353,22 @@ function extendProfileHero() {
 }
 
 /**
- * Username enorme em negrito, na mesma linha os ícones (selo de verificado,
- * utils/userIcons) e as insígnias; se for diferente, o nome de exibição embaixo.
+ * O nome de exibição (o apelido do flarum/nicknames, como nos posts) enorme em
+ * negrito, na mesma linha os ícones (selo de verificado, utils/userIcons) e as
+ * insígnias; se for diferente, o username embaixo.
  */
 function identity(user: User, badges: Mithril.Children = null): Mithril.Children {
   const username = user.username();
-  const displayName = user.displayName();
+  const displayName = user.displayName() || username;
 
   return (
     <div className="CanelaUserHero-names">
       <h1 className="UserCard-identity CanelaUserHero-username">
-        <span className="username">{username}</span>
+        <span className="username">{displayName}</span>
         {userIcons(user, 'profile')}
         {badges}
       </h1>
-      {displayName && displayName !== username && <h2 className="CanelaUserHero-displayName">{displayName}</h2>}
+      {displayName !== username && <h2 className="CanelaUserHero-displayName">{username}</h2>}
     </div>
   );
 }

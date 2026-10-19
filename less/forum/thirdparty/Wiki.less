@@ -20,7 +20,9 @@
   --cn-wiki-avatar: 45px;
   --cn-wiki-gap: 12px;
   --cn-wiki-offset: calc(~"var(--cn-wiki-avatar) + var(--cn-wiki-gap)");
-  --cn-wiki-stream: 759px;
+  // A coluna do texto acompanha a "Largura do conteúdo" do admin, como a
+  // coluna dos posts da discussão (−351px: o sumário à direita e os vãos).
+  --cn-wiki-stream: var(--cn-topic-stream-max, ~"calc(var(--cn-main-max, 1110px) - 351px)");
   // A borda esquerda do texto do post: a coluna do avatar e os 11px do cooked.
   --cn-wiki-text: calc(~"var(--cn-wiki-offset) + 11px");
 
@@ -474,7 +476,7 @@
 }
 
 .CanelaWiki .CanelaWikiArticle-layout > .LinkRobinsWiki-articleMain {
-  flex: 0 1 var(--cn-wiki-stream);
+  flex: 1 1 var(--cn-wiki-stream);
   max-width: var(--cn-wiki-stream);
   min-width: 0;
 }
@@ -730,57 +732,41 @@
   border-bottom: 1px solid var(--cn-border);
 }
 // ---------------------------------------------------------------------
-// Histórico de revisões: painel que abre pelo lápis ou pelo mapa
+// Revisões: o modal do histórico de edições (Extras.less, .CanelaHistory-*)
+// com a lista das revisões à esquerda; no celular, uma faixa no topo.
 // ---------------------------------------------------------------------
-.CanelaWiki .CanelaWikiHistory {
-  margin-top: var(--cn-space-4);
-  padding: var(--cn-space-3) var(--cn-space-4) var(--cn-space-4);
-  border: 1px solid var(--cn-border);
-  border-radius: var(--cn-radius-large);
-  background: var(--cn-surface);
-  scroll-margin-top: calc(~"var(--cn-header-height, 60px) + 16px");
+.CanelaWikiRevisions.Modal-body {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: var(--cn-space-4);
+  align-items: start;
 }
 
-.CanelaWikiHistory-header {
+.CanelaWikiRevisions-main {
+  min-width: 0;
+}
+
+.CanelaWikiRevisions-list {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: var(--cn-space-2);
-}
-
-.CanelaWikiHistory-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 64vh;
   margin: 0;
-  font-size: var(--cn-font-up-1);
-  font-weight: 600;
-  color: var(--cn-primary);
-}
-
-.CanelaWiki .LinkRobinsWiki-revisions {
-  margin: 0;
-  padding: 0;
+  padding: 0 var(--cn-space-3) 0 0;
+  overflow-y: auto;
   list-style: none;
+  border-right: 1px solid var(--cn-border);
 }
 
-.CanelaWiki .LinkRobinsWiki-revision.CanelaWikiRevision {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-top: 1px solid var(--cn-border);
-  background: none;
-}
-
-.CanelaWikiRevision-head {
+.CanelaWikiRevisions-item {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 10px 4px;
+  padding: 8px;
+  border-radius: var(--cn-radius);
   color: var(--cn-primary-high);
-  font-size: var(--cn-font-0);
+  font-size: var(--cn-font-down-1);
   text-align: left;
   cursor: pointer;
 
@@ -788,97 +774,126 @@
   &:focus-visible {
     background: var(--cn-hover);
   }
+
+  &.active {
+    background: var(--cn-selected);
+    color: var(--cn-primary);
+  }
+
+  .fa-user-pen {
+    flex: none;
+    width: 24px;
+    text-align: center;
+    color: var(--cn-primary-medium);
+  }
 }
 
-.CanelaWikiRevision-caret {
-  flex: none;
-  width: 14px;
-  color: var(--cn-primary-medium);
-  font-size: 0.85em;
-}
-
-.CanelaWikiRevision-avatar.Avatar {
+.CanelaWikiRevisions-avatar.Avatar {
   .Avatar--size(24px);
   flex: none;
 }
 
-.CanelaWikiRevision-user {
-  flex: none;
-  font-weight: 600;
+.CanelaWikiRevisions-info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-.CanelaWikiRevision-summary {
-  flex: 1 1 auto;
+.CanelaWikiRevisions-line,
+.CanelaWikiRevisions-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   min-width: 0;
+}
+
+.CanelaWikiRevisions-meta:empty {
+  display: none;
+}
+
+.CanelaWikiRevisions-number {
+  flex: none;
+  color: var(--cn-primary-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.CanelaWikiRevisions-user {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaWikiRevisions-summary {
   overflow: hidden;
   color: var(--cn-primary-medium);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.CanelaWikiRevision-date {
+.CanelaWikiRevisions-date {
   flex: none;
-  margin-left: auto;
-  font-size: var(--cn-font-down-1);
   color: var(--cn-primary-medium);
 }
 
-.CanelaWiki {
-  .LinkRobinsWiki-revisionDiff {
-    padding: 0 4px var(--cn-space-3) 26px;
+.CanelaWikiRevisions-note,
+.CanelaWikiRevisions-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 var(--cn-space-3);
+  color: var(--cn-primary-high);
+}
+
+.CanelaWikiRevisions-note .icon {
+  color: var(--cn-primary-low-mid);
+}
+
+.CanelaWikiRevisions-titleLabel {
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+  color: var(--cn-primary-medium);
+}
+
+.CanelaWikiRevisions-title .icon {
+  font-size: 0.85em;
+  color: var(--cn-primary-medium);
+}
+
+@media @phone {
+  .CanelaWikiRevisions.Modal-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cn-space-3);
   }
 
-  .LinkRobinsWiki-diff-label {
-    margin: 0 0 6px;
-    font-size: var(--cn-font-down-1);
-    color: var(--cn-primary-medium);
-  }
-
-  .LinkRobinsWiki-diff {
+  // A lista vira uma faixa rolável de cartões pequenos acima da navegação.
+  .CanelaWikiRevisions-list {
+    flex-direction: row;
+    max-height: none;
+    margin: 0 calc(-1 * var(--cn-space-3));
+    padding: 0 var(--cn-space-3) var(--cn-space-2);
     overflow-x: auto;
+    overflow-y: hidden;
+    border-right: 0;
+    border-bottom: 1px solid var(--cn-border);
+    scrollbar-width: none;
+
+    > li {
+      flex: none;
+    }
+  }
+
+  .CanelaWikiRevisions-item {
+    width: auto;
+    max-width: 200px;
     border: 1px solid var(--cn-border);
-    border-radius: var(--cn-radius);
-    background: var(--cn-primary-very-low);
-    font-family: ~"ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-    font-size: var(--cn-font-down-1);
   }
 
-  .LinkRobinsWiki-diff-line {
-    color: var(--cn-primary-high);
-
-    &.is-add {
-      background: ~"color-mix(in srgb, var(--cn-success) 16%, var(--cn-surface))";
-    }
-
-    &.is-del {
-      background: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
-    }
-
-    &.is-add .LinkRobinsWiki-diff-sign {
-      color: var(--cn-success);
-    }
-
-    &.is-del .LinkRobinsWiki-diff-sign {
-      color: var(--cn-danger);
-    }
-  }
-
-  .LinkRobinsWiki-diff-add {
-    background: ~"color-mix(in srgb, var(--cn-success) 16%, var(--cn-surface))";
-  }
-
-  .LinkRobinsWiki-diff-del {
-    background: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
-  }
-
-  .LinkRobinsWiki-diff-fold,
-  .LinkRobinsWiki-diff-none {
-    color: var(--cn-primary-medium);
-  }
-
-  .LinkRobinsWiki-history-loadMore {
-    padding-top: var(--cn-space-2);
-    text-align: center;
+  .CanelaWikiRevisions-meta {
+    display: none;
   }
 }
 
@@ -1284,83 +1299,48 @@
 // ---------------------------------------------------------------------
 // Skeletons e vazios
 // ---------------------------------------------------------------------
-.CanelaWikiRow--skeleton {
+.CanelaWikiRow--skeleton,
+.CanelaWikiArticle-skeleton + .CanelaWikiArticle-layout {
   pointer-events: none;
-
-  .CanelaWikiRow-main {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
 }
 
-.CanelaWikiSkeleton-title,
-.CanelaWikiSkeleton-line,
-.CanelaWikiSkeleton-heading,
-.CanelaWikiSkeleton-crumb,
-.CanelaWikiSkeleton-age,
-.CanelaWikiSkeleton-avatar,
-.CanelaWikiSkeleton-postAvatar {
-  display: block;
-}
-
-.CanelaWikiSkeleton-title {
-  height: 18px;
-}
-
-.CanelaWikiSkeleton-line {
-  width: 90%;
-  height: 12px;
-
-  &--short {
-    width: 45%;
-  }
-}
-
+// O avatar do autor (24px) no lugar do avatar real da linha.
 .CanelaWikiSkeleton-avatar {
+  display: block;
   width: 24px;
   height: 24px;
   border-radius: 50%;
 }
 
-.CanelaWikiSkeleton-age {
-  width: 32px;
-  height: 12px;
-  margin-left: auto;
+.CanelaWikiSkeleton-age.CanelaSkeleton--word {
+  width: 2em;
 }
 
-.CanelaWikiArticle-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: var(--cn-wiki-stream);
+// A segunda linha do resumo e da descrição: no celular o texto real quebra
+// em duas.
+.CanelaSkeleton.CanelaWikiSkeleton-wrap {
+  display: none;
 }
 
-.CanelaWikiSkeleton-heading {
-  width: 60%;
-  height: 30px;
+@media @phone {
+  .CanelaSkeleton.CanelaWikiSkeleton-wrap {
+    display: block;
+  }
 }
 
-.CanelaWikiSkeleton-crumb {
-  width: 140px;
-  height: 14px;
-  margin-bottom: 8px;
-}
-
-.CanelaWikiPost--skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 220px;
-}
-
+// O avatar do post (48px; 40px no celular, ver abaixo) dentro do mesmo
+// .CanelaWikiPost-avatar do post real.
 .CanelaWikiSkeleton-postAvatar {
-  position: absolute;
-  top: var(--cn-space-4);
-  left: 0;
+  display: block;
   width: 48px;
   height: 48px;
   border-radius: 50%;
+}
+
+// O texto do artigo ainda não chegou: a altura de um artigo curto, para o
+// rodapé não subir e descer.
+.CanelaWikiPost--skeleton .CanelaWikiPost-body {
+  min-height: 220px;
 }
 
 // O vazio do Discourse: ícone grande num círculo tingido, a frase e a ação.
@@ -1468,7 +1448,6 @@
 // do cooked): perguntas, histórico, navegação, relacionados e comentários.
 .CanelaWiki {
   .LinkRobinsWiki-faq,
-  .CanelaWikiHistory,
   .CanelaWikiPager,
   .LinkRobinsWiki-related,
   .LinkRobinsWiki-comments {
@@ -1545,6 +1524,10 @@
   .CanelaWiki {
     --cn-wiki-offset: 0px;
     --cn-wiki-text: 0px;
+    // A coluna toda: com a "Largura do conteúdo" em 100%, o cálculo do
+    // desktop (100% − 351px) dava largura negativa, e o texto virava uma
+    // letra por linha.
+    --cn-wiki-stream: 100%;
   }
 
   .CanelaWikiNav {
@@ -1621,14 +1604,6 @@
     padding-right: 0;
   }
 
-  .CanelaWiki .CanelaWikiHistory {
-    padding: var(--cn-space-2) var(--cn-space-3) var(--cn-space-3);
-  }
-
-  .CanelaWikiRevision-summary {
-    display: none;
-  }
-
   .CanelaWiki .LinkRobinsWiki-mobileToc {
     margin: var(--cn-space-3) 0 0;
   }
@@ -1666,7 +1641,6 @@
   }
 
   .CanelaWikiSkeleton-postAvatar {
-    position: static;
     width: 40px;
     height: 40px;
   }

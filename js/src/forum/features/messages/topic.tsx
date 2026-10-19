@@ -325,6 +325,16 @@ function installStream(): void {
 
     if (!messagesOn() || !Array.isArray(items)) return items;
 
+    // Os eventos (`canelaEvents`) só vêm no "show" da conversa; aberta a
+    // partir da lista, ela chega sem eles e eles só apareciam depois de uma
+    // ação que recarregasse a conversa. Busca o show uma vez quando faltarem.
+    const dialog = this.attrs.dialog;
+
+    if (dialog && dialog.attribute('canelaEvents') === undefined && !dialog.canelaEventsRequested) {
+      dialog.canelaEventsRequested = true;
+      app.store.find('dialogs', dialog.id()).then(() => m.redraw());
+    }
+
     const last = this.canelaPrevTime as number | null;
     const tail = dialogEvents(this.attrs.dialog).filter((event) => last === null || new Date(event.createdAt).getTime() > last);
 

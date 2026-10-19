@@ -12,7 +12,7 @@ import type Mithril from 'mithril';
 import SidebarSection from './SidebarSection';
 import DraftsMenu, { showDraftsMenu } from '../features/composer/drafts/DraftsMenu';
 import { FooterColorMode, FooterPaletteSelector } from '../shell/colorMode';
-import { getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
+import { getCommunityMore, getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
 import { forumBool, forumInt, isExtensionEnabled, t } from '../utils/settings';
 import {
   allTags,
@@ -57,7 +57,7 @@ export default class CanelaSidebar extends IndexSidebar {
     // tem o "Entrar" do cabeçalho). O admin pode escondê-lo de vez.
     if (app.session.user && forumBool('canelaSidebarNewTopic', true)) items.add('newTopic', this.newTopicButton(), 100);
 
-    items.add('community', <SidebarSection name="community">{listItems(this.communityItems().toArray())}</SidebarSection>, 90);
+    items.add('community', <SidebarSection name="community">{listItems(this.communitySection().toArray())}</SidebarSection>, 90);
 
     if (isTagsEnabled() && forumBool('canelaSidebarCategories', true)) {
       const categories = this.categoryItems();
@@ -190,6 +190,36 @@ export default class CanelaSidebar extends IndexSidebar {
     return items;
   }
 
+  /**
+   * A seção principal depois de todas as extensões terem posto os seus itens:
+   * os que o leitor escolheu esconder vão para dentro do "Mais", e o "Mais"
+   * ganha o "Personalizar" com a lista de todos eles.
+   */
+  communitySection(): ItemList<Mithril.Children> {
+    const items = this.communityItems();
+    const hidden = new Set(getCommunityMore());
+    const entries: { key: string; label: string; icon?: string }[] = [];
+    const moved: Mithril.Children[] = [];
+
+    Object.keys(items.toObject()).forEach((key) => {
+      if (key === 'more') return;
+
+      const vnode = items.get(key) as any;
+
+      entries.push({ key, label: vnodeText(vnode) || key, icon: vnode?.attrs?.icon });
+
+      // O item ativo nunca some: quem está na página vê onde está.
+      if (hidden.has(key) && vnode?.attrs?.active !== true && vnode?.attrs?.active !== 'true') {
+        moved.push(vnode);
+        items.remove(key);
+      }
+    });
+
+    if (items.has('more')) items.setContent('more', this.moreDropdown(moved, entries));
+
+    return items;
+  }
+
   /** "Tópicos" fica ativo na página inicial sem filtro de tag nem de "Seguindo". */
   isIndexActive(): boolean {
     const routeName = app.current.get('routeName');
@@ -238,7 +268,22 @@ export default class CanelaSidebar extends IndexSidebar {
     return items;
   }
 
-  moreDropdown(): Mithril.Children {
+  moreDropdown(moved: Mithril.Children[] = [], entries: { key: string; label: string; icon?: string }[] = []): Mithril.Children {
+    const more = this.moreItems();
+
+    if (entries.length) {
+      more.add(
+        'customizeCommunity',
+        <Button
+          icon="fas fa-pencil"
+          onclick={() => app.modal.show(() => import('./CommunityCustomizeModal'), { entries, onsave: () => m.redraw() })}
+        >
+          {t('sidebar.customize_community')}
+        </Button>,
+        5
+      );
+    }
+
     return (
       <Dropdown
         className="CanelaSidebar-more"
@@ -247,8 +292,9 @@ export default class CanelaSidebar extends IndexSidebar {
         label={t('sidebar.more')}
         caretIcon={null}
         accessibleToggleLabel={t('sidebar.more')}
+        onshow={() => placeMoreMenu()}
       >
-        {this.moreItems().toArray()}
+        {[...moved, ...(moved.length ? [<li className="Dropdown-separator" />] : []), ...more.toArray()]}
       </Dropdown>
     );
   }
@@ -348,4 +394,48 @@ export default class CanelaSidebar extends IndexSidebar {
 
     return items;
   }
+}
+
+/** O texto de um item da barra (o rótulo do LinkButton), para a lista do "Personalizar". */
+function vnodeText(node: any): string {
+  if (node == null || typeof node === 'boolean') return '';
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(vnodeText).join('');
+  // O contador ao lado do rótulo (rascunhos, não lidas) não entra.
+  if (typeof node.attrs?.className === 'string' && /count|suffix/i.test(node.attrs.className)) return '';
+
+  return vnodeText(node.children ?? node.text);
+}
+
+/**
+ * O menu do "Mais" abre para FORA da barra lateral: a barra rola (overflow) e
+ * cortava o menu. Com position: fixed ele sai dela, colado ao botão, com uma
+ * setinha apontando para o "Mais" (como um submenu), e sobe se não couber até
+ * o fim da tela.
+ */
+function placeMoreMenu(): void {
+  requestAnimationFrame(() => {
+    const toggle = document.querySelector<HTMLElement>('.CanelaSidebar-more.open .CanelaSidebar-moreButton');
+    const menu = document.querySelector<HTMLElement>('.CanelaSidebar-more.open .Dropdown-menu');
+
+    if (!toggle || !menu) return;
+
+    const rect = toggle.getBoundingClientRect();
+    const phone = window.innerWidth < 768;
+
+    menu.classList.toggle('CanelaSidebar-moreMenu--side', !phone);
+    menu.style.position = 'fixed';
+    menu.style.right = 'auto';
+    menu.style.bottom = 'auto';
+    menu.style.top = '0px';
+    menu.style.left = `${phone ? rect.left : rect.right + 10}px`;
+
+    const height = menu.offsetHeight;
+    const wanted = phone ? rect.bottom + 4 : rect.top + rect.height / 2 - 22;
+    const top = Math.max(8, Math.min(wanted, window.innerHeight - height - 8));
+
+    menu.style.top = `${top}px`;
+    // A setinha fica na altura do meio do botão, mesmo que o menu tenha subido.
+    menu.style.setProperty('--canela-more-arrow', `${rect.top + rect.height / 2 - top}px`);
+  });
 }

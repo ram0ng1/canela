@@ -735,3 +735,41 @@
   display: flex;
   gap: var(--cn-space-2);
 }
+
+// O menu do "Mais" sai da barra (position: fixed, posto no JS): acima de tudo.
+.CanelaSidebar-more .Dropdown-menu {
+  z-index: 1100;
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+}
+
+// Ao lado do botão, a setinha apontando para ele (como um submenu). O menu
+// não pode cortar a seta: ela fica fora da caixa, então o overflow volta ao
+// normal e a altura máxima garante que caiba na tela.
+.CanelaSidebar-more .Dropdown-menu.CanelaSidebar-moreMenu--side {
+  overflow: visible;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: var(--canela-more-arrow, 22px);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    transform: translateY(-50%);
+  }
+
+  // A borda da seta (cor da borda do menu) e, por cima, o preenchimento.
+  &::before {
+    left: -9px;
+    border-width: 8px 9px 8px 0;
+    border-color: transparent var(--cn-border) transparent transparent;
+  }
+
+  &::after {
+    left: -8px;
+    border-width: 7px 8px 7px 0;
+    border-color: transparent var(--cn-surface) transparent transparent;
+  }
+}

@@ -63,17 +63,17 @@ export default function installRamonChatActions(): void {
         caretIcon=""
         accessibleToggleLabel={app.translator.trans('ramon-canela.forum.chat.more_message_actions', {}, true)}
       >
+        {/* O Dropdown já embrulha cada item num <li>. A classe "Button" vai
+            sempre: um className vazio a tirava e o item virava botão nativo. */}
         {secondary.map((item: any) => (
-          <li>
-            <Button
-              icon={item.attrs?.icon}
-              className={item.attrs?.className?.includes('danger') ? 'Button--danger-text' : undefined}
-              disabled={item.attrs?.disabled}
-              onclick={(e: Event) => item.attrs?.onclick?.(e)}
-            >
-              {label(item)}
-            </Button>
-          </li>
+          <Button
+            icon={item.attrs?.icon}
+            className={item.attrs?.className?.includes('danger') ? 'Button Button--danger-text' : 'Button'}
+            disabled={item.attrs?.disabled}
+            onclick={(e: Event) => item.attrs?.onclick?.(e)}
+          >
+            {label(item)}
+          </Button>
         ))}
       </Dropdown>
     );

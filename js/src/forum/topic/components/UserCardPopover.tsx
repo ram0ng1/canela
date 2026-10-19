@@ -161,10 +161,10 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
     const facts = [LocationFact(user), WebsiteFact(user), BirthdayFact(user)].filter(Boolean);
     const meta1 = [
       lastSeen && !user.isOnline() && this.meta('seen', t('topic.user_card.last_seen'), shortAge(lastSeen), fullDate(lastSeen)),
+      // Online: só "online agora", em verde (o "Visto" sobra).
       user.isOnline() && (
         <span className="CanelaUserCard-meta CanelaUserCard-online">
-          <Icon name="fas fa-circle" />
-          {t('topic.user_card.online')}
+          <span className="CanelaUserCard-onlineNow">{t('user.stats.online')}</span>
         </span>
       ),
       joined && this.meta('joined', t('topic.user_card.joined'), shortDate(joined), fullDate(joined)),
@@ -214,11 +214,12 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
                   O status fica só na pílula embaixo. */}
               <div className="CanelaUserCard-nameLine">
                 <Link className="CanelaUserCard-name" href={app.route.user(user)} onclick={closeUserCard}>
-                  <span className="CanelaUserCard-username">{user.username()}</span>
+                  <span className="CanelaUserCard-username">{user.displayName() || user.username()}</span>
                 </Link>
                 {userIcons(user, 'card')}
               </div>
-              {showName && <span className="CanelaUserCard-secondary">{user.displayName()}</span>}
+              {/* O apelido (flarum/nicknames) em destaque, como nos posts; o username embaixo. */}
+              {showName && <span className="CanelaUserCard-secondary">{user.username()}</span>}
               {title && <span className="CanelaUserCard-secondary CanelaUserCard-title">{title}</span>}
             </div>
 
@@ -329,5 +330,13 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
 
     card.style.left = `${left + window.scrollX}px`;
     card.style.top = `${top + window.scrollY}px`;
+
+    // A setinha à esquerda, apontando para o meio do avatar clicado; some se o
+    // cartão não ficou ao lado dele (sem espaço à direita ou virado para cima).
+    const beside = left >= rect.right;
+    const arrow = rect.top + rect.height / 2 - top;
+
+    card.classList.toggle('CanelaUserCard--arrow', beside && arrow > 16 && arrow < height - 16);
+    card.style.setProperty('--usercard-arrow', `${arrow}px`);
   }
 }

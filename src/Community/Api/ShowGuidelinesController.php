@@ -14,27 +14,29 @@ declare(strict_types=1);
 namespace Ramon\Canela\Community\Api;
 
 use Flarum\Http\RequestUtil;
-use Flarum\Locale\TranslatorInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\User;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Community\AdminText;
 use Ramon\Canela\Community\Community;
+use Ramon\Canela\Community\GuidelinesPage;
 
 /**
  * GET /api/canela-guidelines — as "Diretrizes" (/guidelines e /faq do
- * Discourse): o texto do admin, ou, sem ele, o padrão do tema no idioma do
- * fórum (inspirado nas diretrizes que o Discourse traz de fábrica).
+ * Discourse). Com o fof/pages e uma página escolhida no admin, o conteúdo dela
+ * (com a visibilidade do próprio fof/pages); senão o texto do admin, ou o
+ * padrão do tema no idioma do fórum.
  */
 final class ShowGuidelinesController implements RequestHandlerInterface
 {
     public function __construct(
         private readonly Community $community,
         private readonly SettingsRepositoryInterface $settings,
-        private readonly TranslatorInterface $translator,
         private readonly AdminText $text,
+        private readonly GuidelinesPage $pages,
     ) {
     }
 
@@ -43,21 +45,40 @@ final class ShowGuidelinesController implements RequestHandlerInterface
     {
         $this->community->assertEnabled(Community::GUIDELINES_ENABLED);
 
-        RequestUtil::getActor($request)->assertCan('viewForum');
+        $actor = RequestUtil::getActor($request);
+        $actor->assertCan('viewForum');
+
+        if ($page = $this->fofPage($actor)) {
+            return new JsonResponse($page);
+        }
 
         $custom = trim((string) $this->settings->get(Community::GUIDELINES_TEXT));
 
         return new JsonResponse([
-            'html' => $this->text->render($custom !== '' ? $custom : $this->defaultText(), $request),
+            'html' => $this->text->render($custom !== '' ? $custom : $this->pages->defaultMarkdown(), $request),
             'custom' => $custom !== '',
         ]);
     }
 
-    private function defaultText(): string
+    /**
+     * A página do fof/pages escolhida, se a extensão estiver ligada, a página
+     * existir e o ator puder vê-la; null para cair no texto do tema.
+     *
+     * @return array{html: string, custom: true, title: string, pageId: int}|null
+     */
+    private function fofPage(User $actor): ?array
     {
-        $locale = method_exists($this->translator, 'getLocale') ? (string) $this->translator->getLocale() : 'pt_BR';
-        $file = str_starts_with(strtolower($locale), 'en') ? 'en' : 'pt-BR';
+        $page = $this->pages->find($actor);
 
-        return (string) @file_get_contents(dirname(__DIR__).'/Content/guidelines/'.$file.'.md');
+        if ($page === null) {
+            return null;
+        }
+
+        return [
+            'html' => $this->pages->html($page),
+            'custom' => true,
+            'title' => (string) $page->title,
+            'pageId' => (int) $page->id,
+        ];
     }
 }

@@ -16,6 +16,7 @@ namespace Ramon\Canela\Support;
 use Ernestdefoe\Wardrobe\ThemeAssets;
 use Ernestdefoe\Wardrobe\ThemeRegistry;
 use Ernestdefoe\Wardrobe\WarmThemeAssets;
+use Flarum\Frontend\Compiler\RevisionCompiler;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Container\Container;
@@ -32,7 +33,8 @@ use Illuminate\Queue\SyncQueue;
  *
  * - na visita, o tema que já tem arquivo é servido como está, mesmo que um
  *   pouco desatualizado, e a recompilação vai para a fila (o worker);
- * - só um tema que ainda não tem arquivo nenhum é compilado na hora (uma vez);
+ * - um tema que ainda não tem arquivo fica com o CSS/JS do core até o worker
+ *   compilá-lo;
  * - no worker (CLI) e sem fila de verdade, vale o comportamento original.
  */
 final class LazyThemeAssets extends ThemeAssets
@@ -49,36 +51,47 @@ final class LazyThemeAssets extends ThemeAssets
     #[\Override]
     public function cssUrlFor(string $themeId): ?string
     {
-        return $this->servedUrl($themeId, 'css') ?? parent::cssUrlFor($themeId);
+        return $this->inVisit() ? $this->servedUrl($themeId, 'css') : parent::cssUrlFor($themeId);
     }
 
     #[\Override]
     public function jsUrlFor(string $themeId): ?string
     {
-        return $this->servedUrl($themeId, 'js') ?? parent::jsUrlFor($themeId);
+        return $this->inVisit() ? $this->servedUrl($themeId, 'js') : parent::jsUrlFor($themeId);
+    }
+
+    /** Uma visita com worker de fila de verdade: aí a visita nunca compila. */
+    private function inVisit(): bool
+    {
+        return PHP_SAPI !== 'cli' && ! $this->queue() instanceof SyncQueue;
     }
 
     /**
-     * A URL do arquivo já compilado, sem recompilar, pedindo à fila que o
-     * atualize se ele estiver velho. Null quando o original deve decidir:
-     * no CLI, sem worker (fila síncrona) ou se o tema ainda não tem arquivo.
+     * A URL do arquivo já compilado, sem compilar nada. Velho: serve assim
+     * mesmo e pede à fila que o atualize. Ainda sem arquivo: devolve null (a
+     * página fica com o forum.css/js do core por enquanto) e pede à fila que
+     * o compile; compilar ali estourava a memória do PHP (erro 500).
      */
     private function servedUrl(string $themeId, string $type): ?string
     {
-        if (PHP_SAPI === 'cli' || $this->queue() instanceof SyncQueue) {
-            return null;
-        }
-
-        // Os membros do Wardrobe são privados: lidos no escopo dele.
+        // Os membros do Wardrobe e do compilador são protegidos: lidos no escopo deles.
         $peek = \Closure::bind(function (string $themeId, string $type): ?array {
             $compilers = $this->compilersFor($themeId);
 
-            return $compilers === null ? null : [$compilers[$type]->getUrl(), $this->isStale($themeId)];
+            return $compilers === null ? null : [$compilers[$type], $this->isStale($themeId)];
         }, $this, ThemeAssets::class);
 
-        [$url, $stale] = $peek($themeId, $type) ?? [null, false];
+        [$compiler, $stale] = $peek($themeId, $type) ?? [null, false];
 
-        if ($url === null) {
+        if ($compiler === null) {
+            return null;
+        }
+
+        $hasRevision = \Closure::bind(fn (): bool => (bool) $this->versioner->getRevision($this->filename), $compiler, RevisionCompiler::class);
+
+        if (! $hasRevision()) {
+            $this->requestWarm();
+
             return null;
         }
 
@@ -86,7 +99,7 @@ final class LazyThemeAssets extends ThemeAssets
             $this->requestWarm();
         }
 
-        return $url;
+        return $compiler->getUrl();
     }
 
     /** Uma recompilação na fila por minuto, no máximo, por mais visitas que cheguem. */

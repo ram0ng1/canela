@@ -16,7 +16,11 @@
   background: none;
 
   // A largura acompanha o cartão de conteúdo logo abaixo.
+  // `width: auto`: o .container do core tem larguras fixas por breakpoint
+  // (até 1500px), e com a largura do conteúdo em 90%/100% o hero ficava
+  // estreito e desalinhado do cartão.
   .container {
+    width: auto;
     max-width: var(--cn-main-max);
     margin: 0 auto;
     padding: 0;

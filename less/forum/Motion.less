@@ -175,6 +175,34 @@
   border-radius: var(--cn-radius);
 }
 
+// Barras de texto que caem onde o texto real cai: postas dentro do mesmo
+// elemento (com a mesma fonte e a mesma altura de linha) que o conteúdo vai
+// ocupar.
+//   --line: um bloco com a altura de uma linha (1lh), pintado só no miolo
+//           (0,75em), então N barras ocupam exatamente N linhas;
+//   --word: um pedaço dentro de uma linha (a idade, um nome), na altura da
+//           letra e centrado nela.
+// O background-clip vem com seletor duplo porque o brilho abaixo (o
+// `background` abreviado) o devolveria para border-box.
+.CanelaSkeleton.CanelaSkeleton--line {
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 1lh;
+  padding: ~"calc((1lh - 0.75em) / 2)" 0;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+.CanelaSkeleton.CanelaSkeleton--word {
+  display: inline-block;
+  width: 3em;
+  max-width: 100%;
+  height: 0.75em;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .CanelaSkeleton,
   .LoadingPost .fakeText,

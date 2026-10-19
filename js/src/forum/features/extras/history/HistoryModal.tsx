@@ -24,18 +24,23 @@ export interface HistoryModalAttrs extends IInternalModalAttrs {
   post: Post;
 }
 
-interface VersionUser {
+export interface VersionUser {
   id: string;
   username: string;
   displayName: string;
   avatarUrl: string | null;
 }
 
-interface Version {
+export interface Version {
   number: number;
   createdAt: string | null;
   user: VersionUser | null;
   content: string | null;
+}
+
+export interface VersionList {
+  versions: Version[];
+  contentHidden: boolean;
 }
 
 type ViewMode = 'inline' | 'side';
@@ -50,7 +55,7 @@ function storedMode(): ViewMode {
   }
 }
 
-export default class HistoryModal extends Modal<HistoryModalAttrs> {
+export default class HistoryModal<A extends IInternalModalAttrs = HistoryModalAttrs> extends Modal<A> {
   versions: Version[] = [];
   contentHidden = false;
   /** A versão mostrada (índice em `versions`); a comparação é com a anterior. */
@@ -58,21 +63,15 @@ export default class HistoryModal extends Modal<HistoryModalAttrs> {
   mode: ViewMode = storedMode();
   failed = false;
 
-  oninit(vnode: Mithril.Vnode<HistoryModalAttrs, this>) {
+  oninit(vnode: Mithril.Vnode<A, this>) {
     super.oninit(vnode);
 
     this.loading = true;
 
-    const apiUrl = String(app.forum.attribute('apiUrl') || '/api').replace(/\/+$/, '');
-
-    app
-      .request<{ data: { versions: Version[]; contentHidden: boolean } }>({
-        method: 'GET',
-        url: `${apiUrl}/canela/posts/${this.attrs.post.id()}/revisions`,
-      })
-      .then((response) => {
-        this.versions = response.data.versions;
-        this.contentHidden = response.data.contentHidden;
+    this.load()
+      .then((list) => {
+        this.versions = list.versions;
+        this.contentHidden = list.contentHidden;
         // Abre na edição mais recente, como o Discourse.
         this.index = Math.max(0, this.versions.length - 1);
       })
@@ -83,6 +82,23 @@ export default class HistoryModal extends Modal<HistoryModalAttrs> {
         this.loading = false;
         m.redraw();
       });
+  }
+
+  /**
+   * As versões da mais antiga para a mais nova. Separado do oninit para que
+   * outro histórico (o das revisões da wiki) use o mesmo modal com os dados
+   * dele.
+   */
+  load(): Promise<VersionList> {
+    const apiUrl = String(app.forum.attribute('apiUrl') || '/api').replace(/\/+$/, '');
+    const post = (this.attrs as unknown as HistoryModalAttrs).post;
+
+    return app
+      .request<{ data: VersionList }>({
+        method: 'GET',
+        url: `${apiUrl}/canela/posts/${post.id()}/revisions`,
+      })
+      .then((response) => response.data);
   }
 
   className(): string {

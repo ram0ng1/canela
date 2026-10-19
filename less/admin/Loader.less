@@ -1,0 +1,161 @@
+// Card "Indicador de carregamento" (js/src/admin/components/LoaderPicker.tsx).
+// A prévia pinta o SVG como o fórum (less/forum/Loader.less): máscara com a
+// cor do texto, ou imagem com as cores do arquivo.
+.CanelaLoaderPicker {
+  color: var(--primary-color);
+
+  .helpText,
+  .CanelaAdmin-label,
+  .Form-group > label {
+    color: var(--text-color);
+  }
+}
+
+.CanelaLoaderPicker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 10px;
+}
+
+.CanelaLoaderPicker-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px 10px;
+  border: 1px solid var(--control-bg);
+  border-radius: var(--border-radius);
+  background: var(--body-bg);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: var(--muted-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &.is-selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+  }
+}
+
+.CanelaLoaderPicker-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+
+  .LoadingIndicator-container {
+    color: var(--muted-color);
+  }
+}
+
+.CanelaLoaderPicker-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.CanelaLoaderPicker-svg {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--cn-lp-size, 32px);
+  height: var(--cn-lp-size, 32px);
+  background: currentColor;
+  -webkit-mask-image: var(--cn-lp-image);
+  mask-image: var(--cn-lp-image);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  &--image {
+    background: var(--cn-lp-image) center no-repeat;
+    background-size: contain;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+.CanelaLoaderPicker-empty {
+  font-size: 22px;
+  color: var(--muted-color);
+}
+
+.CanelaLoaderPicker-code {
+  font-family: var(--font-family-monospace, ui-monospace, monospace);
+  font-size: 12px;
+}
+
+.CanelaLoaderPicker-error {
+  color: var(--alert-error-color, #d83e3e);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+// O <input type=file> escondido dentro do botão: o rótulo abre o seletor.
+.CanelaLoaderPicker-upload {
+  position: relative;
+  overflow: hidden;
+
+  input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.CanelaLoaderPicker-colorRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.CanelaLoaderPicker-color {
+  width: 44px;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid var(--control-bg);
+  border-radius: var(--border-radius);
+  background: var(--body-bg);
+  cursor: pointer;
+}
+
+.CanelaLoaderPicker-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  padding: 16px;
+  border-radius: var(--border-radius);
+  background: var(--control-bg);
+}
+
+.CanelaLoaderPicker-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+
+  .CanelaLoaderPicker-buttonIcon {
+    display: inline-flex;
+    color: var(--button-primary-color, #fff);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .CanelaLoaderPicker-option {
+    transition: none;
+  }
+}

@@ -36,6 +36,11 @@ final class Community
     /** As abas "Diretrizes", "Termos de Serviço" e "Política de Privacidade" do Sobre. */
     public const GUIDELINES_ENABLED = 'canela.guidelines_enabled';
     public const GUIDELINES_TEXT = 'canela.guidelines_text';
+
+    /** Com o fof/pages: o id da página que vira as Diretrizes (vazio = o texto acima). */
+    public const GUIDELINES_PAGE = 'canela.guidelines_page';
+    /** Com o fof/pages: as páginas que viram abas extras da área Sobre (JSON, ver AboutPages). */
+    public const ABOUT_PAGES = 'canela.about_pages';
     public const TOS_URL = 'canela.tos_url';
     public const PRIVACY_URL = 'canela.privacy_url';
 

@@ -31,3 +31,30 @@ export function setSidebarPicks(section: SidebarSectionName, ids: string[] | nul
     // Sem armazenamento a escolha vale só até recarregar a página.
   }
 }
+
+/*
+ * Na seção principal (Início, Chat, Wiki…), quais itens o leitor mandou para
+ * dentro do "Mais". Mesmo esquema: localStorage, por usuário; null = padrão.
+ */
+function communityKey(): string {
+  return `canela.sidebarCommunityMore.${app.session.user?.id() ?? 'guest'}`;
+}
+
+export function getCommunityMore(): string[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(communityKey()) || '[]');
+
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function setCommunityMore(keys: string[]): void {
+  try {
+    if (keys.length) localStorage.setItem(communityKey(), JSON.stringify(keys));
+    else localStorage.removeItem(communityKey());
+  } catch {
+    // Sem armazenamento a escolha vale só até recarregar a página.
+  }
+}

@@ -1,0 +1,186 @@
+// ---------------------------------------------------------------------
+// Estilo das postagens "com a linha do tempo" (canela.post_style = direct):
+// o post do Discourse intacto (mesmo cabeçalho, mesma barra de ações, mesmas
+// reações) com UMA diferença, a linha do tempo vertical do tema avocado
+// ligando os avatares.
+//
+// Ligado pela classe `Canela--postDirect` no #app (o PreBootShell a põe antes
+// da primeira pintura; topic/postStyle.tsx confirma no mount); sem ela nada
+// aqui casa.
+//
+//   - A linha desce pelo centro da coluna do avatar; cada avatar vira um nó
+//     sobre ela (com um anel na cor do cartão), ela atravessa os posts de
+//     evento passando pelo ícone deles, e cada intervalo de tempo ("um mês
+//     depois") ganha um círculo sobre ela.
+//   - No cartão verde da solução (fof/best-answer) ela some: o cartão recua e
+//     tem borda, e a linha entrava e saía dele fora do eixo.
+//   - Só a partir do tablet, onde o avatar mora numa coluna própria. No
+//     celular o avatar fica no cabeçalho e o texto ocupa a largura toda: uma
+//     linha ali passaria por cima do texto.
+//
+// A linha é desenhada por post (no ::before do .Post, que no core é só o
+// clearfix; o ::after, que faz o clear, continua) para começar no avatar do
+// primeiro post e terminar no avatar do último, sem atravessar o fim do tópico.
+// ---------------------------------------------------------------------
+@media @tablet-up {
+  .Canela--postDirect {
+    // Centro da coluna do avatar (45px), o mesmo eixo do ícone dos posts de
+    // evento; o avatar de 48px é centrado nela (abaixo).
+    --cn-direct-spine: ~"calc(var(--cn-post-avatar, 45px) / 2)";
+    // Do topo do .Post ao centro do avatar: o padding de cima (13px) + meio avatar.
+    --cn-direct-node: 37px;
+    --cn-direct-line: var(--cn-primary-low);
+    // O anel em volta dos nós: na cor do cartão, para a linha parecer passar
+    // por trás deles. Sem o cartão o fundo é um degradê, e o anel some.
+    --cn-direct-ring: var(--cn-surface);
+  }
+
+  .Canela--postDirect:not(.Canela--card) {
+    --cn-direct-ring: transparent;
+  }
+
+  .Canela--postDirect .CanelaTopic {
+    .PostStream-item > .CommentPost::before,
+    .PostStream-item > .EventPost::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: ~"calc(var(--cn-direct-spine) - 1px)";
+      width: 2px;
+      background: var(--cn-direct-line);
+      pointer-events: none;
+    }
+
+    // Começa no avatar do primeiro post…
+    .PostStream-item[data-number="1"] > .CommentPost::before {
+      top: var(--cn-direct-node);
+    }
+
+    // …e termina no avatar do último que está carregado (o convite para
+    // responder no fim do tópico também é um .Post, mas não entra na conta).
+    .PostStream-item:not(:has(~ .PostStream-item > :is(.CommentPost, .EventPost))) > .CommentPost::before {
+      bottom: auto;
+      height: var(--cn-direct-node);
+    }
+
+    // Um post de evento no fim: a linha para no centro do ícone dele.
+    .PostStream-item:not(:has(~ .PostStream-item > :is(.CommentPost, .EventPost))) > .EventPost::before {
+      bottom: auto;
+      height: 14px;
+    }
+
+    // A prévia do editor não continua a linha, nem o cartão da solução: a
+    // linha do post de cima e a do de baixo seguem no mesmo eixo.
+    .PostStream-item > .CommentPost.editing::before,
+    .PostStream-item > .CommentPost.CanelaPost--solution::before {
+      content: none;
+    }
+
+    // O avatar centrado na coluna (e na linha), não colado na borda dela.
+    .CanelaPostAvatar {
+      margin-left: ~"calc((var(--cn-post-avatar, 45px) - 48px) / 2)";
+    }
+
+    // O nó: o avatar com um anel na cor do fundo.
+    .Post-side .Post-avatar {
+      box-shadow: 0 0 0 4px var(--cn-direct-ring);
+    }
+
+    // ── Mensagens (flarum/messages, recurso messages do tema) ──────────────
+    // A mesma linha ligando os avatares das mensagens e passando pelos
+    // eventos da conversa (.CanelaDialogEvent). A mensagem tem 16px de margem
+    // embaixo (fora do item), que a linha cobre para chegar à próxima.
+    .CanelaMessagePost::before,
+    .CanelaDialogEvents::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: -16px;
+      left: ~"calc(var(--cn-direct-spine) - 1px)";
+      width: 2px;
+      background: var(--cn-direct-line);
+      pointer-events: none;
+    }
+
+    .CanelaDialogEvents {
+      position: relative;
+    }
+
+    // Começa no avatar da primeira mensagem (o avatar fica 4px abaixo do topo:
+    // centro a 28px)…
+    .MessageStream-log > .MessageStream-item:first-child > .CanelaMessagePost::before {
+      top: 28px;
+    }
+
+    // …o mapa da conversa, logo depois da primeira, interrompe a linha…
+    .CanelaMessagePost:has(+ .CanelaDialogMap)::before {
+      bottom: 0;
+    }
+
+    // …e termina no avatar da última, ou no ícone do último evento quando a
+    // conversa acaba em eventos (a lista de eventos do fim fica fora do log).
+    .MessageStream:not(:has(> .CanelaDialogEvents)) .MessageStream-log > .MessageStream-item:last-child > .CanelaMessagePost::before {
+      bottom: auto;
+      height: 28px;
+    }
+
+    // A última mensagem tem 24px de margem embaixo, até os eventos do fim.
+    .MessageStream:has(> .CanelaDialogEvents) .MessageStream-log > .MessageStream-item:last-child > .CanelaMessagePost::before {
+      bottom: -24px;
+    }
+
+    .MessageStream > .CanelaDialogEvents::before {
+      bottom: auto;
+      height: ~"calc(100% - 17px)";
+    }
+
+    .CanelaMessagePost .Post-side .Post-avatar {
+      margin-left: ~"calc((var(--cn-post-avatar, 45px) - 48px) / 2)";
+      box-shadow: 0 0 0 4px var(--cn-direct-ring);
+    }
+
+    // Intervalo de tempo: o trecho da linha que passa por ele e um círculo
+    // sobre ela; o texto fica onde já estava.
+    .PostStream-timeGap {
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: ~"calc(var(--cn-direct-spine) - 1px)";
+        width: 2px;
+        background: var(--cn-direct-line);
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: ~"calc(var(--cn-direct-spine) - 6px)";
+        width: 12px;
+        height: 12px;
+        box-sizing: border-box;
+        border: 2px solid var(--cn-primary-low-mid);
+        border-radius: 50%;
+        background: var(--cn-surface);
+        box-shadow: 0 0 0 3px var(--cn-direct-ring);
+        transform: translateY(-50%);
+      }
+    }
+  }
+}
+
+// Online com a linha do tempo: o anel verde do who's online por dentro e o
+// anel da cor do cartão (que corta a linha) por fora.
+.Canela--postDirect .CanelaTopic .CanelaPostAvatar--online .Post-avatar {
+  box-shadow:
+    0 0 0 1px var(--cn-surface),
+    0 0 0 3px var(--online-user-circle-color, var(--cn-success)),
+    0 0 0 6px var(--cn-direct-ring, var(--cn-surface));
+}

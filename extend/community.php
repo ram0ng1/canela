@@ -21,6 +21,11 @@ use Flarum\Api\Resource\ForumResource;
 use Flarum\Api\Resource\GroupResource;
 use Flarum\Api\Schema;
 use Flarum\Extend;
+use Flarum\Settings\Event\Saving;
+use Ramon\Canela\Community\AboutPages;
+use Ramon\Canela\Community\Api\ShowAboutPageController;
+use Ramon\Canela\Community\Content\AboutPageContent;
+use Ramon\Canela\Community\Api\CreateGuidelinesPageController;
 use Ramon\Canela\Community\Api\GroupFields;
 use Ramon\Canela\Community\Api\ListDirectoryController;
 use Ramon\Canela\Community\Api\ListGroupActivityController;
@@ -50,6 +55,7 @@ return [
         ->default(Community::GUIDELINES_ENABLED, true)
         ->serializeToForum('canelaGuidelinesEnabled', Community::GUIDELINES_ENABLED, 'boolval')
         ->default(Community::GUIDELINES_TEXT, '')
+        ->default(Community::ABOUT_PAGES, '[]')
         ->default(Community::TOS_URL, '')
         ->default(Community::PRIVACY_URL, '')
         ->default(Community::DIRECTORY_ENABLED, true)
@@ -67,6 +73,8 @@ return [
     (new Extend\Routes('api'))
         ->get('/canela-about', 'canela.about', ShowAboutController::class)
         ->get('/canela-guidelines', 'canela.guidelines', ShowGuidelinesController::class)
+        ->post('/canela-guidelines/page', 'canela.guidelines.page', CreateGuidelinesPageController::class)
+        ->get('/canela-about-pages/{id:\d+}', 'canela.about_pages.show', ShowAboutPageController::class)
         ->get('/canela-directory', 'canela.directory', ListDirectoryController::class)
         ->get('/canela-groups/{id:\d+}/activity', 'canela.groups.activity', ListGroupActivityController::class),
 
@@ -74,6 +82,10 @@ return [
         ->route('/about', 'canela.about', CommunityPage::for(Community::ABOUT_ENABLED, 'about.title'))
         ->route('/guidelines', 'canela.guidelines', CommunityPage::for(Community::GUIDELINES_ENABLED, 'guidelines.title'))
         ->route('/faq', 'canela.faq', CommunityPage::for(Community::GUIDELINES_ENABLED, 'guidelines.title'))
+        // As abas extras da área Sobre (páginas do fof/pages escolhidas no admin),
+        // com o id na frente como o /d/{id} do core. Não colide com o /p/{id} e o
+        // /pages/home do fof/pages.
+        ->route('/about/{page:\d+(?:-[^/]*)?}', 'canela.about_page', AboutPageContent::class)
         ->route('/u', 'canela.users', CommunityPage::for(Community::DIRECTORY_ENABLED, 'users.title'))
         ->route('/g', 'canela.groups', CommunityPage::for(Community::GROUPS_ENABLED, 'groups.title'))
         ->route('/g/{name}', 'canela.group', CommunityPage::for(Community::GROUPS_ENABLED, 'groups.title')),
@@ -91,7 +103,19 @@ return [
             // As abas de Termos/Privacidade (e outras políticas) com endereço.
             Schema\Arr::make('canelaLegalPages')
                 ->get(fn () => resolve(LegalPages::class)->all()),
+            // As abas extras da área Sobre que o ator pode ver (vazio sem o fof/pages).
+            Schema\Arr::make('canelaAboutPages')
+                ->get(fn (object $model, Context $context) => resolve(AboutPages::class)->forForum($context->getActor())),
         ]),
+
+    // A lista de abas extras chega do admin como JSON: guarda só ids inteiros
+    // e únicos (até AboutPages::MAX), rótulos curtos e ícones válidos.
+    (new Extend\Event())
+        ->listen(Saving::class, static function (Saving $event): void {
+            if (array_key_exists(Community::ABOUT_PAGES, $event->settings)) {
+                $event->settings[Community::ABOUT_PAGES] = AboutPages::normalize($event->settings[Community::ABOUT_PAGES]);
+            }
+        }),
 
     (new Extend\ApiResource(GroupResource::class))
         ->fields(GroupFields::class),

@@ -8,6 +8,80 @@ textarea.CanelaAdmin-textarea {
   line-height: 1.5;
 }
 
+// As páginas extras da área Sobre: uma linha por página, com título, setas
+// de ordem e os campos de rótulo e ícone embaixo.
+.CanelaAdmin-aboutPagesList {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaAdmin-aboutPage {
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--control-bg);
+  border-radius: var(--border-radius);
+}
+
+.CanelaAdmin-aboutPageHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.CanelaAdmin-aboutPageIcon {
+  width: 20px;
+  color: var(--muted-color);
+  text-align: center;
+}
+
+.CanelaAdmin-aboutPageTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaAdmin-aboutPageView {
+  font-size: 12px;
+}
+
+.CanelaAdmin-aboutPageActions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 2px;
+
+  .Button:disabled {
+    opacity: 0.35;
+  }
+}
+
+.CanelaAdmin-aboutPageRemove:hover {
+  color: var(--alert-error-color, #d83e3e);
+}
+
+.CanelaAdmin-aboutPageFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted-color);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .CanelaAdmin-viewLink {
   margin: 12px 0 0;
   font-size: 13px;

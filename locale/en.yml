@@ -181,6 +181,36 @@ ramon-canela:
       logo_colored_help: The uploaded logo becomes just its shape, painted in the accent color (and in the tag color on tag pages and discussions). Works best with an SVG or a PNG with a transparent background.
       loading_slider_label: Loading bar at the top
       loading_slider_help: When changing pages, a thin bar runs along the top of the screen until the page arrives, as in Discourse, instead of Flarum's "Loading…" alert.
+      loader:
+        title: Loading indicator
+        help: "What shows while something loads: in the list, posts, profile, modals, menus, buttons, composer, extensions and the first page load. Swap Flarum's grey ring for an animated SVG."
+        keywords: loading loader spinner preloader indicator svg animated animation spinning
+        style_label: Design
+        style_default: Flarum default
+        style_avocado: Avocado
+        style_orbital: Orbital
+        style_ring: Discourse ring
+        style_dots: Dots
+        style_bars: Bars
+        style_pulse: Pulse
+        style_custom: Custom SVG
+        custom_label: SVG code
+        custom_help: "Paste the code of an animated SVG or upload an .svg file (up to 64 KB). It is cleaned on the server before saving: scripts, events and external links are removed; CSS and SMIL animations stay."
+        custom_upload: Upload SVG file
+        custom_apply: Apply SVG
+        custom_clear: Remove
+        custom_too_big: The file is larger than 64 KB.
+        custom_not_svg: The file does not look like an SVG.
+        custom_empty: Paste or upload an SVG to use this design. Until then, the forum keeps Flarum's spinner.
+        tint_label: Paint with the indicator color
+        tint_help: The SVG becomes just a shape, painted with the color below (or the text color, in buttons). Off, the file keeps its own colors.
+        color_label: Color
+        color_help: With no color chosen, the theme accent is used (the primary color, or the tag color on tag pages). In buttons the indicator follows the button text color.
+        color_primary: Use the theme color
+        size_label: Size
+        size_help: "Relative to Flarum's spinner, from {min}% to {max}%. In buttons the indicator follows the text."
+        preview: Preview
+        notice: Changing the indicator recompiles the forum CSS; saving takes a few seconds.
       toast_auto_close_label: Toasts that close on their own
       toast_auto_close_help: Corner notices ("Saved", "Link copied"…) disappear after a few seconds, with a timer bar, like Discourse toasts. When off, they stay until closed.
       user_menu_label: Discourse user menu
@@ -193,8 +223,30 @@ ramon-canela:
       post_actions_help: Like, copy link, bookmark, reply and the "…" that expands the rest, in each post's bar, as in Discourse. When off, Flarum's controls menu comes back.
       embedded_replies_label: Embedded replies
       embedded_replies_help: Each post's "N replies" opens the replies right below it, and the quoted post shows above, as in Discourse.
+      post_style_label: Post style
+      post_style_help: 'With the timeline, posts stay the same as in Discourse, but a vertical line, like the avocado theme''s, links one post''s avatar to the next, runs through the event notices and marks the time gaps ("a month later") with a circle. From tablet width up; on phones the post stays the same.'
+      post_style_discourse: Discourse (default)
+      post_style_direct: With the timeline (avocado style)
+      topic_reply_to_style_label: '"In reply to" on posts'
+      topic_reply_to_style_help: 'How a post that replies to another shows who it replies to. In Discourse, "↩ Name" on the right of the header (only when the replied post is not the one above). In avocado, a line under the name, "↳ In reply to [avatar] Name", on every reply. Clicking shows the replied post.'
+      topic_reply_to_style_discourse: 'Discourse (default: ↩ name on the right of the header)'
+      topic_reply_to_style_avocado: Line under the name (avocado style)
       new_replies_bar_label: New replies notice
       new_replies_bar_help: Whoever is in the middle of a discussion when real-time replies arrive sees the "There are N new replies" bar, which takes them there, as in Discourse.
+      content_width_label: 'Content width'
+      content_width_default: 'Default'
+      content_width_wide: 'Wide'
+      content_width_wider: 'Extra wide'
+      content_width_90: '90%'
+      content_width_full: 'Full width'
+      content_width_custom: 'Custom'
+      content_width_reset: 'Default'
+      content_width_help: 'The maximum width of the content card (list, discussion, profile); in discussions, the posts column grows with it. The default is 1110px, like Discourse; 90% and Full width follow the screen. The preview shows the real forum on a 1440px screen.'
+      content_width_caption: '1440px screen'
+      content_width_preview_index: 'Home'
+      content_width_preview_discussion: 'Discussion'
+      topic_sticky_avatar_label: Sticky avatar in posts
+      topic_sticky_avatar_help: 'In long posts, the author avatar follows the scroll and stays visible until the end of the post, like in the avocado theme. Desktop only.'
       topic_event_posts_label: Event posts
       topic_event_posts_help: Show Flarum's notices such as "locked the discussion" and "pinned the discussion" in the discussion. Discourse does not show them this way.
       badges:
@@ -383,8 +435,23 @@ ramon-canela:
         section_legal: Guidelines, terms and privacy
         guidelines_enabled_label: Guidelines page (/guidelines)
         guidelines_enabled_help: The forum's community rules, in a tab next to About and in the sidebar "More" menu. /faq leads to the same page, as in Discourse.
+        guidelines_page_label: fof/pages page
+        guidelines_page_none: "None: use the text below"
+        guidelines_page_help: With a page chosen, /guidelines shows its content (with fof/pages own visibility) and the text below no longer applies. The content is then edited in fof/pages.
+        guidelines_page_create: 'Create the "Guidelines" page with the current text'
         guidelines_text_label: Guidelines text
         guidelines_text_help: Leave empty to use the theme's default text, inspired by Discourse's guidelines. Accepts Markdown and BBCode; with HTML tags, it goes as HTML.
+        section_about_pages: About area pages
+        about_pages_help: 'Add as many fof/pages pages as you like as tabs next to About and Guidelines, each one with the rules layout: title, section index and cards.'
+        about_pages_list_help: Each page becomes a tab after About and Guidelines, in list order, at /about/id-slug and with the same layout as the Guidelines. An empty label uses the page title; the icon is a Font Awesome class. Hidden or restricted pages in fof/pages only show to people who can see them.
+        about_pages_add: Add a page…
+        about_pages_none_left: Every fof/pages page is already on the list
+        about_pages_missing: 'Page #{id} (not found)'
+        about_pages_label: Tab label
+        about_pages_icon: Icon (optional)
+        about_pages_up: Move up
+        about_pages_down: Move down
+        about_pages_remove: Remove from the About area
         tos_url_label: Terms of Service address
         tos_url_help: The "Terms of Service" tab and /tos lead here. A FoF Terms policy with "terms" in its name takes precedence.
         privacy_url_label: Privacy Policy address
@@ -1427,6 +1494,10 @@ ramon-canela:
         edit_poll: Edit poll
         action_create_topic: Start a Discussion
         create_topic_desc: Create a new discussion
+    tag_modal:
+      edit_title: Edit tags
+      primary_heading: Primary tags
+      secondary_heading: Secondary tags
     modals:
       login_title: Welcome back
       signup_title: Create your account
@@ -2024,6 +2095,8 @@ ramon-canela:
       customize_categories: Customize tags
       customize_tags: Customize secondary tags
       customize_filter: Filter…
+      customize_community: Customize
+      customize_community_help: 'Uncheck the items that should move into "More". The choice applies to this browser.'
       customize_save: Save
       customize_reset: Reset to default
       keyboard_shortcuts: Keyboard shortcuts
@@ -2131,6 +2204,7 @@ ramon-canela:
       upload:
         uploading: '{count, plural, one {Uploading the file…} other {Uploading # files…}}'
       wiki:
+        author_role: Author
         column_article: 'Article'
         categories: 'categories'
         all_categories: 'All categories'
@@ -2139,6 +2213,7 @@ ramon-canela:
         edited_by: 'edited by {name}'
         edits_title: 'Last edited on {date}'
         history_title: 'Revision history'
+        history_failed: "Could not load this article's revisions."
         close: 'Close'
         more: 'More actions'
         created: 'created'
@@ -2170,6 +2245,10 @@ ramon-canela:
       post:
         mention_unavailable: "post unavailable"
         in_reply_to: 'In reply to: click to show the post'
+        reply_to_label: In reply to
+        remove_reply: Remove the reply
+        share_short: Copy link
+        more_short: More actions
         replies: '{count, plural, one {# reply} other {# replies}}'
         more_replies: '{count, plural, one {Show # more reply} other {Show # more replies}}'
         like: Like this post
@@ -2403,6 +2482,8 @@ ramon-canela:
         other: Other
         private: 'Notifications are personal: they only show on your own profile.'
   api:
+    loader:
+      invalid_svg: The file is not a valid SVG or is larger than 64 KB after cleaning.
     ai:
       errors:
         generic: The AI could not answer right now. Please try again shortly.

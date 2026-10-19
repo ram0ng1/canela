@@ -9,7 +9,9 @@
 // =====================================================================
 
 .CanelaTopic {
-  --cn-topic-stream-max: 759px;
+  // A coluna dos posts cresce com a largura do conteúdo (admin): os 351px são
+  // a linha do tempo e os espaços (1110 − 759 no padrão do Discourse).
+  --cn-topic-stream-max: ~"calc(var(--cn-main-max, 1110px) - 351px)";
   --cn-topic-timeline-gap: 66px;
   --cn-topic-sticky-top: calc(var(--cn-header-height) + var(--cn-space-6));
 }

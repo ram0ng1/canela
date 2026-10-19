@@ -13,6 +13,10 @@ namespace Ramon\Canela;
 
 use Flarum\Extend;
 use Ramon\Canela\Theme\FontFamily;
+use Ramon\Canela\Theme\Loader\LoaderAdminPayload;
+use Ramon\Canela\Theme\Loader\LoaderLess;
+use Ramon\Canela\Theme\Loader\LoaderPresets;
+use Ramon\Canela\Theme\Loader\SanitizeLoaderSetting;
 use Ramon\Canela\Theme\Logo\SvgLogoServiceProvider;
 use Ramon\Canela\Support\RouteConflictGuard;
 
@@ -78,7 +82,11 @@ $forumSettings = [
 
     // Tópico
     'canela.topic_map' => ['canelaTopicMap', true, 'boolval'],
-    'canela.topic_event_posts' => ['canelaTopicEventPosts', false, 'boolval'],
+    'canela.topic_event_posts' => ['canelaTopicEventPosts', true, 'boolval'],
+    // O avatar acompanha a rolagem nos posts longos (como o "fixedAvatar" do avocado).
+    'canela.topic_sticky_avatar' => ['canelaTopicStickyAvatar', false, 'boolval'],
+    // Largura máxima do cartão de conteúdo (px); aplicada antes da pintura no PreBootShell.
+    'canela.content_width' => ['canelaContentWidth', '1110', 'strval'],
     'canela.topic_timeline' => ['canelaTopicTimeline', true, 'boolval'],
     'canela.topic_footer' => ['canelaTopicFooter', true, 'boolval'],
     'canela.suggested_topics' => ['canelaSuggestedTopics', true, 'boolval'],
@@ -88,6 +96,12 @@ $forumSettings = [
     'canela.post_actions' => ['canelaPostActions', true, 'boolval'],
     'canela.embedded_replies' => ['canelaEmbeddedReplies', true, 'boolval'],
     'canela.new_replies_bar' => ['canelaNewRepliesBar', true, 'boolval'],
+    // Estilo das postagens: 'discourse' (padrão) ou 'direct' (o mesmo post com
+    // a linha do tempo do avocado ligando os avatares: less/forum/PostDirect.less).
+    'canela.post_style' => ['canelaPostStyle', 'discourse', null],
+    // O "em resposta a" do post: 'discourse' (↩ nome à direita do cabeçalho)
+    // ou 'avocado' (uma linha embaixo do nome: "↳ Em resposta a [avatar] Fulano").
+    'canela.topic_reply_to_style' => ['canelaTopicReplyToStyle', 'discourse', null],
 
     // Extensões de terceiros (visual do Discourse)
     'canela.thirdparty_solved' => ['canelaThirdPartySolved', true, 'boolval'],
@@ -176,7 +190,22 @@ $settings = (new Extend\Settings())
     // O visual da linkrobins/wiki (less/forum/thirdparty/Wiki.less): só com a
     // extensão habilitada e a integração ligada no admin (padrão: ligada).
     ->registerLessConfigVar('config-canela-wiki', 'canela.thirdparty_wiki', static fn ($value): string => ($value === null || (bool) $value) && resolve(\Flarum\Extension\ExtensionManager::class)->isEnabled('linkrobins-wiki') ? 'true' : 'false')
-    ->registerLessConfigVar('config-canela-ai', 'canela.ai_enabled', static fn ($value): string => $value === null || (bool) $value ? 'true' : 'false');
+    ->registerLessConfigVar('config-canela-ai', 'canela.ai_enabled', static fn ($value): string => $value === null || (bool) $value ? 'true' : 'false')
+    // Indicador de carregamento com SVG (less/forum/Loader.less): o desenho vai
+    // na folha como `data:`, e cada uma das chaves recompila a folha ao mudar.
+    // Os valores saem de LoaderLess, que devolve o padrão do Flarum se algo
+    // estiver fora do esperado (um valor quebrado derrubaria a folha inteira).
+    ->default(LoaderLess::STYLE, LoaderPresets::DEFAULT)
+    ->default(LoaderLess::CUSTOM, '')
+    ->default(LoaderLess::TINT, true)
+    ->default(LoaderLess::COLOR, '')
+    ->default(LoaderLess::SIZE, 100)
+    ->registerLessConfigVar('config-canela-loader-on', LoaderLess::STYLE, static fn ($value): string => LoaderLess::on($value))
+    ->registerLessConfigVar('config-canela-loader-image', LoaderLess::CUSTOM, static fn (): string => LoaderLess::image())
+    ->registerLessConfigVar('config-canela-loader-still', LoaderLess::CUSTOM, static fn (): string => LoaderLess::still())
+    ->registerLessConfigVar('config-canela-loader-tint', LoaderLess::TINT, static fn ($value): string => LoaderLess::tint($value))
+    ->registerLessConfigVar('config-canela-loader-color', LoaderLess::COLOR, static fn ($value): string => LoaderLess::color($value))
+    ->registerLessConfigVar('config-canela-loader-scale', LoaderLess::SIZE, static fn ($value): string => LoaderLess::scale($value));
 
 foreach ($forumSettings as $key => [$attributeName, $default, $cast]) {
     $settings->default($key, $default)->serializeToForum($attributeName, $key, $cast);
@@ -281,12 +310,17 @@ return [
         ->js(__DIR__.'/js/dist/admin.js')
         // O painel do tema é um chunk (js/src/admin/panel.tsx).
         ->jsDirectory(__DIR__.'/js/dist/admin')
-        ->css(__DIR__.'/less/admin.less'),
+        ->css(__DIR__.'/less/admin.less')
+        // A prévia dos indicadores de carregamento prontos no card do admin.
+        ->content(LoaderAdminPayload::class),
 
     new Extend\Locales(__DIR__.'/locale'),
 
     // O campo de logo padrão do Flarum aceita SVG (limpo antes de salvar).
     (new Extend\ServiceProvider())->register(SvgLogoServiceProvider::class),
+
+    // O SVG próprio do indicador de carregamento é limpo antes de ir ao banco.
+    (new Extend\Event())->listen(\Flarum\Settings\Event\Saving::class, SanitizeLoaderSetting::class),
 
     // Rota do tema que outra extensão já ocupa (/chat, /search…) sai, em vez
     // de derrubar o fórum com BadRouteException.

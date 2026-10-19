@@ -13,8 +13,14 @@ import installTimeline from './timeline';
 import installTopicMap from './topicMap';
 import installUserCard from './userCard';
 import installAuthorFilter from './authorFilter';
+import installEventPosts from './eventPosts';
+import installReplyToComposer from './replyToComposer';
 
 export default function installTopic(): void {
+  // O composer no "em resposta a" do avocado (extends por nome de módulo:
+  // os corpos do composer vêm em chunks).
+  installReplyToComposer();
+
   // Tudo é registrado no beforeMount, que roda depois de todos os
   // initializers: o extend registrado por último roda por último, e é assim
   // que o tema enxerga (e repagina) os itens que tags, likes e mentions põem
@@ -23,6 +29,7 @@ export default function installTopic(): void {
     installHero();
     installLayout();
     installPosts();
+    installEventPosts();
     installTimeline();
     installTopicMap();
     installUserCard();

@@ -893,12 +893,42 @@
 }
 
 .CanelaDialogEvent-icon {
+  position: relative;
   display: inline-flex;
+  align-self: stretch;
+  align-items: center;
   justify-content: center;
   width: var(--cn-post-avatar, 45px);
   flex: none;
   font-size: 1.1em;
   color: var(--cn-primary-low-mid);
+
+  // Como o ícone dos posts de evento da discussão (Posts.less): o fundo da
+  // superfície com folga em cima e embaixo interrompe a linha do tempo do
+  // estilo com a linha, que chega ao ícone e continua depois dele.
+  .icon {
+    position: relative;
+    z-index: 1;
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    padding: 5px 2px;
+    background: var(--cn-surface);
+  }
+
+  // O fio do ícone até o avatar de quem fez, na altura do meio: do lado
+  // direito do ícone (centrado na coluna) até 3px antes do avatar (o vão
+  // entre os dois é o gap de 8px do evento).
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: ~"calc(50% + 0.5em + 4px)";
+    right: -5px;
+    height: 1px;
+    background: var(--cn-primary-low-mid);
+    transform: translateY(-0.5px);
+  }
 }
 
 .CanelaDialogEvent-avatar .Avatar {

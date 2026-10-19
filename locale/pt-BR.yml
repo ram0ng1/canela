@@ -181,6 +181,36 @@ ramon-canela:
       logo_colored_help: O logo enviado vira só a forma, pintado na cor de destaque (e na cor da tag nas páginas de tag e discussões). Funciona melhor com SVG ou PNG com fundo transparente.
       loading_slider_label: Barra de carregamento no topo
       loading_slider_help: Na troca de página, uma barrinha fina corre no topo da tela até a página chegar, como no Discourse, no lugar do aviso "Carregando…" do Flarum.
+      loader:
+        title: Indicador de carregamento
+        help: "O desenho que aparece enquanto algo carrega: na lista, nos posts, no perfil, nos modais, nos menus, nos botões, no editor, nas extensões e na primeira carga da página. Troque o anel cinza do Flarum por um SVG animado."
+        keywords: carregamento carregando loading loader spinner preloader indicador svg animado animação girando
+        style_label: Desenho
+        style_default: Padrão do Flarum
+        style_avocado: Avocado
+        style_orbital: Órbita
+        style_ring: Anel do Discourse
+        style_dots: Pontos
+        style_bars: Barras
+        style_pulse: Pulso
+        style_custom: SVG próprio
+        custom_label: Código do SVG
+        custom_help: "Cole o código de um SVG animado ou envie um arquivo .svg (até 64 KB). Ele é limpo no servidor antes de ser salvo: saem scripts, eventos e links externos; as animações de CSS e SMIL continuam."
+        custom_upload: Enviar arquivo SVG
+        custom_apply: Aplicar SVG
+        custom_clear: Remover
+        custom_too_big: O arquivo passa de 64 KB.
+        custom_not_svg: O arquivo não parece um SVG.
+        custom_empty: Cole ou envie um SVG para usar este desenho. Enquanto isso, o fórum continua com o spinner do Flarum.
+        tint_label: Pintar com a cor do indicador
+        tint_help: O SVG vira só a forma, pintado com a cor abaixo (ou com a cor do texto, nos botões). Desligado, ficam as cores do próprio arquivo.
+        color_label: Cor
+        color_help: Sem cor escolhida, vale a cor de destaque do tema (a primária, ou a da tag nas páginas de tag). Nos botões o indicador segue a cor do texto do botão.
+        color_primary: Usar a cor do tema
+        size_label: Tamanho
+        size_help: "Em relação ao spinner do Flarum, de {min}% a {max}%. Nos botões o indicador acompanha o texto."
+        preview: Prévia
+        notice: Trocar o indicador recompila o CSS do fórum; a gravação leva alguns segundos.
       toast_auto_close_label: Avisos que fecham sozinhos
       toast_auto_close_help: Os avisos do canto da tela ("Salvo", "Link copiado"…) somem sozinhos depois de alguns segundos, com a barrinha de tempo, como os toasts do Discourse. Desligado, ficam até alguém fechar.
       user_menu_label: Menu do usuário do Discourse
@@ -193,8 +223,30 @@ ramon-canela:
       post_actions_help: Curtir, copiar o link, marcar, responder e o "…" que expande o resto, na barra de cada postagem, como no Discourse. Desligada, volta o menu de controles do Flarum.
       embedded_replies_label: Respostas embutidas
       embedded_replies_help: O "N respostas" de cada postagem abre as respostas ali mesmo, embaixo dela, e a postagem citada aparece acima, como no Discourse.
+      post_style_label: Estilo das postagens
+      post_style_help: 'Com a linha do tempo, os posts continuam iguais aos do Discourse, mas uma linha vertical, como a do tema avocado, liga os avatares de um post ao outro, passa pelos avisos de evento e marca com um círculo os intervalos de tempo ("um mês depois"). A partir do tablet; no celular o post fica igual.'
+      post_style_discourse: Discourse (padrão)
+      post_style_direct: Com a linha do tempo (estilo avocado)
+      topic_reply_to_style_label: '"Em resposta a" nas postagens'
+      topic_reply_to_style_help: 'Como a postagem que responde a outra mostra a quem responde. No Discourse, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
+      topic_reply_to_style_discourse: 'Discourse (padrão: ↩ nome à direita do cabeçalho)'
+      topic_reply_to_style_avocado: Linha abaixo do nome (estilo avocado)
       new_replies_bar_label: Aviso de respostas novas
       new_replies_bar_help: Quem está no meio da discussão quando chegam respostas em tempo real vê a barra "Há N novas respostas", que leva até elas, como no Discourse.
+      content_width_label: 'Largura do conteúdo'
+      content_width_default: 'Padrão'
+      content_width_wide: 'Largo'
+      content_width_wider: 'Extra largo'
+      content_width_90: '90%'
+      content_width_full: 'Largura toda'
+      content_width_custom: 'Personalizado'
+      content_width_reset: 'Padrão'
+      content_width_help: 'A largura máxima do cartão de conteúdo (lista, discussão, perfil); na discussão, a coluna dos posts cresce junto. O padrão é 1110px, como no Discourse; 90% e Largura toda acompanham a tela. A prévia mostra o fórum de verdade numa tela de 1440px.'
+      content_width_caption: 'Tela de 1440px'
+      content_width_preview_index: 'Início'
+      content_width_preview_discussion: 'Discussão'
+      topic_sticky_avatar_label: Avatar fixo nos posts
+      topic_sticky_avatar_help: 'Em posts longos, o avatar do autor acompanha a rolagem e fica visível até o fim do post, como no tema avocado. Só no computador.'
       topic_event_posts_label: Posts de evento
       topic_event_posts_help: Mostra na discussão os avisos do Flarum como "trancou a discussão" e "fixou a discussão". O Discourse não os mostra assim.
       badges:
@@ -383,8 +435,23 @@ ramon-canela:
         section_legal: Diretrizes, termos e privacidade
         guidelines_enabled_label: Página Diretrizes (/guidelines)
         guidelines_enabled_help: As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse.
+        guidelines_page_label: Página do fof/pages
+        guidelines_page_none: "Nenhuma: usar o texto abaixo"
+        guidelines_page_help: Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages.
+        guidelines_page_create: 'Criar a página "Diretrizes" com o texto atual'
         guidelines_text_label: Texto das diretrizes
         guidelines_text_help: Deixe vazio para usar o texto padrão do tema, inspirado nas diretrizes do Discourse. Aceita Markdown e BBCode; com tags HTML, vai como HTML.
+        section_about_pages: Páginas da área Sobre
+        about_pages_help: 'Acrescente quantas páginas do fof/pages quiser como abas ao lado de Sobre e Diretrizes, cada uma com o layout de regras: título, índice de seções e cartões.'
+        about_pages_list_help: Cada página vira uma aba depois de Sobre e Diretrizes, na ordem da lista, com o endereço /about/id-slug e o mesmo layout das Diretrizes. O rótulo vazio usa o título da página; o ícone é uma classe do Font Awesome. Páginas ocultas ou restritas no fof/pages só aparecem para quem pode vê-las.
+        about_pages_add: Adicionar uma página…
+        about_pages_none_left: Todas as páginas do fof/pages já estão na lista
+        about_pages_missing: 'Página #{id} (não encontrada)'
+        about_pages_label: Rótulo da aba
+        about_pages_icon: Ícone (opcional)
+        about_pages_up: Subir
+        about_pages_down: Descer
+        about_pages_remove: Tirar da área Sobre
         tos_url_label: Endereço dos Termos de Serviço
         tos_url_help: A aba "Termos de Serviço" e o endereço /tos levam para cá. Uma política do FoF Terms com "termos" no nome tem preferência.
         privacy_url_label: Endereço da Política de Privacidade
@@ -1427,6 +1494,10 @@ ramon-canela:
         edit_poll: Editar enquete
         action_create_topic: Iniciar Discussão
         create_topic_desc: Criar uma nova discussão
+    tag_modal:
+      edit_title: Editar tags
+      primary_heading: Tags primárias
+      secondary_heading: Tags secundárias
     modals:
       login_title: Boas-vindas outra vez
       signup_title: Criar sua conta
@@ -2024,6 +2095,8 @@ ramon-canela:
       customize_categories: Personalizar tags
       customize_tags: Personalizar tags secundárias
       customize_filter: Filtrar…
+      customize_community: Personalizar
+      customize_community_help: 'Desmarque os itens que devem ir para dentro do "Mais". A escolha vale neste navegador.'
       customize_save: Salvar
       customize_reset: Restaurar o padrão
       keyboard_shortcuts: Atalhos de teclado
@@ -2131,6 +2204,7 @@ ramon-canela:
       upload:
         uploading: '{count, plural, one {Enviando o arquivo…} other {Enviando # arquivos…}}'
       wiki:
+        author_role: Autor
         column_article: 'Artigo'
         categories: 'categorias'
         all_categories: 'Todas as categorias'
@@ -2139,6 +2213,7 @@ ramon-canela:
         edited_by: 'editado por {name}'
         edits_title: 'Editado pela última vez em {date}'
         history_title: 'Histórico de revisões'
+        history_failed: 'Não foi possível carregar as revisões deste artigo.'
         close: 'Fechar'
         more: 'Mais ações'
         created: 'criado'
@@ -2170,6 +2245,10 @@ ramon-canela:
       post:
         mention_unavailable: "postagem indisponível"
         in_reply_to: 'Em resposta a: clique para ver o post'
+        reply_to_label: Em resposta a
+        remove_reply: Remover a resposta
+        share_short: Copiar link
+        more_short: Mais ações
         replies: '{count, plural, one {# resposta} other {# respostas}}'
         more_replies: '{count, plural, one {Ver mais # resposta} other {Ver mais # respostas}}'
         like: Curtir este post
@@ -2403,6 +2482,8 @@ ramon-canela:
         other: Outras
         private: 'As notificações são pessoais: só aparecem no seu próprio perfil.'
   api:
+    loader:
+      invalid_svg: O arquivo não é um SVG válido ou passa de 64 KB depois de limpo.
     ai:
       errors:
         generic: A IA não conseguiu responder agora. Tente de novo em instantes.

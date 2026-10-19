@@ -49,7 +49,10 @@ export default function installShell() {
         'Canela--card': forumBool('canelaContentCard', true),
         'Canela--noSidebar': !sidebarEnabled,
         'Canela--headerSearch': forumBool('canelaHeaderSearch', true),
-        'Canela--noEventPosts': !forumBool('canelaTopicEventPosts', false),
+        'Canela--noEventPosts': !forumBool('canelaTopicEventPosts', true),
+        'Canela--stickyAvatar': forumBool('canelaTopicStickyAvatar', false),
+        // A linha do tempo ligando os avatares (less/forum/PostDirect.less).
+        'Canela--postDirect': app.forum.attribute('canelaPostStyle') === 'direct',
       }).split(' ')
     );
 

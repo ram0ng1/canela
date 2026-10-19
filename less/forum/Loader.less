@@ -1,0 +1,141 @@
+// ---------------------------------------------------------------------
+// Indicador de carregamento com SVG (admin: Aparência > Indicador de
+// carregamento; variáveis em src/Theme/Loader/LoaderLess.php).
+//
+// Uma regra só troca o desenho de todo `LoadingIndicator` do core, que é o
+// que a lista, os posts, o perfil, os modais, os menus, os botões com
+// `loading`, o composer e as extensões (ramon/chat, marketplace, wiki) usam:
+// o anel de borda some e o SVG entra como máscara pintada com `currentColor`.
+// Assim a cor continua vindo de fora (a escolhida no admin, ou o texto do
+// botão), no claro, no escuro e com qualquer cor primária. Um SVG próprio
+// com as cores dele entra como fundo, sem máscara.
+//
+// Fica depois de Motion.less, que ajusta o anel do Flarum: com o padrão do
+// Flarum escolhido, nada daqui entra na folha.
+// ---------------------------------------------------------------------
+
+// O desenho: máscara (uma cor, a do texto) ou imagem (as cores do SVG). Sem o
+// atalho `mask: … center / contain`: o less.php leria a barra como divisão.
+.cn-loader-paint() when (@config-canela-loader-tint = true) {
+  background: currentColor;
+  -webkit-mask-image: var(--cn-loader);
+  mask-image: var(--cn-loader);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.cn-loader-paint() when not (@config-canela-loader-tint = true) {
+  background-color: transparent;
+  background-image: var(--cn-loader);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+& when (@config-canela-loader-on = true) {
+  :root {
+    --cn-loader: @config-canela-loader-image;
+    --cn-loader-color: @config-canela-loader-color;
+    --cn-loader-scale: @config-canela-loader-scale;
+  }
+
+  .LoadingIndicator-container {
+    color: var(--cn-loader-color);
+  }
+
+  // Num botão, num switch ou num alerta, o indicador segue a cor do texto
+  // (como o anel do core): a cor do tema sumiria num botão primário.
+  .Button .LoadingIndicator-container,
+  .Checkbox .LoadingIndicator-container,
+  .Alert .LoadingIndicator-container {
+    color: inherit;
+  }
+
+  // Os `!important` vencem regras de extensões que redesenham o anel (borda,
+  // cantos, giro): com elas, a máscara sairia recortada num círculo girando.
+  .LoadingIndicator {
+    --cn-loader-box: calc(var(--size) * var(--cn-loader-scale));
+
+    flex-shrink: 0;
+    width: var(--cn-loader-box);
+    height: var(--cn-loader-box);
+    border-width: 0 !important;
+    border-radius: 0 !important;
+    animation: none !important;
+    .cn-loader-paint();
+  }
+
+  // Dentro de botões e switches o tamanho acompanha o texto (o `--size` de
+  // lá), e não o tamanho escolhido: o botão não pode crescer no `loading`.
+  .Button .LoadingIndicator,
+  .Checkbox .LoadingIndicator {
+    --cn-loader-box: var(--size);
+  }
+
+  // A primeira carga (antes do JS): o "Carregando…" do core vira o desenho,
+  // e o texto fica para os leitores de tela.
+  #flarum-loading {
+    padding: 72px 0;
+    font-size: 0;
+    line-height: 0;
+    color: var(--cn-loader-color);
+
+    &::before {
+      content: "";
+      display: block;
+      width: calc(40px * var(--cn-loader-scale));
+      height: calc(40px * var(--cn-loader-scale));
+      margin: 0 auto;
+      .cn-loader-paint();
+    }
+  }
+
+  // O ícone de "carregando" do Font Awesome (`fa-spinner`/`fa-circle-notch`
+  // girando), que algumas extensões usam no lugar do componente. Vale para o
+  // <i> e para o <svg> do Lucide que herda as classes dele.
+  .fa-spinner.fa-spin,
+  .fa-circle-notch.fa-spin {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    animation: none !important;
+    .cn-loader-paint();
+
+    &::before,
+    > * {
+      visibility: hidden;
+    }
+  }
+
+  // Sem movimento: entra a versão parada do SVG (sem as animações de CSS e de
+  // SMIL, ver LoaderLess::still) e o desenho só respira, devagar, para ainda
+  // dizer que algo está carregando.
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --cn-loader: @config-canela-loader-still;
+    }
+
+    .LoadingIndicator,
+    #flarum-loading::before,
+    .fa-spinner.fa-spin,
+    .fa-circle-notch.fa-spin {
+      animation: cn-loader-breathe 2.4s ease-in-out infinite !important;
+    }
+  }
+
+  @keyframes cn-loader-breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.45;
+    }
+  }
+}

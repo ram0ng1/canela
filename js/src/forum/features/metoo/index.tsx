@@ -10,6 +10,7 @@
  *
  * O servidor manda `canelaMeToo` = `{count, mine, can}` só na página do
  * tópico, e null quando o botão não vale ali (tag fora da lista, mensagem…).
+ * Com o flarum/realtime, a contagem chega pelo websocket (ver realtime.ts).
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
@@ -21,6 +22,7 @@ import type Post from 'flarum/common/models/Post';
 import type Mithril from 'mithril';
 
 import { forumBool, t } from '../../utils/settings';
+import installMeTooRealtime from './realtime';
 
 interface MeTooState {
   count: number;
@@ -46,6 +48,9 @@ function stateOf(discussion: Discussion | null | undefined | false): MeTooState 
 }
 
 export default function installMeToo(): void {
+  // Com o flarum/realtime, a contagem muda sozinha quando outra pessoa clica.
+  installMeTooRealtime();
+
   // O CommentPost só se redesenha quando o post muda (subtree retainer): a
   // contagem e o "salvando" entram na conferência dele.
   extend(CommentPost.prototype, 'oninit', function (this: any) {

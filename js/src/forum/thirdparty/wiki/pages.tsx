@@ -11,7 +11,8 @@
  * - Artigo (/wiki/:id): o título do tópico, o artigo como o primeiro post do
  *   Discourse (avatar, nome, data e o lápis das edições; o texto "cooked"; a
  *   barra de ações com "Editar" e o "⋯"), o mapa do tópico (criado,
- *   atualizado, revisões) e o histórico num painel que abre pelo lápis.
+ *   atualizado, revisões) e as revisões num modal (o do histórico de edições
+ *   dos posts), que abre pelo lápis ou pelo mapa.
  * - Novo/editar: o formulário com o título e a categoria como no composer do
  *   tema, e o composer da wiki com a cara do de tópico ("Novo artigo", a
  *   categoria e o título na barra de cima).
@@ -22,6 +23,7 @@
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
 import Avatar from 'flarum/common/components/Avatar';
+import Tooltip from 'flarum/common/components/Tooltip';
 import Button from 'flarum/common/components/Button';
 import Dropdown from 'flarum/common/components/Dropdown';
 import Icon from 'flarum/common/components/Icon';
@@ -167,26 +169,73 @@ function indexHero(page: any): Mithril.Children {
   );
 }
 
-/** As linhas cinzas que brilham enquanto a lista carrega (o skeleton do tema). */
-function listSkeleton(rows = 5): Mithril.Children {
+/**
+ * As linhas que brilham enquanto a lista carrega, montadas com as mesmas
+ * classes das linhas reais (título, resumo, avatar e idade): cada barra cai
+ * na linha de texto que vai ocupar, e nada pula quando os artigos chegam.
+ */
+function skeletonRows(rows: number): Mithril.Children {
   return (
-    <div className="CanelaWikiList CanelaWikiList--loading" aria-busy="true">
-      {listHeader()}
-      <div className="CanelaWikiList-rows">
-        {Array.from({ length: rows }, (_, index) => (
-          <div className="CanelaWikiRow CanelaWikiRow--skeleton">
-            <div className="CanelaWikiRow-main">
-              <span className="CanelaSkeleton CanelaWikiSkeleton-title" style={{ width: `${55 - (index % 3) * 12}%` }} />
-              <span className="CanelaSkeleton CanelaWikiSkeleton-line" />
-              <span className="CanelaSkeleton CanelaWikiSkeleton-line CanelaWikiSkeleton-line--short" />
+    <div className="CanelaWikiList-rows">
+      {Array.from({ length: rows }, (_, index) => (
+        <div className="CanelaWikiRow CanelaWikiRow--skeleton">
+          <div className="CanelaWikiRow-main">
+            <div className="CanelaWikiRow-titleLine">
+              <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: `${55 - (index % 3) * 12}%` }} />
             </div>
-            <div className="CanelaWikiCell--author">
-              <span className="CanelaSkeleton CanelaWikiSkeleton-avatar" />
-            </div>
-            <div className="CanelaCell CanelaCell--activity">
-              <span className="CanelaSkeleton CanelaWikiSkeleton-age" />
+            <div className="CanelaWikiRow-excerpt">
+              <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: `${88 - (index % 2) * 20}%` }} />
+              <span className="CanelaSkeleton CanelaSkeleton--line CanelaWikiSkeleton-wrap" style={{ width: '45%' }} />
             </div>
           </div>
+          <div className="CanelaWikiCell--author">
+            <span className="CanelaSkeleton CanelaWikiSkeleton-avatar" />
+          </div>
+          <div className="CanelaCell CanelaCell--activity">
+            <span className="CanelaActivity">
+              <span className="CanelaSkeleton CanelaSkeleton--word CanelaWikiSkeleton-age" />
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * A lista carregando. Na página inicial da wiki (sem categoria nem busca) a
+ * lista chega agrupada por categoria: o skeleton já vem em seções, com o
+ * cabeçalho da categoria (nome e descrição) em cima das linhas.
+ */
+function listSkeleton(page: any): Mithril.Children {
+  const grouped = !page.category && !String(page.query || '').trim();
+
+  if (!grouped) {
+    return (
+      <div className="CanelaWikiList CanelaWikiList--loading" aria-busy="true">
+        {listHeader()}
+        {skeletonRows(6)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="CanelaWikiList--loading" aria-busy="true">
+      {listHeader()}
+      <div className="CanelaWikiGroups">
+        {[0, 1].map((index) => (
+          <section className="CanelaWikiGroup">
+            <header className="CanelaWikiGroup-header">
+              <h2 className="CanelaWikiGroup-title">
+                <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: index ? '8em' : '6em' }} />
+              </h2>
+              <p className="CanelaWikiGroup-description">
+                <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: index ? '22em' : '28em' }} />
+                <span className="CanelaSkeleton CanelaSkeleton--line CanelaWikiSkeleton-wrap" style={{ width: '40%' }} />
+              </p>
+            </header>
+            <div className="CanelaWikiList CanelaWikiList--grouped">{skeletonRows(3)}</div>
+          </section>
         ))}
       </div>
     </div>
@@ -413,10 +462,13 @@ function articleRow(article: any, hideCategory: boolean): Mithril.Children {
         {excerpt ? <div className="CanelaWikiRow-excerpt">{excerpt}</div> : null}
       </div>
       <div className="CanelaWikiCell--author">
+        {/* O tooltip do tema, como nos postadores da lista de discussões. */}
         {author ? (
-          <Link href={app.route.user(author)} className="CanelaPosters-avatar" aria-label={author.displayName()} title={author.displayName()}>
-            <Avatar user={author} />
-          </Link>
+          <Tooltip text={`${author.displayName()}: ${wtr('author_role')}`}>
+            <Link href={app.route.user(author)} className="CanelaPosters-avatar" aria-label={author.displayName()}>
+              <Avatar user={author} title="" />
+            </Link>
+          </Tooltip>
         ) : null}
       </div>
       <div className="CanelaCell CanelaCell--activity" title={date ? fullDate(date) : undefined}>
@@ -466,7 +518,7 @@ function installIndex(): void {
 
   override(INDEX as any, '_renderList', function (this: any, original: (...args: any[]) => Mithril.Children, articles: any, opts: any = {}) {
     if (!on()) return original(articles, opts);
-    if (this.loading) return listSkeleton(opts.canelaGrouped ? 3 : 6);
+    if (this.loading) return listSkeleton(this);
     if (this.error || !articles || !articles.length) return emptyState(this, !!this.error);
 
     const hideCategory = !!opts.hideCategory;
@@ -535,14 +587,9 @@ function userAvatar(user: any, className = ''): Mithril.Children {
   );
 }
 
-function openHistory(page: any, article: any): void {
-  const opening = !page.historyOpen;
-
-  page._toggleHistory(article);
-
-  if (opening) {
-    setTimeout(() => document.querySelector('.CanelaWikiHistory')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
-  }
+/** As revisões no modal do histórico de edições, carregado só no primeiro clique. */
+function openHistory(article: any): void {
+  app.modal.show(() => import('./WikiRevisionsModal'), { article });
 }
 
 function copyLink(article: any): void {
@@ -561,7 +608,7 @@ function copyLink(article: any): void {
 }
 
 /** O cabeçalho do post: avatar, nome, "editado por", o lápis das edições e a data. */
-function postHeader(page: any, article: any): Mithril.Children {
+function postHeader(article: any): Mithril.Children {
   const author = safe(() => article.user?.(), null);
   const editor = safe(() => article.lastEditedBy?.(), null);
   const created = toDate(safe(() => article.createdAt?.(), null));
@@ -585,11 +632,11 @@ function postHeader(page: any, article: any): Mithril.Children {
         {edits > 0 && wikiCan.history() ? (
           <button
             type="button"
-            className={classList('Button--ua-reset CanelaWikiPost-edits', { active: page.historyOpen })}
+            className="Button--ua-reset CanelaWikiPost-edits"
             title={edited ? wtr('edits_title', { date: fullDate(edited) }) : undefined}
             aria-label={wtr('history_title')}
-            aria-expanded={page.historyOpen ? 'true' : 'false'}
-            onclick={() => openHistory(page, article)}
+            aria-haspopup="dialog"
+            onclick={() => openHistory(article)}
           >
             <span className="CanelaWikiPost-editsCount">{edits}</span>
             <Icon name="fas fa-pencil" />
@@ -644,7 +691,7 @@ function postActions(page: any, article: any, menu: Mithril.Children[]): Mithril
 }
 
 /** O mapa do tópico: "criado" e "atualizado" com avatar e idade, e as revisões. */
-function articleMap(page: any, article: any): Mithril.Children {
+function articleMap(article: any): Mithril.Children {
   const author = safe(() => article.user?.(), null);
   const editor = safe(() => article.lastEditedBy?.(), null);
   const created = toDate(safe(() => article.createdAt?.(), null));
@@ -669,9 +716,9 @@ function articleMap(page: any, article: any): Mithril.Children {
         {revisions > 0 && wikiCan.history() ? (
           <button
             type="button"
-            className={classList('CanelaTopicMap-stat CanelaTopicMap-stat--revisions', { active: page.historyOpen })}
-            aria-expanded={page.historyOpen ? 'true' : 'false'}
-            onclick={() => openHistory(page, article)}
+            className="CanelaTopicMap-stat CanelaTopicMap-stat--revisions"
+            aria-haspopup="dialog"
+            onclick={() => openHistory(article)}
           >
             <span className="CanelaTopicMap-number number">{revisions}</span>
             <span className="CanelaTopicMap-label">{wtr('revisions', { count: revisions })}</span>
@@ -680,9 +727,11 @@ function articleMap(page: any, article: any): Mithril.Children {
         {people.length ? (
           <div className="CanelaTopicMap-users">
             {people.map((user: any) => (
-              <Link className="CanelaTopicMap-poster" href={app.route.user(user)} title={user.displayName()}>
-                <Avatar user={user} />
-              </Link>
+              <Tooltip text={user.displayName()}>
+                <Link className="CanelaTopicMap-poster" href={app.route.user(user)} aria-label={user.displayName()}>
+                  <Avatar user={user} title="" />
+                </Link>
+              </Tooltip>
             ))}
           </div>
         ) : null}
@@ -716,20 +765,54 @@ function articleTitle(article: any): Mithril.Children {
   );
 }
 
-/** O artigo carregando: título, avatar e linhas que brilham. */
+/**
+ * O artigo carregando, com as peças do artigo real (o título do tópico, o
+ * caminho, o cabeçalho do post com o avatar e o texto "cooked"): as barras
+ * herdam as fontes e as margens de cada uma e caem onde o texto vai cair.
+ */
 function articleSkeleton(): Mithril.Children {
-  return (
-    <div className="CanelaWikiArticle-skeleton" aria-busy="true">
-      <span className="CanelaSkeleton CanelaWikiSkeleton-heading" />
-      <span className="CanelaSkeleton CanelaWikiSkeleton-crumb" />
-      <div className="CanelaWikiPost CanelaWikiPost--skeleton">
-        <span className="CanelaSkeleton CanelaWikiSkeleton-postAvatar" />
-        {[92, 100, 84, 96, 60, 100, 88, 40].map((width) => (
-          <span className="CanelaSkeleton CanelaWikiSkeleton-line" style={{ width: `${width}%` }} />
-        ))}
+  const paragraphs = [
+    [96, 100, 72],
+    [100, 92, 100, 40],
+    [88, 64],
+  ];
+
+  return [
+    <header className="CanelaWikiArticle-header CanelaWikiArticle-skeleton" aria-busy="true">
+      <h1 className="CanelaWikiArticle-title">
+        <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: '55%' }} />
+      </h1>
+      <div className="CanelaWikiArticle-crumbs">
+        <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: '9em' }} />
       </div>
-    </div>
-  );
+    </header>,
+    <div className="LinkRobinsWiki-articleLayout CanelaWikiArticle-layout">
+      <div className="LinkRobinsWiki-articleMain">
+        <article className="CanelaWikiPost CanelaWikiPost--skeleton">
+          <div className="CanelaWikiPost-header">
+            <div className="CanelaWikiPost-avatar">
+              <span className="CanelaSkeleton CanelaWikiSkeleton-postAvatar" />
+            </div>
+            <div className="CanelaWikiPost-names">
+              <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: '7em' }} />
+            </div>
+            <div className="CanelaWikiPost-info">
+              <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: '2em' }} />
+            </div>
+          </div>
+          <div className="LinkRobinsWiki-articleBody CanelaWikiPost-body">
+            {paragraphs.map((lines) => (
+              <p>
+                {lines.map((width) => (
+                  <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: `${width}%` }} />
+                ))}
+              </p>
+            ))}
+          </div>
+        </article>
+      </div>
+    </div>,
+  ];
 }
 
 /** Artigo que não abre (excluído, sem permissão): o vazio do tema com "voltar à wiki". */
@@ -905,8 +988,7 @@ function installShow(): void {
 
     addClass(body, 'CanelaWikiPost-body');
 
-    const history = main.children.find((child: any) => hasClass(child, 'LinkRobinsWiki-history'));
-    const rest = main.children.filter((child: any) => child && child !== header && child !== body && child !== history);
+    const rest = main.children.filter((child: any) => child && child !== header && child !== body && !hasClass(child, 'LinkRobinsWiki-history'));
     const mobileToc = Array.isArray(tree) ? tree.find((child: any) => hasClass(child, 'LinkRobinsWiki-mobileToc')) : null;
     const notices = Array.isArray(tree)
       ? tree.filter((child: any) => hasClass(child, 'LinkRobinsWiki-deletedNotice') || hasClass(child, 'LinkRobinsWiki-draftNotice'))
@@ -915,12 +997,11 @@ function installShow(): void {
     main.children = [
       mobileToc || null,
       <article className="CanelaWikiPost">
-        {postHeader(this, article)}
+        {postHeader(article)}
         {body}
         {postActions(this, article, menu)}
       </article>,
-      articleMap(this, article),
-      history || null,
+      articleMap(article),
       ...withPager(rest, articlePager(this, article)),
     ];
 
@@ -929,67 +1010,10 @@ function installShow(): void {
     return [articleTitle(article), ...notices, layout];
   });
 
-  // O histórico abre pelo lápis do post ou pelas revisões do mapa; aberto, é
-  // um painel com título e "fechar", e não o botão "Histórico (n)" da wiki.
+  // O histórico sai da página: o lápis do post e as revisões do mapa abrem o
+  // modal (ver openHistory), e o botão "Histórico (n)" da wiki some.
   override(SHOW as any, '_renderHistory', function (this: any, original: (article: any) => Mithril.Children, article: any) {
-    const panel = original(article);
-
-    if (!on() || !panel) return panel;
-    if (!this.historyOpen) return null;
-
-    return (
-      <section className="LinkRobinsWiki-history CanelaWikiHistory">
-        <header className="CanelaWikiHistory-header">
-          <h2 className="CanelaWikiHistory-title">
-            <Icon name="fas fa-clock-rotate-left" />
-            {wtr('history_title')}
-          </h2>
-          <Button
-            className="Button Button--icon Button--flat"
-            icon="fas fa-xmark"
-            title={wtr('close')}
-            aria-label={wtr('close')}
-            onclick={() => this._toggleHistory(article)}
-          />
-        </header>
-        {this._renderRevisions(article)}
-      </section>
-    );
-  });
-
-  // Uma revisão: seta, avatar, nome, data e o resumo; aberta, o diff da wiki.
-  override(SHOW as any, '_renderRevision', function (this: any, original: (rev: any, idx: any) => Mithril.Children, rev: any, idx: any) {
-    if (!on()) return original(rev, idx);
-
-    const user = safe(() => rev.user?.(), null);
-    const id = String(rev.id());
-    const expanded = this.expandedRevision === id;
-    const prev = this.revisions ? this.revisions[idx + 1] : null;
-    const date = toDate(safe(() => rev.createdAt?.(), null));
-    const summary = safe(() => rev.summary?.(), '');
-
-    return (
-      <li key={`rev-${id}`} className={classList('LinkRobinsWiki-revision CanelaWikiRevision', { expanded })}>
-        <button
-          type="button"
-          className="Button--ua-reset CanelaWikiRevision-head"
-          aria-expanded={expanded ? 'true' : 'false'}
-          onclick={() => {
-            this.expandedRevision = expanded ? null : id;
-          }}
-        >
-          <Icon name={expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'} className="CanelaWikiRevision-caret" />
-          {user ? <Avatar user={user} className="CanelaWikiRevision-avatar" /> : null}
-          <span className="CanelaWikiRevision-user">{user ? user.displayName() : ''}</span>
-          {!prev ? <span className="CanelaWikiTag">{wt('show.initial_version', 'created')}</span> : null}
-          {summary ? <span className="CanelaWikiRevision-summary">{summary}</span> : null}
-          <span className="CanelaWikiRevision-date" title={date ? fullDate(date) : undefined}>
-            {shortAge(date)}
-          </span>
-        </button>
-        {expanded ? this._renderDiff(rev, prev) : null}
-      </li>
-    );
+    return on() ? null : original(article);
   });
 }
 

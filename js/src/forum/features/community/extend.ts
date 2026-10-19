@@ -4,6 +4,7 @@ import Group from 'flarum/common/models/Group';
 // Páginas carregadas sob demanda (chunk próprio): não pesam na primeira carga.
 const AboutPage = () => import('./AboutPage');
 const GuidelinesPage = () => import('./GuidelinesPage');
+const AboutExtraPage = () => import('./AboutExtraPage');
 const UsersPage = () => import('./UsersPage');
 const GroupsPage = () => import('./GroupsPage');
 const GroupPage = () => import('./GroupPage');
@@ -31,6 +32,8 @@ export default [
     .add('canela.about', '/about', AboutPage)
     .add('canela.guidelines', '/guidelines', GuidelinesPage)
     .add('canela.faq', '/faq', GuidelinesPage)
+    // As páginas do fof/pages que o admin pôs na área Sobre (/about/3-slug).
+    .add('canela.about_page', '/about/:page', AboutExtraPage)
     .add('canela.users', '/u', UsersPage)
     .add('canela.groups', '/g', GroupsPage)
     .add('canela.group', '/g/:name', GroupPage),

@@ -162,7 +162,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
             <div className="CanelaTopicMap-users">
               {top.slice(0, POSTERS_LIMIT).map(({ user, count }) => (
                 <Link
-                  className="CanelaTopicMap-poster"
+                  className={user.isOnline() ? 'CanelaTopicMap-poster CanelaTopicMap-poster--online' : 'CanelaTopicMap-poster'}
                   href={app.route.user(user)}
                   title={`${user.displayName()}: ${t('topic.map.posts', { count })}`}
                 >

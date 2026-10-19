@@ -19,7 +19,9 @@ use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Extend;
 use Ramon\Canela\MeToo\Api\DiscussionMeTooFields;
 use Ramon\Canela\MeToo\Api\ToggleMeTooController;
+use Ramon\Canela\MeToo\Event\Toggled;
 use Ramon\Canela\MeToo\MeToo;
+use Ramon\Canela\MeToo\Realtime\BroadcastMeToo;
 
 return [
     (new Extend\Settings())
@@ -37,4 +39,11 @@ return [
 
     (new Extend\ApiResource(DiscussionResource::class))
         ->fields(DiscussionMeTooFields::class),
+
+    // Tempo real: só com o flarum/realtime, quem está com o tópico aberto vê
+    // a contagem mudar sem recarregar. Sem ele o ouvinte nem é registrado.
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-realtime', static fn (): array => [
+            (new Extend\Event())->listen(Toggled::class, BroadcastMeToo::class),
+        ]),
 ];

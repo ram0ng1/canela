@@ -27,6 +27,8 @@ import ComposerActionTitle from './ComposerActionTitle';
 import ComposerFields from './ComposerFields';
 import { missingTagsMessage, normalizeTags, selectableTags, type RuleTag } from './tagRules';
 import installModals from './installModals';
+import installTagModal from './tagModal';
+import installAlignComposer from './alignComposer';
 import installToolbar, { addMoreAction, richMode, setPlaceholderProvider } from './installToolbar';
 import { editorComposer } from '../features/composer/common';
 import { draftableBody, draftsOn, saveCurrentDraft } from '../features/composer/drafts/fofDrafts';
@@ -370,4 +372,7 @@ export default function installComposerShell() {
   installToolbar();
   // Os modais de entrar/cadastrar (a casca de UI mora junto da do composer).
   installModals();
+  // O modal de tags do flarum/tags no desenho do seletor de tags do composer.
+  installTagModal();
+  installAlignComposer();
 }
