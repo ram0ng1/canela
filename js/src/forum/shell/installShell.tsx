@@ -66,6 +66,8 @@ export default function installShell() {
         'Canela--stickyAvatar': forumBool('canelaTopicStickyAvatar', false),
         // A linha do tempo ligando os avatares (less/forum/PostDirect.less).
         'Canela--postDirect': app.forum.attribute('canelaPostStyle') === 'direct',
+        // Ícones antes do título (lista e discussão) cada um na sua cor.
+        'Canela--statusColored': app.forum.attribute('canelaListStatusIcons') === 'colored',
       }).split(' ')
     );
 
