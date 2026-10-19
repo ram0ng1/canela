@@ -61,8 +61,6 @@ function posterAvatar(user: User | null | false, role: string, className = ''): 
   );
 }
 
-/** Ícones antes do título: em cinza (Discourse) ou cada um na sua cor. */
-const statusColored = (): boolean => app.forum.attribute<string>('canelaListStatusIcons') === 'colored';
 export default function installListItem(): void {
   // Ao voltar de um tópico, o Discourse pinta a linha dele com --tertiary-low
   // e apaga em 2,5s (`.topic-list-item.highlighted`). O core já guarda qual
@@ -135,7 +133,7 @@ export default function installListItem(): void {
     return (
       <div className="DiscussionListItem-main CanelaTopic">
         <h2 className="DiscussionListItem-title CanelaTopic-titleLine">
-          {badges.length > 0 && <span className={classList('CanelaTopic-status', { 'CanelaTopic-status--colored': statusColored() })}>{badges}</span>}
+          {badges.length > 0 && <span className="CanelaTopic-status">{badges}</span>}
           <Link href={app.route.discussion(discussion, jumpTo)} className="CanelaTopic-title">
             {highlight(discussion.title(), this.highlightRegExp)}
           </Link>

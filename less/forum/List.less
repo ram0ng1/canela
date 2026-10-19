@@ -350,17 +350,16 @@
   }
 }
 
-// `.topic-statuses`: ícones em primary-medium antes do título (16px: um
-// pouco maiores que os 14px do Discourse, a pedido do usuário).
+// `.topic-statuses`: ícones em primary-medium antes do título, na escala do
+// título (0.87em: 16px no título de 18px), para não sobrar nem faltar quando
+// ele muda de tamanho no celular.
 .CanelaTopic-status {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   margin-right: 6px;
-  // Centro dos ícones no centro das maiúsculas do título (em `em` para
-  // acompanhar o tamanho da fonte do título).
-  vertical-align: -0.15em;
   color: var(--cn-primary-medium);
+  .canela-status-align(0.87em);
 
   .Badge {
     --size: auto;
@@ -370,30 +369,44 @@
     background: none;
     box-shadow: none;
     color: inherit;
+    font-size: 0.87em;
 
-    &,
     .Badge-icon {
-      font-size: 16px;
+      font-size: 1em;
     }
   }
 }
 
-// Opção "Colorido" do admin: cada ícone na sua cor, a estrela preenchida.
-.CanelaTopic-status--colored {
-  .Badge--sticky {
-    color: var(--cn-accent);
-  }
+// O centro do ícone no centro das maiúsculas do título, pelas medidas da
+// própria fonte (`cap`), seja Inter, Jakarta ou a do sistema. A base da
+// caixa dos ícones é a borda de baixo, então ela sobe meia maiúscula menos
+// meio ícone. Sem suporte a `cap`, fica o valor medido na Inter.
+.canela-status-align(@size) {
+  vertical-align: -0.15em;
+  vertical-align: ~"calc(0.5cap - @{size} / 2)";
+}
 
-  .Badge--following {
-    color: #f5a524;
-
-    svg {
-      fill: currentColor;
+// Opção "Colorido" do admin, na lista e no título da discussão: cada ícone
+// na sua cor, a estrela preenchida.
+.Canela--statusColored {
+  .CanelaTopic-status,
+  .DiscussionHero.CanelaTopicHero .DiscussionHero-badges {
+    // `.Badge.Badge--*` para vencer o cinza do título (Topic.less).
+    .Badge.Badge--sticky {
+      color: var(--cn-accent);
     }
-  }
 
-  .Badge--locked {
-    color: var(--cn-danger);
+    .Badge.Badge--following {
+      color: #f5a524;
+
+      svg {
+        fill: currentColor;
+      }
+    }
+
+    .Badge.Badge--locked {
+      color: var(--cn-danger);
+    }
   }
 }
 

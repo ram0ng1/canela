@@ -457,7 +457,7 @@ const CORE_CARDS: CardDef[] = [
           label={trans(`${KEY}.list_status_icons_label`, 'Ícones antes do título')}
           help={trans(
             `${KEY}.list_status_icons_help`,
-            'O alfinete de fixada, a estrela de acompanhando e os demais ícones de situação ao lado do título.'
+            'O alfinete de fixada, a estrela de acompanhando e os demais ícones de situação ao lado do título, na lista e na discussão.'
           )}
           options={{
             muted: trans(`${KEY}.list_status_icons_muted`, 'Atual: em cinza, como o Discourse'),
