@@ -761,3 +761,42 @@
     display: none;
   }
 }
+
+// Celular: os botões que outras extensões põem no cabeçalho (tamanho da fonte
+// do linkrobins/font-sizer, modo escuro do huseyinfiliz/simple-dark-mode…)
+// viram só o ícone, como os do tema. No core eles vão para o menu lateral com
+// o texto; aqui ficam no cabeçalho, e o texto ("Font Size", "Dark Mode")
+// empurrava o logo e o hambúrguer para fora da tela. O nome continua no
+// `title`/`aria-label` do botão. Entrar, Cadastrar-se e o idioma ficam como
+// estão.
+@media @phone {
+  .Canela .Header-secondary .Header-controls > li:not(.item-signUp, .item-logIn, .item-locale) .Button.hasIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.55rem;
+    min-width: 2.55rem;
+    height: 2.55rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--cn-radius-pill);
+    background: transparent;
+    color: var(--cn-shell-icon);
+
+    .Button-icon {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .Button-label,
+    .Button-caret {
+      display: none !important;
+    }
+  }
+
+  // O cabeçalho nunca passa da largura da tela: os controles da direita
+  // encolhem antes, e o hambúrguer e o logo ficam sempre à vista.
+  .Canela .App-header .Header-secondary {
+    min-width: 0;
+  }
+}
