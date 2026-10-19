@@ -47,7 +47,7 @@ final class MembersController extends AbstractChatController
 
         if ($term !== '') {
             $like = addcslashes($term, '\\%_').'%';
-            $query->where('users.username', 'like', $like);
+            $query->whereLike('users.username', $like, caseSensitive: false);
         }
 
         $offset = max(0, (int) ($this->query($request, 'offset') ?? 0));

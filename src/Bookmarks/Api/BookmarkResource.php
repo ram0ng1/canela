@@ -197,12 +197,13 @@ final class BookmarkResource extends AbstractDatabaseResource
         if ($term !== '') {
             $like = '%'.addcslashes($term, '\\%_').'%';
 
+            // Sem diferenciar maiúsculas também no PostgreSQL (lá vira ILIKE).
             $query->where(static function (Builder $query) use ($like) {
-                $query->where('canela_bookmarks.name', 'like', $like)
-                    ->orWhereHas('post', static function (Builder $posts) use ($like) {
-                        $posts->where('content', 'like', $like)
-                            ->orWhereHas('discussion', static fn (Builder $discussions) => $discussions->where('title', 'like', $like));
-                    });
+                $query->whereLike('canela_bookmarks.name', $like, caseSensitive: false);
+                $query->orWhereHas('post', static function (Builder $posts) use ($like) {
+                    $posts->whereLike('content', $like, caseSensitive: false);
+                    $posts->orWhereHas('discussion', static fn (Builder $discussions) => $discussions->whereLike('title', $like, caseSensitive: false));
+                });
             });
         }
 

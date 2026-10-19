@@ -114,7 +114,9 @@ final class MeToo
 
         $row = $this->db->table(self::TABLE)
             ->where('discussion_id', $discussion->id)
-            ->selectRaw('COUNT(*) as total, COALESCE(MAX(user_id = ?), 0) as mine', [$userId])
+            // CASE, não `MAX(user_id = ?)`: no PostgreSQL a comparação é boolean,
+            // e não existe MAX(boolean); o CASE dá inteiro em todos os bancos.
+            ->selectRaw('COUNT(*) as total, COALESCE(MAX(CASE WHEN user_id = ? THEN 1 ELSE 0 END), 0) as mine', [$userId])
             ->first();
 
         return ['count' => (int) ($row->total ?? 0), 'mine' => (bool) ($row->mine ?? false)];

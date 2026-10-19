@@ -61,7 +61,9 @@ abstract class AbstractChatController implements RequestHandlerInterface
         } catch (QueryException $error) {
             // Tabelas do chat ainda não migradas (o tema atualizado antes do
             // `migrate`): o chat some com um 404, em vez de um erro 500.
-            if (in_array($error->getCode(), ['42S02', '42S22'], true)) {
+            // Tabela ou coluna inexistente: 42S02/42S22 no MySQL/MariaDB,
+            // 42P01/42703 no PostgreSQL.
+            if (in_array($error->getCode(), ['42S02', '42S22', '42P01', '42703'], true)) {
                 error_log('[ramon/canela] chat indisponível, falta migrar: '.$error->getMessage());
 
                 throw new ModelNotFoundException();

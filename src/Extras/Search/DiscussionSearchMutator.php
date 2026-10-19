@@ -59,7 +59,7 @@ final class DiscussionSearchMutator
             // Os curingas do LIKE vêm escapados: "50%" procura o texto "50%".
             $escaped = addcslashes($word, '\\%_');
 
-            $query->where('discussions.title', 'like', "%{$escaped}%");
+            $query->whereLike('discussions.title', "%{$escaped}%", caseSensitive: false);
         }
     }
 }

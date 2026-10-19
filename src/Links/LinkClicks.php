@@ -143,6 +143,10 @@ final class LinkClicks
     {
         $links = $this->topicLinks($discussion);
 
+        // Os apelidos pela gramática no SQL cru: com prefixo de tabela, `c`
+        // vira `flarum_c`, e um `c.url` solto apontaria para nada.
+        $g = $this->db->table(self::TABLE)->getGrammar();
+
         $rows = $this->db->table(self::TABLE.' as c')
             ->join('posts as p', 'p.id', '=', 'c.post_id')
             ->where('c.discussion_id', $discussion->id)
@@ -150,7 +154,7 @@ final class LinkClicks
             ->whereNull('p.hidden_at')
             ->where('p.is_private', false)
             ->groupBy('c.post_id', 'c.url_hash')
-            ->select('c.post_id', 'c.url_hash', $this->db->raw('MAX(c.url) as url'), $this->db->raw('COUNT(*) as clicks'))
+            ->select('c.post_id', 'c.url_hash', $this->db->raw('MAX('.$g->wrap('c.url').') as url'), $this->db->raw('COUNT(*) as clicks'))
             ->get();
 
         $posts = [];
@@ -232,13 +236,15 @@ final class LinkClicks
      */
     public function topForUser(int $userId, Builder $visiblePosts, int $limit): array
     {
+        $g = $this->db->table(self::TABLE)->getGrammar();
+
         $rows = $this->db->table(self::TABLE.' as c')
             ->join('posts as p', 'p.id', '=', 'c.post_id')
             ->where('p.user_id', $userId)
             ->where('p.type', 'comment')
             ->whereIn('p.id', $visiblePosts)
             ->groupBy('c.url_hash')
-            ->select('c.url_hash', $this->db->raw('MAX(c.url) as url'), $this->db->raw('MIN(c.post_id) as post_id'), $this->db->raw('COUNT(*) as clicks'))
+            ->select('c.url_hash', $this->db->raw('MAX('.$g->wrap('c.url').') as url'), $this->db->raw('MIN('.$g->wrap('c.post_id').') as post_id'), $this->db->raw('COUNT(*) as clicks'))
             ->orderByDesc('clicks')
             ->limit($limit)
             ->get();

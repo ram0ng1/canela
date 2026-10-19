@@ -17,6 +17,7 @@ use Flarum\User\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Chat\Model\Channel;
+use Ramon\Canela\Support\NullOrder;
 
 /**
  * `GET /api/chat/state`: os canais em que o ator está (os públicos que ele
@@ -39,8 +40,8 @@ final class StateController extends AbstractChatController
                     ->whereColumn('canela_chat_memberships.channel_id', 'canela_chat_channels.id')
                     ->where('canela_chat_memberships.user_id', $actor->id)
                     ->where('canela_chat_memberships.following', true);
-            })
-            ->orderBy('canela_chat_channels.name');
+            });
+        NullOrder::orderBy($query, 'canela_chat_channels.name');
 
         $this->access->scopeVisibleChannels($query, $actor);
 

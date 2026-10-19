@@ -76,9 +76,11 @@ final class TopicViewStats
                 'logged_in_views' => $logged,
             ]],
             ['discussion_id', 'date'],
+            // Coluna com a tabela: no `ON CONFLICT DO UPDATE` do PostgreSQL um
+            // nome solto é ambíguo (a tabela ou `excluded`).
             [
-                'anonymous_views' => $this->db->raw($this->db->getQueryGrammar()->wrap('anonymous_views').' + '.$anonymous),
-                'logged_in_views' => $this->db->raw($this->db->getQueryGrammar()->wrap('logged_in_views').' + '.$logged),
+                'anonymous_views' => $this->db->raw($this->db->getQueryGrammar()->wrap(self::TABLE.'.anonymous_views').' + '.$anonymous),
+                'logged_in_views' => $this->db->raw($this->db->getQueryGrammar()->wrap(self::TABLE.'.logged_in_views').' + '.$logged),
             ]
         );
     }

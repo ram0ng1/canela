@@ -8,14 +8,14 @@ use Carbon\Carbon;
 use Flarum\User\User;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\Repository;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\SQLiteConnection;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\Stats\Api\Controller\RecordReadTimeController;
 use Ramon\Canela\Stats\StatsSettings;
 use Ramon\Canela\Stats\VisitRecorder;
 use Ramon\Canela\Tests\Support\ArraySettings;
-use Ramon\Canela\Tests\Support\Sqlite;
+use Ramon\Canela\Tests\Support\TestDatabase;
 
 /**
  * Tempo de leitura (o "timings" do Discourse): o navegador diz quanto leu, e o
@@ -23,7 +23,7 @@ use Ramon\Canela\Tests\Support\Sqlite;
  */
 final class ReadingTimeTest extends TestCase
 {
-    private SQLiteConnection $db;
+    private Connection $db;
 
     private Repository $cache;
 
@@ -33,7 +33,7 @@ final class ReadingTimeTest extends TestCase
     {
         Carbon::setTestNow('2026-10-18 12:00:00');
 
-        $this->db = Sqlite::connection();
+        $this->db = TestDatabase::connection();
         $this->db->getSchemaBuilder()->create(VisitRecorder::TABLE, static function (Blueprint $table): void {
             $table->increments('id');
             $table->unsignedInteger('user_id');

@@ -66,11 +66,17 @@ final class PinStickiedToTop
             static fn (array $order): bool => ($order['column'] ?? null) !== 'is_sticky'
         ));
 
+        // Pela gramática (o prefixo das tabelas) e com TRUE, não 1: no
+        // PostgreSQL `is_sticky` é boolean, e boolean = inteiro não existe.
+        $grammar = $query->getGrammar();
+        $sticky = $grammar->wrap('discussions.is_sticky');
+        $createdAt = $grammar->wrap('discussions.created_at');
+
         $query->orders = [
             ['column' => 'is_sticky', 'direction' => 'desc'],
             // Só os fixados ganham a data de criação; os demais empatam (NULL)
             // e seguem a ordenação pedida.
-            ['type' => 'Raw', 'sql' => 'CASE WHEN discussions.is_sticky = 1 THEN discussions.created_at END ASC'],
+            ['type' => 'Raw', 'sql' => "CASE WHEN $sticky = TRUE THEN $createdAt END ASC"],
             ...$orders,
         ];
     }

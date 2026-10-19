@@ -17,6 +17,7 @@ use Flarum\User\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Chat\Model\Membership;
+use Ramon\Canela\Support\NullOrder;
 
 /**
  * `GET /api/chat/users?q=…[&channel=…]`: a busca de pessoas do chat — o
@@ -42,9 +43,9 @@ final class UsersController extends AbstractChatController
 
         // Sem termo (o seletor acabou de abrir), quem esteve por aqui há pouco.
         if ($term !== '') {
-            $query->where('username', 'like', addcslashes($term, '\\%_').'%')->orderBy('username');
+            $query->whereLike('username', addcslashes($term, '\\%_').'%', caseSensitive: false)->orderBy('username');
         } else {
-            $query->orderByDesc('last_seen_at');
+            NullOrder::orderBy($query, 'last_seen_at', 'desc');
         }
 
         $users = $query->get()->filter(fn (User $user) => $this->access->canUse($user))->values();

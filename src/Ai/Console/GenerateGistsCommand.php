@@ -18,6 +18,7 @@ use Flarum\User\Guest;
 use Illuminate\Console\Command;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Summaries\TopicSummarizer;
+use Ramon\Canela\Support\NullOrder;
 use Throwable;
 
 /**
@@ -59,7 +60,7 @@ final class GenerateGistsCommand extends Command
                     ->whereColumn('canela_ai_summaries.discussion_id', 'discussions.id')
                     ->whereColumn('canela_ai_summaries.gist_post_number', '>=', 'discussions.last_post_number');
             })
-            ->orderByDesc('discussions.last_posted_at')
+            ->tap(static fn ($query) => NullOrder::orderBy($query, 'discussions.last_posted_at', 'desc'))
             ->limit($limit)
             ->get();
 

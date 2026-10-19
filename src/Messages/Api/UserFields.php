@@ -87,9 +87,11 @@ final class UserFields
         // Com as caixas de grupo, o que vejo pela equipe conta à parte.
         if (MessagesSchema::hasGroups($this->db)) {
             $via = $this->db->getQueryGrammar()->wrap('canela_count_state.'.MessagesSchema::VIA_GROUP_COLUMN);
-            $query->selectRaw("SUM(CASE WHEN $read = 0 AND $via = 0 THEN 1 ELSE 0 END) AS new_count")
-                ->selectRaw("SUM(CASE WHEN $read > 0 AND $via = 0 THEN 1 ELSE 0 END) AS unread_count")
-                ->selectRaw("SUM(CASE WHEN $via = 1 THEN 1 ELSE 0 END) AS group_count");
+            // TRUE/FALSE, não 1/0: a coluna é boolean, e o PostgreSQL não
+            // compara boolean com inteiro (MySQL, MariaDB e SQLite aceitam os dois).
+            $query->selectRaw("SUM(CASE WHEN $read = 0 AND $via = FALSE THEN 1 ELSE 0 END) AS new_count")
+                ->selectRaw("SUM(CASE WHEN $read > 0 AND $via = FALSE THEN 1 ELSE 0 END) AS unread_count")
+                ->selectRaw("SUM(CASE WHEN $via = TRUE THEN 1 ELSE 0 END) AS group_count");
         } else {
             $query->selectRaw("SUM(CASE WHEN $read = 0 THEN 1 ELSE 0 END) AS new_count")
                 ->selectRaw("SUM(CASE WHEN $read > 0 THEN 1 ELSE 0 END) AS unread_count")

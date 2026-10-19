@@ -11,12 +11,12 @@ use Flarum\Post\Event\Revised;
 use Flarum\User\User;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Cache\Repository;
+use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolver;
 use Illuminate\Database\DatabaseTransactionsManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\SQLiteConnection;
 use Illuminate\Events\Dispatcher;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +28,7 @@ use Ramon\Canela\Extras\History\PostRevision;
 use Ramon\Canela\Extras\History\RecordRevision;
 use Ramon\Canela\Messages\Reactions\MessageReactions;
 use Ramon\Canela\Tests\Support\ArraySettings;
-use Ramon\Canela\Tests\Support\Sqlite;
+use Ramon\Canela\Tests\Support\TestDatabase;
 
 /**
  * Escritas simultâneas que davam erro 500 ou duplicavam linhas. A "outra
@@ -37,11 +37,11 @@ use Ramon\Canela\Tests\Support\Sqlite;
  */
 final class ConcurrentWritesTest extends TestCase
 {
-    private SQLiteConnection $db;
+    private Connection $db;
 
     protected function setUp(): void
     {
-        $this->db = Sqlite::connection();
+        $this->db = TestDatabase::connection();
         $this->db->setEventDispatcher(new Dispatcher());
         $resolver = new ConnectionResolver(['default' => $this->db]);
         $resolver->setDefaultConnection('default');

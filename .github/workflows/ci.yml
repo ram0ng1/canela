@@ -108,6 +108,62 @@ jobs:
         if: matrix.php == '8.3' && matrix.flarum-core == '^2.0.0'
         run: composer analyse
 
+  # Os mesmos testes contra um PostgreSQL de verdade: o banco mais rígido com
+  # tipos (`MAX(boolean)`, `boolean = 1`, coluna ambígua no ON CONFLICT,
+  # transação abortada depois de um erro). O SQLite dos testes aceita tudo isso.
+  php-postgres:
+    name: PHP 8.3 × PostgreSQL ${{ matrix.postgres }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16', '18']
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: canela
+          POSTGRES_PASSWORD: canela
+          POSTGRES_DB: canela_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U canela"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920  # v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240  # v2
+        with:
+          php-version: '8.3'
+          extensions: dom, mbstring, fileinfo, gd, pdo_pgsql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+
+      - name: Resolver dependências (composer update)
+        run: composer update --no-interaction --no-progress --prefer-stable --no-scripts
+
+      - name: Testes unitários no PostgreSQL
+        env:
+          CANELA_TEST_DB: pgsql
+          CANELA_PG_HOST: 127.0.0.1
+          CANELA_PG_PORT: '5432'
+          CANELA_PG_DATABASE: canela_test
+          CANELA_PG_USERNAME: canela
+          CANELA_PG_PASSWORD: canela
+        run: vendor/bin/phpunit --testsuite unit
+
   js:
     name: JS (formatação, tipos, lint, build)
     runs-on: ubuntu-latest
