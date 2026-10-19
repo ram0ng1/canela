@@ -35,7 +35,11 @@
         "flarum/messages": "^2.0.0",
         "phpunit/phpunit": "^11.5 || ^13.2.0",
         "phpstan/phpstan": "^2.1",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "fof/pages": "^2.0",
+        "fof/polls": "^3.0",
+        "ernestdefoe/wardrobe": "^1.1",
+        "ramon/chat": "^0.3"
     },
     "suggest": {
         "flarum/tags": "Categorias e etiquetas na barra lateral, na lista e na página de categorias.",

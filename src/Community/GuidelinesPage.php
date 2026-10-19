@@ -83,7 +83,7 @@ final class GuidelinesPage
     /** O texto padrão do tema, no idioma do fórum. */
     public function defaultMarkdown(): string
     {
-        $locale = method_exists($this->translator, 'getLocale') ? (string) $this->translator->getLocale() : 'pt_BR';
+        $locale = $this->translator->getLocale();
         $file = str_starts_with(strtolower($locale), 'en') ? 'en' : 'pt-BR';
 
         return (string) @file_get_contents(__DIR__.'/Content/guidelines/'.$file.'.md');
