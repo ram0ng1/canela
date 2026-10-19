@@ -15,7 +15,7 @@ import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
-import { bioMaxLength, canEditTitle, internalCoverEnabled, profileField, userStatus } from './data';
+import { bioMaxLength, canEditTitle, cardBackgroundEnabled, internalCoverEnabled, profileField, userStatus } from './data';
 import { thirdParty } from '../../thirdparty/settings';
 import { ForumakerCoverField } from '../../thirdparty/profileCover';
 import { statusUntilLabel } from './components';
@@ -92,8 +92,9 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
         {profileField('website') && this.textField('website', t('profile.settings.website_label'), 255, 'https://', 'url')}
         {profileField('birthday') && this.birthdayField()}
         {profileField('status') && this.statusField()}
-        {/* Com a forumaker/profile-cover a capa é dela: o editor dela no lugar dos campos de imagem. */}
-        {thirdParty.profileCover() ? <ForumakerCoverField user={user} /> : internalCoverEnabled() && this.imageFields(user)}
+        {/* Com a forumaker/profile-cover a capa larga é dela (o editor dela no lugar do campo da capa); o fundo do cartão continua do tema. */}
+        {thirdParty.profileCover() ? <ForumakerCoverField user={user} /> : internalCoverEnabled() && this.coverField(user)}
+        {cardBackgroundEnabled() && this.cardField(user)}
 
         <div className="Form-group CanelaProfileSettings-actions">
           <Button type="submit" className="Button Button--primary" loading={this.saving} disabled={!this.dirty()}>
@@ -263,8 +264,8 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
     );
   }
 
-  imageFields(user: User): Mithril.Children {
-    return [
+  coverField(user: User): Mithril.Children {
+    return (
       <ImageField
         user={user}
         kind="cover"
@@ -273,7 +274,12 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
         value={this.draft.coverUrl}
         oninput={(value: string) => (this.draft.coverUrl = value)}
         onstored={(value: string) => (this.saved.coverUrl = this.draft.coverUrl = value)}
-      />,
+      />
+    );
+  }
+
+  cardField(user: User): Mithril.Children {
+    return (
       <ImageField
         user={user}
         kind="card-background"
@@ -282,8 +288,8 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
         value={this.draft.cardUrl}
         oninput={(value: string) => (this.draft.cardUrl = value)}
         onstored={(value: string) => (this.saved.cardUrl = this.draft.cardUrl = value)}
-      />,
-    ];
+      />
+    );
   }
 
   dirty(): boolean {
@@ -320,10 +326,8 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
       data.canelaStatusUntil = empty ? null : this.statusUntil();
     }
 
-    if (internalCoverEnabled()) {
-      if (draft.coverUrl !== saved.coverUrl) data.canelaCoverUrl = text(draft.coverUrl);
-      if (draft.cardUrl !== saved.cardUrl) data.canelaCardBackgroundUrl = text(draft.cardUrl);
-    }
+    if (internalCoverEnabled() && draft.coverUrl !== saved.coverUrl) data.canelaCoverUrl = text(draft.coverUrl);
+    if (cardBackgroundEnabled() && draft.cardUrl !== saved.cardUrl) data.canelaCardBackgroundUrl = text(draft.cardUrl);
 
     return data;
   }

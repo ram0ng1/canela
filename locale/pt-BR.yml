@@ -701,7 +701,7 @@ ramon-canela:
         profile_cover_upload_label: Permitir envio de imagem
         profile_cover_upload_help: As imagens são reduzidas (a capa a 2000px, o cartão a 900px), convertidas para WebP e guardadas em assets/canela-covers. Desligado, só se aceita o endereço https de uma imagem.
         cover_notice: Endereços externos precisam ser https. O navegador de quem visita o perfil busca a imagem direto no outro site.
-        cover_forumaker_notice: 'A forumaker/profile-cover está ativa: a capa e o fundo do cartão vêm dela (Integrações → Capa do perfil). As imagens enviadas aqui ficam guardadas, mas não aparecem nem podem ser trocadas enquanto ela mandar.'
+        cover_forumaker_notice: 'A forumaker/profile-cover está ativa: a capa do perfil vem dela (Integrações → Capa do perfil). O fundo do cartão continua do tema; sem um fundo próprio, o cartão usa a miniatura da capa dela. A capa enviada aqui fica guardada, mas não aparece enquanto ela mandar.'
       stats:
         section_links: Cliques em links
         stats_links_enabled_label: Contar cliques em links
@@ -2005,7 +2005,7 @@ ramon-canela:
         card_label: Fundo do cartão de usuário
         card_help: Aparece atrás do seu nome no cartão que abre ao clicar no seu avatar.
         cover_edit: Editar capa
-        cover_forumaker_help: Uma imagem larga no topo do seu perfil, que também aparece no fundo do seu cartão de usuário. No editor dá para enviar, remover e escolher a parte da imagem que fica à mostra.
+        cover_forumaker_help: Uma imagem larga no topo do seu perfil, que também aparece no fundo do seu cartão de usuário quando você não escolhe um fundo próprio para ele. No editor dá para enviar, remover e escolher a parte da imagem que fica à mostra.
         no_image: Nenhuma imagem
         upload: Enviar imagem
         remove_image: Remover imagem

@@ -701,7 +701,7 @@ ramon-canela:
         profile_cover_upload_label: Allow image uploads
         profile_cover_upload_help: Images are downscaled (cover to 2000px, card to 900px), converted to WebP and stored in assets/canela-covers. When off, only an https image address is accepted.
         cover_notice: External addresses must be https. Visitors' browsers load the image straight from the other site.
-        cover_forumaker_notice: 'forumaker/profile-cover is active: the cover and the card background come from it (Integrations → Profile cover). Images uploaded here stay stored, but are not shown and cannot be changed while it is in charge.'
+        cover_forumaker_notice: 'forumaker/profile-cover is active: the profile cover comes from it (Integrations → Profile cover). The card background still belongs to the theme; without one of its own, the card uses the thumbnail of that cover. A cover uploaded here stays stored, but is not shown while it is in charge.'
       stats:
         section_links: Link clicks
         stats_links_enabled_label: Count link clicks
@@ -2005,7 +2005,7 @@ ramon-canela:
         card_label: User card background
         card_help: Shown behind your name on the card that opens when someone clicks your avatar.
         cover_edit: Edit cover
-        cover_forumaker_help: A wide image at the top of your profile, also shown behind your user card. The editor lets you upload, remove and pick which part of the image stays visible.
+        cover_forumaker_help: A wide image at the top of your profile, also shown behind your user card when you do not pick a background of its own. The editor lets you upload, remove and pick which part of the image stays visible.
         no_image: No image
         upload: Upload image
         remove_image: Remove image

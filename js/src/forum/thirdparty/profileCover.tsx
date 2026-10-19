@@ -19,7 +19,7 @@ import Button from 'flarum/common/components/Button';
 import type User from 'flarum/common/models/User';
 
 import { t } from '../utils/settings';
-import { cssImage, userCardBackgroundUrl, userCoverPosition } from '../features/profile/data';
+import { cssImage, userCoverPosition, userCoverUrl } from '../features/profile/data';
 import { extModule } from './settings';
 
 const EDITOR = 'forum/components/CoverEditorModal';
@@ -48,7 +48,8 @@ export interface ForumakerCoverFieldAttrs extends ComponentAttrs {
 export class ForumakerCoverField extends Component<ForumakerCoverFieldAttrs> {
   view() {
     const user = this.attrs.user;
-    const preview = userCardBackgroundUrl(user);
+    // A capa da forumaker (o fundo do cartão do tema é outro campo, logo abaixo).
+    const preview = userCoverUrl(user);
     const position = userCoverPosition(user);
 
     return (

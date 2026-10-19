@@ -126,9 +126,20 @@ return [
                 ->type(BadgeGrantedBlueprint::class, ['alert']),
         ]),
 
-    (new Extend\Frontend('forum'))
-        ->route('/badges', 'canela.badges', BadgesPageContent::class)
-        ->route('/badges/{id:\d+}[/{slug}]', 'canela.badge', BadgesPageContent::class),
+    // Com o fof/badges, `/badges` é dele: as páginas do tema mudam para
+    // `/achievements` (o mesmo prefixo do JS, BADGES_ALT_PREFIX em
+    // features/badges/routes.ts), em vez de sumirem.
+    (new Extend\Conditional())
+        ->whenExtensionDisabled('fof-badges', fn () => [
+            (new Extend\Frontend('forum'))
+                ->route('/badges', 'canela.badges', BadgesPageContent::class)
+                ->route('/badges/{id:\d+}[/{slug}]', 'canela.badge', BadgesPageContent::class),
+        ])
+        ->whenExtensionEnabled('fof-badges', fn () => [
+            (new Extend\Frontend('forum'))
+                ->route('/achievements', 'canela.badges', BadgesPageContent::class)
+                ->route('/achievements/{id:\d+}[/{slug}]', 'canela.badge', BadgesPageContent::class),
+        ]),
 
     (new Extend\Event())
         ->listen(Posted::class, [PostListener::class, 'posted'])

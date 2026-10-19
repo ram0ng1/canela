@@ -28,7 +28,7 @@ import installModalLayout from './modalLayout';
 import { forumBool, t } from '../utils/settings';
 import { SHELL_CLASS, applySidebarState, closeOverlaySidebar, watchViewport } from '../utils/sidebarState';
 import { installColorMode } from './colorMode';
-import { yieldConflictingRoutes } from '../utils/routeConflicts';
+import { relocateRoutes, yieldConflictingRoutes } from '../utils/routeConflicts';
 
 /** Páginas em que o hero vai para dentro do cartão, como no Discourse. */
 const INLINE_HERO_PAGES = /\b(DiscussionPage|UserPage)\b/;
@@ -37,6 +37,7 @@ export default function installShell() {
   // Antes de o app montar o roteador (todas as extensões já registraram as
   // suas páginas): os caminhos que outra extensão também usa ficam com ela.
   override(app as any, 'mount', function (this: any, original: (...args: any[]) => unknown, ...args: any[]) {
+    relocateRoutes();
     yieldConflictingRoutes();
 
     return original(...args);
