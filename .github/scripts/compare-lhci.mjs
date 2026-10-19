@@ -42,7 +42,7 @@ const OPPORTUNITIES = [
   {
     id: 'unused-javascript',
     label: 'JavaScript não utilizado',
-    tip: 'Use `import()` dinâmico para componentes só usados em rotas específicas (Sobre, Grupos, busca avançada). No Canela, página = rota com `() => import('./Page')`, modal = `app.modal.show(() => import('./Modal'))` e componente = `lazyComponent()` de `utils/lazy.tsx`.',
+    tip: 'Use `import()` dinâmico para componentes só usados em rotas específicas (Sobre, Grupos, busca avançada). No Canela, página = rota com `() => import("./Page")`, modal = `app.modal.show(() => import("./Modal"))` e componente = `lazyComponent()` de `utils/lazy.tsx`.',
   },
   {
     id: 'modern-image-formats',
