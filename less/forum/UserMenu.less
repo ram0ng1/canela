@@ -58,10 +58,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 0.6em;
-  padding: 0.2em 0.4em;
+  // Altura fixa e largura mínima igual a ela: com um dígito é um círculo
+  // (antes ficava mais estreita que alta, com as laterais retas, como se
+  // cortada); com mais dígitos vira pílula.
+  box-sizing: content-box;
+  height: 1.4em;
+  min-width: 0.8em;
+  padding: 0 0.3em;
   border: 2px solid var(--cn-surface);
-  border-radius: 10px;
+  border-radius: 999px;
   background: var(--cn-accent);
   color: var(--cn-accent-text);
   font-size: 0.7579rem;
