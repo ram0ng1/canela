@@ -20,6 +20,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
 use Illuminate\Support\Collection;
 use Ramon\Canela\Gaps\GapsSettings;
+use Ramon\Canela\Support\NullOrder;
 
 /**
  * Os dados da página 404 do Discourse ("Oops! Essa página não existe ou é
@@ -77,9 +78,11 @@ final class NotFoundPage
             ->where('is_private', false)
             ->whereNull('hidden_at');
 
-        $kind === 'popular'
-            ? $query->orderByDesc('comment_count')->orderByDesc('last_posted_at')
-            : $query->orderByDesc('created_at');
+        if ($kind === 'popular') {
+            NullOrder::orderBy($query->orderByDesc('comment_count'), 'last_posted_at', 'desc');
+        } else {
+            $query->orderByDesc('created_at');
+        }
 
         /** @var Collection<int, Discussion> $discussions */
         $discussions = $query->limit(self::COUNT)->get();

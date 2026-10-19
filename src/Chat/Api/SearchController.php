@@ -54,27 +54,24 @@ final class SearchController extends AbstractChatController
         $query = Message::query()
             ->whereIn('channel_id', $channels->keys()->all() ?: [0])
             ->whereNull('deleted_at')
-            ->where('message', 'like', '%'.addcslashes($term, '\\%_').'%')
+            // Sem diferenciar maiúsculas em nenhum banco: no PostgreSQL vira
+            // ILIKE (o LIKE de lá diferencia), no MySQL/MariaDB/SQLite, LIKE.
+            ->whereLike('message', '%'.addcslashes($term, '\\%_').'%', caseSensitive: false)
             ->limit(self::LIMIT);
 
         if (($this->query($request, 'sort') ?? 'relevance') === 'relevance') {
-            $grammar = $query->getQuery()->getGrammar();
-            $query->orderByRaw('CASE WHEN '.$grammar->wrap('message').' REGEXP ? THEN 0 ELSE 1 END', ['[[:<:]]'.preg_quote($term).'[[:>:]]']);
+            // Palavra inteira primeiro. Com LIKE, não REGEXP: o REGEXP não existe
+            // no PostgreSQL nem no SQLite, e a borda de palavra muda entre MySQL
+            // e MariaDB.
+            $message = 'LOWER('.$query->getQuery()->getGrammar()->wrap('message').')';
+            $word = mb_strtolower(addcslashes($term, '\\%_'));
+            $query->orderByRaw(
+                "CASE WHEN $message = ? OR $message LIKE ? OR $message LIKE ? OR $message LIKE ? THEN 0 ELSE 1 END",
+                [mb_strtolower($term), $word.' %', '% '.$word, '% '.$word.' %']
+            );
         }
 
-        try {
-            $messages = $query->orderByDesc('id')->get();
-        } catch (\Throwable) {
-            // O REGEXP de palavra inteira muda entre MySQL e MariaDB: sem ele,
-            // fica a ordem por data.
-            $messages = Message::query()
-                ->whereIn('channel_id', $channels->keys()->all() ?: [0])
-                ->whereNull('deleted_at')
-                ->where('message', 'like', '%'.addcslashes($term, '\\%_').'%')
-                ->orderByDesc('id')
-                ->limit(self::LIMIT)
-                ->get();
-        }
+        $messages = $query->orderByDesc('id')->get();
 
         $results = [];
 

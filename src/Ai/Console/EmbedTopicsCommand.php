@@ -18,6 +18,7 @@ use Flarum\User\Guest;
 use Illuminate\Console\Command;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Embeddings\RelatedTopics;
+use Ramon\Canela\Support\NullOrder;
 use Throwable;
 
 /**
@@ -44,7 +45,8 @@ final class EmbedTopicsCommand extends Command
             return self::SUCCESS;
         }
 
-        $query = Discussion::query()->whereVisibleTo(new Guest())->orderByDesc('last_posted_at');
+        $query = Discussion::query()->whereVisibleTo(new Guest());
+        NullOrder::orderBy($query, 'last_posted_at', 'desc');
 
         if (! $this->option('all')) {
             $query->limit(max(1, min(5000, (int) $this->option('limit'))));

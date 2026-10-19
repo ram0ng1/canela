@@ -12,14 +12,14 @@ use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\MeToo\MeToo;
 use Ramon\Canela\Tests\Support\ArraySettings;
-use Ramon\Canela\Tests\Support\Sqlite;
+use Ramon\Canela\Tests\Support\TestDatabase;
 
 /** "Eu também": liga e desliga por pessoa, e quem não pode não alterna. */
 final class MeTooTest extends TestCase
 {
     private function meToo(array $settings = [MeToo::ENABLED => '1']): array
     {
-        $db = Sqlite::connection();
+        $db = TestDatabase::connection();
         $db->getSchemaBuilder()->create(MeToo::TABLE, static function (Blueprint $table): void {
             $table->unsignedInteger('discussion_id');
             $table->unsignedInteger('user_id');

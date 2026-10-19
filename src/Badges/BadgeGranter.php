@@ -200,9 +200,14 @@ final class BadgeGranter
             $userBadge->granted_at = $grantedAt;
 
             try {
-                if ($badge->multiple_grant) {
-                    $userBadge->save();
-                } elseif (! $this->singleGrant->save($userBadge)) {
+                // Numa transação própria (um SAVEPOINT, se já houver uma aberta):
+                // no PostgreSQL um erro aborta a transação inteira, e sem o
+                // savepoint tudo o que viesse depois deste `catch` falharia.
+                $saved = $userBadge->getConnection()->transaction(
+                    fn (): bool => $badge->multiple_grant ? $userBadge->save() : $this->singleGrant->save($userBadge)
+                );
+
+                if (! $saved) {
                     // Outro processo concedeu no meio do caminho (ver SingleGrantLock).
                     continue;
                 }

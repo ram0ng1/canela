@@ -609,10 +609,13 @@ final class ContentTranslator
         $day = Carbon::now()->toDateString();
 
         // Conta antes: uma chamada que estoura o tempo também gastou.
-        $this->db->table('canela_ai_translation_usage')->upsert(
+        $usage = $this->db->table('canela_ai_translation_usage');
+        $usage->upsert(
             [['day' => $day, 'requests' => 1, 'input_tokens' => 0, 'output_tokens' => 0]],
             ['day'],
-            ['requests' => $this->db->raw('requests + 1')]
+            // Coluna com a tabela: no `ON CONFLICT DO UPDATE` do PostgreSQL um
+            // nome solto é ambíguo (a tabela ou `excluded`).
+            ['requests' => $this->db->raw($usage->getGrammar()->wrap('canela_ai_translation_usage.requests').' + 1')]
         );
 
         try {

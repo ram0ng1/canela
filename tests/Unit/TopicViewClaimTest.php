@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Ramon\Canela\Tests\Unit;
 
 use Carbon\Carbon;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\SQLiteConnection;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\Stats\StatsSettings;
 use Ramon\Canela\Stats\TopicViewRecorder;
 use Ramon\Canela\Stats\TopicViewStats;
 use Ramon\Canela\Tests\Support\ArraySettings;
-use Ramon\Canela\Tests\Support\Sqlite;
+use Ramon\Canela\Tests\Support\TestDatabase;
 
 /**
  * A reserva da visualização de tópico: uma por pessoa (conta ou IP do
@@ -20,13 +20,13 @@ use Ramon\Canela\Tests\Support\Sqlite;
  */
 final class TopicViewClaimTest extends TestCase
 {
-    private SQLiteConnection $db;
+    private Connection $db;
 
     private TopicViewRecorder $recorder;
 
     protected function setUp(): void
     {
-        $this->db = Sqlite::connection();
+        $this->db = TestDatabase::connection();
         $this->db->getSchemaBuilder()->create(TopicViewRecorder::TABLE, static function (Blueprint $table): void {
             $table->increments('id');
             $table->unsignedInteger('discussion_id');

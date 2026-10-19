@@ -196,7 +196,10 @@ final class ChatNotifier
 
         Notification::query()
             ->where('type', ChatMentionBlueprint::TYPE)
-            ->where('data', 'like', '{"channelId":'.$message->channel_id.',"messageId":'.$message->id.',%')
+            // Pelo caminho do JSON, não por LIKE no texto: o MySQL (coluna JSON)
+            // e o PostgreSQL não guardam o JSON com a mesma formatação.
+            ->where('data->channelId', (int) $message->channel_id)
+            ->where('data->messageId', (int) $message->id)
             ->update(['is_deleted' => true]);
     }
 
@@ -207,7 +210,7 @@ final class ChatNotifier
             ->where('user_id', $actor->id)
             ->whereIn('type', [ChatMentionBlueprint::TYPE, ChatMessageBlueprint::TYPE])
             ->whereNull('read_at')
-            ->where('data', 'like', '{"channelId":'.$channel->id.',%')
+            ->where('data->channelId', (int) $channel->id)
             ->update(['read_at' => Carbon::now()]);
     }
 }

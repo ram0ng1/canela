@@ -211,6 +211,9 @@ final class ShowUserSummaryController implements RequestHandlerInterface
 
         $visibleTags = $tagClass::whereVisibleTo($actor)->whereNotNull('position')->select('tags.id')->toBase();
 
+        // `p.number` pela gramática: com prefixo de tabela o apelido muda.
+        $number = $this->db->table('posts')->getGrammar()->wrap('p.number');
+
         $rows = $this->db->table('posts as p')
             ->join('discussion_tag as dt', 'dt.discussion_id', '=', 'p.discussion_id')
             ->where('p.user_id', $user->id)
@@ -220,8 +223,8 @@ final class ShowUserSummaryController implements RequestHandlerInterface
             ->groupBy('dt.tag_id')
             ->select(
                 'dt.tag_id as tag_id',
-                $this->db->raw('SUM(CASE WHEN p.number = 1 THEN 1 ELSE 0 END) as topics'),
-                $this->db->raw('SUM(CASE WHEN p.number > 1 THEN 1 ELSE 0 END) as replies'),
+                $this->db->raw("SUM(CASE WHEN $number = 1 THEN 1 ELSE 0 END) as topics"),
+                $this->db->raw("SUM(CASE WHEN $number > 1 THEN 1 ELSE 0 END) as replies"),
                 $this->db->raw('COUNT(*) as total')
             )
             ->orderByDesc('total')

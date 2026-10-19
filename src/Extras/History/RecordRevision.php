@@ -61,7 +61,10 @@ final class RecordRevision
             $revision->created_at = $post->edited_at ?? Carbon::now();
 
             try {
-                $revision->save();
+                // Numa transação própria (um SAVEPOINT, se a edição já abriu uma):
+                // no PostgreSQL o erro do índice aborta a transação inteira, e a
+                // nova tentativa (e o resto da edição) falharia junto.
+                $revision->getConnection()->transaction(static fn () => $revision->save());
 
                 return;
             } catch (UniqueConstraintViolationException $error) {

@@ -59,10 +59,14 @@ final class UsageLimiter
 
     public function countRequest(User $actor): void
     {
-        $this->db->table('canela_ai_usage')->upsert(
+        $query = $this->db->table('canela_ai_usage');
+
+        $query->upsert(
             [['user_id' => $actor->id, 'day' => $this->today(), 'requests' => 1, 'input_tokens' => 0, 'output_tokens' => 0]],
             ['user_id', 'day'],
-            ['requests' => $this->db->raw('requests + 1')]
+            // Coluna com a tabela: no `ON CONFLICT DO UPDATE` do PostgreSQL um
+            // nome solto é ambíguo (a tabela ou `excluded`).
+            ['requests' => $this->db->raw($query->getGrammar()->wrap('canela_ai_usage.requests').' + 1')]
         );
     }
 

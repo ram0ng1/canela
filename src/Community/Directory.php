@@ -19,6 +19,7 @@ use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Ramon\Canela\Support\NullOrder;
 use Ramon\Canela\Support\SchemaCache;
 
 /**
@@ -149,8 +150,8 @@ final class Directory
 
         match ($order) {
             'username' => $users->orderBy('users.username', $direction),
-            'lastSeenAt' => $users->orderBy('users.last_seen_at', $direction),
-            'joinedAt' => $users->orderBy('users.joined_at', $direction),
+            'lastSeenAt' => NullOrder::orderBy($users, 'users.last_seen_at', $direction),
+            'joinedAt' => NullOrder::orderBy($users, 'users.joined_at', $direction),
             default => $users->orderBy(self::alias($order), $direction),
         };
 
@@ -213,11 +214,11 @@ final class Directory
         $hasNickname = resolve(SchemaCache::class)->hasColumn('users', 'nickname');
 
         $users->where(function (Builder $query) use ($like, $hasNickname) {
-            $query->where('users.username', 'like', $like);
+            $query->whereLike('users.username', $like, caseSensitive: false);
 
             // O fof/nicknames guarda o nome de exibição numa coluna própria.
             if ($hasNickname) {
-                $query->orWhere('users.nickname', 'like', $like);
+                $query->orWhereLike('users.nickname', $like, caseSensitive: false);
             }
         });
     }

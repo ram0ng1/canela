@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Chat\Model\Channel;
+use Ramon\Canela\Support\NullOrder;
 
 /**
  * `/api/chat/channels`
@@ -56,11 +57,12 @@ final class ChannelsController extends AbstractChatController
 
         if ($term !== '') {
             $like = '%'.addcslashes($term, '\\%_').'%';
-            $query->where(static fn (Builder $q) => $q->where('canela_chat_channels.name', 'like', $like)->orWhere('canela_chat_channels.description', 'like', $like));
+            $query->where(static fn (Builder $q) => $q->whereLike('canela_chat_channels.name', $like, caseSensitive: false)->orWhereLike('canela_chat_channels.description', $like, caseSensitive: false));
         }
 
         $offset = max(0, (int) ($this->query($request, 'offset') ?? 0));
-        $rows = $query->orderBy('canela_chat_channels.name')->offset($offset)->limit(51)->get();
+        NullOrder::orderBy($query, 'canela_chat_channels.name');
+        $rows = $query->offset($offset)->limit(51)->get();
 
         return [
             'channels' => $this->presenter->channels($rows->take(50), $actor),

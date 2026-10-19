@@ -9,7 +9,7 @@ use Illuminate\Database\ConnectionResolver;
 use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\Bookmarks\Bookmark;
-use Ramon\Canela\Tests\Support\Sqlite;
+use Ramon\Canela\Tests\Support\TestDatabase;
 
 /**
  * O lembrete do marcador: trocar a hora rearma o envio; salvar a mesma hora
@@ -20,7 +20,7 @@ final class BookmarkModelTest extends TestCase
     protected function setUp(): void
     {
         // Só para o Eloquent saber o formato de data do banco.
-        $resolver = new ConnectionResolver(['default' => Sqlite::connection()]);
+        $resolver = new ConnectionResolver(['default' => TestDatabase::connection()]);
         $resolver->setDefaultConnection('default');
         Model::setConnectionResolver($resolver);
     }
