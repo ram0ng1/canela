@@ -105,6 +105,8 @@ ramon-canela:
       section_topic_footer: スレッドのフッター
       topic_footer_label: スレッド末尾のボタン
       topic_footer_help: Discourse のように、最後の投稿の後に返信、共有、フォローを表示します。フォローには Subscriptions 拡張機能が必要です。
+      topic_footer_notifications_label: "フッターのフォロー（デスクトップ）"
+      topic_footer_notifications_help: "フッターボタンの下にある「ウォッチ中」ボタンと通知レベルの説明文。デスクトップではタイムラインのベルが同じ役割を果たします。スマートフォンとタブレットでは、フッターのものが唯一のため常に表示されます。"
       section_suggested: おすすめスレッド
       suggested_topics_label: おすすめスレッドを表示
       suggested_topics_help: スレッドの末尾に、続けて読む他のスレッドの短い一覧を表示します。できるだけ同じタグから選びます。

@@ -105,6 +105,8 @@ ramon-canela:
       section_topic_footer: Discussion footer
       topic_footer_label: Buttons at the end of the discussion
       topic_footer_help: Reply, share and follow after the last post, as in Discourse. Follow needs the Subscriptions extension.
+      topic_footer_notifications_label: "Follow in the footer (desktop)"
+      topic_footer_notifications_help: "The \"Watching\" button and the notification level sentence below the footer buttons. On desktop the timeline bell already does the same; on phones and tablets the footer one always shows, since it is the only one."
       section_suggested: Suggested discussions
       suggested_topics_label: Show suggested discussions
       suggested_topics_help: At the end of the discussion, a short list of other discussions to keep reading, preferably from the same tag.

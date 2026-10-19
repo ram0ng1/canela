@@ -89,6 +89,9 @@ $forumSettings = [
     'canela.content_width' => ['canelaContentWidth', '1110', 'strval'],
     'canela.topic_timeline' => ['canelaTopicTimeline', true, 'boolval'],
     'canela.topic_footer' => ['canelaTopicFooter', true, 'boolval'],
+    // O "Acompanhando ▾" do rodapé no computador, onde o sino da linha do
+    // tempo já faz o mesmo (no celular e no tablet ele sempre aparece).
+    'canela.topic_footer_notifications' => ['canelaTopicFooterNotifications', false, 'boolval'],
     'canela.suggested_topics' => ['canelaSuggestedTopics', true, 'boolval'],
     'canela.suggested_count' => ['canelaSuggestedCount', 5, 'intval'],
     'canela.user_card' => ['canelaUserCard', true, 'boolval'],

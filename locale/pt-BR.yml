@@ -105,6 +105,8 @@ ramon-canela:
       section_topic_footer: Rodapé da discussão
       topic_footer_label: Botões no fim da discussão
       topic_footer_help: Responder, compartilhar e acompanhar depois da última postagem, como no Discourse. Acompanhar precisa da extensão Subscriptions.
+      topic_footer_notifications_label: "Acompanhar no rodapé (computador)"
+      topic_footer_notifications_help: "O botão \"Acompanhando\" e a frase do nível de notificação abaixo dos botões do rodapé. No computador o sino da linha do tempo já faz o mesmo; no celular e no tablet o do rodapé sempre aparece, porque é o único."
       section_suggested: Discussões sugeridas
       suggested_topics_label: Mostrar discussões sugeridas
       suggested_topics_help: No fim da discussão, uma lista curta de outras discussões para continuar lendo, de preferência da mesma tag.
