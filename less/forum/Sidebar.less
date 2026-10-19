@@ -508,10 +508,21 @@
       color: var(--cn-primary-high);
     }
 
+    .Button-icon {
+      flex: 0 0 auto;
+    }
+
     .Button-label {
       display: inline-flex !important;
+      flex: 1 1 auto;
+      // Linha, não a coluna centralizada que o rótulo herda: o nome encosta
+      // no ícone e o corte com reticências funciona.
+      flex-direction: row;
       align-items: center;
+      justify-content: flex-start;
       gap: 10px;
+      min-width: 0;
+      text-align: left;
     }
 
     // `--d-selected` do Discourse: um cinza leve, não a cor de destaque.
@@ -548,6 +559,16 @@
     align-items: center;
     gap: 6px;
     min-width: 0;
+  }
+
+  // Nome de tema longo ("Bespoke — Custom Theme & Live Preview"): uma linha,
+  // cortado com reticências; o nome inteiro fica no title do item.
+  .CanelaPaletteSelector-name,
+  .CanelaPaletteSelector-option .Button-labelText {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .CanelaPaletteSelector-brush {

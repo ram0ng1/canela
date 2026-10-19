@@ -105,6 +105,16 @@ type WardrobeTheme = { id: string; title: string };
 
 type WardrobeData = { themes: WardrobeTheme[]; active: string | null; allowUserChoice: boolean };
 
+/**
+ * O nome curto do tema: o que vem antes de um separador ("Bespoke — Custom
+ * Theme & Live Preview" → "Bespoke"). O nome inteiro fica no title do item.
+ */
+export function themeShortName(title: string): string {
+  const short = title.split(/\s+[—–\-|:·]\s+|\s*[:|(]\s*/)[0].trim();
+
+  return short || title.trim();
+}
+
 /** Mesmo cookie do Wardrobe: é ele que o servidor lê para o visitante sem conta. */
 const WARDROBE_COOKIE = 'wardrobe_theme';
 
@@ -192,7 +202,9 @@ export class FooterPaletteSelector extends Component {
         label={
           <span className="CanelaPaletteSelector-label">
             <Icon name="fas fa-paintbrush" className="CanelaPaletteSelector-brush" />
-            {activeTheme.title}
+            <span className="CanelaPaletteSelector-name" title={activeTheme.title}>
+              {themeShortName(activeTheme.title)}
+            </span>
           </span>
         }
         caretIcon="fas fa-chevron-down"
@@ -204,8 +216,9 @@ export class FooterPaletteSelector extends Component {
             className={classList('CanelaPaletteSelector-option', { active: theme.id === activeTheme.id })}
             icon={theme.id === activeTheme.id ? 'fas fa-check' : 'fas fa-paintbrush'}
             onclick={() => theme.id !== activeTheme.id && chooseTheme(theme.id)}
+            title={theme.title}
           >
-            {theme.title}
+            <span className="CanelaPaletteSelector-name">{themeShortName(theme.title)}</span>
           </Button>
         ))}
         <Separator />
