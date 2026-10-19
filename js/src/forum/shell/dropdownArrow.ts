@@ -21,6 +21,8 @@ const WIDTH = 26;
 const HEIGHT = 13;
 /** Distância mínima da seta até o canto arredondado do menu. */
 const EDGE = 14;
+/** O vão entre o botão e o menu com a seta (o mesmo da margem no LESS). */
+const GAP = 10;
 
 /** O botão é só um ícone (sem texto visível)? */
 function iconOnly(toggle: HTMLElement): boolean {
@@ -33,7 +35,16 @@ function iconOnly(toggle: HTMLElement): boolean {
 
 function removeArrow(dropdown: HTMLElement): void {
   dropdown.querySelector(`:scope > .${ARROW_CLASS}`)?.remove();
-  dropdown.querySelector(':scope > .Dropdown-menu')?.classList.remove(OPEN_CLASS, 'is-up');
+  const menu = dropdown.querySelector<HTMLElement>(':scope > .Dropdown-menu');
+
+  menu?.classList.remove(OPEN_CLASS, 'is-up');
+
+  // Desfaz a aproximação (abaixo): na próxima vez o core posiciona de novo.
+  if (menu?.dataset.canelaArrowMoved) {
+    menu.style.top = '';
+    menu.style.bottom = '';
+    delete menu.dataset.canelaArrowMoved;
+  }
 }
 
 function placeArrow(dropdown: HTMLElement): void {
@@ -75,6 +86,23 @@ function placeArrow(dropdown: HTMLElement): void {
 
   menu.classList.toggle('is-up', up);
   arrow.className = ARROW_CLASS + (up ? ' is-up' : '');
+
+  // Menu longe do botão: o `.Dropdown` é mais alto que ele (o ⋮ das linhas da
+  // lista fica no meio de uma caixa da altura da linha, e o menu abria embaixo
+  // dela, a uns 50px). Aproxima o menu do botão, para a seta apontar para ele.
+  const toggleBottom = toggleTop + toggleBox.height;
+  const placed = layoutBox(menu, parent);
+  const gap = up ? toggleTop - (placed.top + placed.height) : placed.top - toggleBottom;
+
+  if (gap > GAP + 2) {
+    const shift = gap - GAP;
+    const current = getComputedStyle(menu);
+
+    if (up) menu.style.bottom = `${parseFloat(current.bottom) - shift}px`;
+    else menu.style.top = `${parseFloat(current.top) - shift}px`;
+
+    menu.dataset.canelaArrowMoved = '1';
+  }
 
   // A classe `is-up` troca a margem do menu: mede de novo.
   const final = layoutBox(menu, parent);

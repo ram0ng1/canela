@@ -246,12 +246,15 @@
 }
 
 // A linha do tópico de onde o leitor voltou (`background-fade-highlight`).
+// Termina no fundo que a linha teria sem o destaque (`--cn-row-bg`): numa não
+// lida, o tom de não lida — antes ia até transparente e trocava de repente,
+// e a linha piscava como lida antes de aparecer como não lida.
 @keyframes canela-fade-highlight {
   0% {
     background-color: var(--cn-accent-low);
   }
   100% {
-    background-color: transparent;
+    background-color: var(--cn-row-bg, transparent);
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -320,7 +323,8 @@
 // (na própria linha). A busca fica como está.
 .DiscussionList:not(.DiscussionList--searchResults) .DiscussionListItem:has(> .DiscussionListItem-content.unread),
 .DiscussionListItem.CanelaMessagesItem.unread {
-  background: ~"color-mix(in srgb, var(--cn-accent) 7%, transparent)";
+  --cn-row-bg: ~"color-mix(in srgb, var(--cn-accent) 7%, transparent)";
+  background: var(--cn-row-bg);
 }
 .CanelaTopic-title {
   color: inherit;
