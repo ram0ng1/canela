@@ -1,6 +1,5 @@
 import app from 'flarum/forum/app';
 import Icon from 'flarum/common/components/Icon';
-import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import ItemList from 'flarum/common/utils/ItemList';
 import formatNumber from 'flarum/common/utils/formatNumber';
 import type User from 'flarum/common/models/User';
@@ -76,7 +75,7 @@ export default class AboutPage extends CommunityPage {
     }
 
     if (!data) {
-      items.add('loading', <LoadingIndicator display="block" />, 90);
+      items.add('loading', this.skeleton(), 90);
       return items;
     }
 
@@ -92,6 +91,62 @@ export default class AboutPage extends CommunityPage {
     if (data.stats) items.add('stats', this.statsTable(data.stats), 70);
 
     return items;
+  }
+
+  /**
+   * Os dados ainda vindo: as duas colunas com as classes das reais (a faixa
+   * de números, a equipe com o cartão do usuário e a atividade do site à
+   * direita), com os títulos já conhecidos e barras de texto no lugar do
+   * resto: o conteúdo chega onde o esqueleto estava.
+   */
+  skeleton(): Mithril.Children {
+    const line = (width: string) => <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width }} />;
+
+    return (
+      <div className="CanelaAbout-main CanelaAbout-main--loading" aria-busy="true">
+        <div className="CanelaAbout-left">
+          <ul className="CanelaAbout-summary">
+            {['6em', '9em', '9em', '9em'].map((width) => (
+              <li className="CanelaAbout-summaryItem">{line(width)}</li>
+            ))}
+          </ul>
+          <section className="CanelaAbout-staff">
+            <h2 className="CanelaAbout-sectionTitle">{t('community.about.our_admins')}</h2>
+            <ul className="CanelaAbout-users">
+              <li>
+                <div className="CanelaUserTile CanelaUserTile--normal">
+                  <span className="CanelaUserTile-avatar">
+                    <span className="Avatar CanelaSkeleton" />
+                  </span>
+                  <div className="CanelaUserTile-info">
+                    <span className="CanelaUserTile-name">{line('5em')}</span>
+                    <span className="CanelaUserTile-title">{line('3em')}</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+        <aside className="CanelaAbout-right">
+          <section className="CanelaAbout-box CanelaAbout-activity">
+            <h2 className="CanelaAbout-sectionTitle">{t('community.about.activity_title')}</h2>
+            <ul className="CanelaAbout-activityList">
+              {['8em', '9em', '7em', '10em', '7em'].map((width) => (
+                <li className="CanelaAbout-activityItem">
+                  <span className="CanelaAbout-activityIcon">
+                    <span className="CanelaSkeleton CanelaSkeleton--word" style={{ width: '1em' }} />
+                  </span>
+                  <span className="CanelaAbout-activityText">
+                    <span className="CanelaAbout-activityCount">{line(width)}</span>
+                    <span className="CanelaAbout-activityPeriod">{line('6em')}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </aside>
+      </div>
+    );
   }
 
   /** As abas do topo (Sobre, Diretrizes, Termos, Privacidade), o nome do fórum e a descrição. */

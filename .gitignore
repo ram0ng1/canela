@@ -4,3 +4,8 @@ composer.lock
 js/dist-typings
 .phpunit.cache
 CLAUDE.md
+
+# Notas internas (não vão para o repositório público)
+docs/DISCOURSE-PARITY.md
+docs/OPTIMIZATION-LOG.md
+docs/design/

@@ -72,6 +72,61 @@ function boxesView(categories: CanelaTag[]): Mithril.Children {
   );
 }
 
+const skeletonLine = (width: string) => <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width }} />;
+
+/** As caixas carregando: nome, descrição de duas linhas e a fileira das filhas. */
+function boxesSkeleton(): Mithril.Children {
+  return (
+    <ul className="CanelaCategoryBoxes CanelaCategoryBoxes--loading" aria-busy="true">
+      {['48%', '36%', '56%', '42%', '30%', '52%'].map((width) => (
+        <li className="CanelaCategoryBox">
+          <h3 className="CanelaCategoryBox-title">{skeletonLine(width)}</h3>
+          <p className="CanelaCategoryBox-description">
+            {skeletonLine('92%')}
+            {skeletonLine('60%')}
+          </p>
+          <ul className="CanelaCategoryBox-children">
+            {['4.5em', '6em', '5em'].map((child) => (
+              <li>{skeletonLine(child)}</li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A tabela carregando: o cabeçalho de verdade e linhas com barras. */
+function listSkeleton(): Mithril.Children {
+  return (
+    <table className="CanelaCategoryTable CanelaCategoryTable--loading" aria-busy="true">
+      <thead>
+        <tr>
+          <th className="CanelaCategoryTable-category">{t('categories.category')}</th>
+          <th className="CanelaCategoryTable-topics">{t('categories.topics')}</th>
+          <th className="CanelaCategoryTable-latest">{t('categories.latest')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {['30%', '22%', '36%', '26%', '18%'].map((width) => (
+          <tr>
+            <td className="CanelaCategoryTable-category">
+              <h3 className="CanelaCategoryTable-name">{skeletonLine(width)}</h3>
+              <p className="CanelaCategoryTable-description">{skeletonLine('70%')}</p>
+            </td>
+            <td className="CanelaCategoryTable-topics">
+              <span className="CanelaSkeleton CanelaSkeleton--word" style={{ width: '1.5em' }} />
+            </td>
+            <td className="CanelaCategoryTable-latest">
+              <div className="CanelaCategoryTable-latestInner">{skeletonLine('80%')}</div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
 function latestView(tag: CanelaTag): Mithril.Children {
   const discussion = tag.lastPostedDiscussion() as Discussion | null | false | undefined;
 
@@ -211,7 +266,16 @@ export default function installCategoriesPage(): void {
     // A página de etiquetas do Discourse não tem a barra de navegação.
     if (!tagsPage) items.add('canelaNav', <ListNavigation />, 200);
 
-    if (this.loading) return;
+    if (this.loading) {
+      // No lugar do spinner, as caixas (ou a tabela) das categorias com as
+      // classes das reais: elas chegam onde o esqueleto estava.
+      if (!tagsPage) {
+        items.remove('loading');
+        items.add('canelaCategories', layout() === 'list' ? listSkeleton() : boxesSkeleton(), 100);
+      }
+
+      return;
+    }
 
     const tags: CanelaTag[] = this.tags || [];
     const categories = sortTags(tags.filter((tag) => tag.position() !== null && !tag.isChild()));

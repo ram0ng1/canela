@@ -719,3 +719,19 @@
     }
   }
 }
+
+// ---------------------------------------------------------------------
+// Lista carregando (list/listSkeleton.tsx): as linhas reais com barras no
+// lugar do texto; aqui só o tamanho dos números e da idade.
+// ---------------------------------------------------------------------
+.CanelaListSkeleton {
+  pointer-events: none;
+}
+
+.CanelaListSkeleton .CanelaSkeleton--word.CanelaListSkeleton-number {
+  width: 1.4em;
+}
+
+.CanelaListSkeleton .CanelaSkeleton--word.CanelaListSkeleton-age {
+  width: 2.6em;
+}

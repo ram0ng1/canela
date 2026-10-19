@@ -114,4 +114,21 @@ final class LazyThemeAssets extends ThemeAssets
     {
         return $this->app->make(Queue::class);
     }
+
+    /**
+     * O worker da fila é um processo longo: a lista "já atualizado nesta
+     * requisição" do Wardrobe (`fresh`) ficava preenchida para sempre nele, e
+     * os aquecimentos seguintes não recompilavam nada (o tema servido ficava
+     * velho até alguém rodar o aquecimento à mão). Cada aquecimento começa
+     * com ela vazia e decide pelo carimbo de tempo, como numa requisição nova.
+     */
+    #[\Override]
+    public function warmAll(): void
+    {
+        \Closure::bind(function (): void {
+            $this->fresh = [];
+        }, $this, ThemeAssets::class)();
+
+        parent::warmAll();
+    }
 }

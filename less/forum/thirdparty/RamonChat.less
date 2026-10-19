@@ -1749,6 +1749,43 @@ body.ChatFullPage {
   }
 }
 
+// As mensagens carregando (no canal, ao subir a conversa e no painel do
+// canal antes de abrir) com as medidas da .ChatMessage real: 11px em cima,
+// o avatar de 28px na calha de 42px, o nome e o texto em linhas de 22px com
+// 2px entre elas. Cada barra é uma caixa de 22px pintada só no miolo, então
+// cai na linha que o texto vai ocupar.
+.ChatChannel-stream .ChatSkeleton,
+.ChatSkeleton-channelStream .ChatSkeleton {
+  padding: 0;
+
+  .ChatSkeleton-row {
+    gap: 14px;
+    margin: 0;
+    padding: 11px 16px 2px;
+  }
+
+  .ChatSkeleton-avatar {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+
+  .ChatSkeleton-line {
+    box-sizing: border-box;
+    height: 22px;
+    margin: 0 0 2px;
+    padding: 5px 0;
+    background-clip: content-box;
+    border-radius: 999px;
+
+    // A primeira é o nome de quem escreveu: curta como um nome.
+    &:first-child {
+      max-width: 9em;
+    }
+  }
+}
+
 // ---------------------------------------------------------------------
 // A gaveta (chat-drawer): 400px no canto direito, cantos de cima
 // arredondados, a barra de 45px com o nome em negrito.

@@ -1678,8 +1678,9 @@
 
 // O "…" do evento na linha do texto, centrado na altura, menor e sem
 // deslocamento (o core o posiciona como o dos posts normais).
+// Relativo: o menu (absoluto) abre colado ao "…", não na ponta direita do post.
 .CanelaTopic .EventPost .Post-controls {
-  position: static;
+  position: relative;
   float: none;
   display: inline-flex;
   align-items: center;
@@ -1695,6 +1696,14 @@
     margin: 0;
     font-size: 12px;
     line-height: 1;
+  }
+
+  // O "…" fica logo depois do texto: o menu abre para a direita, embaixo dele.
+  .Dropdown-menu {
+    top: 100%;
+    right: auto;
+    left: 0;
+    margin-top: 4px;
   }
 }
 
@@ -1843,11 +1852,7 @@
     }
   }
 
-  // Com a linha do tempo, o avatar é um nó centrado nela, como o real.
-  .Canela--postDirect .CanelaTopic .LoadingPost .PostUser-avatar {
-    margin-left: ~"calc((var(--cn-post-avatar, 45px) - 48px) / 2)";
-    box-shadow: 0 0 0 4px var(--cn-direct-ring);
-  }
+  // Com a linha do tempo, o avatar vira um nó dela: ver PostDirect.less.
 }
 
 @media @phone {
@@ -1882,4 +1887,12 @@
       padding: 12px 0 0;
     }
   }
+}
+
+// Post oculto (recolhido): o core esconde tudo da coluna lateral, contando com
+// o avatar pequeno do cabeçalho, que o tema esconde no desktop. Aqui o avatar
+// do lado continua visível, esmaecido como o resto do post oculto.
+.CanelaTopic .Post--hidden:not(.revealContent) .Post-side > .CanelaPostAvatar {
+  display: block;
+  opacity: 0.5;
 }

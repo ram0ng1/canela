@@ -1906,17 +1906,15 @@
       background: none;
     }
 
+    // As barras de texto (uma por linha) preenchem a descrição e o rodapé
+    // como o texto: sem o corte de linhas do texto real.
     .MpShop-cardDesc {
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-      min-height: 64px;
+      -webkit-line-clamp: none;
     }
 
-    .MpShop-cardFoot {
-      display: flex;
-      align-items: center;
-      min-height: 18px;
+    .MpShop-priceBtn .CanelaSkeleton--line,
+    .MpShop-cardFoot .CanelaSkeleton--line {
+      flex: none;
     }
   }
 

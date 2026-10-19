@@ -26,7 +26,7 @@ import { t } from '../../../utils/settings';
 import { isTagsEnabled, type CanelaTag } from '../../../utils/tags';
 import AdvancedFilters from './AdvancedFilters';
 import { hasCriteria, highlightPattern, parseQuery, serializeQuery, type SearchQuery } from './query';
-import { discussionResult, postResult, tagResult, userResult } from './results';
+import { discussionResult, postResult, resultSkeleton, tagResult, userResult } from './results';
 import { fetchPage, postFilters, sortOptions, type SearchTab } from './sources';
 
 // A rota e a URL moram em ./route, fora do chunk desta página.
@@ -256,6 +256,8 @@ export default class SearchPage extends Page<IPageAttrs> {
 
     const pattern = highlightPattern(this.query.text);
     const count = this.total ?? this.items.length;
+    const firstPage = this.loading && !this.items.length;
+    const skeletonTab = this.tab === 'topics' || this.tab === 'posts';
 
     return (
       <div className="CanelaSearch-results" aria-live="polite" aria-busy={this.loading ? 'true' : 'false'}>
@@ -269,6 +271,14 @@ export default class SearchPage extends Page<IPageAttrs> {
           </h2>
         )}
 
+        {/* Na primeira busca o título ("N resultados para…") ainda não existe:
+            o lugar dele fica reservado, e a lista não desce quando ele chega. */}
+        {!this.searched && firstPage && skeletonTab && (
+          <h2 className="CanelaSearch-heading">
+            <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: '14em' }} />
+          </h2>
+        )}
+
         {this.failed && <p className="CanelaSearch-empty">{t('extras.search.failed')}</p>}
 
         {this.tab === 'posts' && this.searched && postFilters(this.query).ignored && (
@@ -278,9 +288,17 @@ export default class SearchPage extends Page<IPageAttrs> {
           </p>
         )}
 
-        <ul className="CanelaSearch-list">{this.items.map((item) => this.itemView(item, pattern))}</ul>
+        {/* A primeira página de tópicos ou postagens: as linhas do esqueleto
+            no lugar do spinner (o "carregar mais" continua com o spinner). */}
+        {firstPage && skeletonTab ? (
+          <ul className="CanelaSearch-list CanelaSearch-list--loading" aria-busy="true">
+            {resultSkeleton()}
+          </ul>
+        ) : (
+          <ul className="CanelaSearch-list">{this.items.map((item) => this.itemView(item, pattern))}</ul>
+        )}
 
-        {this.loading && <LoadingIndicator display="block" />}
+        {this.loading && !(firstPage && skeletonTab) && <LoadingIndicator display="block" />}
 
         {!this.loading && this.hasMore && (
           <div className="CanelaSearch-more">

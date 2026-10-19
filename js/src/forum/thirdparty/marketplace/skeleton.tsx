@@ -38,24 +38,35 @@ function repeat(n: number, render: (i: number) => Mithril.Children): Mithril.Chi
 /** Larguras que variam de linha para linha, para não parecer uma régua. */
 const WIDTHS = ['62%', '48%', '70%', '55%', '40%', '66%'];
 
+/**
+ * Uma barra de texto (`.CanelaSkeleton--line`): a altura de uma linha do
+ * elemento em que ela está, então cai onde a linha real vai cair.
+ */
+function line(width: string): Mithril.Children {
+  return <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width }} />;
+}
+
 function cards(n: number): Mithril.Children {
-  // Os mesmos containers do cartão pronto (cabeçalho em grade, descrição e
-  // rodapé): cada bloco nasce na altura e na posição do conteúdo.
+  // Os mesmos containers do cartão pronto (cabeçalho em grade, título,
+  // preço, descrição de até três linhas e rodapé), com barras de texto
+  // dentro deles: cada uma herda a fonte e a altura de linha do texto real.
   return (
     <div className="MpShop-grid CanelaMpSkel-grid">
       {repeat(n, (i) => (
         <div key={String(i)} className="MpShop-card CanelaMpSkel-card">
           <div className="MpShop-cardHead">
             <div className="MpShop-cardIcon">{b('44px', 44, 'CanelaMpSkel-tile')}</div>
-            <div className="MpShop-cardMain">{b(WIDTHS[i % WIDTHS.length], 20)}</div>
-            <div className="MpShop-priceBtn">{b('38%', 22)}</div>
+            <div className="MpShop-cardMain">
+              <h3 className="MpShop-cardTitle">{line(WIDTHS[i % WIDTHS.length])}</h3>
+            </div>
+            <div className="MpShop-priceBtn">{line('38%')}</div>
           </div>
           <div className="MpShop-cardDesc">
-            {b('100%', 14)}
-            {b('92%', 14)}
-            {b('64%', 14)}
+            {line('100%')}
+            {line('92%')}
+            {line('64%')}
           </div>
-          <div className="MpShop-cardFoot">{b('45%', 14)}</div>
+          <div className="MpShop-cardFoot">{line('45%')}</div>
         </div>
       ))}
     </div>

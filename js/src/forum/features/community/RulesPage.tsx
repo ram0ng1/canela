@@ -1,5 +1,4 @@
 import app from 'flarum/forum/app';
-import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import type Mithril from 'mithril';
 
 import AboutNav from './AboutNav';
@@ -110,13 +109,46 @@ export default abstract class RulesPage extends CommunityPage {
     let body: Mithril.Children;
 
     if (this.failed) body = <p className="CanelaCommunity-empty">{t('community.load_error')}</p>;
-    else if (this.html === null) body = <LoadingIndicator display="block" />;
+    else if (this.html === null) body = this.skeleton();
     else body = this.rules(this.html);
 
     return (
       <div className="CanelaAbout CanelaGuidelines">
         <header className="CanelaAbout-header">{AboutNav(this.activeTab())}</header>
         {body}
+      </div>
+    );
+  }
+
+  /**
+   * O texto ainda vindo: o título (já conhecido) e dois cartões de regras com
+   * as classes dos reais, com barras de texto no lugar das linhas, para o
+   * conteúdo chegar onde o esqueleto estava.
+   */
+  skeleton(): Mithril.Children {
+    const line = (width: string) => <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width }} />;
+
+    return (
+      <div className="CanelaRules CanelaRules--loading" aria-busy="true">
+        <h1 className="CanelaRules-title">{this.title()}</h1>
+        <nav className="CanelaRules-toc" aria-hidden="true">
+          {['9em', '12em', '8em', '11em', '10em', '7em'].map((width) => (
+            <a>
+              <span className="CanelaSkeleton CanelaSkeleton--word" style={{ width }} />
+            </a>
+          ))}
+        </nav>
+        {[
+          ['30%', ['100%', '94%', '72%']],
+          ['24%', ['96%', '100%', '58%']],
+        ].map(([title, lines]) => (
+          <section className="CanelaRules-card">
+            <h2 className="CanelaRules-sectionTitle">{line(title as string)}</h2>
+            <div className="CanelaRules-body Post-body">
+              <p>{(lines as string[]).map(line)}</p>
+            </div>
+          </section>
+        ))}
       </div>
     );
   }

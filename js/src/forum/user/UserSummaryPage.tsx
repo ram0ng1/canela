@@ -475,7 +475,7 @@ export default class UserSummaryPage<Attrs extends IUserPageAttrs = IUserPageAtt
         <ul className="CanelaSummaryList CanelaSummaryList--loading" aria-busy="true">
           {['62%', '78%', '54%'].map((width) => (
             <li className="CanelaSummaryList-item">
-              <span className="CanelaSkeleton CanelaSummaryList-fake" style={{ width: '30%' }} />
+              <span className="CanelaSkeleton CanelaSummaryList-fake" style={{ width: '6em' }} />
               <br />
               <span className="CanelaSkeleton CanelaSummaryList-fake" style={{ width }} />
             </li>

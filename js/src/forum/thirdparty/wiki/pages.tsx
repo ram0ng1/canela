@@ -230,7 +230,7 @@ function listSkeleton(page: any): Mithril.Children {
                 <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: index ? '8em' : '6em' }} />
               </h2>
               <p className="CanelaWikiGroup-description">
-                <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: index ? '22em' : '28em' }} />
+                <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: index ? '45%' : '60%' }} />
                 <span className="CanelaSkeleton CanelaSkeleton--line CanelaWikiSkeleton-wrap" style={{ width: '40%' }} />
               </p>
             </header>

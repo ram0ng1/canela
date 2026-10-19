@@ -88,6 +88,18 @@
       box-shadow: 0 0 0 4px var(--cn-direct-ring);
     }
 
+    // O post ainda carregando (LoadingPost, que também é um .CommentPost e
+    // ganha a mesma linha): o avatar do esqueleto é um nó como o real,
+    // centrado no eixo, com o anel e acima da linha (que é absoluta e, sem
+    // o z-index, passaria por cima do círculo). No último esqueleto a linha
+    // termina no centro dele pela regra do "último post" acima.
+    .LoadingPost .Post-header .PostUser-avatar {
+      position: relative;
+      z-index: 1;
+      margin-left: ~"calc((var(--cn-post-avatar, 45px) - 48px) / 2)";
+      box-shadow: 0 0 0 4px var(--cn-direct-ring);
+    }
+
     // ── Mensagens (flarum/messages, recurso messages do tema) ──────────────
     // A mesma linha ligando os avatares das mensagens e passando pelos
     // eventos da conversa (.CanelaDialogEvent). A mensagem tem 16px de margem

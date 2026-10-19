@@ -2838,3 +2838,10 @@ ernestdefoe-wardrobe:
   forum:
     theme:
       flarum: Default
+
+# O nome do provedor "passkey" (desativado no fórum, mas ainda vinculado
+# a contas antigas): o fof/oauth não traz a tradução dele.
+fof-oauth:
+  forum:
+    providers:
+      passkey: Passkey

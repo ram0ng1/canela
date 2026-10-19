@@ -18,6 +18,14 @@ import type Mithril from 'mithril';
 import { forumBool, t } from '../utils/settings';
 import { listHasViews } from './metrics';
 import { activeSort } from './sorts';
+import listSkeleton from './listSkeleton';
+
+/**
+ * Se a última lista carregada tinha a coluna de visualizações: enquanto a
+ * próxima carrega não há discussões para decidir, e o cabeçalho (e o
+ * skeleton) não pode perder a coluna e ganhá-la de volta.
+ */
+let lastShowViews = true;
 
 function sortableColumn(label: string, sort: string, enabled: boolean, className: string): Mithril.Children {
   if (!enabled || !(sort in app.discussions.sortMap())) {
@@ -63,7 +71,13 @@ export default function installListHeader(): void {
 
     if (!vdom || !state) return;
 
-    const showViews = forumBool('canelaListViews', true) && listHasViews(state);
+    // Primeira página carregando (troca de filtro, categoria ou ordem): as
+    // linhas do skeleton no lugar do spinner, debaixo do cabeçalho.
+    const loadingFirst = state.isInitialLoading() && !state.hasItems();
+
+    if (!loadingFirst) lastShowViews = listHasViews(state);
+
+    const showViews = forumBool('canelaListViews', true) && lastShowViews;
 
     vdom.attrs.className = classList(vdom.attrs.className, 'CanelaList', {
       'CanelaList--views': showViews,
@@ -72,6 +86,17 @@ export default function installListHeader(): void {
 
     // A lista vazia devolve só o Placeholder: sem linhas, sem cabeçalho.
     if (!forumBool('canelaListHeader', true) || state.isEmpty() || !Array.isArray(vdom.children)) return;
+
+    if (loadingFirst) {
+      const children = vdom.children as any[];
+      const list = children.find((child) => child?.attrs?.className === 'DiscussionList-discussions');
+      const more = children.find((child) => child?.attrs?.className === 'DiscussionList-loadMore');
+
+      if (list) {
+        list.children = listSkeleton(showViews);
+        if (more) more.children = [];
+      }
+    }
 
     // Os filhos do div (ul + "carregar mais") não têm key, então inserir um
     // irmão sem key no começo é seguro para o Mithril.

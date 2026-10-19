@@ -265,9 +265,9 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
 
           {status && <div className="CanelaUserCard-row">{status}</div>}
           {bio && <div className="CanelaUserCard-row CanelaUserCard-bio">{bio}</div>}
-          {facts.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-facts">{facts}</div>}
-          {meta1.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{meta1}</div>}
-          {meta2.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{meta2}</div>}
+          {facts.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-facts">{dotted(facts)}</div>}
+          {meta1.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{dotted(meta1)}</div>}
+          {meta2.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{dotted(meta2)}</div>}
           <FeaturedBadges className="CanelaUserCard-row CanelaUserCard-badges" user={user} limit={3} />
         </div>
       </div>
@@ -339,4 +339,13 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
     card.classList.toggle('CanelaUserCard--arrow', beside && arrow > 16 && arrow < height - 16);
     card.style.setProperty('--usercard-arrow', `${arrow}px`);
   }
+}
+
+/**
+ * Intercala um "•" entre os itens. O separador é um elemento próprio, irmão dos
+ * itens: como pseudo-elemento dentro de um item que é link, ele herdava o
+ * sublinhado e o clique do link.
+ */
+function dotted(items: Mithril.Children[]): Mithril.Children[] {
+  return items.flatMap((item, index) => (index === 0 ? [item] : [<span className="CanelaUserCard-sep" aria-hidden="true">•</span>, item]));
 }

@@ -130,10 +130,11 @@ export function Spinner(): Mithril.Children {
 
 /**
  * A lista de notificações ainda sem resposta: linhas com a altura de um item
- * (avatar e duas linhas de texto), em vez do spinner — o painel já abre no
- * tamanho de uma lista e não salta quando ela chega.
+ * (avatar e duas linhas de texto, cada barra com a altura de uma linha do
+ * texto real), em vez do spinner: o painel já abre no tamanho de uma lista e
+ * não salta quando ela chega.
  */
-export function NotificationSkeleton(rows = 5): Mithril.Children {
+export function NotificationSkeleton(rows = 8): Mithril.Children {
   return (
     <ul className="CanelaUserMenu-list CanelaUserMenu-list--loading" aria-busy="true">
       {Array.from({ length: rows }, (_, index) => (
@@ -141,8 +142,8 @@ export function NotificationSkeleton(rows = 5): Mithril.Children {
           <div className="CanelaUserMenu-skeletonRow">
             <span className="CanelaSkeleton CanelaUserMenu-skeletonAvatar" />
             <span className="CanelaUserMenu-itemText">
-              <span className="CanelaSkeleton CanelaUserMenu-skeletonLine" style={{ width: `${45 + ((index * 17) % 30)}%` }} />
-              <span className="CanelaSkeleton CanelaUserMenu-skeletonLine" style={{ width: `${70 + ((index * 11) % 25)}%` }} />
+              <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: `${45 + ((index * 17) % 30)}%` }} />
+              <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width: `${70 + ((index * 11) % 25)}%` }} />
             </span>
           </div>
         </li>

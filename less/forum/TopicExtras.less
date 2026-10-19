@@ -1098,15 +1098,12 @@ button.CanelaTopicMap-stat {
   }
 }
 
-// "•" entre os itens das linhas de fatos e de metadados do cartão.
-.CanelaUserCard-facts > * + *::before,
-.CanelaUserCard-metadata > * + *::before {
-  content: '•';
-  margin-right: 0.5em;
+// "•" entre os itens das linhas de fatos e de metadados do cartão (elemento
+// próprio, fora dos links; o espaço dos lados vem do gap da linha).
+.CanelaUserCard-sep {
   color: var(--cn-primary-low-mid);
-  text-decoration: none;
+  user-select: none;
 }
-
 
 // A setinha à esquerda do cartão, apontando para o avatar de onde ele veio
 // (a altura vem do JS em --usercard-arrow). Dois triângulos: a borda e, por

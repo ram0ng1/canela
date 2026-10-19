@@ -49,6 +49,33 @@ function blurb(post: Post | null | false | undefined, pattern: RegExp | undefine
   );
 }
 
+/**
+ * Resultados ainda vindo (a primeira página de uma busca): linhas com as
+ * classes das reais (avatar, título, badges e o trecho de duas linhas), com
+ * barras de texto no lugar do texto, para os resultados chegarem onde o
+ * esqueleto estava.
+ */
+export function resultSkeleton(rows = 5): Mithril.Children[] {
+  const line = (width: string) => <span className="CanelaSkeleton CanelaSkeleton--line" style={{ width }} />;
+  const titles = ['58%', '42%', '66%', '36%', '50%'];
+
+  return Array.from({ length: rows }, (_, index) => (
+    <li className="CanelaSearchResult CanelaSearchResult--skeleton" key={`skeleton-${index}`} aria-hidden="true">
+      <div className="CanelaSearchResult-avatar">
+        <span className="Avatar CanelaSkeleton" />
+      </div>
+      <div className="CanelaSearchResult-main">
+        <div className="CanelaSearchResult-titleLine">{line(titles[index % titles.length])}</div>
+        <div className="CanelaSearchResult-meta">{line(index % 2 ? '7em' : '5em')}</div>
+        <div className="CanelaSearchResult-blurb">
+          {line('100%')}
+          {line('64%')}
+        </div>
+      </div>
+    </li>
+  ));
+}
+
 export function discussionResult(discussion: Discussion, pattern: RegExp | undefined): Mithril.Children {
   // Com texto, o trecho é o da postagem que mais casou; sem texto (só
   // filtros), o da abertura do tópico.

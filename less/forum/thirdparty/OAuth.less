@@ -88,3 +88,105 @@
     }
   }
 }
+
+// ---------------------------------------------------------------------
+// Contas vinculadas (fof/oauth, na aba Segurança do perfil): o mesmo padrão
+// da lista de sessões (.AccessTokensList): linhas sobre a superfície, com
+// fio entre elas; ícone, nome e dados à esquerda; "Remover vínculo" como
+// botão secundário do tema, sempre dentro da linha.
+// ---------------------------------------------------------------------
+.LinkedAccountsList {
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+
+  &-item {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 14px 16px;
+    border-radius: 0;
+    background: var(--cn-surface);
+    color: var(--cn-primary);
+
+    & + & {
+      border-top: 1px solid var(--cn-border);
+    }
+
+    &-icon {
+      width: auto;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--cn-primary-high);
+    }
+
+    &-data {
+      min-width: 0;
+      font-size: var(--cn-font-down-1);
+      line-height: 1.5;
+      color: var(--cn-primary-high);
+
+      // "ID do …: valor" em linhas simples, sem a grade que estourava.
+      > div,
+      > p {
+        display: block;
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    &-title {
+      margin: 0 0 2px;
+      font-size: var(--cn-font-0);
+      font-weight: 700;
+      color: var(--cn-primary);
+
+      &-sub {
+        font-style: normal;
+        color: var(--cn-primary-medium);
+      }
+    }
+
+    &-actions {
+      margin-left: 0;
+      justify-self: end;
+
+      .Button,
+      .FoFLogInButton {
+        height: auto;
+        padding: 6px 12px;
+        border: 1px solid var(--cn-border) !important;
+        border-radius: var(--cn-radius-pill, 999px);
+        background: var(--cn-surface) !important;
+        color: var(--cn-primary) !important;
+        font-size: var(--cn-font-down-1);
+        font-weight: 500;
+        box-shadow: none;
+
+        &:hover,
+        &:focus-visible {
+          background: var(--cn-hover) !important;
+        }
+
+        .Button-icon,
+        .icon {
+          color: var(--cn-primary-medium) !important;
+        }
+      }
+    }
+  }
+}
+
+@media @phone {
+  .LinkedAccountsList-item {
+    grid-template-columns: 40px minmax(0, 1fr);
+
+    &-actions {
+      grid-column: 1 / -1;
+      justify-self: start;
+      margin-top: 8px;
+    }
+  }
+}

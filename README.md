@@ -1,19 +1,10 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ram0ng1/canela/refs/heads/master/icon.png" width="80" height="80" alt="Canela">
-</p>
+![Canela](https://cdn.ramonguilherme.com.br/downloads/canela/icon.png)
 
-<h1 align="center">Canela</h1>
+# Canela
 
-<p align="center">
-  <a href="https://github.com/ram0ng1/canela/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/ram0ng1/canela/ci.yml?branch=master&style=flat-square&label=ci"></a>
-  <a href="https://packagist.org/packages/ramon/canela"><img alt="Packagist" src="https://img.shields.io/packagist/v/ramon/canela?style=flat-square&label=packagist"></a>
-  <a href="https://packagist.org/packages/ramon/canela"><img alt="Downloads" src="https://img.shields.io/packagist/dt/ramon/canela?style=flat-square"></a>
-  <img alt="Flarum" src="https://img.shields.io/badge/flarum-2.x-e7672e?style=flat-square">
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square"></a>
-  <a href="https://donate.stripe.com/fZe5o66nebkf39S28a"><img alt="Donate" src="https://img.shields.io/badge/donate-stripe-6772E5?style=flat-square"></a>
-</p>
+[![Packagist](https://img.shields.io/packagist/v/ramon/canela?style=flat-square&label=packagist)](https://packagist.org/packages/ramon/canela) [![Downloads](https://img.shields.io/packagist/dt/ramon/canela?style=flat-square)](https://packagist.org/packages/ramon/canela) ![Flarum](https://img.shields.io/badge/flarum-2.x-e7672e?style=flat-square) [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE) [![Donate](https://img.shields.io/badge/donate-stripe-6772E5?style=flat-square)](https://donate.stripe.com/fZe5o66nebkf39S28a)
 
-<p align="center">An unofficial theme for Flarum 2, inspired by the Discourse Horizon theme.</p>
+**An unofficial theme for Flarum 2, inspired by the Discourse Horizon theme.**
 
 Canela takes its inspiration from the Horizon theme of Discourse: a sidebar with sections, a discussion list in columns, a discussion timeline and profiles with a cover. Every part can be switched on or off in the admin panel.
 
@@ -45,7 +36,7 @@ Brazilian Portuguese, English and Japanese ship with the theme. Core and extensi
 
 ## Credits
 
-Inspired by the Horizon theme of <a href="https://www.discourse.org">Discourse</a>. Canela is an unofficial project, not affiliated with or endorsed by Discourse. It is maintained by <a href="https://ramonguilherme.com.br">Ramon Guilherme</a>.
+Inspired by the Horizon theme of [Discourse](https://www.discourse.org). Canela is an unofficial project, not affiliated with or endorsed by Discourse. It is maintained by [Ramon Guilherme](https://ramonguilherme.com.br).
 
 ## License
 
