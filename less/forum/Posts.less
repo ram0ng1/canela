@@ -618,9 +618,14 @@
     }
   }
 
+  // O "editado" sem histórico (só o aviso) não é clicável; o botão que abre
+  // o histórico de edições (features/extras/history) fica com a mãozinha.
   .CanelaPostEdited {
     color: var(--cn-primary-medium);
     font-size: 0.9em;
+  }
+
+  span.CanelaPostEdited {
     cursor: default;
   }
 
