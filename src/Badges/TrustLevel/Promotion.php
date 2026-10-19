@@ -15,6 +15,7 @@ namespace Ramon\Canela\Badges\TrustLevel;
 
 use Carbon\Carbon;
 use Flarum\User\User;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Ramon\Canela\Badges\BadgeGranter;
 use Ramon\Canela\Badges\BadgeSettings;
@@ -39,6 +40,7 @@ final class Promotion
         private readonly Capabilities $capabilities,
         private readonly BadgeSettings $settings,
         private readonly BadgeGranter $granter,
+        private readonly Dispatcher $events,
     ) {
     }
 
@@ -100,7 +102,9 @@ final class Promotion
      */
     public function changeTo(User $user, int $level, bool $grantBadges = true): bool
     {
-        if (! TrustLevel::valid($level) || $level === $this->level($user)) {
+        $from = $this->level($user);
+
+        if (! TrustLevel::valid($level) || $level === $from) {
             return false;
         }
 
@@ -122,6 +126,8 @@ final class Promotion
 
         if ($grantBadges) {
             $this->granter->trustLevelChanged($user);
+
+            $this->events->dispatch(new TrustLevelChanged($user, $from, $level));
         }
 
         return true;

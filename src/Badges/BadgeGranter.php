@@ -16,6 +16,7 @@ namespace Ramon\Canela\Badges;
 use Carbon\Carbon;
 use Flarum\Notification\NotificationSyncer;
 use Flarum\User\User;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
@@ -49,6 +50,7 @@ final class BadgeGranter
         private readonly LoggerInterface $logger,
         private readonly Capabilities $capabilities,
         private readonly SingleGrantLock $singleGrant,
+        private readonly Dispatcher $events,
     ) {
     }
 
@@ -181,7 +183,7 @@ final class BadgeGranter
         foreach ($rows as $row) {
             $user = $users->get($row['user_id']);
 
-            if (! $user) {
+            if (! $user instanceof User) {
                 continue;
             }
 
@@ -221,6 +223,8 @@ final class BadgeGranter
 
             if ($notify && $grantedAt->gte($threshold)) {
                 $this->notifications->sync(new BadgeGrantedBlueprint($badge, $userBadge), [$user]);
+
+                $this->events->dispatch(new BadgeAwarded($badge, $userBadge, $user));
             }
         }
 

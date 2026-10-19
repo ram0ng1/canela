@@ -37,12 +37,20 @@ export default function installPostHistory(): void {
     const label = `${t('extras.history.open', { count })}: ${info}`;
 
     return (
-      <Tooltip text={info}>
+      // Sem `showOnFocus`: ao fechar o modal o foco volta ao botão e o
+      // tooltip reapareceria sem o cursor em cima.
+      <Tooltip text={info} showOnFocus={false}>
         <button
           type="button"
           className="Button--ua-reset PostEdited CanelaPostEdited"
           aria-label={label}
-          onclick={() => app.modal.show(() => import('./HistoryModal'), { post })}
+          onclick={(event: MouseEvent) => {
+            // O modal cobre o botão e o `mouseleave` não chega: o tooltip
+            // abriria (ou ficaria aberto) por cima do histórico. O `leave` do
+            // tooltip também cancela o que ainda esperava o atraso para abrir.
+            $(event.currentTarget as HTMLElement).trigger('mouseleave');
+            app.modal.show(() => import('./HistoryModal'), { post });
+          }}
         >
           <Icon name="fas fa-pencil" />
           <span className="CanelaPostEdited-count">{count}</span>

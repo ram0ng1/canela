@@ -48,6 +48,7 @@ import {
   dialogTitle,
   hasProfileRoute,
   isArchived,
+  isSystemDialog,
   messageCount,
   messagesOn,
   myMessagesHref,
@@ -170,7 +171,9 @@ function installSection(): void {
                 ))}
               </div>
             ) : null}
-            {this.recipientCannotReply() ? (
+            {isSystemDialog(dialog) ? (
+              <p className="CanelaDialogHero-notice">{t('system_user.conversation_note')}</p>
+            ) : this.recipientCannotReply() ? (
               <p className="CanelaDialogHero-notice">{app.translator.trans('flarum-messages.forum.dialog_section.cannot_reply_text')}</p>
             ) : null}
           </div>
@@ -259,7 +262,9 @@ class DialogFooter extends Component<DialogFooterAttrs> {
               </Button>
             ) : (
               <Button className="Button CanelaTopicFooter-reply disabled" icon="fas fa-reply" disabled>
-                {app.translator.trans('flarum-messages.forum.dialog_section.cannot_reply_text')}
+                {isSystemDialog(dialog)
+                  ? t('system_user.conversation_note')
+                  : app.translator.trans('flarum-messages.forum.dialog_section.cannot_reply_text')}
               </Button>
             )}
           </div>

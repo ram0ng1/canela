@@ -164,6 +164,8 @@ ramon-canela:
         group_moderation_desc: 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'
         group_integrations_desc: O visual do Discourse para extensões de terceiros. Cada uma só vale com a extensão ligada.
         group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
+        group_system: "Mensagens automáticas"
+        group_system_desc: "O usuário do sistema e as mensagens que ele manda sozinho: boas-vindas, níveis de confiança, equipe, denúncias e suspensões."
         'on': Ativo
         'off': Inativo
         locked: Indisponível
@@ -795,6 +797,150 @@ ramon-canela:
         tag_cleanup_help: Ao apagar uma tag, os canais dela são excluídos.
         dm_guard_label: "Regras das MDs"
         dm_guard_help: "Recusa MD com quem não pode usar o chat ou o desligou, e aplica o limite de participantes abaixo."
+    system_user:
+      title: "Usuário do sistema"
+      help: "Como o \"system\" do Discourse: assina as notificações automáticas (lembretes de marcador e emblemas) e as mensagens automáticas abaixo. É um usuário comum no fórum, com perfil, avatar e bio, mas nunca entra: não tem login, senha, redefinição de senha nem sessão. Ninguém consegue mandar mensagem para ele, e ele fica fora da lista de usuários."
+      bio: "Não é uma pessoa de verdade. Um usuário global para notificações e outras tarefas do sistema."
+      create: "Criar usuário do sistema"
+      created_as: "Usuário do sistema: {name}"
+      open_profile: "Abrir o perfil"
+      profile_hint: "Troque o avatar, o nome e a bio pelo perfil dele, como em qualquer usuário."
+      unlink: "Desvincular"
+      unlink_confirm: "Desvincular o usuário do sistema? A conta continua existindo, mas as notificações voltam a sair sem remetente e as mensagens automáticas param até você criar ou vincular outro."
+      missing: "Ainda não há usuário do sistema. Sem ele, as notificações automáticas saem sem remetente e nenhuma mensagem automática é enviada."
+      messages_notice: "As mensagens automáticas são mensagens privadas: precisam da extensão Mensagens (flarum/messages) ligada."
+      needs_user: "Crie o usuário do sistema primeiro (card acima)."
+      no_replies_notice: "A conversa com o usuário do sistema é só de ida: quem recebe não pode responder, porque ninguém lê a caixa dele."
+    sysmsg:
+      custom:
+        title: "Mensagens personalizadas"
+        help: "Mensagens suas, além das do Discourse: escolha quando cada uma sai (conta ativada, dias depois, grupo, nível, emblema, primeira postagem, aniversário de conta, conta verificada). Cada uma sai uma vez só por pessoa."
+        empty: "Nenhuma mensagem personalizada ainda."
+        add: "Adicionar mensagem"
+        remove: "Apagar"
+        remove_confirm: "Apagar esta mensagem automática?"
+        enabled: "Ligada"
+        title_label: "Nome da mensagem (só no admin)"
+        when: "Quando"
+        which: "Qual"
+        choose: "Escolha…"
+        trigger_activated: "Conta ativada"
+        trigger_group: "Entrou num grupo"
+        trigger_trust_level: "Chegou a um nível de confiança"
+        trigger_badge: "Ganhou um emblema"
+        trigger_first_post: "Publicou a primeira postagem"
+        trigger_anniversary: "Aniversário de conta"
+        trigger_verified: "Conta verificada (ramon/verified)"
+        level_1: "1 - Básico"
+        level_2: "2 - Membro"
+        level_3: "3 - Regular"
+        level_4: "4 - Líder"
+        delay_label: "Dias depois"
+        delay_suffix: "dias depois (0 = na hora)"
+        delay_help: "Sai pelo agendador do Flarum (php flarum schedule:run no cron), e só para quem se cadastrar depois de a mensagem ser criada."
+        years_label: "Anos de conta"
+        years_suffix: "ano(s) de conta"
+        anniversary_help: "Sai pelo agendador do Flarum no dia do aniversário de cadastro, só para aniversários depois de a mensagem ser criada."
+      fields:
+        subject: "Assunto"
+        body: "Texto"
+        default_hint: "Vazio, vale o texto padrão (o do campo, em cinza), no idioma de quem recebe."
+        use_default: "Editar a partir do padrão"
+        restore_default: "Voltar ao padrão"
+        variables: "Variáveis: {list}"
+      welcome_user:
+        title: "Boas-vindas"
+        help: "Para quem acabou de ativar a conta (confirmou o e-mail, ou entrou já confirmado). Sai uma vez só por pessoa."
+        subject: "Boas-vindas ao %{site_name}!"
+        body: |-
+          Obrigado por entrar no %{site_name}, e seja bem-vindo(a)!
+
+          Acreditamos em [comportamento civilizado](%{guidelines_url}) na comunidade, sempre.
+
+          Aproveite!
+      welcome_invite:
+        title: "Boas-vindas por convite"
+        help: "No lugar das boas-vindas comuns, para quem entrou por um link de convite."
+        subject: "Boas-vindas ao %{site_name}!"
+        body: |-
+          Obrigado por aceitar o convite para o %{site_name}, e seja bem-vindo(a)!
+
+          - Criamos a conta **%{username}** para você. Troque o nome ou a senha nas [suas configurações](%{user_preferences_url}).
+
+          Acreditamos em [comportamento civilizado](%{guidelines_url}) na comunidade, sempre.
+
+          Aproveite!
+      welcome_tl1_user:
+        title: "Nível de confiança 1"
+        help: "Quando a pessoa sobe para o nível 1 (Básico). Precisa dos níveis de confiança ligados."
+        subject: "Obrigado por passar um tempo com a gente"
+        body: |-
+          Oi! Vimos que você tem lido bastante, o que é ótimo, então subimos você um nível de confiança!
+
+          Ficamos felizes que você esteja passando um tempo com a gente e adoraríamos saber mais sobre você. Tire um momento para [preencher o seu perfil](%{user_url}) ou fique à vontade para [começar uma discussão](%{base_url}).
+      tl2_promotion_message:
+        title: "Nível de confiança 2"
+        help: "Quando a pessoa sobe para o nível 2 (Membro). Precisa dos níveis de confiança ligados."
+        subject: "Parabéns pela promoção de nível de confiança!"
+        body: |-
+          Subimos você mais um nível de confiança!
+
+          Chegar ao nível 2 significa que você leu e participou o bastante para ser considerado(a) membro desta comunidade.
+
+          Continue participando: a gente gosta de ter você por aqui.
+      welcome_staff:
+        title: "Entrou para a equipe"
+        help: "Quando a pessoa entra no grupo Admin ou Moderadores."
+        subject: "Parabéns, você agora faz parte da equipe (%{role})!"
+        body: |-
+          Você recebeu o papel de %{role} de outro membro da equipe.
+
+          Com ele vêm as ferramentas da equipe, e com grandes poderes vêm grandes responsabilidades. Se moderação é novidade para você, leia as [diretrizes da comunidade](%{guidelines_url}).
+      user_added_to_group_as_member:
+        title: "Adicionado a um grupo"
+        help: "Quando a pessoa entra em outro grupo (fora Admin e Moderadores). Desligada por padrão, como no Discourse."
+        subject: "Você entrou no grupo %{group_name}"
+        body: "Você foi adicionado(a) como membro do grupo [%{group_name}](%{base_url}%{group_path})."
+      flags_agreed_and_post_deleted:
+        title: "Post denunciado removido"
+        help: "Quando a equipe oculta ou apaga um post que tinha denúncias. Precisa da extensão Denúncias (flarum/flags)."
+        subject: "Post denunciado removido pela equipe"
+        body: |-
+          Olá,
+
+          Esta é uma mensagem automática do %{site_name} para avisar que o [seu post](%{base_url}%{url}) foi removido.
+
+          %{flag_reason}
+
+          Este post foi denunciado pela comunidade e alguém da equipe decidiu removê-lo.
+
+          ```
+          %{flagged_post_raw_content}
+          ```
+
+          Veja as nossas [diretrizes da comunidade](%{guidelines_url}) para mais detalhes.
+      silenced_by_staff:
+        title: "Conta suspensa"
+        help: "Quando a equipe suspende a conta. Precisa da extensão Suspensão (flarum/suspend)."
+        subject: "Conta suspensa"
+        body: |-
+          Olá,
+
+          Esta é uma mensagem automática do %{site_name} para avisar que a sua conta foi suspensa até %{suspended_till}.
+
+          %{reason}
+
+          Você continua podendo ler o fórum, mas não pode participar até a suspensão acabar. Em caso de dúvida, fale com a [equipe](%{base_url}/about).
+      unsilenced:
+        title: "Suspensão encerrada"
+        help: "Quando a suspensão é retirada. Precisa da extensão Suspensão (flarum/suspend)."
+        subject: "Sua conta não está mais suspensa"
+        body: |-
+          Olá,
+
+          Esta é uma mensagem automática do %{site_name} para avisar que a sua conta não está mais suspensa.
+
+          Você já pode criar discussões e respostas de novo. Obrigado pela paciência.
   forum:
     ai:
       translation:
@@ -2488,6 +2634,9 @@ ramon-canela:
         chat: Chat
         other: Outras
         private: 'As notificações são pessoais: só aparecem no seu próprio perfil.'
+    system_user:
+      no_replies: "Esta é uma conversa automática do sistema: respostas não são entregues."
+      conversation_note: "Mensagens automáticas do sistema. Não é possível responder."
   api:
     loader:
       invalid_svg: O arquivo não é um SVG válido ou passa de 64 KB depois de limpo.

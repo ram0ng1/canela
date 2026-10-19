@@ -58,10 +58,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 0.6em;
-  padding: 0.2em 0.4em;
+  // Altura fixa e largura mínima igual a ela: com um dígito é um círculo
+  // (antes ficava mais estreita que alta, com as laterais retas, como se
+  // cortada); com mais dígitos vira pílula.
+  box-sizing: content-box;
+  height: 1.4em;
+  min-width: 0.8em;
+  padding: 0 0.3em;
   border: 2px solid var(--cn-surface);
-  border-radius: 10px;
+  border-radius: 999px;
   background: var(--cn-accent);
   color: var(--cn-accent-text);
   font-size: 0.7579rem;
@@ -203,8 +208,18 @@
   background-color: var(--cn-hover);
 }
 
+// O foco pelo teclado é só o anel arredondado do ícone, com um respiro da
+// cor do menu (na aba ativa o ícone já é da cor de destaque). Sem isto, o
+// contorno geral do `:focus-visible` (Core.less) desenhava um retângulo em
+// volta da aba inteira quando o menu abria com o foco na aba ativa.
+.Canela .CanelaUserMenu-tab:focus-visible {
+  outline: none;
+}
+
 .CanelaUserMenu-tab:focus-visible .CanelaUserMenu-tabIcon {
-  box-shadow: 0 0 0 2px var(--cn-accent);
+  box-shadow:
+    0 0 0 2px var(--cn-surface),
+    0 0 0 4px var(--cn-accent);
 }
 
 // `.badge-notification` da aba: no canto de cima, na cor de destaque.

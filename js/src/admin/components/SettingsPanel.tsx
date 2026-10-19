@@ -79,6 +79,16 @@ export const GROUPS: GroupDef[] = [
     description: () => trans(`${SHELL}.group_moderation_desc`, 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'),
   },
   {
+    key: 'system',
+    icon: 'fas fa-robot',
+    label: () => trans(`${SHELL}.group_system`, 'Mensagens automáticas'),
+    description: () =>
+      trans(
+        `${SHELL}.group_system_desc`,
+        'O usuário do sistema e as mensagens que ele manda sozinho: boas-vindas, níveis de confiança, equipe, denúncias e suspensões.'
+      ),
+  },
+  {
     key: 'integrations',
     icon: 'fas fa-puzzle-piece',
     label: () => trans(`${SHELL}.group_integrations`, 'Integrações'),

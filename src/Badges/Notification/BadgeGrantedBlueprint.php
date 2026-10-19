@@ -19,6 +19,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\User\User;
 use Ramon\Canela\Badges\Badge;
 use Ramon\Canela\Badges\UserBadge;
+use Ramon\Canela\System\SystemUser;
 
 /**
  * "Ganhou 'Primeira curtida'" — o `granted_badge` do Discourse.
@@ -42,13 +43,13 @@ final class BadgeGrantedBlueprint implements BlueprintInterface, AlertableInterf
     }
 
     /**
-     * A própria pessoa: no Discourse a notificação de emblema mostra o avatar
-     * de quem ganhou, com o selo do emblema no canto.
+     * O usuário do sistema, que concede os emblemas no Discourse; sem ele, a
+     * própria pessoa (o avatar de quem ganhou, com o selo do emblema no canto).
      */
     #[\Override]
     public function getFromUser(): ?User
     {
-        return $this->userBadge->user;
+        return SystemUser::current() ?? $this->userBadge->user;
     }
 
     #[\Override]

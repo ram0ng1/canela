@@ -19,6 +19,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Post\Post;
 use Flarum\User\User;
 use Ramon\Canela\Bookmarks\Bookmark;
+use Ramon\Canela\System\SystemUser;
 
 /**
  * "Lembrete do marcador": o alerta que o comando agendado manda quando o
@@ -46,11 +47,14 @@ final class BookmarkReminderBlueprint implements BlueprintInterface, AlertableIn
         return $this->post;
     }
 
-    /** Ninguém manda o lembrete: é o próprio usuário, no passado. */
+    /**
+     * O lembrete é do sistema: com o usuário do sistema criado, sai em nome
+     * dele (como no Discourse); sem ele, sem remetente.
+     */
     #[\Override]
     public function getFromUser(): ?User
     {
-        return null;
+        return SystemUser::current();
     }
 
     #[\Override]

@@ -607,6 +607,14 @@
     text-overflow: ellipsis;
   }
 
+  // O menu da data ("8 h") abre alinhado pela direita do botão, para dentro
+  // da postagem: pela esquerda, ele passava por cima da linha do tempo e
+  // saía da tela. A seta aponta para a data (shell/dropdownArrow.ts).
+  .PostMeta > .Dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+
   .PostMeta .Button--text {
     font-size: inherit;
     color: var(--cn-primary-medium);

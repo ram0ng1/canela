@@ -1,0 +1,101 @@
+// A aba "Mensagens automáticas" (js/src/admin/features/system.tsx).
+.CanelaSystemAdmin {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.CanelaSystemAdmin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .Avatar {
+    --size: 36px;
+  }
+}
+
+.CanelaSystemAdmin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -6px 0 14px;
+
+  .CanelaSystemAdmin > & {
+    margin: 0;
+  }
+}
+
+.CanelaSystemAdmin-variables code {
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+  white-space: nowrap;
+}
+
+// Mensagens personalizadas (systemCustom.tsx): um bloco por mensagem.
+.CanelaCustomMessages {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.CanelaCustomMessages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaCustomMessage {
+  padding: 14px 16px 4px;
+  border: 1px solid var(--control-bg);
+  border-radius: 10px;
+
+  &.is-off {
+    opacity: 0.8;
+  }
+
+  .Form-group {
+    margin-bottom: 12px;
+  }
+}
+
+.CanelaCustomMessage-head,
+.CanelaCustomMessage-when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.CanelaCustomMessage-title {
+  flex: 1 1 220px;
+  font-weight: 600;
+}
+
+.CanelaCustomMessage-when {
+  > label {
+    font-weight: 600;
+  }
+
+  select.FormControl {
+    width: auto;
+    max-width: 100%;
+  }
+}
+
+.CanelaCustomMessage-delay {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  input.FormControl {
+    width: 80px;
+  }
+}

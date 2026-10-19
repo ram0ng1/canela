@@ -164,6 +164,8 @@ ramon-canela:
         group_moderation_desc: 'スタッフ向けツール：一括操作、編集履歴、投稿者への通知。'
         group_integrations_desc: サードパーティ拡張機能向けの Discourse 風デザインです。それぞれ対応する拡張機能が有効な場合のみ動作します。
         group_ai_desc: プロバイダー、ボット、投稿エディターのアシスタント、要約、関連スレッド。
+        group_system: "自動メッセージ"
+        group_system_desc: "システムユーザーと、自動で送られるメッセージ：歓迎、信頼レベル、スタッフ、通報、停止。"
         'on': 'オン'
         'off': 'オフ'
         locked: 利用不可
@@ -795,6 +797,150 @@ ramon-canela:
         tag_cleanup_help: タグを削除すると、そのチャンネルも削除されます。
         dm_guard_label: "DM のルール"
         dm_guard_help: "チャットを使えない人やオフにした人との DM を拒否し、下の参加者数の上限を適用します。"
+    system_user:
+      title: "システムユーザー"
+      help: "Discourse の「system」と同じく、自動通知（ブックマークのリマインダーとバッジ）と下の自動メッセージの送信者になります。フォーラムではプロフィール・アバター・自己紹介を持つ普通のユーザーですが、ログインは一切できません（ログイン、パスワード、パスワード再設定、セッションなし）。誰もメッセージを送れず、ユーザー一覧にも表示されません。"
+      bio: "実在の人物ではありません。システム通知やその他のシステム作業のための共通ユーザーです。"
+      create: "システムユーザーを作成"
+      created_as: "システムユーザー：{name}"
+      open_profile: "プロフィールを開く"
+      profile_hint: "アバター、名前、自己紹介は、ほかのユーザーと同じくプロフィールから変更します。"
+      unlink: "解除"
+      unlink_confirm: "システムユーザーを解除しますか？アカウントは残りますが、通知は送信者なしに戻り、別のユーザーを作成または設定するまで自動メッセージは止まります。"
+      missing: "システムユーザーはまだありません。ない場合、自動通知は送信者なしになり、自動メッセージは送られません。"
+      messages_notice: "自動メッセージはプライベートメッセージです。メッセージ拡張（flarum/messages）が有効である必要があります。"
+      needs_user: "先にシステムユーザーを作成してください（上のカード）。"
+      no_replies_notice: "システムユーザーとの会話は一方通行です。受信箱を読む人がいないため、受信者は返信できません。"
+    sysmsg:
+      custom:
+        title: "カスタムメッセージ"
+        help: "Discourse のものに加えた独自のメッセージです。送るタイミングを選べます（アカウント有効化、数日後、グループ、信頼レベル、バッジ、初めての投稿、アカウント記念日、認証済みアカウント）。1人につき1回だけ送られます。"
+        empty: "カスタムメッセージはまだありません。"
+        add: "メッセージを追加"
+        remove: "削除"
+        remove_confirm: "この自動メッセージを削除しますか？"
+        enabled: "有効"
+        title_label: "メッセージ名（管理画面のみ）"
+        when: "タイミング"
+        which: "対象"
+        choose: "選択…"
+        trigger_activated: "アカウント有効化"
+        trigger_group: "グループに参加"
+        trigger_trust_level: "信頼レベルに到達"
+        trigger_badge: "バッジを獲得"
+        trigger_first_post: "初めての投稿"
+        trigger_anniversary: "アカウント記念日"
+        trigger_verified: "アカウント認証（ramon/verified）"
+        level_1: "1 - ベーシック"
+        level_2: "2 - メンバー"
+        level_3: "3 - レギュラー"
+        level_4: "4 - リーダー"
+        delay_label: "日後"
+        delay_suffix: "日後（0 = すぐ）"
+        delay_help: "Flarum のスケジューラー（cron で php flarum schedule:run）で送られ、メッセージ作成後に登録した人にだけ届きます。"
+        years_label: "アカウント年数"
+        years_suffix: "年"
+        anniversary_help: "Flarum のスケジューラーで登録記念日に送られます。メッセージ作成後に来る記念日だけが対象です。"
+      fields:
+        subject: "件名"
+        body: "本文"
+        default_hint: "空欄の場合は既定の文章（欄に灰色で表示）が、受信者の言語で使われます。"
+        use_default: "既定の文章から編集"
+        restore_default: "既定に戻す"
+        variables: "変数：{list}"
+      welcome_user:
+        title: "歓迎"
+        help: "アカウントを有効化した人（メールを確認した、または確認済みで登録した）に送ります。1人につき1回だけです。"
+        subject: "%{site_name} へようこそ！"
+        body: |-
+          %{site_name} に参加していただきありがとうございます。ようこそ！
+
+          私たちは常に[礼儀正しいコミュニティ](%{guidelines_url})を大切にしています。
+
+          お楽しみください！
+      welcome_invite:
+        title: "招待による歓迎"
+        help: "招待リンクから参加した人に、通常の歓迎の代わりに送ります。"
+        subject: "%{site_name} へようこそ！"
+        body: |-
+          %{site_name} への招待を受けていただきありがとうございます。ようこそ！
+
+          - アカウント **%{username}** を作成しました。名前やパスワードは[設定](%{user_preferences_url})で変更できます。
+
+          私たちは常に[礼儀正しいコミュニティ](%{guidelines_url})を大切にしています。
+
+          お楽しみください！
+      welcome_tl1_user:
+        title: "信頼レベル1"
+        help: "信頼レベル1（ベーシック）に上がったときに送ります。信頼レベルが有効である必要があります。"
+        subject: "一緒に過ごしてくれてありがとうございます"
+        body: |-
+          こんにちは！たくさん読んでいただいているので、信頼レベルを1つ上げました！
+
+          一緒に過ごしてくださってうれしいです。あなたのことをもっと知りたいので、[プロフィールを記入](%{user_url})したり、気軽に[スレッドを始めて](%{base_url})みてください。
+      tl2_promotion_message:
+        title: "信頼レベル2"
+        help: "信頼レベル2（メンバー）に上がったときに送ります。信頼レベルが有効である必要があります。"
+        subject: "信頼レベルの昇格おめでとうございます！"
+        body: |-
+          信頼レベルをもう1つ上げました！
+
+          信頼レベル2は、このコミュニティのメンバーと認められるほど読み、積極的に参加したことを意味します。
+
+          これからも参加してください。あなたがいてくれてうれしいです。
+      welcome_staff:
+        title: "スタッフに参加"
+        help: "管理者またはモデレーターのグループに入ったときに送ります。"
+        subject: "おめでとうございます。%{role} になりました！"
+        body: |-
+          ほかのスタッフから %{role} の役割を与えられました。
+
+          スタッフ用のツールが使えるようになります。大きな力には大きな責任が伴います。モデレーションが初めての場合は[コミュニティガイドライン](%{guidelines_url})を読んでください。
+      user_added_to_group_as_member:
+        title: "グループに追加"
+        help: "ほかのグループ（管理者とモデレーター以外）に入ったときに送ります。Discourse と同じく既定ではオフです。"
+        subject: "%{group_name} グループに追加されました"
+        body: "[%{group_name}](%{base_url}%{group_path}) グループのメンバーとして追加されました。"
+      flags_agreed_and_post_deleted:
+        title: "通報された投稿の削除"
+        help: "通報のある投稿をスタッフが非表示または削除したときに送ります。通報拡張（flarum/flags）が必要です。"
+        subject: "通報された投稿がスタッフにより削除されました"
+        body: |-
+          こんにちは。
+
+          %{site_name} からの自動メッセージです。[あなたの投稿](%{base_url}%{url})が削除されたことをお知らせします。
+
+          %{flag_reason}
+
+          この投稿はコミュニティから通報され、スタッフが削除を決めました。
+
+          ```
+          %{flagged_post_raw_content}
+          ```
+
+          詳しくは[コミュニティガイドライン](%{guidelines_url})をご確認ください。
+      silenced_by_staff:
+        title: "アカウント停止"
+        help: "スタッフがアカウントを停止したときに送ります。停止拡張（flarum/suspend）が必要です。"
+        subject: "アカウントが停止されました"
+        body: |-
+          こんにちは。
+
+          %{site_name} からの自動メッセージです。あなたのアカウントは %{suspended_till} まで停止されました。
+
+          %{reason}
+
+          フォーラムの閲覧は引き続きできますが、停止が終わるまで参加はできません。ご質問は[スタッフ](%{base_url}/about)までどうぞ。
+      unsilenced:
+        title: "停止の解除"
+        help: "停止が解除されたときに送ります。停止拡張（flarum/suspend）が必要です。"
+        subject: "アカウントの停止が解除されました"
+        body: |-
+          こんにちは。
+
+          %{site_name} からの自動メッセージです。あなたのアカウントの停止が解除されました。
+
+          スレッドや返信をまた作成できます。ご協力ありがとうございました。
   forum:
     ai:
       translation:
@@ -2488,6 +2634,9 @@ ramon-canela:
         chat: チャット
         other: その他
         private: '通知は個人的なものです。あなた自身のプロフィールにのみ表示されます。'
+    system_user:
+      no_replies: "これはシステムの自動会話です。返信は届きません。"
+      conversation_note: "システムの自動メッセージです。返信はできません。"
   api:
     loader:
       invalid_svg: ファイルが有効な SVG ではないか、整理後に 64 KB を超えています。
