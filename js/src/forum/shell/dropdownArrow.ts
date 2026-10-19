@@ -26,9 +26,10 @@ const GAP = 10;
 
 /**
  * Menus de botão com texto que também levam a seta: o "Acompanhando ▾" do
- * rodapé do tópico (o mesmo menu do sino, que já tem seta).
+ * rodapé do tópico (o mesmo menu do sino, que já tem seta) e o da data da
+ * postagem ("8 h": número, data completa e link do post).
  */
-const ALSO = '.CanelaNotifications';
+const ALSO = '.CanelaNotifications, .PostMeta';
 
 /** O botão é só um ícone (sem texto visível)? */
 function iconOnly(toggle: HTMLElement): boolean {

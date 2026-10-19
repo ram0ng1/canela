@@ -203,8 +203,18 @@
   background-color: var(--cn-hover);
 }
 
+// O foco pelo teclado é só o anel arredondado do ícone, com um respiro da
+// cor do menu (na aba ativa o ícone já é da cor de destaque). Sem isto, o
+// contorno geral do `:focus-visible` (Core.less) desenhava um retângulo em
+// volta da aba inteira quando o menu abria com o foco na aba ativa.
+.Canela .CanelaUserMenu-tab:focus-visible {
+  outline: none;
+}
+
 .CanelaUserMenu-tab:focus-visible .CanelaUserMenu-tabIcon {
-  box-shadow: 0 0 0 2px var(--cn-accent);
+  box-shadow:
+    0 0 0 2px var(--cn-surface),
+    0 0 0 4px var(--cn-accent);
 }
 
 // `.badge-notification` da aba: no canto de cima, na cor de destaque.
