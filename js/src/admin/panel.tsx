@@ -98,6 +98,17 @@ const ORDER: string[] = [
   'bulk-select',
   'post-history',
   'author-notifications',
+  // Mensagens automáticas
+  'system-user',
+  'sysmsg-welcome_user',
+  'sysmsg-welcome_invite',
+  'sysmsg-welcome_tl1_user',
+  'sysmsg-tl2_promotion_message',
+  'sysmsg-welcome_staff',
+  'sysmsg-user_added_to_group_as_member',
+  'sysmsg-flags_agreed_and_post_deleted',
+  'sysmsg-silenced_by_staff',
+  'sysmsg-unsilenced',
   // IA
   'ai-provider',
   'ai-bot',

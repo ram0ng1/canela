@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Ramon\Canela\Support\NullOrder;
 use Ramon\Canela\Support\SchemaCache;
+use Ramon\Canela\System\SystemUser;
 
 /**
  * A consulta do diretório de usuários (/u) e da lista de membros de um grupo
@@ -116,6 +117,11 @@ final class Directory
         $users = User::query()
             ->whereVisibleTo($actor)
             ->where('users.is_email_confirmed', true);
+
+        // O usuário do sistema não é uma pessoa: fica fora da lista, como no Discourse.
+        if ($systemId = resolve(SystemUser::class)->id()) {
+            $users->where('users.id', '!=', $systemId);
+        }
 
         if ($groupId !== null) {
             $users->whereIn('users.id', fn (QueryBuilder $members) => $members->select('user_id')->from('group_user')->where('group_id', $groupId));

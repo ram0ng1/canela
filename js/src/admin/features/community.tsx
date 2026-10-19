@@ -21,7 +21,7 @@ const SAVE_DELAY_MS = 600;
  * uma requisição por pausa, não por tecla. O valor vai para `app.data` na
  * hora, para o campo não "voltar" num redesenho antes de o POST terminar.
  */
-class AdminTextField extends AdminComponent {
+export class AdminTextField extends AdminComponent {
   saveTimer: ReturnType<typeof setTimeout> | undefined;
 
   onremove(vnode: any) {

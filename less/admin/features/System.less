@@ -1,0 +1,34 @@
+// A aba "Mensagens automáticas" (js/src/admin/features/system.tsx).
+.CanelaSystemAdmin {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.CanelaSystemAdmin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .Avatar {
+    --size: 36px;
+  }
+}
+
+.CanelaSystemAdmin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -6px 0 14px;
+
+  .CanelaSystemAdmin > & {
+    margin: 0;
+  }
+}
+
+.CanelaSystemAdmin-variables code {
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+  white-space: nowrap;
+}

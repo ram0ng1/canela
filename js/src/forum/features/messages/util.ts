@@ -134,6 +134,14 @@ export function participants(dialog: Dialog): User[] {
 }
 
 /**
+ * A conversa com o usuário do sistema (as mensagens automáticas): só de ida,
+ * ninguém lê a caixa dele, então ela não tem resposta.
+ */
+export function isSystemDialog(dialog: Dialog): boolean {
+  return participants(dialog).some((user) => !!user.attribute('canelaIsSystem'));
+}
+
+/**
  * "Novo (n)" e "Não lidos (n)". Com o backend do tema vêm separados e sem o
  * arquivo; sem ele, o flarum/messages só sabe o total de conversas com não
  * lidas, que fica todo em "Não lidos".

@@ -164,6 +164,8 @@ ramon-canela:
         group_moderation_desc: 'Staff tools: bulk actions, edit history and notices to the author.'
         group_integrations_desc: The Discourse look for third-party extensions. Each one only works with its extension enabled.
         group_ai_desc: Provider, bot, composer helper, summaries and related discussions.
+        group_system: "Automated messages"
+        group_system_desc: "The system user and the messages it sends on its own: welcome, trust levels, staff, flags and suspensions."
         'on': 'On'
         'off': 'Off'
         locked: Unavailable
@@ -795,6 +797,121 @@ ramon-canela:
         tag_cleanup_help: Deleting a tag deletes its channels.
         dm_guard_label: "DM rules"
         dm_guard_help: "Refuses DMs with people who cannot use the chat or turned it off, and applies the participant limit below."
+    system_user:
+      title: "System user"
+      help: "Like Discourse's \"system\": it signs automatic notifications (bookmark reminders and badges) and the automated messages below. It's a regular user on the forum, with a profile, avatar and bio, but it never logs in: no login, password, password reset or session. Nobody can message it, and it's left out of the users directory."
+      bio: "Not a real person. A global user for system notifications and other system tasks."
+      create: "Create system user"
+      created_as: "System user: {name}"
+      open_profile: "Open profile"
+      profile_hint: "Change its avatar, name and bio from its profile, like any other user."
+      unlink: "Unlink"
+      unlink_confirm: "Unlink the system user? The account stays, but notifications go back to having no sender and automated messages stop until you create or link another one."
+      missing: "There's no system user yet. Without one, automatic notifications have no sender and no automated message is sent."
+      messages_notice: "Automated messages are private messages: they need the Messages extension (flarum/messages) enabled."
+      needs_user: "Create the system user first (card above)."
+      no_replies_notice: "The conversation with the system user is one-way: recipients can't reply, since nobody reads its inbox."
+    sysmsg:
+      fields:
+        subject: "Subject"
+        body: "Text"
+        default_hint: "Empty, the default text applies (the one greyed out in the field), in the recipient's language."
+        use_default: "Edit from the default"
+        restore_default: "Restore default"
+        variables: "Variables: {list}"
+      welcome_user:
+        title: "Welcome"
+        help: "For someone who just activated their account (confirmed their email, or signed up already confirmed). Sent only once per person."
+        subject: "Welcome to %{site_name}!"
+        body: |-
+          Thanks for joining %{site_name}, and welcome!
+
+          We believe in [civilized community behavior](%{guidelines_url}) at all times.
+
+          Enjoy your stay!
+      welcome_invite:
+        title: "Welcome by invite"
+        help: "Instead of the regular welcome, for someone who joined through an invite link."
+        subject: "Welcome to %{site_name}!"
+        body: |-
+          Thanks for accepting your invitation to %{site_name} -- welcome!
+
+          - We've created this new account **%{username}** for you. Change your name or password in [your settings](%{user_preferences_url}).
+
+          We believe in [civilized community behavior](%{guidelines_url}) at all times.
+
+          Enjoy your stay!
+      welcome_tl1_user:
+        title: "Trust level 1"
+        help: "When someone moves up to trust level 1 (Basic). Needs trust levels enabled."
+        subject: "Thanks for spending time with us"
+        body: |-
+          Hey there. We see you've been busy reading, which is fantastic, so we've promoted you up a trust level!
+
+          We're really glad you're spending time with us and we'd love to know more about you. Take a moment to [fill out your profile](%{user_url}), or feel free to [start a new discussion](%{base_url}).
+      tl2_promotion_message:
+        title: "Trust level 2"
+        help: "When someone moves up to trust level 2 (Member). Needs trust levels enabled."
+        subject: "Congratulations on your trust level promotion!"
+        body: |-
+          We've promoted you up another trust level!
+
+          Achieving trust level 2 means that you have read and actively participated enough to be considered a member of this community.
+
+          We invite you to keep getting involved: we enjoy having you around.
+      welcome_staff:
+        title: "Joined the staff"
+        help: "When someone joins the Admin or Moderators group."
+        subject: "Congratulations, you've been granted %{role} status!"
+        body: |-
+          You've been granted %{role} status by a fellow staff member.
+
+          It comes with the staff tools, and with great power comes great responsibility. If you're new to moderating, please read the [community guidelines](%{guidelines_url}).
+      user_added_to_group_as_member:
+        title: "Added to a group"
+        help: "When someone joins another group (other than Admin and Moderators). Off by default, as in Discourse."
+        subject: "You have been added to the %{group_name} group"
+        body: "You have been added as a member of the [%{group_name}](%{base_url}%{group_path}) group."
+      flags_agreed_and_post_deleted:
+        title: "Flagged post removed"
+        help: "When staff hides or deletes a post that had flags. Needs the Flags extension (flarum/flags)."
+        subject: "Flagged post removed by staff"
+        body: |-
+          Hello,
+
+          This is an automated message from %{site_name} to let you know that [your post](%{base_url}%{url}) was removed.
+
+          %{flag_reason}
+
+          This post was flagged by the community and a staff member opted to remove it.
+
+          ```
+          %{flagged_post_raw_content}
+          ```
+
+          Please review our [community guidelines](%{guidelines_url}) for details.
+      silenced_by_staff:
+        title: "Account suspended"
+        help: "When staff suspends the account. Needs the Suspend extension (flarum/suspend)."
+        subject: "Account suspended"
+        body: |-
+          Hello,
+
+          This is an automated message from %{site_name} to let you know that your account has been suspended until %{suspended_till}.
+
+          %{reason}
+
+          You can still browse the forum, but you won't be able to take part until the suspension ends. If you have questions, contact the [staff](%{base_url}/about).
+      unsilenced:
+        title: "Suspension lifted"
+        help: "When the suspension is lifted. Needs the Suspend extension (flarum/suspend)."
+        subject: "Your account is no longer suspended"
+        body: |-
+          Hello,
+
+          This is an automated message from %{site_name} to let you know that your account is no longer suspended.
+
+          You can now create new discussions and replies again. Thank you for your patience.
   forum:
     ai:
       translation:
@@ -2488,6 +2605,9 @@ ramon-canela:
         chat: Chat
         other: Other
         private: 'Notifications are personal: they only show on your own profile.'
+    system_user:
+      no_replies: "This is an automated system conversation: replies are not delivered."
+      conversation_note: "Automated system messages. Replies are not possible."
   api:
     loader:
       invalid_svg: The file is not a valid SVG or is larger than 64 KB after cleaning.

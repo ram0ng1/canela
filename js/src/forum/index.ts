@@ -19,6 +19,7 @@ import installBadges from './features/badges';
 import installAi from './features/ai';
 import installChat from './features/chat';
 import installMessages from './features/messages';
+import installSystemUser from './features/system';
 import installUserMenu from './usermenu';
 import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
@@ -82,6 +83,7 @@ app.initializers.add('ramon-canela', () => {
   installAi();
   installChat();
   installMessages();
+  installSystemUser();
   installUserMenu();
   // A fila de revisão do Discourse na página /flags (flarum/flags e approval).
   installReview();
