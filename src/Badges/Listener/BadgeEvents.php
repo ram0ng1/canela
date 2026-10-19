@@ -53,6 +53,18 @@ final class BadgeEvents
         }
     }
 
+    /**
+     * Quem já foi revisado há pouco (id => quando): uma resposta revisa o
+     * autor duas vezes (o post e a leitura que vem junto), e cada revisão são
+     * sete consultas. Por tempo, e não "uma vez por processo": a fila roda
+     * num processo só por horas.
+     *
+     * @var array<int, int>
+     */
+    private array $reviewed = [];
+
+    private const REVIEW_MEMO_SECONDS = 10;
+
     /** @param iterable<User|null> $users */
     public function review(iterable $users): void
     {
@@ -60,17 +72,31 @@ final class BadgeEvents
             return;
         }
 
+        $now = time();
+
         foreach ($users as $user) {
-            if ($user && $user->exists && ! $user->isGuest()) {
-                $this->safely(fn () => $this->promotion->review($user));
+            if (! $user || ! $user->exists || $user->isGuest()) {
+                continue;
             }
+
+            $id = (int) $user->id;
+
+            if (isset($this->reviewed[$id]) && $now - $this->reviewed[$id] < self::REVIEW_MEMO_SECONDS) {
+                continue;
+            }
+
+            $this->reviewed[$id] = $now;
+            $this->safely(fn () => $this->promotion->review($user));
         }
     }
 
-    public function reviewThrottled(User $user): void
+    /** Revisão de nível na leitura, no máximo uma a cada tantos minutos; o usuário só é carregado quando sai. */
+    public function reviewThrottled(User|int $user): void
     {
-        if ($this->cache->add("canela.trust_level_review.{$user->id}", 1, self::READ_REVIEW_THROTTLE_SECONDS)) {
-            $this->review([$user]);
+        $id = $user instanceof User ? (int) $user->id : $user;
+
+        if ($this->cache->add("canela.trust_level_review.{$id}", 1, self::READ_REVIEW_THROTTLE_SECONDS)) {
+            $this->review([$user instanceof User ? $user : User::query()->find($id)]);
         }
     }
 

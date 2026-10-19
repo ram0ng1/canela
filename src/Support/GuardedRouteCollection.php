@@ -60,6 +60,24 @@ class GuardedRouteCollection extends RouteCollection
     #[\Override]
     protected function applyRoutes(): void
     {
+        // O caminho comum, sem conflito: monta direto. A simulação (que analisa
+        // e soma todas as rotas de novo, uns 2 ms por requisição) só roda se o
+        // FastRoute recusar a tabela; o estado de antes volta e ela decide o
+        // que sai.
+        $generator = clone $this->dataGenerator;
+        $reverse = $this->reverse;
+        $pending = $this->pendingRoutes;
+
+        try {
+            parent::applyRoutes();
+
+            return;
+        } catch (BadRouteException) {
+            $this->dataGenerator = $generator;
+            $this->reverse = $reverse;
+            $this->pendingRoutes = $pending;
+        }
+
         foreach (self::conflictsToDrop($this->routes, array_keys($this->pendingRoutes)) as $name => $reason) {
             $this->removeRoute($name);
             $this->logger?->debug("[canela] rota {$this->frontend} \"{$name}\" retirada: {$reason}");

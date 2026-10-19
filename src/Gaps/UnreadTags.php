@@ -15,7 +15,6 @@ namespace Ramon\Canela\Gaps;
 
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
-use Flarum\Tags\Tag;
 use Flarum\User\User;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -75,20 +74,20 @@ final class UnreadTags
                         ->whereNull('discussion_user.last_read_post_number')
                         ->orWhereColumn('discussion_user.last_read_post_number', '<', 'discussions.last_post_number'))))
             ->join('discussion_tag', 'discussion_tag.discussion_id', '=', 'discussions.id')
+            // A mãe vem na mesma consulta (antes era uma segunda, em toda página).
+            ->join('tags as canela_unread_tag', 'canela_unread_tag.id', '=', 'discussion_tag.tag_id')
             ->distinct()
             ->limit(500)
-            ->pluck('discussion_tag.tag_id');
+            ->get(['discussion_tag.tag_id', 'canela_unread_tag.parent_id']);
 
         $result = [];
 
-        foreach ($ids as $id) {
-            $result[(int) $id] = true;
-        }
+        foreach ($ids as $row) {
+            $result[(int) $row->tag_id] = true;
 
-        // A categoria mãe acende junto com a filha, como no Discourse.
-        if ($result) {
-            foreach (Tag::query()->whereIn('id', array_keys($result))->whereNotNull('parent_id')->pluck('parent_id') as $parent) {
-                $result[(int) $parent] = true;
+            // A categoria mãe acende junto com a filha, como no Discourse.
+            if ($row->parent_id) {
+                $result[(int) $row->parent_id] = true;
             }
         }
 

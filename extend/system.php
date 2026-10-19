@@ -38,9 +38,12 @@ use Ramon\Canela\System\Listener\SendAutoMessages;
 use Ramon\Canela\System\Messages\AutoMessages;
 use Ramon\Canela\System\Messages\CustomMessages;
 use Ramon\Canela\System\SystemDialogs;
+use Ramon\Canela\System\SystemServiceProvider;
 use Ramon\Canela\System\SystemUser;
 
 $extenders = [
+    (new Extend\ServiceProvider())->register(SystemServiceProvider::class),
+
     // O usuário do sistema não entra: a senha é vetada e qualquer sessão ou
     // token dele (de onde vier) cai na primeira requisição.
     (new Extend\Auth())

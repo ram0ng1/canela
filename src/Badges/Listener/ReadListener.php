@@ -34,17 +34,24 @@ final class ReadListener
     public function handle(UserRead $event): void
     {
         $state = $event->state;
-        $user = $state->user;
-        $discussion = $state->discussion;
+        $userId = (int) $state->user_id;
 
-        if (! $user) {
+        if ($userId < 1) {
             return;
         }
 
-        if ($discussion && $discussion->comment_count > self::READER_MIN_POSTS && $state->last_read_post_number >= $discussion->last_post_number) {
-            $this->events->grant(BadgeQueries::TRIGGER_READ, Scope::users([$user->id]));
+        // Roda a cada atualização da leitura (a cada página rolada): nada de
+        // carregar o usuário e a discussão à toa. O Leitor(a) pede um tópico
+        // com mais de cem posts lido até o fim, então quem não passou do post
+        // cem nem precisa da discussão.
+        if ((int) $state->last_read_post_number > self::READER_MIN_POSTS) {
+            $discussion = $state->discussion;
+
+            if ($discussion && $discussion->comment_count > self::READER_MIN_POSTS && $state->last_read_post_number >= $discussion->last_post_number) {
+                $this->events->grant(BadgeQueries::TRIGGER_READ, Scope::users([$userId]));
+            }
         }
 
-        $this->events->reviewThrottled($user);
+        $this->events->reviewThrottled($userId);
     }
 }

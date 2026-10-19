@@ -27,5 +27,7 @@ final class BadgesServiceProvider extends AbstractServiceProvider
     {
         $this->container->singleton(Capabilities::class);
         $this->container->singleton(BadgeSettings::class);
+        // Uma só: a memória de quem já foi revisado vale para todos os ouvintes.
+        $this->container->singleton(Listener\BadgeEvents::class);
     }
 }
