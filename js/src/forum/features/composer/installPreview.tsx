@@ -16,6 +16,7 @@ import type Mithril from 'mithril';
 import { composerOn } from './common';
 import { t } from '../../utils/settings';
 import { richMode } from '../../composer/installToolbar';
+import { morphComposer } from '../../composer/morph';
 
 const STORAGE_KEY = 'canela.composerPreview';
 
@@ -132,7 +133,7 @@ export function previewToggle(): Mithril.Children {
       title={label}
       aria-label={label}
       aria-pressed={visible ? 'true' : 'false'}
-      onclick={() => setPreferred(!visible)}
+      onclick={() => morphComposer(() => setPreferred(!visible))}
     />
   );
 }

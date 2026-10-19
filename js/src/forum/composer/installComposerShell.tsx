@@ -29,6 +29,7 @@ import { missingTagsMessage, normalizeTags, selectableTags, type RuleTag } from 
 import installModals from './installModals';
 import installTagModal from './tagModal';
 import installAlignComposer from './alignComposer';
+import { morphComposer } from './morph';
 import installToolbar, { addMoreAction, richMode, setPlaceholderProvider } from './installToolbar';
 import { editorComposer } from '../features/composer/common';
 import { draftableBody, draftsOn, saveCurrentDraft } from '../features/composer/drafts/fofDrafts';
@@ -194,10 +195,10 @@ function installRoot(): void {
         'fullScreen',
         state.position === 'fullScreen'
           ? controlButton('fas fa-compress', app.translator.trans('core.forum.composer.exit_full_screen_tooltip', {}, true) as string, () =>
-              state.exitFullScreen()
+              morphComposer(() => state.exitFullScreen())
             )
           : controlButton('fas fa-expand', app.translator.trans('core.forum.composer.full_screen_tooltip', {}, true) as string, () =>
-              state.fullScreen()
+              morphComposer(() => state.fullScreen())
             ),
         30
       );
