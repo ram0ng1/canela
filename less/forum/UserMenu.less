@@ -631,13 +631,17 @@
     text-align: left;
     text-decoration: none;
     justify-content: flex-start;
+    // O mesmo espaço entre ícone e texto em todos: o `.LinkButton` do core
+    // traz `gap: 7px` e o `<button>` não, e os links ficavam 7px à direita.
+    gap: 0.5em;
     white-space: nowrap;
     transition: none;
 
     .Button-icon,
     .icon {
+      flex: none;
       width: 1em;
-      margin: 0 0.5em 0 0;
+      margin: 0;
       color: var(--cn-primary-medium);
       font-size: 1em;
       text-align: center;
@@ -658,12 +662,10 @@
   // Com o status, o emoji no lugar do ícone e "até …" pequeno ao lado.
   .CanelaUserMenu-statusEmoji {
     width: 1em;
-    margin-right: 0.5em;
     text-align: center;
   }
 
   .CanelaUserMenu-statusUntil {
-    margin-left: 0.5em;
     color: var(--cn-primary-medium);
     font-size: var(--cn-font-down-3);
   }
