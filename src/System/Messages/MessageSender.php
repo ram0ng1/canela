@@ -101,8 +101,42 @@ final class MessageSender
             return false;
         }
 
+        return $this->record($system, $recipient, $type, fn () => $this->content($recipient, $type, $params));
+    }
+
+    /**
+     * Manda uma mensagem personalizada do admin (CustomMessages), uma vez só
+     * por pessoa.
+     *
+     * @param array{id: string, enabled: bool, subject: string, body: string} $entry
+     * @param array<string, string|int|null> $params
+     */
+    public function sendCustom(User $recipient, array $entry, array $params = []): bool
+    {
+        $type = CustomMessages::type($entry);
+
+        if (! $entry['enabled'] || trim($entry['body']) === '' || ! $this->available()) {
+            return false;
+        }
+
+        $system = $this->system->get();
+
+        if (! $system || $this->system->is($recipient) || $recipient->isGuest() || $this->alreadySent($recipient, $type)) {
+            return false;
+        }
+
+        return $this->record($system, $recipient, $type, function () use ($recipient, $entry, $params): string {
+            $params = [...$this->defaults($recipient), ...$params];
+
+            return $this->compose(AutoMessages::interpolate($entry['subject'], $params), AutoMessages::interpolate($entry['body'], $params));
+        });
+    }
+
+    /** Entrega e anota o envio; uma falha só vai para o log. */
+    private function record(User $system, User $recipient, string $type, callable $content): bool
+    {
         try {
-            $message = $this->deliver($system, $recipient, $this->content($recipient, $type, $params));
+            $message = $this->deliver($system, $recipient, $content());
         } catch (\Throwable $error) {
             $this->log->error(sprintf('[ramon/canela] mensagem automática %s para o usuário %d não enviada: %s', $type, $recipient->id, $error->getMessage()));
 
@@ -117,6 +151,14 @@ final class MessageSender
         ]);
 
         return true;
+    }
+
+    private function compose(string $subject, string $body): string
+    {
+        $subject = trim($subject);
+        $body = trim($body);
+
+        return $subject !== '' ? '**'.$subject."**\n\n".$body : $body;
     }
 
     /**
@@ -141,10 +183,7 @@ final class MessageSender
             $body = $this->translator->trans(AutoMessages::translationKey($type, 'body'), [], null, $locale);
         }
 
-        $subject = trim(AutoMessages::interpolate($subject, $params));
-        $body = trim(AutoMessages::interpolate($body, $params));
-
-        return $subject !== '' ? '**'.$subject."**\n\n".$body : $body;
+        return $this->compose(AutoMessages::interpolate($subject, $params), AutoMessages::interpolate($body, $params));
     }
 
     /**

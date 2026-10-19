@@ -12,6 +12,7 @@ import { AdminComponent, getStr, saveSetting, trans } from '../util';
 import { AdminNotice } from '../components/AdminCard';
 import type { CardDef } from '../types';
 import { AdminTextField } from './community';
+import CustomMessagesEditor from './systemCustom';
 
 const KEY = 'ramon-canela.admin.system_user';
 const MSG = 'ramon-canela.admin.sysmsg';
@@ -326,6 +327,21 @@ const cards: CardDef[] = [
     ),
   },
   ...MESSAGES.map(messageCard),
+  {
+    id: 'sysmsg-custom',
+    group: 'system',
+    icon: 'fas fa-wand-magic-sparkles',
+    title: () => trans(`${MSG}.custom.title`, 'Mensagens personalizadas'),
+    description: () =>
+      trans(
+        `${MSG}.custom.help`,
+        'Mensagens suas, além das do Discourse: escolha quando cada uma sai (conta ativada, dias depois, grupo, nível, emblema, primeira postagem, aniversário de conta, conta verificada). Cada uma sai uma vez só por pessoa.'
+      ),
+    keywords: 'mensagem personalizada custom automática gatilho trigger aniversário anniversary verificada emblema grupo nível dias',
+    extensions: ['flarum-messages'],
+    lockedBy: needsUser,
+    body: () => <CustomMessagesEditor />,
+  },
 ];
 
 export default cards;

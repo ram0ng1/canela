@@ -23,9 +23,12 @@ use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Http\Middleware\AuthenticateWithHeader;
 use Flarum\Http\Middleware\AuthenticateWithSession;
+use Flarum\Settings\Event\Saving;
 use Flarum\User\User;
 use Ramon\Canela\System\Access\SystemPasswordChecker;
 use Ramon\Canela\System\Access\SystemUserPolicy;
+use Ramon\Canela\System\Console\DelayedSchedule;
+use Ramon\Canela\System\Console\SendDelayedMessages;
 use Ramon\Canela\System\Api\CreateSystemUserController;
 use Ramon\Canela\System\Api\SystemUserPresenter;
 use Ramon\Canela\System\Api\UserFields;
@@ -33,6 +36,7 @@ use Ramon\Canela\System\Http\RevokeSystemSession;
 use Ramon\Canela\System\Listener\BlockRepliesToSystem;
 use Ramon\Canela\System\Listener\SendAutoMessages;
 use Ramon\Canela\System\Messages\AutoMessages;
+use Ramon\Canela\System\Messages\CustomMessages;
 use Ramon\Canela\System\SystemDialogs;
 use Ramon\Canela\System\SystemUser;
 
@@ -68,11 +72,23 @@ $extenders = [
         ]),
 
     (new Extend\Event())
-        ->subscribe(SendAutoMessages::class),
+        ->subscribe(SendAutoMessages::class)
+        // As mensagens personalizadas chegam do admin em JSON: limpas ao salvar.
+        ->listen(Saving::class, static function (Saving $event): void {
+            if (array_key_exists(CustomMessages::SETTING, $event->settings)) {
+                $event->settings[CustomMessages::SETTING] = CustomMessages::normalize($event->settings[CustomMessages::SETTING]);
+            }
+        }),
+
+    // As personalizadas de "N dias depois do cadastro".
+    (new Extend\Console())
+        ->command(SendDelayedMessages::class)
+        ->schedule(SendDelayedMessages::class, DelayedSchedule::class),
 ];
 
 $settings = new Extend\Settings();
 $settings->default(SystemUser::SETTING, '');
+$settings->default(CustomMessages::SETTING, '[]');
 
 foreach (AutoMessages::TYPES as $type => $definition) {
     $settings

@@ -109,6 +109,7 @@ const ORDER: string[] = [
   'sysmsg-flags_agreed_and_post_deleted',
   'sysmsg-silenced_by_staff',
   'sysmsg-unsilenced',
+  'sysmsg-custom',
   // IA
   'ai-provider',
   'ai-bot',

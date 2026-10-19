@@ -19,6 +19,7 @@ use Flarum\Locale\TranslatorInterface;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Event\Deleting as PostDeleting;
 use Flarum\Post\Event\Hidden as PostHidden;
+use Flarum\Post\Event\Posted;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Event\Activated;
@@ -29,10 +30,12 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Ramon\Canela\Badges\BadgeAwarded;
 use Ramon\Canela\Badges\TrustLevel\TrustLevel;
 use Ramon\Canela\Badges\TrustLevel\TrustLevelChanged;
 use Ramon\Canela\Support\SchemaCache;
 use Ramon\Canela\System\Messages\AutoMessages;
+use Ramon\Canela\System\Messages\CustomMessages;
 use Ramon\Canela\System\Messages\MessageSender;
 
 /**
@@ -45,7 +48,10 @@ use Ramon\Canela\System\Messages\MessageSender;
  * - equipe e grupos: ao entrar no grupo Admin ou Moderadores (ou em outro);
  * - post denunciado: quando a equipe oculta ou apaga um post com denúncias
  *   (flarum/flags);
- * - suspensão: ao suspender e ao tirar a suspensão (flarum/suspend).
+ * - suspensão: ao suspender e ao tirar a suspensão (flarum/suspend);
+ * - as personalizadas do admin (CustomMessages): conta ativada, grupo, nível
+ *   de confiança, emblema e primeira postagem. As de "N dias depois do
+ *   cadastro" saem pelo agendador (SendDelayedMessages).
  *
  * Os eventos das extensões opcionais (flarum/flags e flarum/suspend) só são
  * ouvidos com a classe presente, e pelo nome: o tema não depende delas. As
@@ -62,21 +68,28 @@ final class SendAutoMessages
 
     private const UNSUSPENDED = 'Flarum\\Suspend\\Event\\Unsuspended';
 
+    private const VERIFIED = 'Ramon\\Verified\\Event\\UserVerified';
+
     public function __construct(
         private readonly MessageSender $sender,
         private readonly SettingsRepositoryInterface $settings,
         private readonly TranslatorInterface $translator,
         private readonly ConnectionInterface $db,
         private readonly SchemaCache $schema,
+        private readonly CustomMessages $customs,
     ) {
     }
 
     public function subscribe(Dispatcher $events): void
     {
-        $events->listen(Registered::class, fn (Registered $event) => $event->user->is_email_confirmed && $this->welcome($event->user));
-        $events->listen(Activated::class, fn (Activated $event) => $this->welcome($event->user));
+        $events->listen(Registered::class, fn (Registered $event) => $event->user->is_email_confirmed && $this->activated($event->user));
+        $events->listen(Activated::class, fn (Activated $event) => $this->activated($event->user));
         $events->listen(GroupsChanged::class, $this->groupsChanged(...));
         $events->listen(TrustLevelChanged::class, $this->trustLevelChanged(...));
+        $events->listen(BadgeAwarded::class, fn (BadgeAwarded $event) => $this->custom($event->user, 'badge', (int) $event->badge->id, [
+            'badge_name' => (string) ($event->badge->translated($this->translator, 'name') ?? $event->badge->name),
+        ]));
+        $events->listen(Posted::class, $this->posted(...));
 
         if (class_exists(self::FLAG_MODEL)) {
             $events->listen(PostHidden::class, fn (PostHidden $event) => $this->flaggedPostRemoved($event->post, $event->actor));
@@ -84,10 +97,22 @@ final class SendAutoMessages
             $events->listen(PostDeleting::class, fn (PostDeleting $event) => $event->post->hidden_at === null && $this->flaggedPostRemoved($event->post, $event->actor));
         }
 
+        // A conta verificada pela equipe (ramon/verified).
+        if (class_exists(self::VERIFIED)) {
+            $events->listen(self::VERIFIED, fn ($event) => $event->user instanceof User && $this->custom($event->user, 'verified'));
+        }
+
         if (class_exists(self::SUSPENDED)) {
             $events->listen(self::SUSPENDED, fn ($event) => $event->user instanceof User && $this->suspended($event->user));
             $events->listen(self::UNSUSPENDED, fn ($event) => $event->user instanceof User && $this->sender->send($event->user, AutoMessages::UNSUSPENDED));
         }
+    }
+
+    /** A conta ficou ativa: as boas-vindas e as personalizadas "na hora". */
+    public function activated(User $user): void
+    {
+        $this->welcome($user);
+        $this->custom($user, 'activated');
     }
 
     public function welcome(User $user): bool
@@ -107,6 +132,11 @@ final class SendAutoMessages
 
         foreach ($added as $group) {
             $id = (int) $group->id;
+
+            $this->custom($user, 'group', $id, [
+                'group_name' => (string) $group->name_plural,
+                'group_path' => '/g/'.(Str::slug(Str::ascii((string) $group->name_plural)) ?: $id),
+            ]);
 
             if ($id === Group::ADMINISTRATOR_ID || $id === Group::MODERATOR_ID) {
                 $this->sender->send($user, AutoMessages::WELCOME_STAFF, ['role' => (string) $group->name_singular]);
@@ -128,6 +158,45 @@ final class SendAutoMessages
         if ($event->from < TrustLevel::MEMBER && $event->to >= TrustLevel::MEMBER) {
             $this->sender->send($event->user, AutoMessages::TL2_PROMOTION);
         }
+
+        // Personalizadas: cada nível que a pessoa passou nesta promoção.
+        for ($level = $event->from + 1; $level <= $event->to; $level++) {
+            $this->custom($event->user, 'trust_level', $level);
+        }
+    }
+
+    /** A primeira postagem de alguém (comentário visível, em discussão ou resposta). */
+    public function posted(Posted $event): void
+    {
+        $post = $event->post;
+        $user = $post->user;
+
+        if (! $user || ! $this->customs->for('first_post')) {
+            return;
+        }
+
+        $count = $this->db->table('posts')->where('user_id', $user->id)->where('type', 'comment')->count();
+
+        if ($count === 1) {
+            $this->custom($user, 'first_post', null, ['url' => '/d/'.$post->discussion_id.'/'.$post->number]);
+        }
+    }
+
+    /**
+     * As mensagens personalizadas do gatilho (CustomMessages), cada uma uma
+     * vez só por pessoa.
+     *
+     * @param array<string, string|int|null> $params
+     */
+    public function custom(User $user, string $trigger, ?int $value = null, array $params = []): bool
+    {
+        $sent = false;
+
+        foreach ($this->customs->for($trigger, $value) as $entry) {
+            $sent = $this->sender->sendCustom($user, $entry, $params) || $sent;
+        }
+
+        return $sent;
     }
 
     /**
