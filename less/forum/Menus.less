@@ -309,3 +309,60 @@
     }
   }
 }
+
+// ---------------------------------------------------------------------
+// A seta dos menus que abrem de um botão só com ícone (shell/dropdownArrow.ts):
+// um quadrado girado na borda do menu, com o fundo e a borda dele (copiados
+// no JS), apontando para o botão. O menu desce um pouco para caber o bico.
+// ---------------------------------------------------------------------
+.Dropdown-menu.CanelaDropdown--arrow {
+  margin-top: 10px;
+
+  &.is-up {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
+.CanelaDropdownArrow {
+  position: absolute;
+  z-index: calc(~"var(--zindex-dropdown, 1030) + 1");
+  width: 26px;
+  height: 13px;
+  // Só a metade de fora do quadrado: a de dentro (e o contorno dela) não
+  // aparece sobre o menu.
+  overflow: hidden;
+  pointer-events: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--cn-arrow-bg, var(--cn-secondary));
+    // Um contorno fino e nítido (a sombra grande do menu, recortada aqui,
+    // virava só um borrão) e uma sombra curta para acompanhar a do menu.
+    box-shadow:
+      0 0 0 1px var(--cn-arrow-edge, ~"color-mix(in srgb, var(--cn-primary) 12%, transparent)"),
+      0 0 4px ~"color-mix(in srgb, var(--cn-primary) 8%, transparent)";
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  &.is-up::before {
+    top: 0;
+  }
+}
+
+// A seta aparece junto com o menu, que entra com uma animação.
+.CanelaDropdownArrow {
+  animation: cn-arrow-in 250ms ease;
+}
+
+@keyframes cn-arrow-in {
+  from {
+    opacity: 0;
+  }
+}
