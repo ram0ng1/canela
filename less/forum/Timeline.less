@@ -346,7 +346,10 @@
     border: 1px solid var(--cn-accent-low);
     border-bottom: 0;
     border-radius: 0;
-    background: var(--cn-surface);
+    // O core zera o fundo dos botões do título no celular
+    // (`.App-titleControl > .Button { background: transparent !important }`):
+    // sem o !important, a parte sem progresso ficava transparente.
+    background: var(--cn-surface) !important;
     box-shadow: none;
     color: var(--cn-link);
     font-size: 0;

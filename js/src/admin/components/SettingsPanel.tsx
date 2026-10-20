@@ -34,7 +34,13 @@ export const GROUPS: GroupDef[] = [
     icon: 'fas fa-table-columns',
     label: () => trans(`${SHELL}.group_navigation`, 'Cabeçalho e barra lateral'),
     description: () =>
-      trans(`${SHELL}.group_navigation_desc`, 'A busca e o menu do cabeçalho, o login, os atalhos de teclado e a barra lateral do Discourse.'),
+      trans(`${SHELL}.group_navigation_desc`, 'A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral do Discourse.'),
+  },
+  {
+    key: 'auth',
+    icon: 'fas fa-right-to-bracket',
+    label: () => trans(`${SHELL}.group_auth`, 'Entrar e cadastrar'),
+    description: () => trans(`${SHELL}.group_auth_desc`, 'As páginas de entrar e de cadastro: quando aparecem, o leiaute, o fundo e os textos.'),
   },
   {
     key: 'list',

@@ -173,12 +173,14 @@ ramon-canela:
       palette_dark: ダーク
       shell:
         group_navigation: ヘッダーとサイドバー
+        group_auth: ログインと新規登録
+        group_auth_desc: ログインと新規登録のページ：表示するタイミング、レイアウト、背景、テキスト。
         group_people: プロフィールとユーザー
         group_messages: メッセージとチャット
         group_moderation: モデレーション
         group_integrations: 連携
         group_appearance_desc: 色、フォント、サーフェス、ボタン、アイコン、バナー、トースト。
-        group_navigation_desc: ヘッダーの検索とメニュー、ログイン、キーボードショートカット、Discourse のサイドバー。
+        group_navigation_desc: ヘッダーの検索とメニュー、キーボードショートカット、Discourse のサイドバー。
         group_list_desc: ホームページ、タブ、列、タグ、スレッド一覧のカウンター。
         group_topic_desc: 投稿、タイムライン、スレッドマップ、フッター、閲覧機能。
         group_composer_desc: Discourse の投稿エディター、下書き、ハッシュタグ、詳細検索。
@@ -626,6 +628,10 @@ ramon-canela:
       auth:
         pages_label: 全画面のログインと新規登録
         pages_help: Discourse と同様に、ヘッダーの「ログイン」と「新規登録」ボタンで /login と /signup ページを開きます。オフにするとモーダルが開きます。
+        layout_card_title: "レイアウトと背景"
+        layout_card_help: "ログインと新規登録のページの画面構成と、フォームの背後に表示するもの。"
+        texts_card_title: "テキスト"
+        texts_card_help: "各ページのタイトルとサブタイトル。空欄の場合はテーマの既定のテキストになります。"
         layout_label: "レイアウト"
         layout_help: "どのレイアウトでもヘッダーは表示されず、フォーラムのロゴだけになります。ソーシャルログインがある場合、ボタンはフォームの前に表示されます（Discourse 型ではフォームの横）。"
         layout_card: "背景の上の単一カード（デフォルト）"

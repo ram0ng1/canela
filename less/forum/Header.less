@@ -516,6 +516,18 @@
   overflow: hidden;
   font-size: var(--cn-font-down-1);
   white-space: nowrap;
+
+  // Uma linha só: as tags que não cabem são cortadas na borda, em vez de
+  // quebrar para baixo do título (o .CanelaBadges da lista quebra linha).
+  .CanelaBadges,
+  .CanelaBadges-labels {
+    flex-wrap: nowrap;
+  }
+
+  .CanelaCategoryBadge,
+  .CanelaTagBadge {
+    flex-shrink: 0;
+  }
 }
 
 // No celular o título toma o lugar do logo e da lupa.

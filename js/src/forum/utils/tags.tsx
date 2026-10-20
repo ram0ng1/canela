@@ -224,18 +224,11 @@ export function discussionBadges(discussion: Discussion, link = true): Mithril.C
 
   if (!categories.length && !labels.length) return null;
 
-  // A filha cujo pai também está na discussão vira um badge só "Pai ▪ Filha";
-  // o pai não aparece de novo sozinho.
-  const childOf = (tag: CanelaTag): CanelaTag | null => {
-    const parent = tag.isChild() ? (tag.parent() as CanelaTag | null | false) : null;
-
-    return parent && categories.includes(parent) ? parent : null;
-  };
-  const parentsShown = new Set(categories.map(childOf).filter(Boolean));
-
+  // Como no Flarum: cada tag no seu badge, a pai uma vez só e cada filha
+  // logo depois dela (ordem do `sortTags`), sem repetir o pai na frente.
   return (
     <span className="CanelaBadges">
-      {categories.filter((tag) => !parentsShown.has(tag)).map((tag) => categoryBadge(tag, link, childOf(tag)))}
+      {categories.map((tag) => categoryBadge(tag, link))}
       {labels.length > 0 && <span className="CanelaBadges-labels">{labels.map((tag) => labelBadge(tag, link))}</span>}
     </span>
   );

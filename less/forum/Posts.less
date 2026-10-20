@@ -1394,8 +1394,32 @@
 }
 
 @media @phone {
+  // No celular o post não tem a coluna do avatar (.Post-container é bloco):
+  // o ícone ia para uma linha só dele, com o fio esticado até a borda. Aqui
+  // ícone, avatar e texto ficam na mesma linha, sem o fio, como o
+  // small-action do Discourse no celular.
   .CanelaTopic .EventPost {
     padding-left: 0;
+
+    .Post-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .Post-side {
+      flex: none;
+      align-self: center;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .Post-main {
+      flex: 1;
+      padding: 0;
+    }
 
     .EventPost-icon {
       margin: 0;

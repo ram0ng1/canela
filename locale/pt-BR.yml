@@ -173,12 +173,14 @@ ramon-canela:
       palette_dark: Escuro
       shell:
         group_navigation: Cabeçalho e barra lateral
+        group_auth: Entrar e cadastrar
+        group_auth_desc: 'As páginas de entrar e de cadastro: quando aparecem, o leiaute, o fundo e os textos.'
         group_people: Perfil e usuários
         group_messages: Mensagens e chat
         group_moderation: Moderação
         group_integrations: Integrações
         group_appearance_desc: Cores, fonte, superfícies, botões, ícones, banner e avisos.
-        group_navigation_desc: A busca e o menu do cabeçalho, o login, os atalhos de teclado e a barra lateral do Discourse.
+        group_navigation_desc: A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral do Discourse.
         group_list_desc: A página inicial, as abas, as colunas, as tags e os contadores da lista.
         group_topic_desc: As postagens, a linha do tempo, o mapa, o rodapé e os recursos de leitura.
         group_composer_desc: O editor do Discourse, os rascunhos, as hashtags e a busca avançada.
@@ -626,6 +628,10 @@ ramon-canela:
       auth:
         pages_label: Entrar e cadastrar em página própria
         pages_help: Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup, como no Discourse. Desligada, eles abrem os modais.
+        layout_card_title: "Leiaute e fundo"
+        layout_card_help: "Como as páginas de entrar e de cadastro se organizam na tela e o que fica atrás do formulário."
+        texts_card_title: "Textos"
+        texts_card_help: "O título e o subtítulo de cada página. Vazio, fica o texto padrão do tema."
         layout_label: "Leiaute"
         layout_help: "Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no do Discourse, ao lado dele)."
         layout_card: "Cartão único sobre o fundo (padrão)"
