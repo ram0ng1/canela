@@ -343,6 +343,20 @@ button.CanelaTopicMap-stat {
   }
 }
 
+// A bolinha do "Marcar não lido" (`fas fa-circle`) fica no Font Awesome
+// (META_IGNORED em icons/iconMap.ts), não vira <svg>. Sem caixa fixa, o <i>
+// não tem largura até a fonte carregar e o botão cresce depois de aberto.
+.CanelaTopicFooter-unread .Button-icon.fa-circle,
+.CanelaDialogFooter-defer .Button-icon.fa-circle {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  overflow: hidden;
+  line-height: 1;
+  text-align: center;
+}
+
 // "Favoritado": o marcador cheio na cor de destaque.
 .CanelaTopicFooter-button--active.Button .Button-icon {
   color: var(--cn-accent);
