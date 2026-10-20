@@ -1,6 +1,7 @@
 /*
  * O fundo da página (src/Backgrounds): o select do estilo e, com "Imagem",
- * o envio da imagem com a prévia. O envio vai para
+ * o envio da imagem com a prévia. Com `value` e `onchange`, o select vira
+ * rascunho (quem usa decide quando gravar); a imagem é gravada ao enviar. O envio vai para
  * POST /api/canela/backgrounds/{forum|auth} (o mesmo caminho do logo do core:
  * vira WebP no disco de assets) e a prévia troca sem recarregar o admin.
  */
@@ -12,6 +13,23 @@ import { AdminComponent, getStr, saveSetting, trans } from '../util';
 const KEY = 'ramon-canela.admin.backgrounds';
 
 type Target = 'forum' | 'auth';
+
+const STYLES = ['tinted', 'gradient', 'solid', 'plain', 'image'];
+
+/** O fundo gravado (ou o padrão de quem ainda não escolheu). */
+export function savedBackground(target: Target): string {
+  const stored = getStr(`canela.${target}_background`);
+
+  if (STYLES.includes(stored) || (target === 'auth' && stored === 'same')) return stored;
+
+  // Sem escolha ainda: o fórum segue a chave antiga (fundo tingido ligado
+  // ou desligado), e as páginas de entrar/cadastrar usam o do fórum.
+  if (target === 'auth') return 'same';
+
+  const legacy = String(app.data.settings['canela.tinted_background'] ?? '');
+
+  return legacy === '0' || legacy === 'false' ? 'plain' : 'tinted';
+}
 
 export default class BackgroundPicker extends AdminComponent {
   loading = false;
@@ -44,17 +62,10 @@ export default class BackgroundPicker extends AdminComponent {
   }
 
   value(): string {
-    const stored = getStr(this.settingKey());
+    // Rascunho: quem usa o componente guarda o valor e decide quando aplicar.
+    if (this.attrs.value !== undefined) return String(this.attrs.value);
 
-    if (stored && stored in this.options()) return stored;
-
-    // Sem escolha ainda: o fórum segue a chave antiga (fundo tingido ligado
-    // ou desligado), e as páginas de entrar/cadastrar usam o do fórum.
-    if (this.target() === 'auth') return 'same';
-
-    const legacy = String(app.data.settings['canela.tinted_background'] ?? '');
-
-    return legacy === '0' || legacy === 'false' ? 'plain' : 'tinted';
+    return savedBackground(this.target());
   }
 
   view() {
@@ -73,6 +84,12 @@ export default class BackgroundPicker extends AdminComponent {
             value={value}
             onchange={(event: Event) => {
               const next = (event.target as HTMLSelectElement).value;
+
+              if (this.attrs.onchange) {
+                this.attrs.onchange(next);
+                return;
+              }
+
               app.data.settings[this.settingKey()] = next;
               m.redraw();
               saveSetting({ [this.settingKey()]: next });

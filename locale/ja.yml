@@ -1,5 +1,12 @@
 ramon-canela:
   admin:
+    preview:
+      dirty: "まだ適用されていない変更があります"
+      discard: "破棄"
+      apply: "適用"
+      preview_forum: "プレビュー"
+      preview_login: "ログインをプレビュー"
+      preview_signup: "新規登録をプレビュー"
     backgrounds:
       same: "フォーラムと同じ"
       tinted: "ぼかしアイコン付きの色付きグラデーション（デフォルト）"
@@ -622,12 +629,18 @@ ramon-canela:
         layout_card: "背景の上の単一カード（デフォルト）"
         layout_discourse: "Discourse 型：カードなし、ソーシャルログインは横"
         layout_split: "分割画面：左側にカラーパネル"
-        split_title_label: "パネルのタイトル"
-        split_title_help: "空欄の場合：ログインでは「おかえりなさい」、新規登録では「コミュニティに参加しよう」。"
-        split_text_label: "パネルの本文"
-        split_text_help: "タイトルの下に表示する 1〜2 文。空欄の場合は各ページのデフォルトの文になります。"
         background_label: "ログイン・新規登録ページの背景"
         background_help: "分割画面では画像は左側のパネルに表示され、その他の背景はフォームの背後に表示されます。"
+        text_default: "空欄：デフォルトの文"
+        texts_login: "ログインページの文言"
+        texts_signup: "新規登録ページの文言"
+        texts_panel: "分割画面のパネル"
+        title_label: "タイトル"
+        subtitle_label: "サブタイトル（任意）"
+        panel_login_title: "ログイン時のタイトル"
+        panel_signup_title: "新規登録時のタイトル"
+        panel_login_text: "ログイン時の本文"
+        panel_signup_text: "新規登録時の本文"
       bookmarks:
         title: ブックマーク
         bookmarks_enabled_label: ブックマーク
@@ -1054,6 +1067,9 @@ ramon-canela:
         topic: スレッド
         replies: 返信数
         activity: アクティビティ
+    preview:
+      banner: "プレビュー：まだ何も適用されていません。このタブで、あなただけに表示されています。"
+      close: "閉じる"
     auth:
       login_page_title: ログイン
       signup_page_title: 新規登録

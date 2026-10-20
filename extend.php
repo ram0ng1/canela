@@ -39,10 +39,17 @@ $forumSettings = [
 
     // Páginas de entrar e cadastrar (features/auth): o leiaute — card (cartão
     // único, o padrão), discourse (sem cartão, duas colunas) ou split (tela
-    // dividida, com o painel colorido) — e o texto do painel da tela dividida.
+    // dividida, com o painel colorido).
     'canela.auth_layout' => ['canelaAuthLayout', 'card', null],
-    'canela.auth_split_title' => ['canelaAuthSplitTitle', '', null],
-    'canela.auth_split_text' => ['canelaAuthSplitText', '', null],
+    // Os textos de cada página (vazios: os padrões do Flarum e do tema).
+    'canela.auth_login_title' => ['canelaAuthLoginTitle', '', null],
+    'canela.auth_login_subtitle' => ['canelaAuthLoginSubtitle', '', null],
+    'canela.auth_signup_title' => ['canelaAuthSignupTitle', '', null],
+    'canela.auth_signup_subtitle' => ['canelaAuthSignupSubtitle', '', null],
+    'canela.auth_panel_login_title' => ['canelaAuthPanelLoginTitle', '', null],
+    'canela.auth_panel_login_text' => ['canelaAuthPanelLoginText', '', null],
+    'canela.auth_panel_signup_title' => ['canelaAuthPanelSignupTitle', '', null],
+    'canela.auth_panel_signup_text' => ['canelaAuthPanelSignupText', '', null],
 
     // Barra lateral
     'canela.sidebar_enabled' => ['canelaSidebarEnabled', true, 'boolval'],

@@ -9,7 +9,7 @@
 import app from 'flarum/admin/app';
 import Link from 'flarum/common/components/Link';
 
-import { trans, getBool, getStr, when } from '../util';
+import { trans, getBool, when } from '../util';
 import { AdminNotice, AdminSubGroup, SubDivider } from '../components/AdminCard';
 import AdminToggle from '../components/AdminToggle';
 import AdminSelect from '../components/AdminSelect';
@@ -17,8 +17,7 @@ import AdminNumber from '../components/AdminNumber';
 import { PalettePreview } from '../components/PalettePreview';
 import LoaderPicker from '../components/LoaderPicker';
 import ContentWidthControl from '../components/ContentWidthControl';
-import BackgroundPicker from '../components/BackgroundPicker';
-import { AdminTextField } from '../features/community';
+import { AuthPagesEditor, ForumBackgroundEditor } from '../components/AppearanceDraft';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings';
@@ -115,8 +114,7 @@ const CORE_CARDS: CardDef[] = [
     keywords: 'fundo background tingido tinted cartão card moldura superfície surface branco',
     body: () => (
       <>
-        <BackgroundPicker
-          target="forum"
+        <ForumBackgroundEditor
           label={trans(`${KEY}.forum_background_label`, 'Fundo do fórum')}
           help={trans(
             `${KEY}.forum_background_help`,
@@ -266,46 +264,7 @@ const CORE_CARDS: CardDef[] = [
       ),
     keywords: 'entrar login cadastrar cadastro signup sign up registrar página page modal conta account leiaute layout fundo background imagem',
     master: 'canela.auth_pages',
-    body: () => (
-      <>
-        <AdminSelect
-          settingKey="canela.auth_layout"
-          label={trans(`${KEY}.auth.layout_label`, 'Leiaute')}
-          help={trans(
-            `${KEY}.auth.layout_help`,
-            'Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no do Discourse, ao lado dele).'
-          )}
-          options={{
-            card: trans(`${KEY}.auth.layout_card`, 'Cartão único sobre o fundo (padrão)'),
-            discourse: trans(`${KEY}.auth.layout_discourse`, 'Discourse: sem cartão, login social ao lado'),
-            split: trans(`${KEY}.auth.layout_split`, 'Tela dividida: painel colorido à esquerda'),
-          }}
-          default="card"
-        />
-        {getStr('canela.auth_layout', 'card') === 'split' && (
-          <>
-            <AdminTextField
-              settingKey="canela.auth_split_title"
-              label={trans(`${KEY}.auth.split_title_label`, 'Título do painel')}
-              help={trans(`${KEY}.auth.split_title_help`, 'Vazio: "Que bom ver você de novo" no login e "Faça parte da comunidade" no cadastro.')}
-            />
-            <AdminTextField
-              settingKey="canela.auth_split_text"
-              label={trans(`${KEY}.auth.split_text_label`, 'Texto do painel')}
-              help={trans(`${KEY}.auth.split_text_help`, 'Uma ou duas frases abaixo do título. Vazio: o texto padrão de cada página.')}
-            />
-          </>
-        )}
-        <BackgroundPicker
-          target="auth"
-          label={trans(`${KEY}.auth.background_label`, 'Fundo das páginas de entrar e cadastrar')}
-          help={trans(
-            `${KEY}.auth.background_help`,
-            'Na tela dividida, a imagem vai para o painel da esquerda; os outros fundos ficam atrás do formulário.'
-          )}
-        />
-      </>
-    ),
+    body: () => <AuthPagesEditor />,
     lockedBy: () =>
       getBool('canela.auth_routes_backend')
         ? null

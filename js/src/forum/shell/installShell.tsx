@@ -24,6 +24,7 @@ import { watchColoredAccents } from './coloredAccents';
 import installShortcuts from './shortcuts';
 import extendHeader from './extendHeader';
 import { applyBackground, forumBackground } from './backgrounds';
+import { readPreview } from './preview';
 import installThemePreview from './themePreview';
 import installModalLayout from './modalLayout';
 import { forumBool, t } from '../utils/settings';
@@ -53,6 +54,9 @@ export default function installShell() {
     const appElement = document.getElementById('app');
 
     if (!appElement) return;
+
+    // O rascunho do admin (links "Pré-visualizar"), antes das classes e do fundo.
+    readPreview();
 
     const sidebarEnabled = forumBool('canelaSidebarEnabled', true);
 

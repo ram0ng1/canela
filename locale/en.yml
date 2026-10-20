@@ -1,5 +1,12 @@
 ramon-canela:
   admin:
+    preview:
+      dirty: "Changes not applied yet"
+      discard: "Discard"
+      apply: "Apply"
+      preview_forum: "Preview"
+      preview_login: "Preview log in"
+      preview_signup: "Preview sign up"
     backgrounds:
       same: "Same as the forum"
       tinted: "Tinted gradient with blurred icons (default)"
@@ -622,12 +629,18 @@ ramon-canela:
         layout_card: "Single card over the background (default)"
         layout_discourse: "Discourse: no card, social login beside the form"
         layout_split: "Split screen: colored panel on the left"
-        split_title_label: "Panel title"
-        split_title_help: "Empty: \"Good to see you again\" on log in and \"Join the community\" on sign up."
-        split_text_label: "Panel text"
-        split_text_help: "One or two sentences below the title. Empty: each page's default text."
         background_label: "Log in and sign up background"
         background_help: "In the split screen the image goes to the left panel; the other backgrounds sit behind the form."
+        text_default: "Empty: the default text"
+        texts_login: "Log in page texts"
+        texts_signup: "Sign up page texts"
+        texts_panel: "Split screen panel"
+        title_label: "Title"
+        subtitle_label: "Subtitle (optional)"
+        panel_login_title: "Title on log in"
+        panel_signup_title: "Title on sign up"
+        panel_login_text: "Text on log in"
+        panel_signup_text: "Text on sign up"
       bookmarks:
         title: Bookmarks
         bookmarks_enabled_label: Bookmarks
@@ -1054,6 +1067,9 @@ ramon-canela:
         topic: Discussion
         replies: Replies
         activity: Activity
+    preview:
+      banner: "Preview: nothing has been applied yet. Only you see this version, in this tab."
+      close: "Close"
     auth:
       login_page_title: Log In
       signup_page_title: Sign Up

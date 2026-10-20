@@ -99,6 +99,14 @@ html.CanelaAuthRoute {
     }
   }
 
+  // O subtítulo escolhido no admin, logo abaixo do título.
+  &-subtitle {
+    margin: 0;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-0);
+    line-height: 1.5;
+  }
+
   // O "ou" entre os botões sociais e o formulário.
   &-or {
     display: flex;
@@ -357,21 +365,27 @@ html.CanelaAuthRoute {
       padding: 0 48px 0 0;
     }
 
-    .Modal-body > .Form {
+    .Modal-body > .CanelaAuthPage-subtitle {
       grid-row: 2;
+      grid-column: 1;
+      margin: 8px 48px 0 0;
+    }
+
+    .Modal-body > .Form {
+      grid-row: 3;
       grid-column: 1;
       padding: 20px 48px 0 0;
     }
 
     .Modal-footer {
-      grid-row: 3;
+      grid-row: 4;
       grid-column: 1;
       margin: 0 48px 0 0;
       padding-bottom: 0;
     }
 
     .Modal-body > .LogInButtons {
-      grid-row: ~"1 / 4";
+      grid-row: ~"1 / 5";
       grid-column: 2;
       align-self: center;
       gap: 12px;
@@ -514,5 +528,44 @@ html.CanelaAuthRoute {
 
   .CanelaAuthPage--layout-split .CanelaAuthPage-inner > .CanelaAuthPage-logo {
     display: inline-flex;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Pré-visualização do admin (shell/preview.ts): o aviso no pé da tela.
+// ---------------------------------------------------------------------
+.CanelaPreviewBanner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 32px);
+  box-sizing: border-box;
+  padding: 10px 12px 10px 16px;
+  border-radius: 999px;
+  background: rgba(20, 20, 30, 0.88);
+  color: #fff;
+  font-size: var(--cn-font-down-1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+
+  &-close {
+    flex: none;
+    padding: 4px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+    }
   }
 }

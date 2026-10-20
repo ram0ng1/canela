@@ -7,6 +7,8 @@
  */
 import app from 'flarum/forum/app';
 
+import { previewState } from './preview';
+
 export type BackgroundStyle = 'tinted' | 'gradient' | 'solid' | 'plain' | 'image';
 export type BackgroundContext = 'forum' | 'auth';
 
@@ -27,13 +29,13 @@ function imageUrl(path: string): string | null {
 }
 
 export function forumBackground(): { style: BackgroundStyle; image: string | null } {
-  const style = asStyle(attr('canelaForumBackground'), 'tinted');
+  const style = asStyle(previewState()?.forumBackground ?? attr('canelaForumBackground'), 'tinted');
 
   return { style, image: style === 'image' ? imageUrl(attr('canelaForumBackgroundImage')) : null };
 }
 
 export function authBackground(): { style: BackgroundStyle; image: string | null } {
-  const value = attr('canelaAuthBackground');
+  const value = previewState()?.authBackground ?? attr('canelaAuthBackground');
 
   if (!(STYLES as string[]).includes(value)) return forumBackground();
 

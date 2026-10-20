@@ -1,5 +1,12 @@
 ramon-canela:
   admin:
+    preview:
+      dirty: "Alterações ainda não aplicadas"
+      discard: "Descartar"
+      apply: "Aplicar"
+      preview_forum: "Pré-visualizar"
+      preview_login: "Pré-visualizar entrar"
+      preview_signup: "Pré-visualizar cadastro"
     backgrounds:
       same: "O mesmo do fórum"
       tinted: "Degradê tingido com os ícones desfocados (padrão)"
@@ -622,12 +629,18 @@ ramon-canela:
         layout_card: "Cartão único sobre o fundo (padrão)"
         layout_discourse: "Discourse: sem cartão, login social ao lado"
         layout_split: "Tela dividida: painel colorido à esquerda"
-        split_title_label: "Título do painel"
-        split_title_help: "Vazio: \"Que bom ver você de novo\" no login e \"Faça parte da comunidade\" no cadastro."
-        split_text_label: "Texto do painel"
-        split_text_help: "Uma ou duas frases abaixo do título. Vazio: o texto padrão de cada página."
         background_label: "Fundo das páginas de entrar e cadastrar"
         background_help: "Na tela dividida, a imagem vai para o painel da esquerda; os outros fundos ficam atrás do formulário."
+        text_default: "Vazio: o texto padrão"
+        texts_login: "Textos da página de entrar"
+        texts_signup: "Textos da página de cadastro"
+        texts_panel: "Painel da tela dividida"
+        title_label: "Título"
+        subtitle_label: "Subtítulo (opcional)"
+        panel_login_title: "Título no login"
+        panel_signup_title: "Título no cadastro"
+        panel_login_text: "Texto no login"
+        panel_signup_text: "Texto no cadastro"
       bookmarks:
         title: Marcadores
         bookmarks_enabled_label: Marcadores
@@ -1054,6 +1067,9 @@ ramon-canela:
         topic: Discussão
         replies: Respostas
         activity: Atividade
+    preview:
+      banner: "Pré-visualização: nada foi aplicado ainda. Só você vê esta versão, nesta aba."
+      close: "Fechar"
     auth:
       login_page_title: Entrar
       signup_page_title: Cadastrar-se
