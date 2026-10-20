@@ -253,7 +253,7 @@ export default class ComposerFields extends Component<ComposerFieldsAttrs> {
         title: tag.name(),
         content: (
           <span className={`CanelaTagRow${child ? ' CanelaTagRow--child' : ''}`}>
-            <span className="CanelaTagRow-name">{child ? categoryLabel(tag) : tag.name()}</span>
+            <span className="CanelaTagRow-name">{child ? badge(tag) : tag.name()}</span>
             <span className="CanelaTagRow-count">x{tag.discussionCount() || 0}</span>
           </span>
         ),
