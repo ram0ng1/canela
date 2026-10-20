@@ -615,7 +615,11 @@
 
   &:hover .CanelaSidebar-sectionEdit,
   .CanelaSidebar-sectionEdit:focus-visible {
-    opacity: 1;
+    color: var(--cn-primary-high);
+  }
+
+  .CanelaSidebar-sectionEdit:hover {
+    color: var(--cn-hover-accent-text);
   }
 }
 
@@ -628,15 +632,12 @@
   border: 0;
   border-radius: var(--cn-radius);
   background: none;
-  color: var(--cn-primary-high);
+  // Escondido pela cor, não pela `opacity`: a transição de opacidade cria
+  // uma camada do compositor e faz os ícones da barra tremerem (Motion.less).
+  color: transparent;
   font-size: 0.8706rem;
-  opacity: 0;
   cursor: pointer;
-  transition: opacity 0.25s, background 0.25s;
-
-  &:hover {
-    color: var(--cn-hover-accent-text);
-  }
+  transition: color 0.25s, background 0.25s;
 
   &:focus-visible {
     background: var(--cn-primary-300);

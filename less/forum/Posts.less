@@ -1667,36 +1667,41 @@
 
 // O "…" dos posts de evento (excluir o aviso): discreto, cinza e sem fundo,
 // e só aparece ao passar o mouse na linha (ou com o menu aberto / em foco).
+// O esmaecido é na cor, não na `opacity`: a transição de opacidade cria uma
+// camada do compositor e faz os ícones em volta tremerem (veja Motion.less).
 .CanelaTopic .EventPost {
   .Post-controls {
-    opacity: 0;
-    transition: opacity 0.15s;
-
     .Dropdown-toggle {
       width: 28px;
       height: 28px;
       padding: 0;
       background: none !important;
-      color: var(--cn-primary-medium);
+      color: transparent;
+      transition: color 0.15s;
 
       &:hover,
       &:focus-visible {
         background: var(--cn-hover) !important;
-        color: var(--cn-primary);
       }
     }
   }
 
-  &:hover .Post-controls,
-  .Post-controls:focus-within,
-  .Post-controls.open {
-    opacity: 1;
+  &:hover .Post-controls .Dropdown-toggle,
+  .Post-controls:focus-within .Dropdown-toggle,
+  .Post-controls.open .Dropdown-toggle {
+    color: var(--cn-primary-medium);
+  }
+
+  // Depois da regra acima, que tem o mesmo peso.
+  .Post-controls .Dropdown-toggle:hover,
+  .Post-controls .Dropdown-toggle:focus-visible {
+    color: var(--cn-primary);
   }
 }
 
 @media (hover: none) {
-  .CanelaTopic .EventPost .Post-controls {
-    opacity: 1;
+  .CanelaTopic .EventPost .Post-controls .Dropdown-toggle {
+    color: var(--cn-primary-medium);
   }
 }
 

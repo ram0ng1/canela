@@ -775,15 +775,31 @@
 // ---------------------------------------------------------------------
 // "Responder" (o único `fade-out` da barra do post): 70% de opacidade que
 // acende ao passar sobre o post, em 0,7s.
+//
+// O esmaecido é feito na cor, não na `opacity`: animar a opacidade põe o
+// botão numa camada própria do compositor enquanto a transição dura, e os
+// ícones vizinhos (o marcador, o coração, o emoji do post) são redesenhados
+// meio pixel ao lado quando a camada nasce e some. Ao passar o mouse para
+// dentro e para fora do post, eles "tremiam". A cor só repinta o botão.
 // ---------------------------------------------------------------------
 .no-touch .CanelaPostAction--reply.Button {
-  opacity: 0.7;
-  transition: opacity 0.7s ease-in-out;
+  color: color-mix(in srgb, var(--cn-primary-high) 70%, transparent);
+  transition: color 0.7s ease-in-out;
 }
 
 .no-touch .Post:hover .CanelaPostAction--reply.Button,
 .no-touch .Post:focus-within .CanelaPostAction--reply.Button {
-  opacity: 1;
+  color: var(--cn-primary-high);
+}
+
+// O hover do próprio botão (Posts.less) vale também com a cor acima.
+.no-touch .Post .CanelaPostAction--reply.Button {
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: var(--cn-primary);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

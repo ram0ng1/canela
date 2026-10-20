@@ -674,8 +674,9 @@
   .CanelaAiSidebar-menu {
     position: absolute;
     right: 0.25em;
+    // Sem transição: animar a opacidade cria uma camada do compositor e faz
+    // a lista em volta tremer (Motion.less).
     opacity: 0;
-    transition: opacity 0.15s ease;
 
     .Button {
       height: 26px;

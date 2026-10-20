@@ -251,7 +251,11 @@ body :is(.ChatComposer-shell, .ChatBrowse-search, .ChatSearch-bar, .ChatAddMembe
 // O "+" das mensagens diretas fica à vista, como no Discourse (o lápis de
 // "Navegar por todos os canais" aparece no hover, como o das categorias).
 .CanelaSidebar-section--ramon-chat-direct .CanelaSidebar-sectionEdit {
-  opacity: 1;
+  color: var(--cn-primary-high);
+
+  &:hover {
+    color: var(--cn-hover-accent-text);
+  }
 }
 
 // ---------------------------------------------------------------------

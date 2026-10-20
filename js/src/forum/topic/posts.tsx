@@ -458,7 +458,16 @@ function restyleLike(post: PostModel, ui: PostUi, items: ItemList<Mithril.Childr
     // A batida do coração do Discourse (heartBump) ao curtir.
     if (!liked) ui.likeBump = Date.now();
 
-    return original?.attrs?.onclick?.(event);
+    const result = original?.attrs?.onclick?.(event);
+
+    // O flarum/likes muda a lista de quem curtiu na hora, mas a contagem só
+    // volta na resposta do servidor, e ninguém redesenha depois dela: ao
+    // descurtir, o "♥ 1" da esquerda ficava até o próximo clique. A contagem
+    // muda junto (a resposta confirma o número), como no setLiked das reações.
+    const current = Number(post.attribute('likesCount')) || 0;
+    post.pushAttributes({ likesCount: Math.max(0, current + (liked ? -1 : 1)) } as any);
+
+    return result;
   };
 
   const content = (

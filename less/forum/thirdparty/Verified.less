@@ -10,6 +10,15 @@
 // fica o visual da própria extensão.
 // =====================================================================
 
+// O popover abre sem a animação da extensão (opacidade e deslocamento em
+// 120ms): enquanto ela roda, o navegador põe o popover e tudo o que vem
+// depois dele numa camada própria do compositor, e o selo, o nome e os
+// outros selos em volta são redesenhados meio pixel ao lado quando essa
+// camada nasce e some. Ao passar o mouse pelo selo, eles "tremiam".
+.VerifiedPopover {
+  animation: none !important;
+}
+
 html.CanelaVerified {
   // O item que a extensão põe no cabeçalho do post (e o <ul> extra da prévia
   // da resposta): o tema já desenha o selo depois do nome, no PostUser.
