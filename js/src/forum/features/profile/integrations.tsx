@@ -23,7 +23,11 @@ import { thirdParty } from '../../thirdparty/settings';
 import { registerUserIcon } from '../../utils/userIcons';
 import { BirthdayFact, Bio, LocationFact, StatusEmoji, StatusLine, TitleLine, WebsiteFact, profileImageStyle } from './components';
 import {
+  bioAttribute,
+  bioEnabled,
   bioMaxLength,
+  canEditBio,
+  fofBio,
   canEditProfile,
   canEditTitle,
   cardBackgroundEnabled,
@@ -71,6 +75,15 @@ export function installUserCard() {
     if (title) items.add('canelaTitle', title, 99);
     if (status) items.add('canelaStatus', status, 98);
     if (bio) items.add('canelaBio', bio, 75);
+  });
+
+  // Com o fof/user-bio, a bio dele aparece no lugar da do tema (data.ts):
+  // o componente que ele põe no cartão sai, senão eram duas. Registrado no
+  // mount, depois dos initializers, para rodar depois do extend dele.
+  extend(app as any, 'mount', () => {
+    extend(UserCard.prototype, 'infoItems', function (items: ItemList<Mithril.Children>) {
+      if (fofBio() && items.has('bio')) items.remove('bio');
+    });
   });
 
   extend(UserCard.prototype, 'infoItems', function (this: any, items: ItemList<Mithril.Children>) {
@@ -150,7 +163,7 @@ export function installEditUserModal() {
 
     this.canelaProfile = {
       title: Stream(str('canelaTitle')),
-      bio: Stream(str('canelaBio')),
+      bio: Stream(str(bioAttribute())),
       location: Stream(str('canelaLocation')),
       website: Stream(str('canelaWebsite')),
       clearStatus: Stream(false),
@@ -173,7 +186,7 @@ export function installEditUserModal() {
 
     if (profileField('title') && canEditTitle(user)) items.add('canelaTitle', input(draft.title, t('profile.settings.title_label'), 60), 35);
 
-    if (profileField('bio')) {
+    if (bioEnabled() && canEditBio(user)) {
       items.add(
         'canelaBio',
         <div className="Form-group">
@@ -216,7 +229,10 @@ export function installEditUserModal() {
     const value = (stream: Stream<string>) => stream().trim() || null;
 
     if (profileField('title') && canEditTitle(user) && changed(draft.title, 'canelaTitle')) data.canelaTitle = value(draft.title);
-    if (profileField('bio') && changed(draft.bio, 'canelaBio')) data.canelaBio = value(draft.bio);
+    // O campo do fof/user-bio aceita só texto (vazio apaga), o do tema aceita null.
+    if (bioEnabled() && canEditBio(user) && changed(draft.bio, bioAttribute())) {
+      data[bioAttribute()] = fofBio() ? draft.bio().trim() : value(draft.bio);
+    }
     if (profileField('location') && changed(draft.location, 'canelaLocation')) data.canelaLocation = value(draft.location);
     if (profileField('website') && changed(draft.website, 'canelaWebsite')) data.canelaWebsite = value(draft.website);
 

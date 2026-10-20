@@ -10,7 +10,7 @@
 import app from 'flarum/forum/app';
 import type User from 'flarum/common/models/User';
 
-import { forumBool, forumInt } from '../../utils/settings';
+import { forumBool, forumInt, isExtensionEnabled } from '../../utils/settings';
 import { thirdParty } from '../../thirdparty/settings';
 
 export type ProfileField = 'bio' | 'location' | 'website' | 'title' | 'status' | 'cover' | 'birthday';
@@ -58,8 +58,45 @@ export function coverUploadEnabled(): boolean {
   return cardBackgroundEnabled() && forumBool('canelaProfileCoverUpload', true);
 }
 
+/**
+ * Com o fof/user-bio ativo, a bio é a dele: o tema mostra e edita o campo
+ * `bio` da extensão (no mesmo lugar, com os mesmos campos), e o componente
+ * dela sai do cartão (integrations.tsx). Assim não há duas bios.
+ */
+export function fofBio(): boolean {
+  return isExtensionEnabled('fof-user-bio');
+}
+
+/** O campo da bio vale: o do tema ligado no admin, ou o fof/user-bio ativo. */
+export function bioEnabled(): boolean {
+  return fofBio() ? profileEnabled() : profileField('bio');
+}
+
+/** O atributo que guarda a bio na API (o da extensão, quando ela está ativa). */
+export function bioAttribute(): 'bio' | 'canelaBio' {
+  return fofBio() ? 'bio' : 'canelaBio';
+}
+
 export function bioMaxLength(): number {
-  return forumInt('canelaProfileBioMaxLength', 1000);
+  return fofBio() ? forumInt('fof-user-bio.maxLength', 200) || 200 : forumInt('canelaProfileBioMaxLength', 1000);
+}
+
+/** Pode editar a bio deste usuário (a permissão do fof/user-bio, quando ativo). */
+export function canEditBio(user: User): boolean {
+  if (!fofBio()) return canEditProfile(user);
+
+  return !!user.attribute<boolean>('canEditBio');
+}
+
+const ESCAPES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+/** Texto puro em HTML seguro: escapado, com as quebras de linha. */
+function plainToHtml(text: string): string {
+  return text
+    .replace(/[&<>"']/g, (char) => ESCAPES[char])
+    .split(/\n{2,}/)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, '<br>')}</p>`)
+    .join('');
 }
 
 function str(user: User, attribute: string): string | null {
@@ -88,12 +125,29 @@ export function canEditTitle(user: User): boolean {
 }
 
 export function userBio(user: User): string | null {
-  return profileField('bio') ? str(user, 'canelaBio') : null;
+  if (!bioEnabled()) return null;
+
+  return str(user, bioAttribute());
 }
 
-/** HTML gerado e escapado no servidor (BioRenderer): só p, br, a, strong, em e code. */
+/**
+ * HTML seguro da bio. Do tema: gerado e escapado no servidor (BioRenderer),
+ * só p, br, a, strong, em e code. Do fof/user-bio: o `bioHtml` que o
+ * formatador dele gera (com a formatação ligada), ou o texto escapado aqui.
+ */
 export function userBioHtml(user: User): string | null {
-  return profileField('bio') ? str(user, 'canelaBioHtml') : null;
+  if (!bioEnabled()) return null;
+
+  if (!fofBio()) return str(user, 'canelaBioHtml');
+
+  if (user.attribute('canViewBio') === false) return null;
+
+  const html = str(user, 'bioHtml');
+  if (html) return html;
+
+  const text = str(user, 'bio');
+
+  return text ? plainToHtml(text) : null;
 }
 
 export function userLocation(user: User): string | null {

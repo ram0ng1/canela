@@ -260,10 +260,20 @@ a.CanelaProfileFact {
   }
 }
 
-.CanelaProfileSettings-actions {
+// "Salvar perfil" e "Descartar alterações" na mesma linha, à esquerda: o
+// `.Form-group` das preferências empilha os filhos em coluna.
+.CanelaProfileSettings .Form-group.CanelaProfileSettings-actions {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--cn-space-2);
+
+  > .Button {
+    width: auto;
+    margin: 0;
+  }
 }
 
 // ── Seletor de emoji ─────────────────────────────────────────────────
