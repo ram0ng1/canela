@@ -48,6 +48,8 @@ ramon-canela:
       tinted_background_help: The background behind the content and the sidebar gets a light touch of the primary color, as in Horizon. Off, it stays a neutral grey.
       forum_background_label: "Forum background"
       forum_background_help: "What sits behind the content and the sidebar. The tinted gradient (with or without the blurred icons) and the tinted color pick up the primary color, as in Horizon; plain stays a neutral grey."
+      auth_pages_modals_label: "Every link goes to the pages"
+      auth_pages_modals_help: "Reply, like, follow and any other button that asks for a login also open the log in and sign up pages instead of the modals. Off, only the header buttons go to the pages."
       content_card_label: Content inside a card
       content_card_help: The list, the discussion and the profile sit on a rounded card over the background. Off, the content fills the whole area with no frame.
       section_buttons: Buttons

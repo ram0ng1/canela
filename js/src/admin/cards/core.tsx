@@ -264,7 +264,16 @@ const CORE_CARDS: CardDef[] = [
       ),
     keywords: 'entrar login cadastrar cadastro signup sign up registrar página page modal conta account leiaute layout fundo background imagem',
     master: 'canela.auth_pages',
-    body: () => <AuthPagesEditor />,
+    body: () => (
+      <>
+        {toggle(
+          'auth_pages_modals',
+          'Todos os links levam às páginas',
+          'Responder, curtir, seguir e qualquer outro botão que pede login também abrem as páginas de entrar e cadastrar, e não os modais. Desligada, só os botões do cabeçalho levam às páginas.'
+        )}
+        <AuthPagesEditor />
+      </>
+    ),
     lockedBy: () =>
       getBool('canela.auth_routes_backend')
         ? null

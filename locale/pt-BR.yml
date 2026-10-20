@@ -48,6 +48,8 @@ ramon-canela:
       tinted_background_help: O fundo atrás do conteúdo e da barra lateral ganha um toque leve da cor primária, como no Horizon. Desligado, fica num cinza neutro.
       forum_background_label: "Fundo do fórum"
       forum_background_help: "O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária, como no Horizon; o liso fica num cinza neutro."
+      auth_pages_modals_label: "Todos os links levam às páginas"
+      auth_pages_modals_help: "Responder, curtir, seguir e qualquer outro botão que pede login também abrem as páginas de entrar e cadastrar, e não os modais. Desligada, só os botões do cabeçalho levam às páginas."
       content_card_label: Conteúdo dentro de um cartão
       content_card_help: A lista, a discussão e o perfil ficam num cartão de cantos arredondados sobre o fundo. Desligado, o conteúdo ocupa a área toda, sem moldura.
       section_buttons: Botões

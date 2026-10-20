@@ -184,6 +184,8 @@ $forumSettings = [
 
     // Entrar e cadastrar: páginas próprias (/login, /signup) ou os modais do core.
     'canela.auth_pages' => ['canelaAuthPages', true, 'boolval'],
+    // Os modais de entrar/cadastro abertos de qualquer lugar também viram as páginas.
+    'canela.auth_pages_modals' => ['canelaAuthPagesModals', true, 'boolval'],
 ];
 
 // As cores não têm configuração própria: o tema deriva a paleta inteira da cor
