@@ -77,12 +77,43 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
     super.oncreate(vnode);
     document.addEventListener('mousedown', this.outsideListener, true);
     document.addEventListener('keydown', this.keyListener);
+    window.addEventListener('resize', this.placeListener);
+    this.place();
+  }
+
+  onupdate(vnode: Mithril.VnodeDOM<HelperMenuAttrs, this>) {
+    super.onupdate(vnode);
+    this.place();
   }
 
   onremove(vnode: Mithril.VnodeDOM<HelperMenuAttrs, this>) {
     super.onremove(vnode);
     document.removeEventListener('mousedown', this.outsideListener, true);
     document.removeEventListener('keydown', this.keyListener);
+    window.removeEventListener('resize', this.placeListener);
+  }
+
+  placeListener = () => this.place();
+
+  /**
+   * O menu fica fixo na janela, acima do botão e alinhado à direita dele. A
+   * barra de formatação rola na horizontal (`overflow-x: auto`), e um menu
+   * absoluto dentro dela era cortado: o clique abria um menu invisível.
+   */
+  place(): void {
+    const trigger = this.element?.querySelector<HTMLElement>('.ai-helper-trigger');
+    const menu = this.element?.querySelector<HTMLElement>('.CanelaAiHelper-menu');
+
+    if (!trigger || !menu) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const margin = 8;
+    const width = menu.offsetWidth;
+    const left = Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin));
+
+    menu.style.left = `${Math.round(left)}px`;
+    menu.style.bottom = `${Math.round(window.innerHeight - rect.top + 6)}px`;
+    menu.style.maxHeight = `${Math.max(160, Math.round(rect.top - 2 * margin))}px`;
   }
 
   view() {

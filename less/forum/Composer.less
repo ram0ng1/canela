@@ -991,8 +991,10 @@
     gap: 8px;
   }
 
-  .Button,
-  .Button--icon {
+  // Só os botões da barra: o menu do ajudante de IA mora dentro dela (fixo
+  // na janela), e os botões dele têm rótulo e largura cheia.
+  .Button:not(.CanelaAiHelper-menu *),
+  .Button--icon:not(.CanelaAiHelper-menu *) {
     display: inline-flex;
     align-items: center;
     justify-content: center;

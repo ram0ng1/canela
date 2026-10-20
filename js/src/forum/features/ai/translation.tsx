@@ -298,7 +298,7 @@ function indicator(kind: Kind, id: string, locale: string | null | undefined, ke
       <button
         type="button"
         className="CanelaTranslated-button"
-        aria-pressed={translated ? 'false' : 'true'}
+        aria-pressed={translated ? 'true' : 'false'}
         aria-label={`${what} ${action}`}
         onclick={(event: MouseEvent) => {
           event.preventDefault();
@@ -411,7 +411,8 @@ export default function installTranslation(): void {
     if (info()?.titles) enqueue('d', this.attrs.discussion);
   });
 
-  // O botão redondo da linha do tempo: o tópico inteiro no original, ou traduzido.
+  // O botão redondo da linha do tempo: o tópico inteiro no original, ou
+  // traduzido. Aceso (`active`) enquanto a tradução está ligada.
   extend('flarum/forum/components/DiscussionPage' as any, 'sidebarItems', function (this: any, items: ItemList<Mithril.Children>) {
     const discussion: Discussion | undefined = this.discussion;
 
@@ -423,10 +424,10 @@ export default function installTranslation(): void {
       'canelaTranslationToggle',
       <Tooltip text={label}>
         <Button
-          className={classList('Button Button--icon CanelaTranslationToggle', { active: allOriginal })}
+          className={classList('Button Button--icon CanelaTranslationToggle', { active: !allOriginal })}
           icon="fas fa-language"
           aria-label={label}
-          aria-pressed={allOriginal ? 'true' : 'false'}
+          aria-pressed={allOriginal ? 'false' : 'true'}
           onclick={() => setAllOriginal(!allOriginal)}
         />
       </Tooltip>,

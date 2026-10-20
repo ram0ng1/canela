@@ -907,10 +907,13 @@
     color: var(--cn-link);
   }
 
+  // Fixo na janela (o HelperMenu põe left/bottom a partir do botão): dentro
+  // da barra de formatação, que rola na horizontal, um menu absoluto era
+  // cortado e não aparecia.
   &-menu {
-    position: absolute;
-    right: 0;
-    bottom: ~"calc(100% + 6px)";
+    position: fixed;
+    right: auto;
+    bottom: auto;
     z-index: 1100;
     width: 25rem;
     max-width: ~"calc(100vw - 2rem)";
@@ -1161,10 +1164,15 @@
   &-button {
     display: inline-flex;
     align-items: center;
-    padding: 0 2px;
+    // O fundo do hover passa um pouco do ícone sem mexer na linha: a margem
+    // negativa devolve o espaço do padding (antes `0 2px`).
+    margin: -2px -2px;
+    padding: 2px 4px;
     border: 0;
+    border-radius: var(--cn-radius);
     background: none;
     color: var(--cn-primary-medium);
+    transition: background-color 0.15s, color 0.15s;
     font-size: var(--cn-font-up-1, 1.1em);
     line-height: 1;
     cursor: pointer;
@@ -1179,13 +1187,22 @@
 
     &:hover,
     &:focus-visible {
+      background: var(--cn-hover);
       color: var(--cn-primary-high);
     }
   }
 
-  // Mostrando o original: o ícone fica apagado, como o Discourse faz.
-  &.is-original &-button {
-    opacity: 0.55;
+  // Mostrando a tradução: o ícone aceso na cor de destaque (o mesmo do botão
+  // da linha do tempo); mostrando o original, cinza. Antes só o balão dizia
+  // qual dos dois estava na tela.
+  &:not(.is-original):not(.is-working) &-button {
+    color: var(--cn-accent);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-accent-low);
+      color: var(--cn-accent);
+    }
   }
 
   // Traduzindo: o ícone girando, sem clique.
@@ -1230,21 +1247,33 @@
   }
 }
 
+// O botão da linha do tempo que liga e desliga a tradução do tópico: o mesmo
+// círculo com borda dos vizinhos (Timeline.less). Com a tradução ligada, fica
+// aceso na cor de destaque; o hover escurece um pouco nos dois estados.
 .CanelaTranslationToggle.Button.Button--icon {
-  display: inline-flex;
+  .canela-round-button();
   flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 50%;
-  background: var(--cn-primary-very-low);
-  color: var(--cn-primary-high);
+  min-width: 38.78px;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+
+  .Button-icon {
+    transition: color 0.15s;
+  }
 
   &.active {
-    background: var(--cn-primary-low);
-    color: var(--cn-primary);
+    border-color: var(--cn-accent);
+    background: var(--cn-accent-low);
+    color: var(--cn-accent);
+
+    .Button-icon {
+      color: var(--cn-accent);
+    }
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--cn-accent);
+      background: ~"color-mix(in srgb, var(--cn-accent) 24%, var(--cn-surface))";
+      color: var(--cn-accent);
+    }
   }
 }
