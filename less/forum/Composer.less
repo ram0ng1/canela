@@ -717,6 +717,12 @@
   flex-wrap: wrap;
   gap: 4px;
   padding: 0 8px 8px;
+
+  // Aberto para cima, a ordem inverte (a lista, as etiquetas e a busca
+  // embaixo): o respiro vai para cima, longe da borda da lista.
+  .is-above & {
+    padding: 8px 8px 0;
+  }
 }
 
 .CanelaSelectKit-chip {
