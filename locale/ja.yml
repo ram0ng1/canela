@@ -1157,7 +1157,9 @@ ramon-canela:
         create_title: ブックマークを作成
         edit_title: ブックマークを編集
         name_label: 名前
-        name_placeholder: 何のためのブックマークか思い出せるよう名前を付けましょう
+        name_placeholder: 例：あとで読む、じっくり返信する…
+        context: '{title} の {author} さんの投稿'
+        context_deleted_user: 削除されたユーザー
         reminder_label: リマインド
         existing_reminder: このブックマークについて {date} にリマインドします。
         custom_date: リマインダーの日付
