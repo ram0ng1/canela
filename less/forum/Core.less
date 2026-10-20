@@ -13,15 +13,30 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// O fundo do meta.discourse.org: a cor quase branca puxada para o destaque,
-// com um degradê que desce do topo e termina 260px antes do pé da janela
-// (.meta-bg + .meta-bg-gradient, ambos fixos). O degradê mora num
-// pseudo-elemento fixo, e não no `background-attachment: fixed` do body: esse
-// repinta a página inteira a cada quadro de rolagem. A classe vem no <html>
-// (PreBootShell e installShell), sem `:has()` na raiz.
-html.CanelaRoot--tinted body {
+// O fundo da página, escolhido no admin (src/Backgrounds): classes no <html>
+// (`CanelaBg--*`, do PreBootShell e do js/src/forum/shell/backgrounds.ts).
+//
+// - tinted / gradient: o do meta.discourse.org, a cor quase branca puxada
+//   para o destaque, com um degradê que desce do topo e termina 260px antes
+//   do pé da janela (.meta-bg + .meta-bg-gradient); o tinted ainda tem as
+//   peças desfocadas (.CanelaBackdrop, abaixo);
+// - solid: a mesma cor, lisa;
+// - plain: a superfície, sem tinta;
+// - image: a imagem enviada no admin cobrindo a janela.
+//
+// O degradê e a imagem moram num pseudo-elemento fixo, e não no
+// `background-attachment: fixed` do body: esse repinta a página inteira a
+// cada quadro de rolagem.
+html.CanelaBg--tinted body,
+html.CanelaBg--gradient body,
+html.CanelaBg--solid body,
+html.CanelaBg--image body {
   background-color: var(--cn-page-bg);
+}
 
+html.CanelaBg--tinted body,
+html.CanelaBg--gradient body,
+html.CanelaBg--image body {
   &::before {
     content: "";
     position: fixed;
@@ -30,6 +45,10 @@ html.CanelaRoot--tinted body {
     pointer-events: none;
     background-image: linear-gradient(var(--cn-page-gradient) 0, var(--cn-page-bg) ~"calc(100% - 260px)");
   }
+}
+
+html.CanelaBg--image body::before {
+  background: var(--cn-bg-image) center / cover no-repeat;
 }
 
 // As peças coloridas e desfocadas que flutuam atrás do conteúdo no Meta
@@ -42,7 +61,7 @@ html.CanelaRoot--tinted body {
   overflow: hidden;
   pointer-events: none;
 
-  .Canela:not(.Canela--tinted) ~ & {
+  html:not(.CanelaBg--tinted) & {
     display: none;
   }
 

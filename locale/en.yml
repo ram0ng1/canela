@@ -1,5 +1,25 @@
 ramon-canela:
   admin:
+    preview:
+      dirty: "Changes not applied yet"
+      discard: "Discard"
+      apply: "Apply"
+      preview_forum: "Preview"
+      preview_login: "Preview log in"
+      preview_signup: "Preview sign up"
+    backgrounds:
+      same: "Same as the forum"
+      tinted: "Tinted gradient with blurred icons (default)"
+      gradient: "Tinted gradient, no icons"
+      solid: "Plain tinted color"
+      plain: "Plain, no tint"
+      image: "Image"
+      empty: "No image uploaded yet: until then the background stays plain."
+      upload: "Upload image"
+      replace: "Replace image"
+      remove: "Remove"
+      image_help: "JPG, PNG, WebP or GIF. It becomes a WebP up to 2560 × 1600 and covers the whole window, behind the content."
+      upload_error: "The image could not be uploaded."
     settings:
       group_appearance: Appearance
       group_sidebar: Sidebar
@@ -26,6 +46,10 @@ ramon-canela:
       section_surfaces: Background & card
       tinted_background_label: Background tinted with the primary color
       tinted_background_help: The background behind the content and the sidebar gets a light touch of the primary color, as in Horizon. Off, it stays a neutral grey.
+      forum_background_label: "Forum background"
+      forum_background_help: "What sits behind the content and the sidebar. The tinted gradient (with or without the blurred icons) and the tinted color pick up the primary color, as in Horizon; plain stays a neutral grey."
+      auth_pages_modals_label: "Every link goes to the pages"
+      auth_pages_modals_help: "Reply, like, follow and any other button that asks for a login also open the log in and sign up pages instead of the modals. Off, only the header buttons go to the pages."
       content_card_label: Content inside a card
       content_card_help: The list, the discussion and the profile sit on a rounded card over the background. Off, the content fills the whole area with no frame.
       section_buttons: Buttons
@@ -602,6 +626,23 @@ ramon-canela:
       auth:
         pages_label: Full-page log in and sign up
         pages_help: The Log In and Sign Up header buttons open the /login and /signup pages, like Discourse. When off, they open the modals.
+        layout_label: "Layout"
+        layout_help: "In all of them the page has no header, only the forum logo. With social login, the buttons come before the form (beside it in the Discourse one)."
+        layout_card: "Single card over the background (default)"
+        layout_discourse: "Discourse: no card, social login beside the form"
+        layout_split: "Split screen: colored panel on the left"
+        background_label: "Log in and sign up background"
+        background_help: "In the split screen the image goes to the left panel; the other backgrounds sit behind the form."
+        text_default: "Empty: the default text"
+        texts_login: "Log in page texts"
+        texts_signup: "Sign up page texts"
+        texts_panel: "Split screen panel"
+        title_label: "Title"
+        subtitle_label: "Subtitle (optional)"
+        panel_login_title: "Title on log in"
+        panel_signup_title: "Title on sign up"
+        panel_login_text: "Text on log in"
+        panel_signup_text: "Text on sign up"
       bookmarks:
         title: Bookmarks
         bookmarks_enabled_label: Bookmarks
@@ -1028,11 +1069,19 @@ ramon-canela:
         topic: Discussion
         replies: Replies
         activity: Activity
+    preview:
+      banner: "Preview: nothing has been applied yet. Only you see this version, in this tab."
+      close: "Close"
     auth:
       login_page_title: Log In
       signup_page_title: Sign Up
       forgot_heading: Reset password
       back_to_login: Back to log in
+      or: or
+      panel_login_title: Good to see you again
+      panel_login_text: Log in to keep up with the conversations, reply and follow what matters to you.
+      panel_signup_title: Join the community
+      panel_signup_text: Create your account to take part in discussions, follow topics and get notifications.
       reset_heading: Reset password
       reset_help: Choose a new password for your account (at least 8 characters).
       reset_new_password: New password

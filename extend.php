@@ -37,6 +37,20 @@ $forumSettings = [
     'canela.pill_buttons' => ['canelaPillButtons', true, 'boolval'],
     'canela.lucide_icons' => ['canelaLucideIcons', true, 'boolval'],
 
+    // Páginas de entrar e cadastrar (features/auth): o leiaute — card (cartão
+    // único, o padrão), discourse (sem cartão, duas colunas) ou split (tela
+    // dividida, com o painel colorido).
+    'canela.auth_layout' => ['canelaAuthLayout', 'card', null],
+    // Os textos de cada página (vazios: os padrões do Flarum e do tema).
+    'canela.auth_login_title' => ['canelaAuthLoginTitle', '', null],
+    'canela.auth_login_subtitle' => ['canelaAuthLoginSubtitle', '', null],
+    'canela.auth_signup_title' => ['canelaAuthSignupTitle', '', null],
+    'canela.auth_signup_subtitle' => ['canelaAuthSignupSubtitle', '', null],
+    'canela.auth_panel_login_title' => ['canelaAuthPanelLoginTitle', '', null],
+    'canela.auth_panel_login_text' => ['canelaAuthPanelLoginText', '', null],
+    'canela.auth_panel_signup_title' => ['canelaAuthPanelSignupTitle', '', null],
+    'canela.auth_panel_signup_text' => ['canelaAuthPanelSignupText', '', null],
+
     // Barra lateral
     'canela.sidebar_enabled' => ['canelaSidebarEnabled', true, 'boolval'],
     'canela.sidebar_open_default' => ['canelaSidebarOpenDefault', true, 'boolval'],
@@ -170,6 +184,8 @@ $forumSettings = [
 
     // Entrar e cadastrar: páginas próprias (/login, /signup) ou os modais do core.
     'canela.auth_pages' => ['canelaAuthPages', true, 'boolval'],
+    // Os modais de entrar/cadastro abertos de qualquer lugar também viram as páginas.
+    'canela.auth_pages_modals' => ['canelaAuthPagesModals', true, 'boolval'],
 ];
 
 // As cores não têm configuração própria: o tema deriva a paleta inteira da cor

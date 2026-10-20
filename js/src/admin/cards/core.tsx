@@ -17,6 +17,7 @@ import AdminNumber from '../components/AdminNumber';
 import { PalettePreview } from '../components/PalettePreview';
 import LoaderPicker from '../components/LoaderPicker';
 import ContentWidthControl from '../components/ContentWidthControl';
+import { AuthPagesEditor, ForumBackgroundEditor } from '../components/AppearanceDraft';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings';
@@ -113,11 +114,13 @@ const CORE_CARDS: CardDef[] = [
     keywords: 'fundo background tingido tinted cartão card moldura superfície surface branco',
     body: () => (
       <>
-        {toggle(
-          'tinted_background',
-          'Fundo tingido com a cor primária',
-          'O fundo atrás do conteúdo e da barra lateral ganha um toque leve da cor primária, como no Horizon. Desligado, fica num cinza neutro.'
-        )}
+        <ForumBackgroundEditor
+          label={trans(`${KEY}.forum_background_label`, 'Fundo do fórum')}
+          help={trans(
+            `${KEY}.forum_background_help`,
+            'O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária, como no Horizon; o liso fica num cinza neutro.'
+          )}
+        />
         {toggle(
           'content_card',
           'Conteúdo dentro de um cartão',
@@ -259,8 +262,18 @@ const CORE_CARDS: CardDef[] = [
         `${KEY}.auth.pages_help`,
         'Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup, como no Discourse. Desligada, eles abrem os modais.'
       ),
-    keywords: 'entrar login cadastrar cadastro signup sign up registrar página page modal conta account',
+    keywords: 'entrar login cadastrar cadastro signup sign up registrar página page modal conta account leiaute layout fundo background imagem',
     master: 'canela.auth_pages',
+    body: () => (
+      <>
+        {toggle(
+          'auth_pages_modals',
+          'Todos os links levam às páginas',
+          'Responder, curtir, seguir e qualquer outro botão que pede login também abrem as páginas de entrar e cadastrar, e não os modais. Desligada, só os botões do cabeçalho levam às páginas.'
+        )}
+        <AuthPagesEditor />
+      </>
+    ),
     lockedBy: () =>
       getBool('canela.auth_routes_backend')
         ? null

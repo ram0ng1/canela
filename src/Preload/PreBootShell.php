@@ -62,10 +62,11 @@ final class PreBootShell
         $bool = static fn (string $name, bool $default): bool => isset($attrs[$name]) ? (bool) $attrs[$name] : $default;
 
         $sidebar = $bool('canelaSidebarEnabled', true);
+        [$rootClasses, $bgImage] = $this->background($attrs, $request);
         $classes = array_keys(array_filter([
             'Canela' => true,
             'Canela--pillButtons' => $bool('canelaPillButtons', true),
-            'Canela--tinted' => $bool('canelaTintedBackground', true),
+            'Canela--tinted' => ($attrs['canelaForumBackground'] ?? 'tinted') !== 'plain',
             'Canela--card' => $bool('canelaContentCard', true),
             'Canela--noSidebar' => ! $sidebar,
             'Canela--headerSearch' => $bool('canelaHeaderSearch', true),
@@ -76,6 +77,8 @@ final class PreBootShell
 
         $config = json_encode([
             'classes' => $classes,
+            'root' => $rootClasses,
+            'bgImage' => $bgImage,
             'sidebar' => $sidebar,
             'open' => $bool('canelaSidebarOpenDefault', true),
             'logoOnly' => ! $bool('canelaShowTitleWithLogo', false),
@@ -119,6 +122,44 @@ final class PreBootShell
         }
     }
 
+    /**
+     * As classes do fundo no <html> e a imagem dele, como o
+     * js/src/forum/shell/backgrounds.ts faz. Em /login, /signup e
+     * /forgot-password (com as páginas ligadas) vale o fundo dessas páginas,
+     * e o <html> ganha `CanelaAuthRoute`, que esconde o cabeçalho.
+     *
+     * @param array<array-key, mixed> $attrs
+     * @return array{0: list<string>, 1: ?string}
+     */
+    private function background(array $attrs, ServerRequestInterface $request): array
+    {
+        $styles = ['tinted', 'gradient', 'solid', 'plain', 'image'];
+        $pick = static fn (mixed $value, string $fallback): string => is_string($value) && in_array($value, $styles, true) ? $value : $fallback;
+
+        $authPages = ($attrs['canelaAuthPages'] ?? true) !== false && ($attrs['canelaAuthRoutes'] ?? false) === true;
+        $auth = $authPages && preg_match('#/(login|signup|forgot-password|reset/[^/]+)/?$#', $request->getUri()->getPath()) === 1;
+
+        $style = $pick($attrs['canelaForumBackground'] ?? null, 'tinted');
+        $image = $attrs['canelaForumBackgroundImage'] ?? null;
+
+        if ($auth && in_array($attrs['canelaAuthBackground'] ?? null, $styles, true)) {
+            $style = (string) $attrs['canelaAuthBackground'];
+            $image = $attrs['canelaAuthBackgroundImage'] ?? null;
+        }
+
+        $base = $attrs['assetsBaseUrl'] ?? null;
+        $url = $style === 'image' && is_string($image) && $image !== '' && is_string($base) ? rtrim($base, '/').'/'.$image : null;
+
+        // Imagem escolhida e ainda não enviada: o liso.
+        $classes = ['CanelaBg--'.($style === 'image' && $url === null ? 'plain' : $style)];
+
+        if ($auth) {
+            $classes[] = 'CanelaAuthRoute';
+        }
+
+        return [$classes, $url];
+    }
+
     /** O mesmo que o initColorScheme() do core faz no boot, antes da primeira pintura. */
     private const THEME_SCRIPT = <<<'JS'
 (function () {
@@ -140,10 +181,12 @@ JS;
     private const SCRIPT = <<<'JS'
 (function (c) {
   try {
-    // O fundo tingido e os botões em pílula leem a classe no <html> (Core.less,
-    // Components.less): já existe agora, antes do primeiro desenho do body.
+    // O fundo (CanelaBg--*), a página de entrar/cadastrar e os botões em
+    // pílula leem classes no <html> (Core.less, Auth.less, Components.less):
+    // já existem agora, antes do primeiro desenho do body.
     var root = document.documentElement.classList;
-    if (c.classes.indexOf('Canela--tinted') >= 0) root.add('CanelaRoot--tinted');
+    root.add.apply(root, c.root);
+    if (c.bgImage) document.documentElement.style.setProperty('--cn-bg-image', 'url(' + JSON.stringify(c.bgImage) + ')');
     if (c.classes.indexOf('Canela--pillButtons') >= 0) root.add('CanelaRoot--pill');
     var open = false;
     if (c.sidebar && window.matchMedia('(min-width: 768px)').matches) {

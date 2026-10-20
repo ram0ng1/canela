@@ -15,8 +15,11 @@ import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
+import { applyBackground } from '../../shell/backgrounds';
+import { previewState, previewText } from '../../shell/preview';
 
 export type AuthMode = 'login' | 'signup' | 'forgot';
+export type AuthLayout = 'card' | 'discourse' | 'split';
 
 const MODULES: Record<AuthMode, string> = {
   login: 'flarum/forum/components/LogInModal',
@@ -78,13 +81,35 @@ function pageClass(mode: AuthMode, Base: any): any {
       return `${super.className()} CanelaAuthForm`;
     }
 
+    // Entre os botões sociais e o formulário, o "ou" (some pelo CSS quando
+    // não há login social, e no leiaute do Discourse, que tem o traço).
+    body() {
+      const content = super.body();
+      const subtitle = mode === 'forgot' ? '' : authText(TEXT_ATTRS[mode].subtitle);
+      const lead = subtitle ? <p className="CanelaAuthPage-subtitle">{subtitle}</p> : null;
+
+      if (!Array.isArray(content) || !content[0]) return [lead, ...(Array.isArray(content) ? content : [content])];
+
+      return [
+        lead,
+        content[0],
+        <div className="CanelaAuthPage-or" aria-hidden="true">
+          <span>{t('auth.or')}</span>
+        </div>,
+        ...content.slice(1),
+      ];
+    }
+
     hide() {
       m.route.set(app.route('index'));
     }
 
-    // "Redefinir senha" no lugar de "Redefinição de senha": é o título da página.
+    // "Redefinir senha" no lugar de "Redefinição de senha": é o título da
+    // página. No login e no cadastro, o título escolhido no admin, se houver.
     title() {
-      return mode === 'forgot' ? t('auth.forgot_heading') : super.title();
+      if (mode === 'forgot') return t('auth.forgot_heading');
+
+      return authText(TEXT_ATTRS[mode].title) || super.title();
     }
 
     forgotPassword() {
@@ -109,6 +134,30 @@ function pageClass(mode: AuthMode, Base: any): any {
 
   return classes[mode];
 }
+
+/**
+ * Sem o cabeçalho e com o fundo destas páginas (o PreBootShell já faz isso
+ * quando a página abre direto nelas); ao sair, o fundo do fórum volta.
+ */
+export function enterAuthRoute(): void {
+  document.documentElement.classList.add('CanelaAuthRoute');
+  applyBackground('auth');
+}
+
+export function leaveAuthRoute(): void {
+  document.documentElement.classList.remove('CanelaAuthRoute');
+  applyBackground('forum');
+}
+
+/** Um texto das páginas escolhido no admin (ou no rascunho da pré-visualização); vazio = o padrão. */
+export function authText(attribute: string): string {
+  return (previewText(attribute) ?? String(app.forum.attribute(attribute) || '')).trim();
+}
+
+const TEXT_ATTRS: Record<'login' | 'signup', { title: string; subtitle: string }> = {
+  login: { title: 'canelaAuthLoginTitle', subtitle: 'canelaAuthLoginSubtitle' },
+  signup: { title: 'canelaAuthSignupTitle', subtitle: 'canelaAuthSignupSubtitle' },
+};
 
 /** "Voltar para entrar", debaixo do cartão das páginas de senha. */
 export function backToLogin(): Mithril.Children {
@@ -141,12 +190,19 @@ export default class AuthPage extends Page<IPageAttrs> {
     return name === 'canela.signup' ? 'signup' : name === 'canela.forgot' ? 'forgot' : 'login';
   }
 
+  layout(): AuthLayout {
+    const value = previewState()?.layout ?? app.forum.attribute<string>('canelaAuthLayout');
+
+    return value === 'discourse' || value === 'split' ? value : 'card';
+  }
+
   oninit(vnode: Mithril.Vnode<IPageAttrs, this>) {
     super.oninit(vnode);
 
     // Já entrou (inclusive logo depois do login, que recarrega a página):
     // volta para onde estava.
-    if (app.session.user) {
+    // Na pré-visualização do admin (logado), a página aparece mesmo assim.
+    if (app.session.user && !previewState()) {
       m.route.set(takeReturn(), undefined, { replace: true });
       return;
     }
@@ -170,12 +226,26 @@ export default class AuthPage extends Page<IPageAttrs> {
     });
   }
 
+  oncreate(vnode: Mithril.VnodeDOM<IPageAttrs, this>) {
+    super.oncreate(vnode);
+
+    enterAuthRoute();
+  }
+
+  onremove(vnode: Mithril.VnodeDOM<IPageAttrs, this>) {
+    super.onremove(vnode);
+
+    leaveAuthRoute();
+  }
+
   view() {
     const Form = this.form;
     const mode = this.mode();
+    const layout = this.layout();
 
     return (
-      <div className={`CanelaAuthPage CanelaAuthPage--${mode}`}>
+      <div className={`CanelaAuthPage CanelaAuthPage--${mode} CanelaAuthPage--layout-${layout}`}>
+        {layout === 'split' ? this.panel(mode) : null}
         <div className="CanelaAuthPage-inner">
           {this.logo()}
           {Form ? (
@@ -191,6 +261,23 @@ export default class AuthPage extends Page<IPageAttrs> {
 
   logo(): Mithril.Children {
     return authLogo();
+  }
+
+  /** O painel colorido da tela dividida: o logo, o título e a frase do admin (ou os padrões). */
+  panel(mode: AuthMode): Mithril.Children {
+    const key = mode === 'signup' ? 'signup' : 'login';
+    const title = authText(key === 'signup' ? 'canelaAuthPanelSignupTitle' : 'canelaAuthPanelLoginTitle');
+    const text = authText(key === 'signup' ? 'canelaAuthPanelSignupText' : 'canelaAuthPanelLoginText');
+
+    return (
+      <aside className="CanelaAuthPanel">
+        <div className="CanelaAuthPanel-logo">{authLogo()}</div>
+        <div className="CanelaAuthPanel-body">
+          <h2 className="CanelaAuthPanel-title">{title || t(`auth.panel_${key}_title`)}</h2>
+          <p className="CanelaAuthPanel-text">{text || t(`auth.panel_${key}_text`)}</p>
+        </div>
+      </aside>
+    );
   }
 }
 

@@ -1,5 +1,25 @@
 ramon-canela:
   admin:
+    preview:
+      dirty: "Alterações ainda não aplicadas"
+      discard: "Descartar"
+      apply: "Aplicar"
+      preview_forum: "Pré-visualizar"
+      preview_login: "Pré-visualizar entrar"
+      preview_signup: "Pré-visualizar cadastro"
+    backgrounds:
+      same: "O mesmo do fórum"
+      tinted: "Degradê tingido com os ícones desfocados (padrão)"
+      gradient: "Degradê tingido, sem os ícones"
+      solid: "Cor tingida lisa"
+      plain: "Liso, sem tinta"
+      image: "Imagem"
+      empty: "Nenhuma imagem enviada ainda: até lá, o fundo fica liso."
+      upload: "Enviar imagem"
+      replace: "Trocar imagem"
+      remove: "Remover"
+      image_help: "JPG, PNG, WebP ou GIF. Vira WebP de até 2560 × 1600 e cobre a janela inteira, atrás do conteúdo."
+      upload_error: "Não foi possível enviar a imagem."
     settings:
       group_appearance: Aparência
       group_sidebar: Barra lateral
@@ -26,6 +46,10 @@ ramon-canela:
       section_surfaces: Fundo e cartão
       tinted_background_label: Fundo tingido com a cor primária
       tinted_background_help: O fundo atrás do conteúdo e da barra lateral ganha um toque leve da cor primária, como no Horizon. Desligado, fica num cinza neutro.
+      forum_background_label: "Fundo do fórum"
+      forum_background_help: "O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária, como no Horizon; o liso fica num cinza neutro."
+      auth_pages_modals_label: "Todos os links levam às páginas"
+      auth_pages_modals_help: "Responder, curtir, seguir e qualquer outro botão que pede login também abrem as páginas de entrar e cadastrar, e não os modais. Desligada, só os botões do cabeçalho levam às páginas."
       content_card_label: Conteúdo dentro de um cartão
       content_card_help: A lista, a discussão e o perfil ficam num cartão de cantos arredondados sobre o fundo. Desligado, o conteúdo ocupa a área toda, sem moldura.
       section_buttons: Botões
@@ -602,6 +626,23 @@ ramon-canela:
       auth:
         pages_label: Entrar e cadastrar em página própria
         pages_help: Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup, como no Discourse. Desligada, eles abrem os modais.
+        layout_label: "Leiaute"
+        layout_help: "Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no do Discourse, ao lado dele)."
+        layout_card: "Cartão único sobre o fundo (padrão)"
+        layout_discourse: "Discourse: sem cartão, login social ao lado"
+        layout_split: "Tela dividida: painel colorido à esquerda"
+        background_label: "Fundo das páginas de entrar e cadastrar"
+        background_help: "Na tela dividida, a imagem vai para o painel da esquerda; os outros fundos ficam atrás do formulário."
+        text_default: "Vazio: o texto padrão"
+        texts_login: "Textos da página de entrar"
+        texts_signup: "Textos da página de cadastro"
+        texts_panel: "Painel da tela dividida"
+        title_label: "Título"
+        subtitle_label: "Subtítulo (opcional)"
+        panel_login_title: "Título no login"
+        panel_signup_title: "Título no cadastro"
+        panel_login_text: "Texto no login"
+        panel_signup_text: "Texto no cadastro"
       bookmarks:
         title: Marcadores
         bookmarks_enabled_label: Marcadores
@@ -1028,11 +1069,19 @@ ramon-canela:
         topic: Discussão
         replies: Respostas
         activity: Atividade
+    preview:
+      banner: "Pré-visualização: nada foi aplicado ainda. Só você vê esta versão, nesta aba."
+      close: "Fechar"
     auth:
       login_page_title: Entrar
       signup_page_title: Cadastrar-se
       forgot_heading: Redefinir senha
       back_to_login: Voltar para entrar
+      or: ou
+      panel_login_title: Que bom ver você de novo
+      panel_login_text: Entre para continuar as conversas, responder e acompanhar o que importa para você.
+      panel_signup_title: Faça parte da comunidade
+      panel_signup_text: Crie sua conta para participar das discussões, seguir tópicos e receber notificações.
       reset_heading: Redefinir senha
       reset_help: Escolha uma nova senha para a sua conta (pelo menos 8 caracteres).
       reset_new_password: Nova senha

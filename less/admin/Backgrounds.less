@@ -1,0 +1,70 @@
+// O fundo da página (components/BackgroundPicker): a prévia da imagem
+// enviada, os botões e o erro.
+.CanelaBackgroundPicker {
+  &-image {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  &-preview {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--control-bg);
+    border-radius: 8px;
+    background: var(--control-bg) center / cover no-repeat;
+  }
+
+  &-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    label.Button {
+      cursor: pointer;
+    }
+  }
+
+  &-error {
+    margin: 0;
+    color: var(--alert-error-color, #d0021b);
+    font-size: 13px;
+  }
+}
+
+// Rascunho com pré-visualização (components/AppearanceDraft): os campos
+// lado a lado e a barra de ações embaixo.
+.CanelaDraft {
+  &-subtitle {
+    margin: 20px 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  &-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0 16px;
+  }
+
+  &-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--control-bg);
+  }
+
+  &-spacer {
+    flex: 1;
+  }
+
+  &-dirty {
+    color: var(--muted-color);
+    font-size: 13px;
+  }
+}
