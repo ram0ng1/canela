@@ -15,7 +15,18 @@ import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
-import { bioMaxLength, canEditTitle, cardBackgroundEnabled, internalCoverEnabled, profileField, userStatus } from './data';
+import {
+  bioAttribute,
+  bioEnabled,
+  bioMaxLength,
+  canEditBio,
+  canEditTitle,
+  fofBio,
+  cardBackgroundEnabled,
+  internalCoverEnabled,
+  profileField,
+  userStatus,
+} from './data';
 import { thirdParty } from '../../thirdparty/settings';
 import { ForumakerCoverField } from '../../thirdparty/profileCover';
 import { statusUntilLabel } from './components';
@@ -64,7 +75,7 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
 
     this.saved = {
       title: str('canelaTitle'),
-      bio: str('canelaBio'),
+      bio: str(bioAttribute()),
       location: str('canelaLocation'),
       website: str('canelaWebsite'),
       birthdayDate: str('canelaBirthdayDate'),
@@ -86,7 +97,7 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
     return (
       <form className="CanelaProfileSettings" onsubmit={(event: SubmitEvent) => this.submit(event)}>
         {profileField('title') && this.titleField(user)}
-        {profileField('bio') && this.bioField()}
+        {bioEnabled() && canEditBio(user) && this.bioField()}
         {profileField('location') &&
           this.textField('location', t('profile.settings.location_label'), 100, t('profile.settings.location_placeholder'), 'text')}
         {profileField('website') && this.textField('website', t('profile.settings.website_label'), 255, 'https://', 'url')}
@@ -303,7 +314,10 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
     const text = (value: string) => (value.trim() === '' ? null : value.trim());
 
     if (profileField('title') && canEditTitle(this.attrs.user) && draft.title !== saved.title) data.canelaTitle = text(draft.title);
-    if (profileField('bio') && draft.bio !== saved.bio) data.canelaBio = text(draft.bio);
+    // Com o fof/user-bio a bio é dele: o campo `bio` aceita só texto (vazio apaga).
+    if (bioEnabled() && canEditBio(this.attrs.user) && draft.bio !== saved.bio) {
+      data[bioAttribute()] = fofBio() ? draft.bio.trim() : text(draft.bio);
+    }
     if (profileField('location') && draft.location !== saved.location) data.canelaLocation = text(draft.location);
     if (profileField('website') && draft.website !== saved.website) data.canelaWebsite = text(draft.website);
 
