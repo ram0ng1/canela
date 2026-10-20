@@ -254,7 +254,7 @@ const CORE_CARDS: CardDef[] = [
     // Chave do recurso de login/cadastro (extend/auth.php): as páginas só
     // existem com as rotas dele carregadas no servidor.
     id: 'auth-pages',
-    group: 'navigation',
+    group: 'auth',
     icon: 'fas fa-right-to-bracket',
     title: () => trans(`${KEY}.auth.pages_label`, 'Entrar e cadastrar em página própria'),
     description: () =>
@@ -271,7 +271,6 @@ const CORE_CARDS: CardDef[] = [
           'Todos os links levam às páginas',
           'Responder, curtir, seguir e qualquer outro botão que pede login também abrem as páginas de entrar e cadastrar, e não os modais. Desligada, só os botões do cabeçalho levam às páginas.'
         )}
-        <AuthPagesEditor />
       </>
     ),
     lockedBy: () =>
@@ -281,6 +280,28 @@ const CORE_CARDS: CardDef[] = [
             `${KEY}.shell.auth_backend_off`,
             'As páginas /login e /signup (extend/auth.php) ainda não estão carregadas no servidor: os botões continuam abrindo os modais.'
           ),
+  },
+  {
+    // O rascunho de leiaute e fundo, com pré-visualização e "Aplicar".
+    id: 'auth-layout',
+    group: 'auth',
+    icon: 'fas fa-table-columns',
+    title: () => trans(`${KEY}.auth.layout_card_title`, 'Leiaute e fundo'),
+    description: () =>
+      trans(`${KEY}.auth.layout_card_help`, 'Como as páginas de entrar e de cadastro se organizam na tela e o que fica atrás do formulário.'),
+    keywords: 'entrar login cadastrar cadastro signup leiaute layout cartão card tela dividida split discourse fundo background imagem',
+    dependsOn: 'canela.auth_pages',
+    body: () => <AuthPagesEditor section="layout" />,
+  },
+  {
+    id: 'auth-texts',
+    group: 'auth',
+    icon: 'fas fa-font',
+    title: () => trans(`${KEY}.auth.texts_card_title`, 'Textos'),
+    description: () => trans(`${KEY}.auth.texts_card_help`, 'O título e o subtítulo de cada página. Vazio, fica o texto padrão do tema.'),
+    keywords: 'entrar login cadastrar cadastro signup textos título subtítulo title subtitle painel panel',
+    dependsOn: 'canela.auth_pages',
+    body: () => <AuthPagesEditor section="texts" />,
   },
   {
     id: 'shortcuts',

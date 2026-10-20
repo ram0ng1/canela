@@ -3,7 +3,19 @@
  * backend (./features/*) declarem os cards deles sem importar o index.
  */
 export type GroupKey =
-  'appearance' | 'navigation' | 'list' | 'topic' | 'composer' | 'people' | 'messages' | 'community' | 'moderation' | 'system' | 'integrations' | 'ai';
+  | 'appearance'
+  | 'navigation'
+  | 'auth'
+  | 'list'
+  | 'topic'
+  | 'composer'
+  | 'people'
+  | 'messages'
+  | 'community'
+  | 'moderation'
+  | 'system'
+  | 'integrations'
+  | 'ai';
 
 export interface CardDef {
   /** Identificador estável: âncora do card, chave do Mithril e alvo dos links "depende de". */
