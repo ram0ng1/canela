@@ -1,0 +1,35 @@
+// O fundo da página (components/BackgroundPicker): a prévia da imagem
+// enviada, os botões e o erro.
+.CanelaBackgroundPicker {
+  &-image {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  &-preview {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--control-bg);
+    border-radius: 8px;
+    background: var(--control-bg) center / cover no-repeat;
+  }
+
+  &-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    label.Button {
+      cursor: pointer;
+    }
+  }
+
+  &-error {
+    margin: 0;
+    color: var(--alert-error-color, #d0021b);
+    font-size: 13px;
+  }
+}

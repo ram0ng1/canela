@@ -37,6 +37,13 @@ $forumSettings = [
     'canela.pill_buttons' => ['canelaPillButtons', true, 'boolval'],
     'canela.lucide_icons' => ['canelaLucideIcons', true, 'boolval'],
 
+    // Páginas de entrar e cadastrar (features/auth): o leiaute — card (cartão
+    // único, o padrão), discourse (sem cartão, duas colunas) ou split (tela
+    // dividida, com o painel colorido) — e o texto do painel da tela dividida.
+    'canela.auth_layout' => ['canelaAuthLayout', 'card', null],
+    'canela.auth_split_title' => ['canelaAuthSplitTitle', '', null],
+    'canela.auth_split_text' => ['canelaAuthSplitText', '', null],
+
     // Barra lateral
     'canela.sidebar_enabled' => ['canelaSidebarEnabled', true, 'boolval'],
     'canela.sidebar_open_default' => ['canelaSidebarOpenDefault', true, 'boolval'],

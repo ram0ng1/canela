@@ -1,5 +1,18 @@
 ramon-canela:
   admin:
+    backgrounds:
+      same: "フォーラムと同じ"
+      tinted: "ぼかしアイコン付きの色付きグラデーション（デフォルト）"
+      gradient: "色付きグラデーション（アイコンなし）"
+      solid: "色付きの単色"
+      plain: "プレーン（色付けなし）"
+      image: "画像"
+      empty: "まだ画像がアップロードされていません。それまでは背景はプレーンになります。"
+      upload: "画像をアップロード"
+      replace: "画像を差し替え"
+      remove: "削除"
+      image_help: "JPG、PNG、WebP、GIF に対応。最大 2560 × 1600 の WebP に変換され、コンテンツの背後でウィンドウ全体を覆います。"
+      upload_error: "画像をアップロードできませんでした。"
     settings:
       group_appearance: 外観
       group_sidebar: サイドバー
@@ -26,6 +39,8 @@ ramon-canela:
       section_surfaces: 背景とカード
       tinted_background_label: プライマリーカラーで色付けした背景
       tinted_background_help: Horizon のように、コンテンツとサイドバーの背後の背景にプライマリーカラーをうっすらと乗せます。オフにすると、ニュートラルなグレーのままです。
+      forum_background_label: "フォーラムの背景"
+      forum_background_help: "コンテンツとサイドバーの背後に表示されるものです。色付きグラデーション（ぼかしアイコンあり/なし）と色付き単色は Horizon のようにプライマリーカラーを取り入れます。プレーンはニュートラルなグレーのままです。"
       content_card_label: コンテンツをカードに収める
       content_card_help: 一覧、スレッド、プロフィールを背景の上の角丸カードに配置します。オフにすると、コンテンツが枠なしで領域全体に広がります。
       section_buttons: ボタン
@@ -602,6 +617,17 @@ ramon-canela:
       auth:
         pages_label: 全画面のログインと新規登録
         pages_help: Discourse と同様に、ヘッダーの「ログイン」と「新規登録」ボタンで /login と /signup ページを開きます。オフにするとモーダルが開きます。
+        layout_label: "レイアウト"
+        layout_help: "どのレイアウトでもヘッダーは表示されず、フォーラムのロゴだけになります。ソーシャルログインがある場合、ボタンはフォームの前に表示されます（Discourse 型ではフォームの横）。"
+        layout_card: "背景の上の単一カード（デフォルト）"
+        layout_discourse: "Discourse 型：カードなし、ソーシャルログインは横"
+        layout_split: "分割画面：左側にカラーパネル"
+        split_title_label: "パネルのタイトル"
+        split_title_help: "空欄の場合：ログインでは「おかえりなさい」、新規登録では「コミュニティに参加しよう」。"
+        split_text_label: "パネルの本文"
+        split_text_help: "タイトルの下に表示する 1〜2 文。空欄の場合は各ページのデフォルトの文になります。"
+        background_label: "ログイン・新規登録ページの背景"
+        background_help: "分割画面では画像は左側のパネルに表示され、その他の背景はフォームの背後に表示されます。"
       bookmarks:
         title: ブックマーク
         bookmarks_enabled_label: ブックマーク
@@ -1033,6 +1059,11 @@ ramon-canela:
       signup_page_title: 新規登録
       forgot_heading: パスワードをリセット
       back_to_login: ログインに戻る
+      or: または
+      panel_login_title: おかえりなさい
+      panel_login_text: ログインして会話の続きに参加し、返信や気になるトピックの確認をしましょう。
+      panel_signup_title: コミュニティに参加しよう
+      panel_signup_text: アカウントを作成して、ディスカッションへの参加やトピックのフォロー、通知の受け取りを始めましょう。
       reset_heading: パスワードをリセット
       reset_help: アカウントの新しいパスワードを選んでください（8 文字以上）。
       reset_new_password: 新しいパスワード

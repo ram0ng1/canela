@@ -12,7 +12,7 @@ import Button from 'flarum/common/components/Button';
 import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
-import { authLogo, backToLogin } from './AuthPage';
+import { authLogo, backToLogin, enterAuthRoute, leaveAuthRoute } from './AuthPage';
 
 interface ResetPayload {
   token: string;
@@ -37,11 +37,23 @@ export default class ResetPasswordPage extends Page<IPageAttrs> {
     return data && data.token === m.route.param('token') ? data : null;
   }
 
+  oncreate(vnode: Mithril.VnodeDOM<IPageAttrs, this>) {
+    super.oncreate(vnode);
+
+    enterAuthRoute();
+  }
+
+  onremove(vnode: Mithril.VnodeDOM<IPageAttrs, this>) {
+    super.onremove(vnode);
+
+    leaveAuthRoute();
+  }
+
   view() {
     const data = this.payload();
 
     return (
-      <div className="CanelaAuthPage CanelaAuthPage--reset">
+      <div className="CanelaAuthPage CanelaAuthPage--reset CanelaAuthPage--layout-card">
         <div className="CanelaAuthPage-inner">
           {authLogo()}
           <div className="Modal modal-dialog CanelaAuthForm CanelaResetForm">

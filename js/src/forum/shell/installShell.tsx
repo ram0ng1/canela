@@ -23,6 +23,7 @@ import HeaderCenter, { watchHeaderTopic } from './HeaderCenter';
 import { watchColoredAccents } from './coloredAccents';
 import installShortcuts from './shortcuts';
 import extendHeader from './extendHeader';
+import { applyBackground, forumBackground } from './backgrounds';
 import installThemePreview from './themePreview';
 import installModalLayout from './modalLayout';
 import { forumBool, t } from '../utils/settings';
@@ -58,7 +59,8 @@ export default function installShell() {
     appElement.classList.add(
       ...classList(SHELL_CLASS, {
         'Canela--pillButtons': forumBool('canelaPillButtons', true),
-        'Canela--tinted': forumBool('canelaTintedBackground', true),
+        // Fundo com tinta (tudo menos o liso): sem ela, o cartão ganha borda.
+        'Canela--tinted': forumBackground().style !== 'plain',
         'Canela--card': forumBool('canelaContentCard', true),
         'Canela--noSidebar': !sidebarEnabled,
         'Canela--headerSearch': forumBool('canelaHeaderSearch', true),
@@ -71,9 +73,10 @@ export default function installShell() {
       }).split(' ')
     );
 
-    // As mesmas duas no <html> (o PreBootShell já as pôs; aqui para o caso de
-    // a página vir sem ele): o fundo tingido e o raio dos botões leem dali.
-    document.documentElement.classList.toggle('CanelaRoot--tinted', forumBool('canelaTintedBackground', true));
+    // O fundo e o raio dos botões no <html> (o PreBootShell já os pôs; aqui
+    // para o caso de a página vir sem ele). Em /login e /signup vale o fundo
+    // dessas páginas (features/auth troca ao entrar e sair delas).
+    applyBackground(document.documentElement.classList.contains('CanelaAuthRoute') ? 'auth' : 'forum');
     document.documentElement.classList.toggle('CanelaRoot--pill', forumBool('canelaPillButtons', true));
 
     mountHeader(sidebarEnabled);
