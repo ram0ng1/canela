@@ -330,14 +330,6 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
 
     card.style.left = `${left + window.scrollX}px`;
     card.style.top = `${top + window.scrollY}px`;
-
-    // A setinha à esquerda, apontando para o meio do avatar clicado; some se o
-    // cartão não ficou ao lado dele (sem espaço à direita ou virado para cima).
-    const beside = left >= rect.right;
-    const arrow = rect.top + rect.height / 2 - top;
-
-    card.classList.toggle('CanelaUserCard--arrow', beside && arrow > 16 && arrow < height - 16);
-    card.style.setProperty('--usercard-arrow', `${arrow}px`);
   }
 }
 

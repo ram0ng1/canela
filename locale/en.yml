@@ -1157,7 +1157,9 @@ ramon-canela:
         create_title: Create bookmark
         edit_title: Edit bookmark
         name_label: Name
-        name_placeholder: Name this bookmark to help you remember what it is for
+        name_placeholder: E.g. read later, reply properly…
+        context: 'Post by {author} in {title}'
+        context_deleted_user: deleted user
         reminder_label: Remind me
         existing_reminder: You will be reminded about this bookmark on {date}.
         custom_date: Reminder date

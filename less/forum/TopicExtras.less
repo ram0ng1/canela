@@ -1124,35 +1124,6 @@ button.CanelaTopicMap-stat {
   user-select: none;
 }
 
-// A setinha à esquerda do cartão, apontando para o avatar de onde ele veio
-// (a altura vem do JS em --usercard-arrow). Dois triângulos: a borda e, por
-// cima, o preenchimento na cor do cartão.
-.CanelaUserCard.CanelaUserCard--arrow {
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: var(--usercard-arrow, 40px);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-
-  &::before {
-    left: -10px;
-    border-width: 9px 10px 9px 0;
-    border-color: transparent var(--cn-border) transparent transparent;
-  }
-
-  &::after {
-    left: -9px;
-    border-width: 8px 9px 8px 0;
-    border-color: transparent var(--cn-surface) transparent transparent;
-  }
-}
-
 // "Acompanhar no rodapé" desligado no admin: no computador, com a linha do
 // tempo à vista, o sino dela já faz o mesmo e o do rodapé sai. Abaixo de
 // 925px (a linha do tempo vira a aba "1 / n"), o do rodapé é o único e fica.
