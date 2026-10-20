@@ -2,6 +2,7 @@
  * O topo da página de uma categoria no Horizon: o nome enorme, a descrição e
  * as subcategorias em cartões brancos com o símbolo colorido num quadrado.
  */
+import app from 'flarum/forum/app';
 import Hero, { type IHeroAttrs } from 'flarum/forum/components/Hero';
 import Link from 'flarum/common/components/Link';
 import ItemList from 'flarum/common/utils/ItemList';
@@ -70,12 +71,15 @@ export default class CategoryHero extends Hero<CategoryHeroAttrs> {
   }
 
   children(): CanelaTag[] {
-    const children = this.attrs.model.children();
+    const model = this.attrs.model;
+    const children = model.children();
 
-    // As filhas chegam com `include=children` no carregamento da tag; antes
-    // disso (ou para uma etiqueta) não há o que listar.
-    if (!Array.isArray(children)) return [];
+    if (Array.isArray(children)) return sortTags(children.filter(Boolean));
 
-    return sortTags(children.filter(Boolean));
+    // A relação só chega com o `include=children` do carregamento da tag, um
+    // pedido depois de a página abrir: os cartões apareciam atrasados. As
+    // filhas já vêm com o fórum (o flarum/tags carrega as tags com posição),
+    // então saem já no primeiro desenho.
+    return sortTags(app.store.all<CanelaTag>('tags').filter((tag) => tag.parent?.() === model));
   }
 }

@@ -177,3 +177,54 @@ export default function installDropdownArrow(): void {
       markPost(this, false);
     });
 }
+
+/**
+ * A mesma seta para os menus presos à tela que não são o Dropdown do core (os
+ * do rodapé do composer: ⊕, emoji, ajudante de IA). `box` é o elemento fixo
+ * que define a posição do menu; `surface`, o que tem o fundo e a borda (o
+ * próprio menu, quando é o mesmo). A seta fica no `body`, também fixa: a
+ * barra de formatação rola na horizontal e cortaria qualquer coisa dentro
+ * dela. Devolve `place` (para chamar quando o menu mudar de lugar) e `remove`.
+ */
+export function attachFixedArrow(box: HTMLElement, toggle: HTMLElement, surface: HTMLElement = box): { place: () => void; remove: () => void } {
+  const arrow = document.createElement('span');
+  arrow.setAttribute('aria-hidden', 'true');
+
+  const place = () => {
+    const style = getComputedStyle(surface);
+
+    // A folha do celular (presa ao pé da tela, largura toda) não aponta.
+    if (window.innerWidth < 768 || style.display === 'none') {
+      arrow.remove();
+      return;
+    }
+
+    arrow.style.setProperty('--cn-arrow-bg', style.backgroundColor);
+    if (parseFloat(style.borderTopWidth) > 0) arrow.style.setProperty('--cn-arrow-edge', style.borderTopColor);
+
+    const z = parseInt(getComputedStyle(box).zIndex, 10);
+    arrow.style.zIndex = Number.isNaN(z) ? '' : String(z + 1);
+
+    // Pela posição de layout (sem as animações de entrada do menu).
+    const left = box.offsetLeft;
+    const top = box.offsetTop;
+    const width = box.offsetWidth;
+    const height = box.offsetHeight;
+    const t = toggle.getBoundingClientRect();
+    const up = top + height <= t.top + 1;
+    const x = Math.min(Math.max(t.left + t.width / 2, left + EDGE), left + width - EDGE);
+
+    arrow.className = `${ARROW_CLASS} ${ARROW_CLASS}--fixed${up ? ' is-up' : ''}`;
+    arrow.style.left = `${x - WIDTH / 2}px`;
+    arrow.style.top = `${up ? top + height - 1 : top - HEIGHT + 1}px`;
+
+    if (!arrow.isConnected) document.body.appendChild(arrow);
+  };
+
+  place();
+
+  return { place, remove: () => arrow.remove() };
+}
+
+/** O vão entre o botão e um menu fixo com a seta. */
+export const FIXED_ARROW_GAP = GAP;

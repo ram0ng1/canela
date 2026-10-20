@@ -17,6 +17,7 @@ import type Mithril from 'mithril';
 import type { EmojiGroup, EmojiRow } from '../emoji-data';
 import { TONES, getRecent, getTone, loadEmojiData, matches, normalize, pushRecent, setTone, twemojiUrl, usesTwemoji, withTone } from './emojiUtils';
 import { t } from '../../../utils/settings';
+import { FIXED_ARROW_GAP, attachFixedArrow } from '../../../shell/dropdownArrow';
 
 /** Os ícones das categorias, na ordem do Discourse. */
 const GROUP_ICONS: Record<string, string> = {
@@ -280,6 +281,7 @@ export default class EmojiPicker extends Component<EmojiPickerAttrs> {
 
 let portal: HTMLElement | null = null;
 let cleanup: (() => void) | null = null;
+let arrow: { place: () => void; remove: () => void } | null = null;
 
 export function closeEmojiPicker(): void {
   cleanup?.();
@@ -306,15 +308,18 @@ export function openEmojiPicker(anchor: HTMLElement, onselect: (emoji: string) =
     const rect = anchor.getBoundingClientRect();
     const width = portal.offsetWidth;
     const height = portal.offsetHeight;
-    const above = rect.top - height - 8;
+    const above = rect.top - height - FIXED_ARROW_GAP;
 
-    portal.style.top = `${above >= 8 ? above : Math.min(rect.bottom + 8, window.innerHeight - height - 8)}px`;
+    portal.style.top = `${above >= 8 ? above : Math.min(rect.bottom + FIXED_ARROW_GAP, window.innerHeight - height - 8)}px`;
     portal.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - width - 8))}px`;
+    arrow?.place();
   };
 
   const close = () => {
     document.removeEventListener('mousedown', outside, true);
     window.removeEventListener('resize', position);
+    arrow?.remove();
+    arrow = null;
 
     if (portal) {
       m.mount(portal, null);
@@ -347,6 +352,13 @@ export function openEmojiPicker(anchor: HTMLElement, onselect: (emoji: string) =
     ),
   });
 
+  // A setinha apontando para o botão do emoji. Ela encosta no rodapé do
+  // balão (que tem fundo próprio), então copia a cor dele.
+  arrow = attachFixedArrow(
+    portal,
+    anchor,
+    portal.querySelector<HTMLElement>('.CanelaEmojiPicker-footer') ?? portal.querySelector<HTMLElement>('.CanelaEmojiPicker') ?? portal
+  );
   position();
   // A primeira medida sai antes de a lista carregar; a altura do balão é
   // fixa no CSS, então uma segunda conta depois do desenho basta.

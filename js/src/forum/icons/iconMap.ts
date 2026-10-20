@@ -435,6 +435,10 @@ export const CANELA_EXTRAS: Record<string, string> = {
   'table-cells-large': 'grid-2x2',
   'pen-ruler': 'pencil-ruler',
   feather: 'feather',
+  // Bilhete (botões de extensões na barra do composer): no sólido do FA ele
+  // destoava, menor e preenchido, entre os ícones de traço.
+  'sticky-note': 'sticky-note',
+  'note-sticky': 'sticky-note',
   'calendar-days': 'calendar-days',
   'circle-dot': 'circle-dot',
   // O seletor de tema do core usa o laptop para "automático"

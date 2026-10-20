@@ -987,6 +987,27 @@
   }
 }
 
+// Todo ícone da barra na mesma caixa de 16px, venha de onde vier: os botões
+// de extensões nem sempre são `.Button`, e os ícones que ficam no Font
+// Awesome (fora do mapa do Lucide) saíam menores que os de traço.
+.CanelaComposer .TextEditor-toolbar button:not(.CanelaAiHelper-menu *, .CanelaRichToggle) {
+  svg.icon,
+  i.icon:not(.CanelaTextIcon) {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    font-size: 16px;
+  }
+
+  i.icon:not(.CanelaTextIcon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+}
+
 // A barra de formatação (`.d-editor-button-bar`): botões 30 × 28, ícones de
 // 16px em cinza, 8px entre eles. Um pouco maiores que no Discourse para
 // conversar com os 18px dos botões do canto (⤢ — ✕).
