@@ -12,7 +12,9 @@
 [data-theme^=light],
 [data-theme^=dark] {
   // O --love do Discourse: o coração das curtidas não usa a cor do tema.
-  --cn-topic-love: #fa6c8d;
+  // O vermelho do emoji ❤️ (twemoji): o mesmo no coração de curtir e na
+  // contagem. O rosa do Discourse (#fa6c8d) parecia apagado ao lado dela.
+  --cn-topic-love: #dd2e44;
   --cn-topic-love-low: ~"color-mix(in srgb, var(--cn-topic-love) 15%, var(--cn-surface))";
   // O fundo e a barra das citações (--d-post-aside-*): no escuro o Discourse
   // clareia bem mais do que o "muito baixo" da paleta.
@@ -1140,9 +1142,9 @@
   padding: 1px 6px;
   gap: 0;
 
-  // O emoji ❤️ do Discourse (twemoji), não o rosa do botão de curtir.
+  // O emoji ❤️ do Discourse (twemoji), a mesma cor do botão de curtir.
   .Button-icon {
-    color: #dd2e44;
+    color: var(--cn-topic-love);
   }
 
   .CanelaLikeCount-number {
