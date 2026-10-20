@@ -1407,10 +1407,12 @@
     background: var(--cn-surface);
     z-index: 1100;
 
+    // Preso à parte visível da tela (mobileViewport.ts): com o teclado do
+    // iOS aberto, a barra e "Responder" ficam acima dele, e não atrás.
     &:not(.minimized) {
-      top: 0;
-      bottom: 0;
-      height: 100% !important;
+      top: var(--cn-vv-top, 0);
+      bottom: auto;
+      height: var(--cn-vv-height, 100%) !important;
       max-height: none;
       padding-top: 0;
 
@@ -1506,6 +1508,7 @@
 
     .TextEditor-controls {
       flex-wrap: wrap;
+      align-items: center;
       gap: 4px 8px;
       padding: 0 0 max(env(safe-area-inset-bottom), 8px);
       border-top: 0;
@@ -1532,18 +1535,59 @@
       }
     }
 
-    // No celular o primário vira texto na cor de destaque, em negrito.
+    // "Responder" é o botão principal de verdade, com 44px de altura para o
+    // dedo: só em texto ele se perdia ao lado de "Descartar".
     .CanelaComposer-submit.Button--primary {
-      background: transparent;
-      color: var(--cn-accent);
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: var(--cn-button-radius, var(--cn-radius-pill));
       font-weight: bold;
-
-      &:hover,
-      &:focus-visible {
-        background: transparent;
-        color: var(--cn-accent-active);
-      }
     }
+
+    .item-canelaCancel .Button {
+      min-height: 44px;
+    }
+
+    // A barra de formatação com alvos de 40px (o mínimo confortável para o
+    // toque); ela rola na horizontal quando não cabe.
+    .TextEditor-toolbar .Button:not(.CanelaAiHelper-menu *),
+    .TextEditor-toolbar .Button--icon:not(.CanelaAiHelper-menu *) {
+      width: 40px;
+      height: 40px;
+    }
+
+    // O título do tópico respondido (o editor cobre o tópico no celular):
+    // ocupa o que sobra da linha e corta com reticências.
+    .CanelaComposerAction {
+      min-width: 0;
+    }
+
+    // Com o título ao lado, o rótulo ("Discussão") sai e fica o ícone com a
+    // seta do menu: a linha é estreita, e o título é o que situa a resposta.
+    .CanelaComposerAction:has(.CanelaComposerAction-target) .CanelaComposerAction-label {
+      display: none;
+    }
+
+    .CanelaComposerAction-target {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 8px 6px;
+      font-size: 15px;
+    }
+  }
+
+  // Com o teclado aberto o rodapé encosta nele: a margem da barra de gestos
+  // do iPhone (safe-area) só vale com o teclado fechado.
+  .CanelaComposerKeyboard .Composer.CanelaComposer:not(.minimized) .TextEditor-controls {
+    padding-bottom: 6px;
+  }
+
+  // A página atrás do composer aberto não rola: no iOS, rolar o texto
+  // arrastava o tópico por baixo e tirava o composer do lugar.
+  html:has(.Composer.CanelaComposer.visible:not(.minimized)),
+  body:has(.Composer.CanelaComposer.visible:not(.minimized)) {
+    overflow: hidden;
+    overscroll-behavior: none;
   }
 
   .composer-backdrop {

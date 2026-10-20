@@ -29,6 +29,7 @@ import { missingTagsMessage, normalizeTags, selectableTags, type RuleTag } from 
 import installModals from './installModals';
 import installTagModal from './tagModal';
 import installAlignComposer from './alignComposer';
+import installMobileViewport from './mobileViewport';
 import { morphComposer } from './morph';
 import installToolbar, { addMoreAction, richMode, setPlaceholderProvider } from './installToolbar';
 import { editorComposer } from '../features/composer/common';
@@ -376,4 +377,6 @@ export default function installComposerShell() {
   // O modal de tags do flarum/tags no desenho do seletor de tags do composer.
   installTagModal();
   installAlignComposer();
+  // No celular, o composer cabe acima do teclado (o do iOS cobre a página).
+  installMobileViewport();
 }

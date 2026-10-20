@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Ai\Api;
 
-use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
 use Ramon\Canela\Ai\AiSettings;
@@ -27,6 +26,8 @@ use Ramon\Canela\Ai\TopicSummary;
  *   para quem não pode gerar, porque ler um resumo pronto todos podem;
  * - `canelaAiSummarizable`: o tópico tem postagens bastantes para um resumo.
  *
+ * Os três respeitam o "Mínimo de postagens para resumir": abaixo dele, nada.
+ *
  * Sem as tabelas criadas (antes do `migrate`), os campos nem aparecem.
  */
 final class DiscussionAiFields
@@ -39,12 +40,20 @@ final class DiscussionAiFields
     public function __invoke(): array
     {
         $summary = static fn (Discussion $discussion) => SummaryBuffer::defer($discussion->id);
+        // Abaixo do "Mínimo de postagens para resumir", a discussão não tem
+        // resumo nenhum: nem o curto da lista, nem o botão (mesmo que um
+        // resumo tenha sido gerado quando o mínimo era menor).
+        $bigEnough = fn (Discussion $discussion): bool => (int) $discussion->comment_count >= $this->settings->int(AiSettings::SUMMARY_MIN_POSTS, 1, 1000);
 
         return [
             Schema\Str::make('canelaAiGist')
                 ->nullable()
                 ->visible(fn (): bool => $this->settings->feature(AiSettings::GISTS))
-                ->get(static function (Discussion $discussion) use ($summary) {
+                ->get(static function (Discussion $discussion) use ($summary, $bigEnough) {
+                    if (! $bigEnough($discussion)) {
+                        return null;
+                    }
+
                     $resolve = $summary($discussion);
 
                     return static fn (): ?string => $resolve()?->gist;
@@ -52,7 +61,11 @@ final class DiscussionAiFields
 
             Schema\Boolean::make('canelaAiHasSummary')
                 ->visible(fn (): bool => $this->settings->feature(AiSettings::SUMMARY))
-                ->get(static function (Discussion $discussion) use ($summary) {
+                ->get(static function (Discussion $discussion) use ($summary, $bigEnough) {
+                    if (! $bigEnough($discussion)) {
+                        return false;
+                    }
+
                     $resolve = $summary($discussion);
 
                     return static function () use ($resolve): bool {
@@ -64,7 +77,7 @@ final class DiscussionAiFields
 
             Schema\Boolean::make('canelaAiSummarizable')
                 ->visible(fn (): bool => $this->settings->feature(AiSettings::SUMMARY))
-                ->get(fn (Discussion $discussion, Context $context): bool => (int) $discussion->comment_count >= $this->settings->int(AiSettings::SUMMARY_MIN_POSTS, 1, 1000)),
+                ->get(static fn (Discussion $discussion): bool => $bigEnough($discussion)),
         ];
     }
 }

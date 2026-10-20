@@ -21,6 +21,7 @@ import type Mithril from 'mithril';
 
 import { canReplyAsLinkedTopic, replyAsLinkedTopic } from '../features/composer/installLinkedTopic';
 import { t } from '../utils/settings';
+import { isPhone } from '../motion/motionUtils';
 
 export type ComposerKind = 'new_topic' | 'reply' | 'edit' | (string & {});
 
@@ -254,12 +255,14 @@ export default class ComposerActionTitle extends Component<ComposerActionTitleAt
   /**
    * "🔗 título": o destino da resposta ou da edição. Na resposta, só quando o
    * tópico não está aberto atrás do composer — como no Discourse, onde ele
-   * some ao responder do próprio tópico.
+   * some ao responder do próprio tópico. No celular, sempre: lá o editor
+   * ocupa a tela e esconde o tópico.
    */
   targetLink(): Mithril.Children {
     const { kind, discussion, post } = this.attrs;
 
-    if (kind === 'reply' && discussion && !app.viewingDiscussion(discussion)) {
+    // No celular o editor cobre o tópico inteiro: o título aparece sempre.
+    if (kind === 'reply' && discussion && (!app.viewingDiscussion(discussion) || isPhone())) {
       return (
         <Link
           className="CanelaComposerAction-target"
