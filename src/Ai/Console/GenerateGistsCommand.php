@@ -51,6 +51,9 @@ final class GenerateGistsCommand extends Command
 
         $discussions = Discussion::query()
             ->whereVisibleTo(new Guest())
+            // O mesmo "Mínimo de postagens para resumir" do botão: abaixo
+            // dele, a discussão não ganha resumo nenhum.
+            ->where('discussions.comment_count', '>=', $settings->int(AiSettings::SUMMARY_MIN_POSTS, 1, 1000))
             // Sem resumo curto, ou com um anterior à última resposta. Um
             // NOT EXISTS, e não um JOIN: os escopos de visibilidade das
             // extensões usam colunas sem o nome da tabela.
