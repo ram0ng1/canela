@@ -184,7 +184,7 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
     items.add(
       'canelaNames',
       <span className="CanelaPostNames">
-        <span className="CanelaPostNames-username">{user.username()}</span>
+        <span className="CanelaPostNames-username">@{user.username()}</span>
       </span>,
       95
     );

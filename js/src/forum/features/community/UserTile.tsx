@@ -36,7 +36,7 @@ export default class UserTile extends Component<UserTileAttrs> {
         <div className="CanelaUserTile-info">
           {/* A name-line do Discourse: o usuário em negrito e o nome ao lado. */}
           <Link href={url} className="CanelaUserTile-name">
-            <span className="CanelaUserTile-username">{username}</span>
+            <span className="CanelaUserTile-username">{displayName !== username ? `@${username}` : username}</span>
             {displayName !== username && <span className="CanelaUserTile-displayName">{displayName}</span>}
           </Link>
           {group && <span className="CanelaUserTile-title">{group.nameSingular()}</span>}
