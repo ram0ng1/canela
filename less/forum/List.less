@@ -204,6 +204,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    // Aparecem sem a transição de opacidade do core: enquanto ela dura, o ⋮
+    // ganha uma camada própria do compositor, e os ícones da linha em volta
+    // tremem meio pixel ao passar o mouse pela lista (veja Motion.less).
+    transition: none;
 
     // Aberto para cima, o menu passa por cima da barra de navegação da
     // lista (.CanelaNav, z-index 4).
