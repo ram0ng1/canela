@@ -11,7 +11,7 @@ import type Mithril from 'mithril';
 import { t } from '../../../utils/settings';
 import TopicViews from './TopicViews';
 import { once } from '../../../utils/chunkGate';
-import { cachedViewStats, fetchViewStats, type ViewStatsResponse } from './viewStats';
+import { cachedViewStats, fetchViewStats, fullWindow, type ViewStat, type ViewStatsResponse } from './viewStats';
 
 export interface TopicViewsMenuAttrs extends ComponentAttrs {
   discussion: Discussion;
@@ -73,14 +73,27 @@ export default class TopicViewsMenu extends Component<TopicViewsMenuAttrs> {
     }
   }
 
+  /**
+   * Os dias do menu. Com dias gravados, a janela inteira (30 dias, ou desde a
+   * criação do tópico) com zero nos dias sem registro; sem nenhum, o total
+   * em hoje, como no Discourse.
+   */
+  stats(): ViewStat[] {
+    if (!this.data) return [];
+    if (this.data.estimated) return this.data.stats;
+
+    return fullWindow(this.data.stats, this.attrs.discussion.createdAt());
+  }
+
   view() {
-    const chartPending = !TopicViewsChart && !chartFailed && !!this.data && this.data.stats.length > 2;
+    const stats = this.stats();
+    const chartPending = !TopicViewsChart && !chartFailed && stats.length > 2;
 
     if (this.loading || chartPending) return <LoadingIndicator size="small" display="block" />;
 
     if (this.failed || !this.data) return <div className="CanelaViewsChart CanelaViewsChart--error">{t('stats.views.chart_error')}</div>;
 
-    // `shouldShowViewsChart`: o gráfico só a partir de três dias com dados.
-    return this.data.stats.length > 2 && TopicViewsChart ? <TopicViewsChart stats={this.data.stats} /> : <TopicViews stats={this.data.stats} />;
+    // `shouldShowViewsChart`: o gráfico só a partir de três dias.
+    return stats.length > 2 && TopicViewsChart ? <TopicViewsChart stats={stats} /> : <TopicViews stats={stats} />;
   }
 }

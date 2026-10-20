@@ -1,4 +1,6 @@
 import { extend } from 'flarum/common/extend';
+import Avatar from 'flarum/common/components/Avatar';
+import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 
 /**
@@ -50,6 +52,25 @@ export default function installModalLayout(): void {
       tagItems([vdom]);
     });
   }
+
+  // Quem está sendo editado: avatar, nome e @usuário no topo do modal (a
+  // moderação abre o modal de outra pessoa, e o título só dizia "Editar
+  // usuário").
+  extend('flarum/common/components/EditUserModal' as any, 'content', function (this: any, vdom: any) {
+    const user: User | undefined = this.attrs?.user;
+
+    if (!user || !vdom || !Array.isArray(vdom.children)) return;
+
+    vdom.children.unshift(
+      m('div', { className: 'CanelaEditUser-identity' }, [
+        m(Avatar, { user, className: 'CanelaEditUser-avatar' }),
+        m('div', { className: 'CanelaEditUser-names' }, [
+          m('span', { className: 'CanelaEditUser-name' }, user.displayName()),
+          m('span', { className: 'CanelaEditUser-username' }, `@${user.username()}`),
+        ]),
+      ])
+    );
+  });
 
   extend('flarum/common/components/EditUserModal' as any, 'oncreate', function (this: any) {
     markLong(this.element);

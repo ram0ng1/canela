@@ -9,6 +9,7 @@
  * ao SubtreeRetainer, que não redesenha o post à toa.
  */
 import app from 'flarum/forum/app';
+import { extend } from 'flarum/common/extend';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import Avatar from 'flarum/common/components/Avatar';
 import Button from 'flarum/common/components/Button';
@@ -70,6 +71,10 @@ function ensureRoot() {
   document.addEventListener('mousedown', onDocumentEvent, true);
   document.addEventListener('keydown', onDocumentEvent, true);
   window.addEventListener('popstate', () => closeUserCard());
+
+  // Um modal aberto pelo cartão (o "Editar" do ⋯, conversar…) fica por cima
+  // da página: o cartão fecha, em vez de ficar sobre o modal.
+  extend('flarum/common/states/ModalManagerState' as any, 'show', () => closeUserCard());
 }
 
 export function openUserCard(user: User, anchor: HTMLElement): void {
