@@ -218,8 +218,8 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
                 </Link>
                 {userIcons(user, 'card')}
               </div>
-              {/* O apelido (flarum/nicknames) em destaque, como nos posts; o @username embaixo. */}
-              {showName && <span className="CanelaUserCard-secondary">@{user.username()}</span>}
+              {/* O apelido (flarum/nicknames) em destaque, como nos posts; o username embaixo. */}
+              {showName && <span className="CanelaUserCard-secondary">{user.username()}</span>}
               {title && <span className="CanelaUserCard-secondary CanelaUserCard-title">{title}</span>}
             </div>
 

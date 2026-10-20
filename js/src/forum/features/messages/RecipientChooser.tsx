@@ -195,9 +195,7 @@ export default class RecipientChooser extends Component<RecipientChooserAttrs> {
             content: (
               <span className={classList('CanelaRecipients-row', { 'is-unavailable': !!unavailable })}>
                 <Avatar user={user} title="" />
-                <span className="CanelaRecipients-identifier">
-                  {user.displayName() !== user.username() ? `@${user.username()}` : user.username()}
-                </span>
+                <span className="CanelaRecipients-identifier">{user.username()}</span>
                 {user.displayName() !== user.username() ? <span className="CanelaRecipients-name">{user.displayName()}</span> : null}
                 {unavailable ? <span className="CanelaRecipients-unavailable">{unavailable}</span> : null}
               </span>

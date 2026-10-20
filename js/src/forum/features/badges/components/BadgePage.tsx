@@ -179,7 +179,7 @@ export default class BadgePage extends BadgesBasePage {
         </Link>
         <div className="CanelaBadgeRecipient-detail">
           <Link className="CanelaBadgeRecipient-user" href={app.route.user(user)}>
-            <span className="CanelaBadgeRecipient-username">{user.displayName() !== user.username() ? `@${user.username()}` : user.username()}</span>
+            <span className="CanelaBadgeRecipient-username">{user.username()}</span>
             {user.displayName() !== user.username() && <span className="CanelaBadgeRecipient-name">{user.displayName()}</span>}
           </Link>
           {grantedAt && (

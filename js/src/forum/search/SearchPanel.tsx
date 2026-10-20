@@ -387,7 +387,7 @@ export default class SearchPanel extends Component<SearchPanelAttrs> {
       <Avatar user={user} className="avatar" />,
       <div className="user-titles">
         {showName ? <span className="name">{name}</span> : null}
-        <span className="username">{showName ? `@${user.username()}` : user.username()}</span>
+        <span className="username">{user.username()}</span>
       </div>,
     ];
   }
