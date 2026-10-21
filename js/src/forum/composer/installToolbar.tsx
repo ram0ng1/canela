@@ -28,6 +28,8 @@ import extractText from 'flarum/common/utils/extractText';
 import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
+import { FIXED_ARROW_GAP, attachFixedArrow } from '../shell/dropdownArrow';
+
 import { editorComposer } from '../features/composer/common';
 import { t } from '../utils/settings';
 import { morphComposer } from './morph';
@@ -124,6 +126,7 @@ class RichToggle extends Component {
 class MoreMenu extends Component<{ actions: () => MoreAction[] }> {
   private portal: HTMLElement | null = null;
   private outside: ((e: MouseEvent) => void) | null = null;
+  private arrow: { remove: () => void } | null = null;
 
   view(): Mithril.Children {
     const label = t('composer.shell.more_options');
@@ -143,12 +146,13 @@ class MoreMenu extends Component<{ actions: () => MoreAction[] }> {
   toggle(e: MouseEvent): void {
     if (this.portal) return this.close();
 
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const toggle = e.currentTarget as HTMLElement;
+    const rect = toggle.getBoundingClientRect();
     const portal = document.createElement('div');
 
     portal.className = 'CanelaMoreOptions-portal';
     portal.style.left = `${Math.max(8, rect.left)}px`;
-    portal.style.bottom = `${window.innerHeight - rect.top + 6}px`;
+    portal.style.bottom = `${window.innerHeight - rect.top + FIXED_ARROW_GAP}px`;
     document.body.appendChild(portal);
     this.portal = portal;
 
@@ -178,6 +182,9 @@ class MoreMenu extends Component<{ actions: () => MoreAction[] }> {
 
     render();
 
+    // A setinha apontando para o ⊕, como nos menus dos botões de ícone.
+    this.arrow = attachFixedArrow(portal, toggle, portal.querySelector<HTMLElement>('.Dropdown-menu') ?? portal);
+
     this.outside = (event: MouseEvent) => {
       if (!portal.contains(event.target as Node) && !this.element.contains(event.target as Node)) this.close();
     };
@@ -187,6 +194,8 @@ class MoreMenu extends Component<{ actions: () => MoreAction[] }> {
   close(): void {
     if (this.outside) document.removeEventListener('mousedown', this.outside);
     this.outside = null;
+    this.arrow?.remove();
+    this.arrow = null;
 
     if (this.portal) {
       m.render(this.portal, null);

@@ -23,6 +23,7 @@ import type Mithril from 'mithril';
 import { isExtensionEnabled, t } from '../../../utils/settings';
 import { aiRequest, showAiError } from '../state';
 import { indicatorWave } from '../ui';
+import { FIXED_ARROW_GAP, attachFixedArrow } from '../../../shell/dropdownArrow';
 import { addTag, normalizeTags, removeTag, selectableTags } from '../../../composer/tagRules';
 
 export interface HelperMenuAttrs extends ComponentAttrs {
@@ -63,6 +64,8 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
   tagIds: string[] = [];
   outsideListener = (event: Event) => this.onOutside(event);
   keyListener = (event: KeyboardEvent) => this.onKey(event);
+  /** A setinha do menu aberto e o menu para o qual ela foi feita. */
+  arrow: { menu: HTMLElement; place: () => void; remove: () => void } | null = null;
 
   composer(): ComposerState | null {
     return ((this.attrs.editor.attrs as any)?.composer as ComposerState) ?? null;
@@ -91,6 +94,12 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
     document.removeEventListener('mousedown', this.outsideListener, true);
     document.removeEventListener('keydown', this.keyListener);
     window.removeEventListener('resize', this.placeListener);
+    this.dropArrow();
+  }
+
+  dropArrow(): void {
+    this.arrow?.remove();
+    this.arrow = null;
   }
 
   placeListener = () => this.place();
@@ -104,7 +113,10 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
     const trigger = this.element?.querySelector<HTMLElement>('.ai-helper-trigger');
     const menu = this.element?.querySelector<HTMLElement>('.CanelaAiHelper-menu');
 
-    if (!trigger || !menu) return;
+    if (!trigger || !menu) {
+      this.dropArrow();
+      return;
+    }
 
     const rect = trigger.getBoundingClientRect();
     const margin = 8;
@@ -112,8 +124,16 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
     const left = Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin));
 
     menu.style.left = `${Math.round(left)}px`;
-    menu.style.bottom = `${Math.round(window.innerHeight - rect.top + 6)}px`;
+    menu.style.bottom = `${Math.round(window.innerHeight - rect.top + FIXED_ARROW_GAP)}px`;
     menu.style.maxHeight = `${Math.max(160, Math.round(rect.top - 2 * margin))}px`;
+
+    // A setinha apontando para o ✨ (refeita se o menu foi desenhado de novo).
+    if (this.arrow?.menu !== menu) {
+      this.dropArrow();
+      this.arrow = { menu, ...attachFixedArrow(menu, trigger) };
+    } else {
+      this.arrow.place();
+    }
   }
 
   view() {
@@ -153,20 +173,22 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
               if (this.customPrompt.trim()) this.run('custom_prompt');
             }}
           >
-            <input
-              className="FormControl ai-custom-prompt__input"
-              type="text"
-              placeholder={t('ai.helper.custom_prompt_placeholder')}
-              value={this.customPrompt}
-              oninput={(event: InputEvent) => (this.customPrompt = (event.target as HTMLInputElement).value)}
-            />
-            <Button
-              type="submit"
-              className="Button Button--primary ai-custom-prompt__submit"
-              icon="fas fa-paper-plane"
-              disabled={!this.customPrompt.trim()}
-              aria-label={t('ai.helper.custom_prompt_submit')}
-            />
+            <div className="ai-custom-prompt__field">
+              <input
+                className="ai-custom-prompt__input"
+                type="text"
+                placeholder={t('ai.helper.custom_prompt_placeholder')}
+                value={this.customPrompt}
+                oninput={(event: InputEvent) => (this.customPrompt = (event.target as HTMLInputElement).value)}
+              />
+              <Button
+                type="submit"
+                className="Button Button--icon ai-custom-prompt__submit"
+                icon="fas fa-paper-plane"
+                disabled={!this.customPrompt.trim()}
+                aria-label={t('ai.helper.custom_prompt_submit')}
+              />
+            </div>
           </form>
         </li>
         {this.options().map(([mode, icon, label, shortcut]) => (

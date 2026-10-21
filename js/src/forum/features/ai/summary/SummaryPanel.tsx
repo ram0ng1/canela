@@ -36,13 +36,33 @@ interface SummaryData {
   canRegenerate: boolean;
 }
 
+/** O `SmoothStreamer` do discourse-ai: um caractere a cada 15 ms… */
+const TYPING_DELAY = 15;
+/** …e, quando o resumo pronto chega inteiro, o texto em 12 passos. */
+const COMPLETION_CATCH_UP_STEPS = 12;
+/**
+ * Gerando, o texto continua sendo digitado mesmo que o resto chegue de uma
+ * vez (um proxy que segura a resposta entrega tudo no fim): no máximo uns 3 s
+ * para o que faltar, um caractere por vez quando dá.
+ */
+const MAX_TYPING_TICKS = 200;
+
 class SummaryState {
   discussion: Discussion | null = null;
   open = false;
   closing = false;
   loading = false;
+  /** O "●" no fim e o rodapé escondido: enquanto o texto ainda está aparecendo. */
   streaming = false;
+  /** O que já aparece na tela. */
   text = '';
+  /** Tudo o que chegou do servidor; `text` corre atrás dele. */
+  target = '';
+  /** O resumo completo já chegou. */
+  completed = false;
+  /** Chegaram pedaços da geração (e não só o resumo pronto). */
+  generated = false;
+  timer: ReturnType<typeof setTimeout> | null = null;
   summary: SummaryData | null = null;
   controller: AbortController | null = null;
 
@@ -78,10 +98,54 @@ class SummaryState {
   reset(): void {
     this.controller?.abort();
     this.controller = null;
+    this.stopTyping();
     this.text = '';
+    this.target = '';
+    this.completed = false;
+    this.generated = false;
     this.summary = null;
     this.loading = false;
     this.streaming = false;
+  }
+
+  /**
+   * O texto aparece letra a letra, como no Discourse: os pedaços do modelo
+   * chegam aos trancos (às vezes uma frase inteira de uma vez), e o resumo já
+   * pronto chegava inteiro, sem animação nenhuma.
+   */
+  receive(text: string, completed: boolean): void {
+    this.target = text;
+    this.completed = this.completed || completed;
+    this.streaming = true;
+
+    if (!this.timer) this.typeCharacter();
+  }
+
+  typeCharacter(): void {
+    this.timer = null;
+
+    const remaining = this.target.length - this.text.length;
+
+    if (remaining <= 0) {
+      // Alcançou o que chegou: termina se o resumo completo já veio; senão
+      // espera o próximo pedaço com o "●" no fim.
+      if (this.completed) this.streaming = false;
+      m.redraw();
+      return;
+    }
+
+    const step =
+      this.completed && !this.generated ? Math.ceil(remaining / COMPLETION_CATCH_UP_STEPS) : Math.max(1, Math.ceil(remaining / MAX_TYPING_TICKS));
+
+    this.text = this.target.slice(0, this.text.length + step);
+    m.redraw();
+
+    this.timer = setTimeout(() => this.typeCharacter(), TYPING_DELAY);
+  }
+
+  stopTyping(): void {
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = null;
   }
 
   request(regenerate: boolean): void {
@@ -97,7 +161,12 @@ class SummaryState {
     // Quem não pode gerar só lê o resumo pronto.
     if (!aiInfo()?.canSummarize) {
       aiRequest<{ data: SummaryData | null }>('GET', `summaries/${discussion.id()}`)
-        .then((response) => (this.summary = response.data))
+        .then((response) => {
+          this.summary = response.data;
+          // O texto do resumo pronto também aparece (antes só o resumo era
+          // guardado, e o painel dizia que não havia resumo).
+          if (response.data?.text) this.receive(response.data.text, true);
+        })
         .catch(() => {})
         .finally(() => {
           this.loading = false;
@@ -117,13 +186,12 @@ class SummaryState {
 
         if (line.type === 'delta') {
           this.loading = false;
-          this.streaming = true;
-          this.text += String(line.text || '');
+          this.generated = true;
+          this.receive(this.target + String(line.text || ''), false);
         } else if (line.type === 'summary') {
           this.summary = line.summary;
-          this.text = line.summary?.text ?? this.text;
-          this.streaming = false;
           this.loading = false;
+          this.receive(line.summary?.text ?? this.target, true);
           discussion.pushAttributes({ canelaAiHasSummary: true });
         } else if (line.type === 'error') {
           app.alerts.show({ type: 'error' }, line.message);
@@ -136,8 +204,10 @@ class SummaryState {
       .catch(showAiError)
       .finally(() => {
         this.loading = false;
-        this.streaming = false;
         this.controller = null;
+        // A conexão fechou: o que chegou termina de aparecer (rápido), em vez
+        // de o "●" ficar no fim para sempre.
+        if (this.target.length > this.text.length || this.streaming) this.receive(this.target, true);
         m.redraw();
       });
   }

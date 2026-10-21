@@ -374,6 +374,15 @@ return [
     // de derrubar o fórum com BadRouteException.
     (new Extend\ServiceProvider())->register(RouteConflictGuard::class),
 
+    // As subcategorias no topo da página da categoria (CategoryHero): as
+    // filhas das tags principais vêm com o fórum, como o `tags.parent` do
+    // flarum/tags. Sem isso a relação só chegava com o pedido da própria tag,
+    // depois de a página abrir, e os cartões apareciam atrasados.
+    (new Extend\Conditional())->whenExtensionEnabled('flarum-tags', static fn (): array => [
+        (new Extend\ApiResource(\Flarum\Api\Resource\ForumResource::class))
+            ->endpoint(\Flarum\Api\Endpoint\Show::class, static fn (\Flarum\Api\Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['tags.children'])),
+    ]),
+
     // Wardrobe: só o tema padrão é aquecido a cada recompilação (ver LazyThemeAssets).
     (new Extend\Conditional())->whenExtensionEnabled('ernestdefoe-wardrobe', static fn (): array => [
         (new Extend\ServiceProvider())->register(\Ramon\Canela\Support\WardrobeServiceProvider::class),

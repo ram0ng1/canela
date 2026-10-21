@@ -109,8 +109,12 @@
   }
 }
 
+// Com o `.TagsInput input`: a regra do flarum/tags (margin-top −2px e
+// margin-right −100%) vencia a do tema sem o foco, e o texto pulava 1px e
+// mudava de largura ao sair do campo.
 .CanelaTagModal-search,
-.CanelaTagModal-search:focus {
+.CanelaTagModal-search:focus,
+.TagsInput input.CanelaTagModal-search {
   flex: 1 1 auto;
   min-width: 6ch;
   max-width: 100%;

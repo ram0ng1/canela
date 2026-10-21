@@ -15,6 +15,8 @@ export interface ViewStat {
 export interface ViewStatsResponse {
   topic_id: number;
   stats: ViewStat[];
+  /** Sem nenhum dia gravado: o único dia é o total do tópico posto em hoje. */
+  estimated?: boolean;
 }
 
 /** Os 30 dias do Discourse (`from = 30.days.ago`). */
@@ -49,14 +51,52 @@ export function fetchViewStats(discussion: Discussion, totalViews: number): Prom
         ? data.stats.map((stat) => ({ viewed_at: String(stat.viewed_at), views: Number(stat.views) || 0 }))
         : [];
 
-      if (!stats.length) {
+      const estimated = !stats.length;
+
+      if (estimated) {
         stats.push({ viewed_at: new Date().toISOString().split('T')[0], views: totalViews });
       }
 
-      const result = { topic_id: Number(data?.topic_id) || Number(key), stats };
+      const result = { topic_id: Number(data?.topic_id) || Number(key), stats, estimated };
 
       cache.set(key, result);
 
       return result;
     });
+}
+
+const ONE_DAY = 86400000;
+
+function utcDay(time: number): number {
+  const date = new Date(time);
+
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
+/**
+ * A janela inteira do gráfico: os últimos 30 dias (ou desde a criação do
+ * tópico, se ele for mais novo), com zero nos dias sem registro.
+ *
+ * O Discourse grava as visualizações desde sempre, então lá os 30 dias vêm
+ * cheios. Aqui a contagem por dia começa quando o recurso é ligado: um tópico
+ * antigo, com milhares de visualizações, chegava com dois ou três dias e
+ * mostrava só os números (ou um gráfico de três pontos), em vez do gráfico do
+ * mês.
+ */
+export function fullWindow(stats: ViewStat[], createdAt: Date | null | undefined): ViewStat[] {
+  const today = utcDay(Date.now());
+  // "30.days.ago" até hoje, os dois inclusive: 31 dias, como o eixo de lá.
+  const windowStart = today - VIEW_STATS_DAYS * ONE_DAY;
+  const created = createdAt ? utcDay(createdAt.getTime()) : windowStart;
+  const start = Math.min(today, Math.max(windowStart, created));
+  const byDay = new Map(stats.map((stat) => [stat.viewed_at, stat.views]));
+  const days: ViewStat[] = [];
+
+  for (let day = start; day <= today; day += ONE_DAY) {
+    const key = new Date(day).toISOString().split('T')[0];
+
+    days.push({ viewed_at: key, views: byDay.get(key) ?? 0 });
+  }
+
+  return days;
 }

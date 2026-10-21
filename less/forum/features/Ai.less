@@ -148,7 +148,8 @@
   font-size: 1rem;
   line-height: normal;
   vertical-align: baseline;
-  color: var(--cn-link);
+  // O `--tertiary-medium` do Discourse: a cor de destaque clareada.
+  color: ~"color-mix(in srgb, var(--cn-accent) 55%, var(--cn-surface))";
   animation: canela-ai-flashing 1.5s 3s infinite;
 }
 
@@ -915,11 +916,14 @@
     right: auto;
     bottom: auto;
     z-index: 1100;
-    width: 25rem;
+    width: 20rem;
     max-width: ~"calc(100vw - 2rem)";
+    // A barra de formatação, onde o menu mora, não quebra linha (`nowrap`):
+    // sem isto, o aviso longo saía cortado na borda do menu.
+    white-space: normal;
     max-height: 60vh;
     overflow-y: auto;
-    padding: 0.25em 0;
+    padding: 0;
     border: 1px solid var(--cn-border);
     border-radius: var(--cn-radius);
     background: var(--cn-surface);
@@ -928,10 +932,27 @@
     animation: canela-ai-menu-in 0.15s ease-out;
   }
 
+  // Só o aviso: o menu encolhe até o texto.
+  &-menu:has(> &-toast) {
+    width: max-content;
+    max-width: ~"min(20rem, calc(100vw - 2rem))";
+  }
+
   &-toast {
-    padding: 0.75em 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 6px 12px;
     color: var(--cn-danger);
     font-size: var(--cn-font-down-1);
+    line-height: 1.4;
+
+    .icon {
+      flex: none;
+      width: 14px;
+      height: 14px;
+      margin-top: 0.15em;
+    }
   }
 
   &-tagColor {
@@ -944,9 +965,11 @@
   }
 }
 
+// Os itens: rótulo à esquerda, ícone cinza, fundo arredondado no hover e o
+// atalho discreto na ponta direita (os mesmos itens da lista de títulos).
 .ai-helper-options {
   margin: 0;
-  padding: 0;
+  padding: 0 4px 4px;
   list-style: none;
 
   li {
@@ -954,59 +977,156 @@
     align-items: center;
   }
 
-  &__button.Button {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    width: 100%;
-    margin: 0;
-    padding: 0.7rem 1rem;
-    border-radius: 0;
-    background: none;
-    color: var(--cn-primary);
-    text-align: left;
-    justify-content: flex-start;
-
-    .icon {
-      color: var(--cn-primary-medium);
-    }
-
-    &:hover,
-    &:focus-visible {
-      background: var(--cn-hover);
-      color: var(--cn-primary);
-
-      .icon {
-        color: var(--cn-primary-high);
-      }
-    }
-
-    .shortcut {
-      margin-left: auto;
-      font-size: var(--cn-font-down-2);
-      color: var(--cn-primary-medium);
-    }
-
-    &.is-selected .icon {
-      color: var(--cn-success);
-    }
+  // O campo do prompt, separado das ações por uma linha.
+  > li:has(.ai-custom-prompt) {
+    margin: 0 -4px 4px;
+    border-bottom: 1px solid var(--cn-border);
   }
 }
 
-.ai-custom-prompt {
+.ai-helper-options__button.Button {
   display: flex;
-  gap: 0.25rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
   width: 100%;
-  padding: 0.75em 1rem;
+  min-height: 34px;
+  margin: 0;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--cn-primary);
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: left;
 
-  &__input {
+  .icon,
+  .Button-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    font-size: 16px;
+    color: var(--cn-primary-medium);
+  }
+
+  // Rótulo e atalho ficam juntos no `Button-labelText` do core.
+  // (Em linha: uma regra geral dos botões põe o rótulo em coluna, e com o
+  // `align-items: center` o texto saía centralizado.)
+  .Button-label,
+  .Button-labelText {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1 1 auto;
+    gap: 8px;
+    min-width: 0;
+    text-align: left;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    color: var(--cn-primary);
+
+    .icon,
+    .Button-icon {
+      color: var(--cn-primary-high);
+    }
+  }
+
+  .shortcut {
+    flex: none;
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: none;
+    font-family: inherit;
+    font-size: var(--cn-font-down-2);
+    letter-spacing: 0.02em;
+    color: var(--cn-primary-medium);
+  }
+
+  &.is-selected .icon {
+    color: var(--cn-success);
+  }
+}
+
+// O prompt: um campo só, com o enviar dentro dele, à direita.
+.ai-custom-prompt {
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 36px;
+    padding: 0 3px 0 10px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus-within {
+      border-color: var(--cn-accent);
+      box-shadow: 0 0 0 2px ~"color-mix(in srgb, var(--cn-accent) 20%, transparent)";
+    }
+  }
+
+  &__input,
+  &__input:focus {
     flex: 1 1 auto;
     min-width: 0;
+    height: 100%;
     margin: 0;
-    border-color: var(--cn-primary-300);
+    padding: 0;
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    background: transparent;
+    color: var(--cn-primary);
+    font: inherit;
+    font-size: 15px;
 
     &::placeholder {
       color: var(--cn-primary-medium);
+    }
+  }
+
+  &__submit.Button {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border-radius: 6px;
+    background: var(--cn-accent);
+    color: var(--cn-accent-text);
+
+    .icon,
+    .Button-icon {
+      width: 15px;
+      height: 15px;
+      margin: 0;
+      font-size: 15px;
+      color: inherit;
+    }
+
+    &:hover:not(:disabled) {
+      background: ~"color-mix(in srgb, var(--cn-accent) 85%, black)";
+      color: var(--cn-accent-text);
+    }
+
+    // Sem texto, o enviar fica apagado, sem a mancha colorida.
+    &:disabled {
+      opacity: 1;
+      background: transparent;
+      color: var(--cn-primary-low-mid);
     }
   }
 }
@@ -1276,4 +1396,151 @@
       color: var(--cn-accent);
     }
   }
+}
+
+// ── Preferências de idioma do conteúdo ──────────────────────────────────────
+// O modal do Discourse: o título sobre um traço, os campos na largura toda
+// com rótulos pequenos em negrito, a ajuda em cinza, e o rodapé com os botões
+// sobre outro traço de ponta a ponta.
+
+.CanelaContentLanguageModal {
+  .Modal-header {
+    border-bottom: 1px solid var(--cn-primary-low);
+  }
+
+  .Modal-body {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+.CanelaContentLanguage.Form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+
+  // O core dá 10px entre o rótulo e o campo (flex com gap) e margem entre os
+  // grupos: aqui o espaçamento é o do Discourse, mais junto.
+  .Form-group {
+    display: block;
+    margin: 0;
+  }
+
+  .CanelaContentLanguage-label {
+    font-size: 14px;
+  }
+
+  .Select {
+    display: block;
+    width: 100%;
+  }
+
+  .Select-input {
+    width: 100%;
+    font-size: 15px;
+  }
+}
+
+.CanelaContentLanguage-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--cn-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.CanelaContentLanguage-help {
+  margin: 0 0 6px;
+  color: var(--cn-primary-medium);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+// O campo dos idiomas: "Selecionar…" à esquerda e o + na ponta, na largura
+// toda, como o multi-select do Discourse.
+.CanelaContentLanguage-understood.CanelaSelectKit {
+  display: block;
+  width: 100%;
+
+  > .CanelaSelectKit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 36px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    border: 1px solid var(--cn-primary-300);
+    border-radius: var(--cn-radius);
+    background: var(--cn-surface);
+    font-size: 15px;
+  }
+
+  &.is-expanded > .CanelaSelectKit-header {
+    border-color: var(--cn-accent);
+  }
+
+  .CanelaSelectKit-headerContent {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .CanelaSelectKit-caret {
+    color: var(--cn-primary-medium);
+  }
+}
+
+.CanelaContentLanguage-value,
+.CanelaContentLanguage-placeholder {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanelaContentLanguage-placeholder {
+  color: var(--cn-primary);
+}
+
+.CanelaContentLanguage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  .icon {
+    color: var(--cn-accent);
+  }
+}
+
+.CanelaContentLanguage-auto .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  color: var(--cn-primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+
+  input {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--cn-accent);
+  }
+}
+
+.CanelaContentLanguageModal .Modal-footer.CanelaContentLanguage-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px var(--cn-modal-pad-x);
+  border-top: 1px solid var(--cn-primary-low);
+  background: var(--cn-surface);
+  text-align: left;
 }

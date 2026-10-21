@@ -70,11 +70,19 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
 
   content() {
     const isEditing = !!postBookmark(this.attrs.post);
+    const context = this.context();
 
     return (
       <div className="Modal-body">
-        <div className="Form">
-          <div className="Form-group">
+        <div className="Form CanelaBookmarkModal-form">
+          {context && (
+            <p className="CanelaBookmarkModal-context">
+              <Icon name="far fa-bookmark" />
+              <span>{context}</span>
+            </p>
+          )}
+
+          <div className="Form-group CanelaBookmarkModal-field">
             <label className="CanelaBookmarkModal-label" for="canela-bookmark-name">
               {t('bookmarks.modal.name_label')}
             </label>
@@ -89,34 +97,22 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
             />
           </div>
 
-          {this.existingReminder && this.preset === null && (
-            <p className="CanelaBookmarkModal-existing">
-              <Icon name="far fa-clock" />
-              <span>{t('bookmarks.modal.existing_reminder', { date: reminderLabel(this.existingReminder) })}</span>
-            </p>
-          )}
-
           <fieldset className="Form-group CanelaBookmarkModal-reminder">
             <legend className="CanelaBookmarkModal-label">{t('bookmarks.modal.reminder_label')}</legend>
-            <div className="CanelaBookmarkModal-presets" role="radiogroup">
+
+            {this.existingReminder && this.preset === null && (
+              <p className="CanelaBookmarkModal-existing">
+                <Icon name="far fa-clock" />
+                <span>{t('bookmarks.modal.existing_reminder', { date: reminderLabel(this.existingReminder) })}</span>
+              </p>
+            )}
+
+            <div className="CanelaBookmarkModal-presets" role="radiogroup" aria-label={t('bookmarks.modal.reminder_label')}>
               {[...availablePresets(), 'custom' as const, 'none' as const].map((preset) => this.presetButton(preset))}
             </div>
-
-            {this.preset === 'custom' && (
-              <div className="CanelaBookmarkModal-custom">
-                <input className="FormControl" type="date" aria-label={t('bookmarks.modal.custom_date')} bidi={this.customDate} />
-                <input className="FormControl" type="time" aria-label={t('bookmarks.modal.custom_time')} bidi={this.customTime} />
-              </div>
-            )}
           </fieldset>
 
-          <div className="Form-group CanelaBookmarkModal-footer">
-            <Button className="Button Button--primary" type="submit" loading={this.loading}>
-              {t('bookmarks.modal.save')}
-            </Button>
-            <Button className="Button Button--flat" onclick={() => this.hide()}>
-              {t('bookmarks.modal.cancel')}
-            </Button>
+          <div className="CanelaBookmarkModal-footer">
             {isEditing && (
               <Button
                 className="Button Button--flat CanelaBookmarkModal-delete"
@@ -127,28 +123,61 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
                 {t('bookmarks.modal.delete')}
               </Button>
             )}
+            <div className="CanelaBookmarkModal-actions">
+              <Button className="Button Button--flat CanelaBookmarkModal-cancel" onclick={() => this.hide()}>
+                {t('bookmarks.modal.cancel')}
+              </Button>
+              <Button className="Button Button--primary" type="submit" loading={this.loading}>
+                {t('bookmarks.modal.save')}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
+  /** De qual post é o marcador: "Post de Fulano em Título". */
+  context(): string | null {
+    const post = this.attrs.post;
+    const title = post.discussion?.()?.title?.();
+    const user = post.user?.();
+
+    if (!title) return null;
+
+    return t('bookmarks.modal.context', { author: user ? user.displayName() : t('bookmarks.modal.context_deleted_user'), title });
+  }
+
+  /**
+   * Uma linha da lista: ícone, rótulo, o horário à direita e ✓ na escolhida.
+   * A data e a hora personalizadas abrem logo abaixo da própria linha.
+   */
   presetButton(preset: ReminderPreset): Mithril.Children {
     const date = presetDate(preset);
     const selected = this.preset === preset;
 
     return (
-      <button
-        type="button"
-        role="radio"
-        aria-checked={selected ? 'true' : 'false'}
-        className={classList('CanelaBookmarkModal-preset', { 'is-selected': selected })}
-        onclick={() => (this.preset = selected ? null : preset)}
-      >
-        <Icon name={PRESET_ICONS[preset]} className="CanelaBookmarkModal-presetIcon" />
-        <span className="CanelaBookmarkModal-presetLabel">{t(`bookmarks.presets.${preset}`)}</span>
-        {date && <span className="CanelaBookmarkModal-presetHint">{presetHint(date)}</span>}
-      </button>
+      <div className={classList('CanelaBookmarkModal-option', { 'is-selected': selected })}>
+        <button
+          type="button"
+          role="radio"
+          aria-checked={selected ? 'true' : 'false'}
+          className="CanelaBookmarkModal-preset"
+          onclick={() => (this.preset = selected ? null : preset)}
+        >
+          <Icon name={PRESET_ICONS[preset]} className="CanelaBookmarkModal-presetIcon" />
+          <span className="CanelaBookmarkModal-presetLabel">{t(`bookmarks.presets.${preset}`)}</span>
+          {date && <span className="CanelaBookmarkModal-presetHint">{presetHint(date)}</span>}
+          <Icon name="fas fa-check" className="CanelaBookmarkModal-presetCheck" />
+        </button>
+
+        {preset === 'custom' && selected && (
+          <div className="CanelaBookmarkModal-custom">
+            <input className="FormControl" type="date" aria-label={t('bookmarks.modal.custom_date')} bidi={this.customDate} />
+            <input className="FormControl" type="time" aria-label={t('bookmarks.modal.custom_time')} bidi={this.customTime} />
+          </div>
+        )}
+      </div>
     );
   }
 

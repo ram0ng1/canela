@@ -239,3 +239,47 @@
 .CanelaInviteModal .Modal-body {
   padding-bottom: var(--cn-modal-pad-y);
 }
+
+// "Editar usuário": quem está sendo editado, no topo do corpo.
+.CanelaEditUser-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 var(--cn-space-4);
+  padding: 0 0 var(--cn-space-4);
+  border-bottom: 1px solid var(--cn-border);
+  text-align: left;
+}
+
+.CanelaEditUser-avatar.Avatar {
+  --size: 48px;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  line-height: 48px;
+}
+
+.CanelaEditUser-names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.CanelaEditUser-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--cn-primary);
+  font-size: var(--cn-font-up-1);
+  font-weight: 700;
+}
+
+.CanelaEditUser-username {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}

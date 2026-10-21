@@ -50,109 +50,170 @@
   }
 }
 
+// De qual post é o marcador, logo abaixo do título.
+.CanelaBookmarkModal-context {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: calc(-1 * var(--cn-space-2)) 0 var(--cn-space-4);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+
+  .icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-top: 0.15em;
+  }
+
+  span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
 .CanelaBookmarkModal-label {
   display: block;
-  margin-bottom: var(--cn-space-2);
+  margin-bottom: 6px;
   padding: 0;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--cn-primary);
-  font-size: var(--cn-font-0);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaBookmarkModal-field .FormControl {
+  width: 100%;
 }
 
 .CanelaBookmarkModal-reminder {
-  border: 0;
-  padding: 0;
-  margin: 0 0 var(--cn-space-4);
+  // O fieldset encolhe até o conteúdo: a lista vai de borda a borda.
+  display: block;
+  width: 100%;
   min-width: 0;
+  margin: 0 0 var(--cn-space-4);
+  padding: 0;
+  border: 0;
 }
 
 .CanelaBookmarkModal-existing {
   display: flex;
   align-items: center;
-  gap: var(--cn-space-3);
-  margin: 0 0 var(--cn-space-4);
-  padding: var(--cn-space-3) var(--cn-space-4);
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 8px 12px;
   border-radius: var(--cn-radius);
   background: var(--cn-accent-low);
   color: var(--cn-primary);
   font-size: var(--cn-font-down-1);
+  line-height: 1.4;
 
   .icon {
-    color: var(--cn-link);
+    flex: none;
+    color: var(--cn-accent);
   }
 }
 
-// Os "tap tiles" do Discourse: grade de botões com ícone, rótulo e horário.
+// Os lembretes: uma lista só, numa caixa com divisórias, em vez da grade de
+// cartões (que ficavam de alturas diferentes quando o rótulo quebrava).
 .CanelaBookmarkModal-presets {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--cn-space-2);
-}
-
-.CanelaBookmarkModal-preset {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-areas:
-    "icon label"
-    "icon hint";
-  align-items: center;
-  column-gap: var(--cn-space-3);
-  min-height: 52px;
-  padding: var(--cn-space-2) var(--cn-space-3);
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--cn-border);
   border-radius: var(--cn-radius);
   background: var(--cn-surface);
+}
+
+.CanelaBookmarkModal-option + .CanelaBookmarkModal-option {
+  border-top: 1px solid var(--cn-border);
+}
+
+.CanelaBookmarkModal-preset {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
   color: var(--cn-primary);
   font: inherit;
+  font-size: 15px;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
 
   &:hover {
     background: var(--cn-hover);
   }
 
   &:focus-visible {
-    outline: none;
-    background: var(--cn-hover);
+    outline: 2px solid var(--cn-accent);
+    outline-offset: -2px;
   }
 
-  &.is-selected {
-    border-color: var(--cn-accent);
-    background: var(--cn-selected);
+  .is-selected > & {
+    background: ~"color-mix(in srgb, var(--cn-accent) 10%, transparent)";
   }
 }
 
 .CanelaBookmarkModal-presetIcon {
-  grid-area: icon;
-  width: 18px;
-  text-align: center;
-  color: var(--cn-primary-high);
+  flex: none;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  color: var(--cn-primary-medium);
 
   .is-selected & {
-    color: var(--cn-link);
+    color: var(--cn-accent);
   }
 }
 
 .CanelaBookmarkModal-presetLabel {
-  grid-area: label;
-  font-size: var(--cn-font-down-1);
-  font-weight: 600;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+
+  .is-selected & {
+    font-weight: 600;
+  }
 }
 
 .CanelaBookmarkModal-presetHint {
-  grid-area: hint;
-  font-size: var(--cn-font-down-2);
-  color: var(--cn-primary-high);
+  flex: none;
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+  font-variant-numeric: tabular-nums;
 }
 
+// O ✓ ocupa o lugar sempre (os horários não andam ao escolher).
+.CanelaBookmarkModal-presetCheck {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+  color: var(--cn-accent);
+  visibility: hidden;
+
+  .is-selected & {
+    visibility: visible;
+  }
+}
+
+// Data e hora, abertas logo abaixo de "Escolher data e hora".
 .CanelaBookmarkModal-custom {
   display: flex;
-  gap: var(--cn-space-2);
-  margin-top: var(--cn-space-3);
+  gap: 8px;
+  padding: 4px 14px 12px 42px;
+  background: ~"color-mix(in srgb, var(--cn-accent) 10%, transparent)";
 
   .FormControl {
     flex: 1 1 0;
@@ -160,21 +221,30 @@
   }
 }
 
+// Excluir à esquerda; Cancelar e Salvar juntos à direita.
 .CanelaBookmarkModal-footer {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--cn-space-2);
-  margin-bottom: 0;
+  gap: 8px;
+  margin: var(--cn-space-2) 0 0;
 }
 
-// Excluir fica sozinho à direita, como o .delete-bookmark do Discourse.
-.CanelaBookmarkModal-delete.Button {
+.CanelaBookmarkModal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-left: auto;
+}
+
+.CanelaBookmarkModal-delete.Button {
+  padding-left: 8px;
+  padding-right: 8px;
   color: var(--cn-danger);
 
   &:hover,
   &:focus-visible {
+    background: ~"color-mix(in srgb, var(--cn-danger) 10%, transparent)";
     color: var(--cn-danger);
   }
 }

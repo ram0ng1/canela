@@ -999,6 +999,16 @@ ramon-canela:
         disclaimer: Traduções geradas por IA podem ser imprecisas.
         show_original_all: Mostrar o conteúdo original
         show_translated_all: Mostrar o conteúdo traduzido
+        prefs:
+          title: Preferências de idioma do conteúdo
+          interface_language: Idioma da interface
+          understood_label: Idiomas que eu entendo
+          understood_help: Tópicos e posts nesses idiomas não serão traduzidos. O idioma da interface sempre conta como entendido.
+          understood_placeholder: Selecionar…
+          remove: 'Remover {language}'
+          auto_translate: Traduzir automaticamente tópicos e posts em outros idiomas
+          save: Salvar alterações
+          cancel: Cancelar
       errors:
         generic: A IA não conseguiu responder agora. Tente de novo.
       tools:
@@ -1157,7 +1167,9 @@ ramon-canela:
         create_title: Criar marcador
         edit_title: Editar marcador
         name_label: Nome
-        name_placeholder: Dê um nome a este marcador para lembrar do que se trata
+        name_placeholder: 'Ex.: ler depois, responder com calma…'
+        context: 'Post de {author} em {title}'
+        context_deleted_user: usuário excluído
         reminder_label: Lembre-me
         existing_reminder: Você será lembrado(a) deste marcador em {date}.
         custom_date: Data do lembrete
@@ -2521,7 +2533,7 @@ ramon-canela:
       user_card:
         read: Lido
         read_recently: '{time} recentemente'
-        likes_received: Saudações
+        likes_received: Curtidas
         solutions: Soluções
         posts_in_topic: '{count, plural, one {# postagem na discussão} other {# postagens na discussão}}'
         view_profile: Ver perfil

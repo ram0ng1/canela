@@ -383,13 +383,65 @@ button.CanelaTopicMap-stat {
   color: var(--cn-primary-high);
 }
 
-// O menu de notificações: título e descrição em cada nível.
+// O menu de notificações (o notifications-tracking do Discourse): ícone na
+// cor de destaque ao lado do título, a descrição pequena em cinza e o nível
+// atual com o fundo destacado, sem o ✓.
 .CanelaNotifications-menu {
   min-width: 300px;
   max-width: 360px;
+  padding: 4px;
+
+  > li > .DetailedDropdownItem {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: normal;
+  }
+
+  .DetailedDropdownItem-checkIcon {
+    display: none;
+  }
+
+  .DetailedDropdownItem-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    > .icon,
+    > .Button-icon {
+      flex: none;
+      width: 16px;
+      height: 16px;
+      margin: 2px 0 0;
+      color: var(--cn-accent);
+      font-size: 16px;
+    }
+  }
+
+  .DetailedDropdownItem-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+
+    strong {
+      color: var(--cn-primary);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+  }
 
   .DetailedDropdownItem-description {
+    color: var(--cn-primary-medium);
+    font-size: 12px;
+    line-height: 1.35;
     white-space: normal;
+  }
+
+  > li:has(.DetailedDropdownItem-checkIcon > *) > .DetailedDropdownItem {
+    background: ~"color-mix(in srgb, var(--cn-accent) 15%, transparent)";
   }
 }
 
@@ -1122,35 +1174,6 @@ button.CanelaTopicMap-stat {
 .CanelaUserCard-sep {
   color: var(--cn-primary-low-mid);
   user-select: none;
-}
-
-// A setinha à esquerda do cartão, apontando para o avatar de onde ele veio
-// (a altura vem do JS em --usercard-arrow). Dois triângulos: a borda e, por
-// cima, o preenchimento na cor do cartão.
-.CanelaUserCard.CanelaUserCard--arrow {
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: var(--usercard-arrow, 40px);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-
-  &::before {
-    left: -10px;
-    border-width: 9px 10px 9px 0;
-    border-color: transparent var(--cn-border) transparent transparent;
-  }
-
-  &::after {
-    left: -9px;
-    border-width: 8px 9px 8px 0;
-    border-color: transparent var(--cn-surface) transparent transparent;
-  }
 }
 
 // "Acompanhar no rodapé" desligado no admin: no computador, com a linha do

@@ -9,6 +9,7 @@
  * ao SubtreeRetainer, que não redesenha o post à toa.
  */
 import app from 'flarum/forum/app';
+import { extend } from 'flarum/common/extend';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import Avatar from 'flarum/common/components/Avatar';
 import Button from 'flarum/common/components/Button';
@@ -70,6 +71,10 @@ function ensureRoot() {
   document.addEventListener('mousedown', onDocumentEvent, true);
   document.addEventListener('keydown', onDocumentEvent, true);
   window.addEventListener('popstate', () => closeUserCard());
+
+  // Um modal aberto pelo cartão (o "Editar" do ⋯, conversar…) fica por cima
+  // da página: o cartão fecha, em vez de ficar sobre o modal.
+  extend('flarum/common/states/ModalManagerState' as any, 'show', () => closeUserCard());
 }
 
 export function openUserCard(user: User, anchor: HTMLElement): void {
@@ -330,14 +335,6 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
 
     card.style.left = `${left + window.scrollX}px`;
     card.style.top = `${top + window.scrollY}px`;
-
-    // A setinha à esquerda, apontando para o meio do avatar clicado; some se o
-    // cartão não ficou ao lado dele (sem espaço à direita ou virado para cima).
-    const beside = left >= rect.right;
-    const arrow = rect.top + rect.height / 2 - top;
-
-    card.classList.toggle('CanelaUserCard--arrow', beside && arrow > 16 && arrow < height - 16);
-    card.style.setProperty('--usercard-arrow', `${arrow}px`);
   }
 }
 

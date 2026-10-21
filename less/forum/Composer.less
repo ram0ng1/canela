@@ -717,6 +717,12 @@
   flex-wrap: wrap;
   gap: 4px;
   padding: 0 8px 8px;
+
+  // Aberto para cima, a ordem inverte (a lista, as etiquetas e a busca
+  // embaixo): o respiro vai para cima, longe da borda da lista.
+  .is-above & {
+    padding: 8px 8px 0;
+  }
 }
 
 .CanelaSelectKit-chip {
@@ -978,6 +984,27 @@
     margin: 0;
     padding: 8px 16px;
     border-top: 1px solid var(--cn-composer-border);
+  }
+}
+
+// Todo ícone da barra na mesma caixa de 16px, venha de onde vier: os botões
+// de extensões nem sempre são `.Button`, e os ícones que ficam no Font
+// Awesome (fora do mapa do Lucide) saíam menores que os de traço.
+.CanelaComposer .TextEditor-toolbar button:not(.CanelaAiHelper-menu *, .CanelaRichToggle) {
+  svg.icon,
+  i.icon:not(.CanelaTextIcon) {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    font-size: 16px;
+  }
+
+  i.icon:not(.CanelaTextIcon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 }
 

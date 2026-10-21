@@ -8,7 +8,7 @@ import ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
 import { forumBool, t } from '../utils/settings';
-import { categorySymbol, sortTags, tagSymbol, tagUrl, type CanelaTag } from '../utils/tags';
+import { allTags, categorySymbol, sortTags, tagSymbol, tagUrl, type CanelaTag } from '../utils/tags';
 
 export interface CategoryHeroAttrs extends IHeroAttrs {
   // "model", e não "tag": o atributo `tag` some no caminho até o componente.
@@ -70,12 +70,15 @@ export default class CategoryHero extends Hero<CategoryHeroAttrs> {
   }
 
   children(): CanelaTag[] {
-    const children = this.attrs.model.children();
+    const model = this.attrs.model;
+    const children = model.children();
 
-    // As filhas chegam com `include=children` no carregamento da tag; antes
-    // disso (ou para uma etiqueta) não há o que listar.
-    if (!Array.isArray(children)) return [];
+    if (Array.isArray(children)) return sortTags(children.filter(Boolean));
 
-    return sortTags(children.filter(Boolean));
+    // A relação só chega com o `include=children` do carregamento da tag, um
+    // pedido depois de a página abrir: os cartões apareciam atrasados. As
+    // filhas já vêm com o fórum (o flarum/tags carrega as tags com posição),
+    // então saem já no primeiro desenho.
+    return sortTags(allTags().filter((tag) => tag.parent?.() === model));
   }
 }

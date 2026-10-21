@@ -135,4 +135,15 @@ export function morphComposer(change: () => void): void {
     if (running.includes(main)) running = [];
     restore(el);
   };
+
+  // Enquanto a caixa anima, o core mede o composer (a cada redesenho, como o
+  // do foco que ele faz ao sair da tela cheia) e grava na área de texto uma
+  // altura tirada da caixa ainda em movimento: o rodapé (a barra e
+  // "Publicar") ia para fora da janela, ou para o meio da tela cheia. Quando
+  // tudo para, um redesenho faz o core medir de novo, com a caixa no lugar.
+  // Interrompido por outra troca, quem mede é a troca seguinte.
+  Promise.all(running.map((animation) => animation.finished)).then(
+    () => m.redraw.sync(),
+    () => {}
+  );
 }
