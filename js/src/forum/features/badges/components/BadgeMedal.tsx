@@ -13,7 +13,7 @@ export interface BadgeMedalAttrs extends ComponentAttrs {
 
 /**
  * O ícone do emblema dentro de uma medalha redonda na cor do tipo — ouro,
- * prata ou bronze —, como o `badge-icon` do Discourse. Um emblema com imagem
+ * prata ou bronze. Um emblema com imagem
  * (definida no admin) mostra a imagem no lugar do ícone. O tipo também vai no
  * `title`, para não depender só da cor.
  */

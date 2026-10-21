@@ -31,7 +31,7 @@ use Ramon\Canela\Messages\MessagesSchema;
 use Ramon\Canela\Messages\StaffGroups;
 
 /**
- * Os botões do tópico de mensagem do Discourse que o flarum/messages não tem:
+ * Os botões do tópico de mensagem que o flarum/messages não tem:
  *
  * - `POST /api/dialogs/{id}/canela-invite` ("+" no mapa → "Convidar"):
  *   acrescenta pessoas (ou a equipe) à conversa e as avisa.
@@ -40,7 +40,7 @@ use Ramon\Canela\Messages\StaffGroups;
  */
 final class DialogActions
 {
-    /** O `max_allowed_message_recipients` do Discourse (padrão 30). */
+    /** O limite de destinatários de uma mensagem. */
     public const MAX_RECIPIENTS = 30;
 
     public static function inviteEndpoint(): Endpoint\Endpoint

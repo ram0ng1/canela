@@ -20,8 +20,8 @@ use Ramon\Canela\Badges\BadgeQueries;
 use Ramon\Canela\Badges\Scope;
 
 /**
- * Perfil alterado (bio, avatar): o Autobiógrafo, o `Trigger::UserChange` do
- * Discourse. No `Saving` a bio ainda não foi gravada — daí o `afterSave`.
+ * Perfil alterado (bio, avatar): o Autobiógrafo. No `Saving` a bio ainda não
+ * foi gravada — daí o `afterSave`.
  */
 final class UserListener
 {

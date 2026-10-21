@@ -1,5 +1,5 @@
 /*
- * O retorno das ações do post (`lib/post-action-feedback` do Discourse):
+ * O retorno das ações do post (`post-action-feedback`):
  * depois de copiar o link, um "certo" verde se desenha no canto do botão
  * (`draw`, 1s) e "Link copiado!" aparece em cima dele; os dois esmaecem
  * (0,25s) e somem em 2,5s.

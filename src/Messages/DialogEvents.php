@@ -18,7 +18,7 @@ use Illuminate\Database\ConnectionInterface;
 use Ramon\Canela\Support\SchemaCache;
 
 /**
- * Os "posts de ação pequena" de uma mensagem do Discourse (`action_codes`):
+ * Os "posts de ação pequena" de uma mensagem:
  * "Convidou @fulano", "Convidou o grupo", "Removeu @fulano". O flarum/messages
  * só guarda mensagens; o tema guarda esses acontecimentos à parte
  * (`canela_dialog_events`) e o fórum os mostra no fluxo, entre as mensagens,

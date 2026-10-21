@@ -10,7 +10,7 @@
  */
 
 /*
- * Estatísticas, como no Discourse: visualizações de tópico, as contagens
+ * Estatísticas: visualizações de tópico, as contagens
  * "Novos (N)" e "Não lidos (N)" e a atividade do resumo do perfil (dias
  * visitados, tempo de leitura, postagens lidas, curtidas).
  *

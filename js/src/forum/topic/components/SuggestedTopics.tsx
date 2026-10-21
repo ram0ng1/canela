@@ -1,5 +1,5 @@
 /*
- * O more-topics do Discourse no fim do tópico: as abas "Sugestões" e
+ * Os tópicos sugeridos no fim do tópico: as abas "Sugestões" e
  * "✨ Relacionado(a)" no lugar do título, numa tabela compacta com respostas,
  * visualizações e atividade. Com uma lista só, ela ganha o título.
  *
@@ -272,7 +272,7 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
     );
   }
 
-  /** Como a coluna da lista: o número do Discourse, o title por extenso e o calor (`heatmap-*`). */
+  /** Como a coluna da lista: o número curto, o title por extenso e o calor (`heatmap-*`). */
   viewsCell(count: number) {
     const heat = forumBool('canelaListHeat', true) ? viewsHeat(count) : null;
 

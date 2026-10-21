@@ -1,10 +1,10 @@
 /*
- * A fila de revisão do Discourse (/review) sobre o flarum/flags: cada post
+ * A fila de revisão sobre o flarum/flags: cada post
  * com sinalizações abertas vira um `.reviewable-item` — o tipo, o tópico com
  * a categoria, o post inteiro, quem sinalizou e por quê, e as ações.
  *
  * O flarum/flags não guarda histórico (resolver = apagar as sinalizações), então
- * não há o filtro de status do Discourse; o filtro é pelo tipo do item. As
+ * não há filtro de status; o filtro é pelo tipo do item. As
  * postagens que o flarum/approval segura chegam pela mesma lista (ele cria
  * uma sinalização do tipo `approval`) e viram "Postagem na fila".
  *
@@ -38,12 +38,12 @@ import { loadChatReports, type ChatReport } from '../thirdparty/ramonChat/featur
 /** Tudo o que o item mostra, numa requisição só. */
 const INCLUDE = ['user', 'post', 'post.user', 'post.discussion', 'post.discussion.tags', 'post.flags', 'post.flags.user'];
 
-/** Acima disso o post começa recolhido, como o `.post-body.is-collapsed` do Discourse. */
+/** Acima disso o post começa recolhido. */
 const COLLAPSE_AT = 600;
 
 type ReviewFilter = 'all' | 'flagged' | 'queued' | 'chat';
 
-/** Os motivos do flarum/flags com os nomes das sinalizações do Discourse. */
+/** Os motivos do flarum/flags com os nomes das sinalizações do tema. */
 const REASONS: Record<string, string> = {
   off_topic: 'review.reason_off_topic',
   inappropriate: 'review.reason_inappropriate',
@@ -386,7 +386,7 @@ export default class ReviewQueue extends Component {
     );
   }
 
-  /** Quem sinalizou, o motivo, quando e a mensagem (o `.reviewable-scores` do Discourse). */
+  /** Quem sinalizou, o motivo, quando e a mensagem (o `.reviewable-scores`). */
   scores(flags: any[]): Mithril.Children {
     if (!flags.length) return null;
 
@@ -534,7 +534,7 @@ export default class ReviewQueue extends Component {
   // core (ocultar, restaurar, excluir) e do flarum/approval (isApproved).
   // -------------------------------------------------------------------
 
-  /** Excluir o primeiro post é excluir o tópico, como no Discourse. */
+  /** Excluir o primeiro post é excluir o tópico. */
   canDelete(post: Post): boolean {
     const discussion: any = post.discussion();
 

@@ -1,6 +1,6 @@
 /*
- * As seções "Canais" e "Mensagens diretas" da barra lateral, como as do
- * Discourse (o modo combinado: o chat embaixo das categorias e etiquetas).
+ * As seções "Canais" e "Mensagens diretas" da barra lateral (o modo
+ * combinado: o chat embaixo das categorias e etiquetas).
  *
  * - Canais: o ícone na cor da tag, o nome e, à direita, o número verde das
  *   menções ou o pontinho das não lidas; o lápis do cabeçalho leva a

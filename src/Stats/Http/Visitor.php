@@ -13,10 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 final class Visitor
 {
     /**
-     * A detecção de robôs do Discourse (CrawlerDetection.crawler?), com as
-     * listas padrão dele: o que não se parece com um navegador
-     * (`non_crawler_user_agents`) é robô; o que se parece, mas se declara robô
-     * (`crawler_user_agents`) ou é automação (`crawler_automation_user_agents`),
+     * A detecção de robôs pelo user agent: o que não se parece com um
+     * navegador é robô; o que se parece, mas se declara robô ou é automação,
      * também. Robô não conta visualização — um Googlebot passando por mil
      * tópicos não é interesse de ninguém.
      */
@@ -70,7 +68,7 @@ final class Visitor
 
     /**
      * Só o IP, com o sal: a identidade do visitante nas visualizações de
-     * tópico, que no Discourse é o IP — trocar de navegador no mesmo
+     * tópico é o IP — trocar de navegador no mesmo
      * computador não é outra pessoa vendo o tópico.
      */
     public function ipHash(string $salt): string

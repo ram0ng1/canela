@@ -25,7 +25,7 @@ use Ramon\Canela\Gaps\GapsSettings;
 use Ramon\Canela\Gaps\Notification\TopicLinkedBlueprint;
 
 /**
- * "Fulano vinculou seu tópico" — o `linked` do Discourse: uma postagem nova
+ * "Fulano vinculou seu tópico": uma postagem nova
  * (ou editada) com link para um tópico de outra pessoa avisa o autor dele.
  *
  * Os links são procurados no texto da postagem, apontando para este fórum

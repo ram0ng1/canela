@@ -32,7 +32,7 @@ use Flarum\Database\AbstractModel;
  */
 class Upload extends AbstractModel
 {
-    /** Anexos por mensagem — o Discourse também limita o composer. */
+    /** Anexos por mensagem — o composer também limita. */
     public const MAX_PER_MESSAGE = 10;
 
     protected $table = 'canela_chat_uploads';

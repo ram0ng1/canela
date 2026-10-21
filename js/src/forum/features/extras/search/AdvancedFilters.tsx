@@ -1,11 +1,11 @@
 /*
- * "Filtros avançados" da página de busca do Discourse: postado por, na
+ * "Filtros avançados" da página de busca: postado por, na
  * categoria, com etiquetas, onde (só no título, meus, curtidos, não lidos),
  * status, datas e mínimo de postagens.
  *
  * Cada controle altera a consulta (SearchQuery) e devolve a nova pelo
  * `onchange`; quem monta a página reescreve o campo de busca com os gambits
- * correspondentes — o mesmo vai-e-vem do Discourse. A busca só roda ao
+ * correspondentes, num vai-e-vem. A busca só roda ao
  * clicar em "Pesquisar".
  */
 import app from 'flarum/forum/app';

@@ -1,5 +1,5 @@
 /*
- * Clicar numa menção @fulano abre o cartão de usuário, como no Discourse —
+ * Clicar numa menção @fulano abre o cartão de usuário —
  * o mesmo cartão do avatar do post. Ctrl/Cmd+clique continua abrindo o
  * perfil numa aba nova.
  *

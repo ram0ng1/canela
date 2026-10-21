@@ -21,8 +21,7 @@ use Ramon\Canela\Chat\Model\Message;
 use Ramon\Canela\Chat\Model\Thread;
 
 /**
- * As mensagens de um canal ou de um fio, por cursor — o ListChannelMessages do
- * Discourse.
+ * As mensagens de um canal ou de um fio, por cursor.
  *
  * Paginar por id, e não por página: no chat chegam mensagens o tempo todo, e um
  * "offset" pularia ou repetiria mensagens a cada envio. A conversa abre em volta

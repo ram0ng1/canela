@@ -1,9 +1,8 @@
 /*
- * O botão ✨ "Perguntar à IA" da barra do editor e o menu dele — o
- * ai-composer-helper-menu do Discourse.
+ * O botão ✨ "Perguntar à IA" da barra do editor e o menu dele.
  *
- * O menu abre logo acima do botão (com o fade e o leve deslize dos menus do
- * float-kit): prompt personalizado no topo, e as opções Traduzir, Revisar
+ * O menu abre logo acima do botão (com o fade e o leve deslize dos menus
+ * suspensos): prompt personalizado no topo, e as opções Traduzir, Revisar
  * texto (Ctrl+Alt+P), Simplificar, Explicar, Gerar tabela de Markdown,
  * Sugerir título e Sugerir categoria e etiquetas. Vale para o trecho
  * selecionado; sem seleção, para o texto todo.
@@ -32,7 +31,7 @@ export interface HelperMenuAttrs extends ComponentAttrs {
   initiallyOpen?: boolean;
 }
 
-/** Abaixo disso não há o que sugerir de título (o MIN_CHARACTER_COUNT do Discourse). */
+/** Abaixo disso não há o que sugerir de título. */
 const MIN_TITLE_TEXT = 40;
 
 type Panel = 'options' | 'titles' | 'tags';
@@ -399,7 +398,7 @@ export default class HelperMenu extends Component<HelperMenuAttrs> {
       return;
     }
 
-    // Ctrl+Alt+P (⌘⌥P no Mac): revisar o texto, sem abrir o menu, como no Discourse.
+    // Ctrl+Alt+P (⌘⌥P no Mac): revisar o texto, sem abrir o menu.
     const editorElement = this.attrs.editor.element as HTMLElement | undefined;
 
     if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === 'KeyP' && editorElement?.contains(document.activeElement)) {

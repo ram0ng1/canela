@@ -66,7 +66,7 @@ class Channel extends AbstractModel
         self::STATUS_ARCHIVED => 'archived',
     ];
 
-    /** Como o `max_topic_title_length` padrão do Discourse. */
+    /** Tamanho máximo do nome do canal. */
     public const NAME_MAX_LENGTH = 100;
 
     public const DESCRIPTION_MAX_LENGTH = 500;

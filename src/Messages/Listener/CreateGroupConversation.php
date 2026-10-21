@@ -26,7 +26,7 @@ use Ramon\Canela\Messages\Api\DialogActions;
 use Ramon\Canela\Messages\MessagesSchema;
 
 /**
- * Mensagem nova para várias pessoas, como o composer do Discourse: a API do
+ * Mensagem nova para várias pessoas: a API do
  * flarum/messages aceita um destinatário só (`users`), e o tema manda os
  * outros em `canelaUsers`.
  *
@@ -34,7 +34,7 @@ use Ramon\Canela\Messages\MessagesSchema;
  * reaproveitada): ela nasce aqui, com todo mundo, e a mensagem é ligada a ela
  * antes que o flarum/messages procure a conversa do par. As regras são as do
  * flarum/messages para cada destinatário (visível, pode receber, conseguiria
- * responder) e o limite de destinatários do Discourse.
+ * responder) e o limite de destinatários.
  */
 final class CreateGroupConversation
 {

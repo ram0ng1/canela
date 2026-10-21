@@ -1,6 +1,5 @@
 // =====================================================================
-// Barra lateral do Discourse (.sidebar-wrapper), medida no
-// meta.discourse.org: fundo da superfície, linhas de 2,3rem com o ícone numa
+// Barra lateral: fundo da superfície, linhas de 2,3rem com o ícone numa
 // coluna de 24px, cinza neutro, hover tingido do destaque e o ativo em
 // cinza claro.
 // =====================================================================
@@ -24,8 +23,7 @@
   z-index: calc(~"var(--zindex-header) - 1");
   transform: translateX(-100%);
   visibility: hidden;
-  // O Discourse abre e fecha a barra encaixada sem animação (o desktop_theme
-  // do Meta zera a transição do .sidebar-animate).
+  // A barra encaixada abre e fecha sem animação.
   transition: none;
 
   .Canela--sidebarOpen & {
@@ -34,7 +32,7 @@
   }
 }
 
-// O fundo "por trás" do painel do celular (.header-cloak).
+// O fundo "por trás" do painel do celular.
 .CanelaSidebar-backdrop {
   display: none;
 }
@@ -51,7 +49,7 @@
   overscroll-behavior: contain;
   padding: 0 var(--cn-space-2) var(--cn-space-4);
   // A barra de rolagem só aparece com o mouse em cima: some 0,5s depois de
-  // sair, como o .sidebar-sections do Discourse.
+  // sair.
   scrollbar-color: transparent transparent;
   transition: scrollbar-color 0.25s ease-in-out 0.5s;
 
@@ -61,8 +59,7 @@
   }
 }
 
-// "Novo tópico" em largura total, no topo (só para quem está logado, como
-// no Discourse).
+// "Novo tópico" em largura total, no topo (só para quem está logado).
 .CanelaSidebar-newTopic {
   margin: var(--cn-space-2) 0 var(--cn-space-4);
 
@@ -75,7 +72,7 @@
   }
 }
 
-// Com rascunhos (fof/drafts): o botão dividido do Discourse — "✎ Novo
+// Com rascunhos (fof/drafts): um botão dividido — "✎ Novo
 // tópico" e o "⌄" grudados, da mesma cor, com uma linha fina entre eles.
 .CanelaSidebar-newTopic--split {
   position: relative;
@@ -113,7 +110,7 @@
   }
 }
 
-// Seções (.sidebar-section-wrapper): 4px em cima e embaixo e uma linha entre
+// Seções: 4px em cima e embaixo e uma linha entre
 // elas; a primeira encosta no topo e a última não tem linha.
 .CanelaSidebar-section {
   padding: 4px 0;
@@ -213,7 +210,7 @@
     white-space: nowrap;
     transition: none;
 
-    // O ícone mora numa coluna de 24px, centralizado (.sidebar-section-link-prefix).
+    // O ícone mora numa coluna de 24px, centralizado.
     > .Button-icon,
     > .icon,
     > .CanelaSidebar-linkIcon:not(.CanelaCategorySymbol) {
@@ -245,7 +242,7 @@
       background: none;
     }
 
-    // Hover (--d-sidebar-highlight-*): fundo tingido e texto na cor do destaque.
+    // Hover: fundo tingido e texto na cor do destaque.
     &:hover,
     &:focus-visible {
       background: var(--cn-hover-accent);
@@ -258,7 +255,7 @@
       }
     }
 
-    // Ativo (--d-sidebar-active-*): cinza claro e semi-negrito.
+    // Ativo: cinza claro e semi-negrito.
     &[active='true'],
     &.active {
       background: var(--cn-primary-100);
@@ -342,7 +339,7 @@
   }
 }
 
-// Rodapé (.sidebar-footer-wrapper): grudado no pé, sem linha, com um degradê
+// Rodapé: grudado no pé, sem linha, com um degradê
 // em cima que mostra que a lista rola; os botões à direita.
 .CanelaSidebar-footer {
   position: relative;
@@ -369,7 +366,7 @@
     background: linear-gradient(to bottom, transparent, var(--cn-surface));
   }
 
-  // .sidebar-footer-actions-button: pílula pequena com o ícone em font-down-1.
+  // Botões do rodapé: pílula pequena com o ícone em font-down-1.
   .Button--icon,
   .ThemeSwitcher > .Dropdown-toggle,
   .CanelaColorMode > .Dropdown-toggle {
@@ -403,7 +400,7 @@
       color: var(--cn-primary-high);
     }
 
-    // `.sidebar-footer-actions-button:hover`: cinza leve, não a cor do tema.
+    // Hover: cinza leve, não a cor do tema.
     &:hover,
     &:focus-visible,
     .open > & {
@@ -415,7 +412,7 @@
     }
   }
 
-  // Os menus do rodapé abrem para cima, como os do Discourse.
+  // Os menus do rodapé abrem para cima.
   .CanelaColorMode .Dropdown-menu,
   .CanelaPaletteSelector .Dropdown-menu {
     top: auto;
@@ -439,7 +436,7 @@
     max-width: ~"calc(100% - (2 * var(--cn-space-2)))";
   }
 
-  // A paleta, em texto, ocupa a sobra à esquerda ("Meta Branded ⌄").
+  // A paleta, em texto, ocupa a sobra à esquerda ("Canela ⌄").
   .CanelaPaletteSelector {
     flex: 1 1 auto;
     min-width: 0;
@@ -525,7 +522,7 @@
       text-align: left;
     }
 
-    // `--d-selected` do Discourse: um cinza leve, não a cor de destaque.
+    // Selecionado: um cinza leve, não a cor de destaque.
     &.active,
     &.active:hover {
       background: var(--cn-primary-very-low, var(--cn-hover));
@@ -553,7 +550,7 @@
     }
   }
 
-  // Com o Wardrobe: "🖌 Canela ⌄", como o "🖌 Meta Branded ⌄" do Meta.
+  // Com o Wardrobe: "🖌 Canela ⌄".
   .CanelaPaletteSelector-label {
     display: inline-flex;
     align-items: center;
@@ -664,8 +661,7 @@
     // de abas cobria o pé do painel (paleta e modo de cor) e o escurecido.
     z-index: calc(~"var(--zindex-composer) + 7");
 
-    // Abre deslizando da esquerda em 200ms (ease-out), como o .menu-panel do
-    // Discourse; fecha na hora.
+    // Abre deslizando da esquerda em 200ms (ease-out); fecha na hora.
     // `backwards`, não `both`: terminada a animação o painel volta ao
     // `transform: none` da regra. Com o transform que sobrava, os menus
     // `position: fixed` lá dentro (a folha do celular) se posicionavam pelo
@@ -755,8 +751,8 @@
   to { opacity: 1; }
 }
 
-// Quem pede menos movimento recebe o painel já aberto (o Discourse faz a
-// animação durar 0ms nesse caso).
+// Quem pede menos movimento recebe o painel já aberto (a animação dura
+// 0ms nesse caso).
 @media (prefers-reduced-motion: reduce) {
   #canela-sidebar,
   .CanelaSidebar-backdrop {

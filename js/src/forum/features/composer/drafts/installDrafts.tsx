@@ -1,5 +1,5 @@
 /*
- * Rascunhos à moda do Discourse, guardados pelo fof/drafts.
+ * Rascunhos guardados pelo fof/drafts.
  *
  * - O composer de tópico novo e o de resposta salvam sozinhos dois segundos
  *   depois que a pessoa para de escrever (o autosave do fof é opcional e vem
@@ -90,7 +90,7 @@ function startAutosave(body: any): () => void {
 
 /**
  * Resposta aberta sem rascunho escolhido: se a pessoa tem um rascunho desse
- * tópico, o composer o retoma (o Discourse faz o mesmo). Uma citação inserida
+ * tópico, o composer o retoma. Uma citação inserida
  * ao abrir não é sobrescrita.
  */
 function restoreReplyDraft(body: any): void {
@@ -178,13 +178,13 @@ export default function installDrafts() {
       return;
     }
 
-    // Apagou todo o texto: o rascunho deixa de existir, como no Discourse.
+    // Apagou todo o texto: o rascunho deixa de existir.
     discardCurrentDraft();
     this.hide();
   });
 
-  // O fof põe um disquete ("salvar rascunho") nos controles do composer. O
-  // Discourse não tem botão: salva sozinho. O initializer do fof roda depois
+  // O fof põe um disquete ("salvar rascunho") nos controles do composer. Aqui
+  // não há botão: salva sozinho. O initializer do fof roda depois
   // do tema, então a remoção é registrada no `mount`, depois do dele.
   override(app as any, 'mount', function (this: any, original: (...args: any[]) => unknown, ...args: any[]) {
     extend('flarum/forum/components/Composer' as any, 'controlItems', function (items: ItemList<Mithril.Children>) {
@@ -194,7 +194,7 @@ export default function installDrafts() {
     return original(...args);
   });
 
-  // Rodapé do editor: o `#draft-status` do Discourse, discreto — "Salvando…",
+  // Rodapé do editor: o estado do rascunho, discreto — "Salvando…",
   // "Rascunho salvo" por alguns segundos, ou o erro.
   extend(TextEditor.prototype, 'controlItems', function (this: TextEditor, items: ItemList<Mithril.Children>) {
     const status = draftStatus();
@@ -241,7 +241,7 @@ export default function installDrafts() {
       'canelaDrafts',
       <LinkButton href={app.route('user.drafts', { username: this.user.slug() })} icon="fas fa-pen-ruler">
         {t('composer.drafts.nav')}
-        {/* "Rascunhos (2)", como na subaba do Discourse. */}
+        {/* "Rascunhos (2)", com a contagem. */}
         {count > 0 && ` (${count})`}
       </LinkButton>,
       // Depois de Postagens (100) e Tópicos (90), antes das abas de outras extensões.

@@ -21,7 +21,7 @@ use Ramon\Canela\Ai\Llm\ToolDefinition;
 
 /**
  * A busca do fórum para o bot (`search_forum`), a ferramenta "Pesquisar" das
- * personas do Discourse.
+ * personas.
  *
  * Usa a mesma busca do Flarum, com o ator de quem conversa: as permissões de
  * tags, de aprovação e de tópicos ocultos valem como na busca do cabeçalho.

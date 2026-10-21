@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Rascunhos do composer, como os do Discourse: um por pessoa e por contexto
+ * Rascunhos do composer: um por pessoa e por contexto
  * (tópico novo, resposta a um tópico, edição de um post). O índice único em
  * (user_id, draft_key) é o que deixa a API gravar por "upsert" — salvar de
  * novo o mesmo contexto substitui o rascunho em vez de empilhar outro.

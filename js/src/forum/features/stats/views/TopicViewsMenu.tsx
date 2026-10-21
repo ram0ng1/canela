@@ -1,6 +1,6 @@
 /*
  * O conteúdo do menu "Visualizações recentes" do mapa do tópico: busca os
- * dias ao abrir (com o carregando do Discourse) e escolhe entre o gráfico,
+ * dias ao abrir (com um indicador de carregamento) e escolhe entre o gráfico,
  * com mais de dois dias, e os números lado a lado.
  */
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -76,7 +76,7 @@ export default class TopicViewsMenu extends Component<TopicViewsMenuAttrs> {
   /**
    * Os dias do menu. Com dias gravados, a janela inteira (30 dias, ou desde a
    * criação do tópico) com zero nos dias sem registro; sem nenhum, o total
-   * em hoje, como no Discourse.
+   * em hoje.
    */
   stats(): ViewStat[] {
     if (!this.data) return [];

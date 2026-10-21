@@ -1,12 +1,11 @@
 /*
- * A lista de mensagens do perfil no formato da lista de tópicos do Discourse
- * (`topic-list` com `showPosters` e `hideCategory`, como em
- * `build-private-messages-route.js`): Tópico | participantes | Respostas |
+ * A lista de mensagens do perfil no formato da lista de tópicos, com os
+ * participantes e sem a categoria: Tópico | participantes | Respostas |
  * Atividade. Mensagem não tem visualizações nem categoria.
  *
  * A marcação repete a da lista de tópicos do tema (`.CanelaList`,
  * `.DiscussionListItem`, `.CanelaTopic-*`, `.CanelaCell--*`) para herdar as
- * mesmas medidas — a lista de mensagens do Discourse é a mesma tabela.
+ * mesmas medidas — a lista de mensagens é a mesma tabela.
  */
 import app from 'flarum/forum/app';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -29,7 +28,7 @@ import { dialogHref, dialogTitle, dialogViews, groupLabel, messageCount, partici
 
 export interface MessagesListAttrs extends ComponentAttrs {
   state: BoxListState;
-  /** O estado vazio da caixa (título e texto do Discourse). */
+  /** O estado vazio da caixa (título e texto). */
   empty: () => Mithril.Children;
 }
 
@@ -152,9 +151,9 @@ export default class MessagesList extends Component<MessagesListAttrs> {
   }
 
   /**
-   * Os participantes (`topic.posters` de uma mensagem): todos, até 5 — o
-   * flarum/messages manda no máximo 5 —, e quem escreveu por último com o
-   * brilho do Discourse.
+   * Os participantes de uma mensagem: todos, até 5 — o
+   * flarum/messages manda no máximo 5 —, e quem escreveu por último em
+   * destaque.
    */
   posters(dialog: Dialog, lastUser: User | null): Mithril.Children {
     const users = participants(dialog).slice(0, 5);

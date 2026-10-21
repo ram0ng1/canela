@@ -1,5 +1,5 @@
 /*
- * O `select-kit` do Discourse, no tamanho do que o composer precisa: um
+ * Um seletor com busca, no tamanho do que o composer precisa: um
  * cabeçalho que abre, logo embaixo (ou em cima, quando falta espaço), o
  * corpo com o campo "Pesquisar…" e a lista. Setas sobem e descem, Enter
  * escolhe, Esc fecha; clicar fora fecha.
@@ -45,7 +45,7 @@ export interface SelectKitAttrs extends ComponentAttrs {
   placeholder?: string;
   /**
    * Ao abrir, destaca a linha escolhida (ou nenhuma), em vez da primeira —
-   * o `category-drop` do Discourse abre sem destacar nada.
+   * assim o seletor abre sem destacar nada.
    */
   highlightSelected?: boolean;
   emptyText?: string;
@@ -143,7 +143,7 @@ export default class SelectKit extends Component<SelectKitAttrs> {
 
     const after = typeof this.attrs.after === 'function' ? this.attrs.after(this.filter) : this.attrs.after;
 
-    // Aberto para cima, a busca fica embaixo, perto do cabeçalho (como no Discourse).
+    // Aberto para cima, a busca fica embaixo, perto do cabeçalho.
     return (
       <div className="CanelaSelectKit-body" onmousedown={(e: MouseEvent) => e.stopPropagation()}>
         {this.above ? [after, list, this.attrs.before, filter] : [filter, this.attrs.before, list, after]}

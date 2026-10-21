@@ -1,5 +1,5 @@
 /*
- * Quem curtiu / quem reagiu: o popover do discourse-reactions que abre ao
+ * Quem curtiu / quem reagiu: o popover que abre ao
  * clicar na contagem da barra do post — cartão branco com sombra, uma seta
  * apontando para a contagem, e a lista (avatar de 32px, nome e, à direita, o
  * coração ou o emoji da reação de cada um). Rola depois de ~8 pessoas.
@@ -101,7 +101,7 @@ export function openWhoReacted(anchor: HTMLElement, load: () => Promise<ReactorE
     });
 }
 
-/** O coração vermelho das curtidas (o emoji ❤️ do Discourse). */
+/** O coração vermelho das curtidas (como o emoji ❤️). */
 export function heartIcon(): Mithril.Children {
   return <i aria-hidden="true" className="icon fas fa-heart CanelaReactors-heart" />;
 }

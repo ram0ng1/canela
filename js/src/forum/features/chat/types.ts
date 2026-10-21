@@ -163,7 +163,7 @@ export interface ChatEvent {
   refetch?: boolean;
 }
 
-/** As "rotas" da gaveta e da página cheia, como o chat-drawer-router do Discourse. */
+/** As "rotas" da gaveta e da página cheia. */
 export type ChatRoute =
   | { name: 'channels' }
   | { name: 'direct-messages' }

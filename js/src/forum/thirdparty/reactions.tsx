@@ -1,8 +1,8 @@
 /*
- * fof/reactions no jeito do discourse-reactions.
+ * fof/reactions no jeito do Canela.
  *
  * Com a barra de ações do tema e o flarum/likes ligados, curtida e reações
- * viram um botão só, como no Discourse:
+ * viram um botão só:
  *
  * - O coração da barra: clicar curte (ou desfaz); passar o mouse (ou o toque
  *   longo, no celular) abre acima o seletor com as reações habilitadas do
@@ -36,13 +36,13 @@ import { postUi, topicSettings, type PostUi } from '../topic/ui';
 import { likers } from '../topic/posts';
 import { heartIcon, openWhoReacted, type ReactorEntry } from '../topic/components/WhoReactedPopover';
 
-/** Quantos emojis o resumo mostra (`nth-of-type(1n + 4)` some no Discourse). */
+/** Quantos emojis o resumo mostra. */
 const SUMMARY_EMOJIS = 3;
 
 /** A reação do fof que é a curtida do flarum/likes. */
 const HEART = 'heart';
 
-/** Atrasos do discourse-reactions: abrir no hover, fechar ao sair, toque longo. */
+/** Atrasos: abrir no hover, fechar ao sair, toque longo. */
 const OPEN_DELAY = 250;
 const CLOSE_DELAY = 300;
 const LONG_PRESS = 400;
@@ -307,7 +307,7 @@ function choices(post: Post): Choice[] {
     });
   });
 
-  // Sem a "heart" habilitada no fof, a curtida vem na frente, como no Discourse.
+  // Sem a "heart" habilitada no fof, a curtida vem na frente.
   if (!heartAdded && canLike) {
     addHeart();
     list.unshift(list.pop()!);
@@ -354,7 +354,7 @@ class CanelaReactButton {
     const emojiMine = mine && mine.identifier?.() !== HEART ? mine : null;
     const liked = isLiked(post) || (!!mine && !emojiMine);
     // Só o coração (sem permissão de reagir, p.ex. no próprio post): o botão
-    // já curte sozinho, então não há seletor — como no Discourse.
+    // já curte sozinho, então não há seletor.
     const all = choices(post);
     const list = all.length === 1 && all[0].key === HEART ? [] : all;
     const label = guest
@@ -446,7 +446,7 @@ class CanelaReactButton {
     return !!this.element?.querySelector('.CanelaReactPicker');
   }
 
-  /** O seletor abre (ou fecha) com o atraso do Discourse, só com o mouse. */
+  /** O seletor abre (ou fecha) com atraso, só com o mouse. */
   hover(event: PointerEvent, inside: boolean) {
     if (event.pointerType !== 'mouse' || !this.hasPicker()) return;
 
@@ -500,7 +500,7 @@ class CanelaReactButton {
     document.removeEventListener('keydown', this.onDocument, true);
   }
 
-  /** Alinhado à esquerda do botão (como no Meta), sem sair da janela. */
+  /** Alinhado à esquerda do botão, sem sair da janela. */
   place() {
     const picker = this.element?.querySelector('.CanelaReactPicker') as HTMLElement | null;
 
@@ -654,8 +654,8 @@ export default function installReactions(): void {
   });
 
   // O "Ver reações" (coração) que o fof põe nos controles do post repetiria
-  // o resumo à esquerda da barra, que já abre quem reagiu: no Discourse o
-  // coração aparece uma vez só.
+  // o resumo à esquerda da barra, que já abre quem reagiu: o coração
+  // aparece uma vez só.
   app.beforeMount(() => {
     extend(PostControls, 'moderationControls', function (items: ItemList<Mithril.Children>) {
       if (thirdParty.reactions() && topicSettings.postActions() && items.has('viewReactions')) items.remove('viewReactions');

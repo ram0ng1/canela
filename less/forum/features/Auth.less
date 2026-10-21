@@ -1,9 +1,9 @@
 // =====================================================================
-// /login e /signup: as páginas cheias do Discourse (`.login-fullpage`,
-// `.signup-fullpage`). O formulário é o modal do core desenhado dentro da
+// /login e /signup em páginas cheias. O formulário é o modal do core
+// desenhado dentro da
 // página (features/auth): aqui ele perde a cara de modal (posição, animação,
 // fundo escurecido) e vira um cartão no meio do fundo tingido, com o logo
-// do fórum em cima. Sem barra lateral nem hambúrguer, como no Discourse.
+// do fórum em cima. Sem barra lateral nem hambúrguer.
 // =====================================================================
 
 // Sem o cabeçalho (busca, botões, idioma), a barra lateral e o rodapé: só o
@@ -173,7 +173,7 @@ html.CanelaAuthRoute {
   white-space: normal;
 }
 
-// O título grande da página do Discourse ("Boas-vindas outra vez", font-up-6).
+// O título grande da página ("Boas-vindas outra vez", font-up-6).
 @media @tablet-up {
   .CanelaAuthPage .Modal.CanelaAuthForm {
     --cn-auth-pad: 36px;
@@ -325,8 +325,8 @@ html.CanelaAuthRoute {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
-// --- Discourse: sem cartão, o formulário à esquerda e os botões sociais à
-// direita, separados por um traço (`.login-left-side` / `.login-right-side`).
+// --- Sem cartão: o formulário à esquerda e os botões sociais à direita,
+// separados por um traço.
 .CanelaAuthPage--layout-discourse {
   .CanelaAuthPage-inner {
     max-width: 460px;

@@ -1,4 +1,4 @@
-{{-- A página 404 do Discourse quando o recurso está ligado (ramon/canela); senão, a do core. --}}
+{{-- A página 404 do tema quando o recurso está ligado (ramon/canela); senão, a do core. --}}
 @php
   $canelaNotFound = resolve(\Ramon\Canela\Gaps\NotFound\NotFoundPage::class);
   $canelaPage = $canelaNotFound->enabled() ? $canelaNotFound->data() : null;

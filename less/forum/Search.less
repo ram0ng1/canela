@@ -1,15 +1,13 @@
 // =====================================================================
 // Busca
 //
-// 1. O menu de busca do Discourse (`.search-menu`, js/src/forum/search):
+// 1. O menu de busca (js/src/forum/search):
 //    o campo do cabeçalho é o próprio campo da busca, e o painel
 //    (`.search-menu-panel`) abre colado embaixo dele, na mesma largura
-//    (550px), descendo (float-down), sem modal e sem fundo escuro. Medidas e
-//    cores do CSS compilado do Meta (`.search-menu`, `.search-input`,
-//    `.search-link`, `.search-result-*`, `.search-random-quick-tip`,
-//    `.searching`), trocadas pelos tokens `--cn-*`. Tudo dentro de
-//    `.CanelaSearchMenu`: as classes do Discourse (`.results`, `.list`,
-//    `.item`, `.topic`) são genéricas demais para ficarem soltas.
+//    (550px), descendo (float-down), sem modal e sem fundo escuro. Cores
+//    nos tokens `--cn-*`. Tudo dentro de `.CanelaSearchMenu`: as classes
+//    `.results`, `.list`, `.item` e `.topic` são genéricas demais para
+//    ficarem soltas.
 // 2. Os resultados na lista (`/?q=`), com o trecho embaixo do título.
 // 3. O SearchModal do core, que ainda pode ser aberto por outra extensão.
 // =====================================================================
@@ -24,7 +22,7 @@
 }
 
 .CanelaSearchMenu {
-  // `--search-result-element-padding` e `--shadow-dropdown` do Discourse.
+  // Respiro dos resultados e sombra do painel.
   --cn-search-pad-y: 8px;
   --cn-search-pad-x: 16px;
   --cn-search-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
@@ -50,7 +48,7 @@
     justify-content: space-between;
   }
 
-  // O campo (`.search-input--header`): a pílula de 38px do Horizon, lupa à
+  // O campo: a pílula de 38px, lupa à
   // esquerda e, à direita, o X de limpar e os controles deslizantes.
   .search-input {
     position: relative;
@@ -112,7 +110,7 @@
       opacity: 1;
     }
 
-    // O X nativo do `type=search` some: o Discourse tem o dele (`.clear-search`).
+    // O X nativo do `type=search` some: o tema tem o dele.
     &::-webkit-search-cancel-button,
     &::-webkit-search-decoration {
       -webkit-appearance: none;
@@ -481,7 +479,7 @@
     hyphens: auto;
   }
 
-  // O termo em negrito (`.search-highlight`), sem o fundo do <mark>.
+  // O termo em negrito, sem o fundo do <mark>.
   mark {
     padding: 0;
     background: none;
@@ -523,11 +521,11 @@
     font-size: var(--cn-font-0);
   }
 
-  .discourse-tag {
+  .CanelaSearch-tagName {
     color: var(--cn-primary-high);
   }
 
-  // ---- "Perguntar à IA" (discourse-ai) -----------------------------
+  // ---- "Perguntar à IA" --------------------------------------------
   .CanelaSearchMenu-ai {
     border-bottom: 1px solid var(--cn-border);
 

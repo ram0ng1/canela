@@ -1,6 +1,6 @@
 /*
  * Quais categorias e etiquetas o leitor escolheu para a barra lateral — o
- * "personalizar seção" do Discourse. Fica no localStorage, por usuário: a
+ * "personalizar seção". Fica no localStorage, por usuário: a
  * escolha é uma preferência de leitura, não um dado que precise ir ao servidor.
  * Sem escolha (null), a seção mostra o padrão do fórum.
  */

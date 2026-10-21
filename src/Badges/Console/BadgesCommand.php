@@ -28,8 +28,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Throwable;
 
 /**
- * `php flarum canela:badges` — o trabalho diário dos jobs `Tl3Promotions` e
- * `BadgeGrant` do Discourse, agendado para uma vez por dia:
+ * `php flarum canela:badges` — o trabalho diário de níveis e emblemas,
+ * agendado para uma vez por dia:
  *
  * 1. Revisa os níveis de confiança. Por padrão só de quem pode mudar: os
  *    vistos nos últimos dias (níveis 0 a 2) e todos os Regulares (que podem

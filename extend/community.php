@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 /*
- * Páginas de comunidade do Discourse: Sobre (/about), Usuários (/u) e
+ * Páginas de comunidade: Sobre (/about), Usuários (/u) e
  * Grupos (/g e /g/:nome).
  */
 
@@ -57,7 +57,7 @@ return [
         ->default(Community::ABOUT_CONTACT_URL, '')
         ->default(Community::ABOUT_SHOW_STAFF, true)
         ->default(Community::ABOUT_SHOW_STATS, true)
-        // Diretrizes, Termos e Privacidade (as abas do Sobre do Discourse).
+        // Diretrizes, Termos e Privacidade (as abas do Sobre).
         // Desligadas por padrão, e ligadas só aparecem com conteúdo (o texto ou
         // uma página do fof/pages): sem isso, nada de aba, link ou /guidelines.
         ->default(Community::GUIDELINES_ENABLED, false)

@@ -19,8 +19,8 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
 
 /**
- * As regras de cada emblema do sistema, no espírito do `lib/badge_queries.rb`
- * do Discourse: cada uma devolve quem merece o emblema (e por qual postagem),
+ * As regras de cada emblema do sistema: cada uma devolve quem merece o
+ * emblema (e por qual postagem),
  * dentro de um recorte — a carga completa ou só o que um evento tocou.
  *
  * As consultas são escritas com o query builder, e não em SQL cru, por dois
@@ -45,7 +45,7 @@ final class BadgeQueries
 
     public const TRIGGER_TRUST_LEVEL = 'trust_level';
 
-    /** Só na carga diária (o `Trigger::None` do Discourse). */
+    /** Só na carga diária. */
     public const TRIGGER_DAILY = 'daily';
 
     /**
@@ -125,7 +125,7 @@ final class BadgeQueries
     /** Tópicos com mais respostas que isto contam para o "Leitor(a)". */
     private const READER_MIN_POSTS = 100;
 
-    /** Quantos "Novo(a) usuário(a) do mês" por mês, como no Discourse. */
+    /** Quantos "Novo(a) usuário(a) do mês" por mês. */
     private const NEW_USER_OF_THE_MONTH_AWARDS = 2;
 
     private const CHUNK = 500;
@@ -299,7 +299,7 @@ final class BadgeQueries
     /**
      * `like_rate_limit`: dias em que a pessoa usou todas as curtidas do dia.
      * O Flarum não limita curtidas, então o "limite" é a configuração
-     * `canela.badges_max_likes_per_day` (padrão 50, o do Discourse).
+     * `canela.badges_max_likes_per_day` (padrão 50).
      */
     private function likeRateLimit(int $days, Scope $scope): array
     {
@@ -328,7 +328,7 @@ final class BadgeQueries
     // Postagens
     // ─────────────────────────────────────────────────────────────────────
 
-    /** "Incorreto, mas bom o bastante" (Discourse): a postagem editada mais antiga, não a primeira edição. */
+    /** "Incorreto, mas bom o bastante": a postagem editada mais antiga, não a primeira edição. */
     private function editor(Scope $scope): array
     {
         $query = $this->badgePosts()
@@ -348,7 +348,7 @@ final class BadgeQueries
     /**
      * A citação do Flarum é um bloco de citação (`> @fulano#12 …`), que o
      * formatador grava como `<QUOTE>`. Responder com uma menção, sem citar,
-     * não conta — no Discourse também não.
+     * não conta.
      */
     private function firstQuote(Scope $scope): array
     {
@@ -439,8 +439,8 @@ final class BadgeQueries
     // ─────────────────────────────────────────────────────────────────────
 
     /**
-     * Quem sinalizou: o emblema não guarda a postagem — o Discourse também
-     * não a mostra, porque diria em público quem sinalizou o quê.
+     * Quem sinalizou: o emblema não guarda a postagem — mostrá-la diria em
+     * público quem sinalizou o quê.
      */
     private function firstFlag(Scope $scope): array
     {
@@ -474,7 +474,7 @@ final class BadgeQueries
         return $this->collect($query);
     }
 
-    /** Bio com mais de 10 caracteres e uma foto de perfil, como no Discourse. */
+    /** Bio com mais de 10 caracteres e uma foto de perfil. */
     private function autobiographer(Scope $scope): array
     {
         $query = $this->db->table('users')
@@ -514,7 +514,7 @@ final class BadgeQueries
 
         $query = $this->db->table('users')
             ->where('users.joined_at', '<=', $yearAgo)
-            // O `u.active` do Discourse: conta confirmada.
+            // Conta ativa: e-mail confirmado.
             ->where('users.is_email_confirmed', true)
             ->whereExists(function (Builder $exists) use ($yearAgo) {
                 $this->applyBadgePostConstraints($exists->selectRaw('1')->from('posts'))
@@ -666,7 +666,7 @@ final class BadgeQueries
     // ─────────────────────────────────────────────────────────────────────
 
     /**
-     * O `badge_posts` do Discourse: postagens de comentário visíveis em
+     * As postagens que contam para emblemas: comentários visíveis em
      * tópicos públicos. Postagens escondidas, privadas (aguardando aprovação)
      * ou de tópicos escondidos não rendem emblema.
      */

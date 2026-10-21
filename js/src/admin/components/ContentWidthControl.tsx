@@ -130,7 +130,7 @@ export default class ContentWidthControl extends AdminComponent {
         <p className="helpText">
           {trans(
             `${KEY}.content_width_help`,
-            'A largura máxima do cartão de conteúdo (lista, discussão, perfil); na discussão, a coluna dos posts cresce junto. O padrão é 1110px, como no Discourse; 90% e Largura toda acompanham a tela. A prévia mostra o fórum de verdade numa tela de 1440px.'
+            'A largura máxima do cartão de conteúdo (lista, discussão, perfil); na discussão, a coluna dos posts cresce junto. O padrão é 1110px; 90% e Largura toda acompanham a tela. A prévia mostra o fórum de verdade numa tela de 1440px.'
           )}
         </p>
 

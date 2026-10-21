@@ -1,5 +1,5 @@
 /*
- * "Nova mensagem" (chat-message-creator do Discourse): uma busca só por
+ * "Nova mensagem": uma busca só por
  * canais (#) e pessoas (@). Escolher uma pessoa abre a MD com ela; Shift+clique
  * (ou Shift+Enter) a junta a um chat em grupo. "Novo chat em grupo" abre o
  * seletor de participantes, com o nome opcional do grupo e o contador.

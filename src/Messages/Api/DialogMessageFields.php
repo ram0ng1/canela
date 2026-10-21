@@ -20,7 +20,7 @@ use Illuminate\Database\ConnectionInterface;
 use Ramon\Canela\Messages\MessagesSchema;
 
 /**
- * O campo "Título" do composer de mensagem do Discourse.
+ * O campo "Título" do composer de mensagem.
  *
  * O flarum/messages cria a conversa dentro do envio da primeira mensagem
  * (não há endpoint de "nova conversa"), então o título viaja com ela, como um

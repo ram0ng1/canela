@@ -1,5 +1,5 @@
 /*
- * As ações da mensagem do ramon/chat com o que o chat do Discourse tem a mais:
+ * As ações da mensagem do ramon/chat com o que o chat do tema tem a mais:
  *
  * - (3) as três reações de um clique (as mais usadas pelo leitor, ou as que
  *   ele escolheu nas Configurações), ao lado do 👍 fixo do ramon/chat;

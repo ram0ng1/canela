@@ -23,7 +23,7 @@ use Throwable;
 
 /**
  * Gera os resumos curtos (gists) dos tópicos mais ativos
- * (`php flarum canela:ai-gists`), como o job `hot_topics_gist` do Discourse.
+ * (`php flarum canela:ai-gists`).
  *
  * Roda de hora em hora pelo agendador. Cada rodada pega os tópicos públicos
  * com atividade mais recente cujo resumo curto falta ou ficou para trás (houve

@@ -1,5 +1,5 @@
 /*
- * A aba "Reações" do perfil (como a do discourse-reactions): curtidas e
+ * A aba "Reações" do perfil: curtidas e
  * reações que a pessoa deu, numa lista só, da mais nova para a mais antiga.
  * No Canela a curtida é a reação "coração", então ela aparece como ❤️.
  * Cada item é o `user-stream-item` das outras abas (avatar do autor, título,

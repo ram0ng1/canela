@@ -1,5 +1,5 @@
 /*
- * "Imprimir" tópico, como o `/t/…/print` do Discourse: um item nos controles
+ * "Imprimir" tópico: um item nos controles
  * da discussão que carrega TODAS as postagens (a página do tópico só tem as
  * que já rolaram para a tela), monta uma visão limpa — título, autor, data e
  * texto de cada postagem — e chama a impressão do navegador.

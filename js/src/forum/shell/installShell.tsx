@@ -1,12 +1,12 @@
 /*
- * A casca do Discourse: cabeçalho de largura total com o hambúrguer, o logo e a
+ * A casca do tema: cabeçalho de largura total com o hambúrguer, o logo e a
  * busca centralizada; barra lateral global à esquerda; e o conteúdo num cartão
  * sobre o fundo tingido.
  *
  * O layout do core (forum.blade.php) não tem onde pôr uma barra lateral global,
  * então ela ganha um <aside> próprio dentro do #app, montado logo depois que o
  * core monta o resto. No celular o mesmo <aside> vira o painel do hambúrguer
- * (o .menu-panel do Discourse), por cima de tudo.
+ * (o .menu-panel), por cima de tudo.
  */
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
@@ -33,7 +33,7 @@ import { installColorMode } from './colorMode';
 import installDropdownArrow from './dropdownArrow';
 import { relocateRoutes, yieldConflictingRoutes } from '../utils/routeConflicts';
 
-/** Páginas em que o hero vai para dentro do cartão, como no Discourse. */
+/** Páginas em que o hero vai para dentro do cartão. */
 const INLINE_HERO_PAGES = /\b(DiscussionPage|UserPage)\b/;
 
 export default function installShell() {
@@ -153,7 +153,7 @@ function mountSidebar(appElement: HTMLElement) {
     if ((event.target as HTMLElement).closest('a')) closeOverlaySidebar();
   });
 
-  // Esc fecha o painel do celular, como o menu do Discourse.
+  // Esc fecha o painel do celular.
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeOverlaySidebar();
   });
@@ -164,7 +164,7 @@ function mountSidebar(appElement: HTMLElement) {
   appElement.insertBefore(backdrop, aside.nextSibling);
 }
 
-/** As peças coloridas e desfocadas do fundo do meta.discourse.org (.meta-bg-icons). */
+/** As peças coloridas e desfocadas do fundo. */
 const BACKDROP_TILES: [string, string][] = [
   ['plane', 'fas fa-paper-plane'],
   ['chat', 'fas fa-comment-dots'],
@@ -229,13 +229,13 @@ function mountHeader(sidebarEnabled: boolean) {
 }
 
 /**
- * No Discourse o título do tópico e a capa do perfil ficam dentro do cartão,
+ * O título do tópico e a capa do perfil ficam dentro do cartão,
  * e não sobre o fundo como o hero do Flarum. Em vez de reescrever as páginas,
  * o hero muda de lugar no PageStructure, que todas elas usam.
  */
 /**
- * O Discourse não tem o painel lateral com a lista de discussões que o Flarum
- * abre na página do tópico (o "pane"): ele sai do PageStructure e fica
+ * O painel lateral com a lista de discussões que o Flarum abre na página do
+ * tópico (o "pane") sai do PageStructure e fica
  * desligado, para não aparecer nem ao passar o mouse na borda.
  */
 function removeDiscussionPane() {

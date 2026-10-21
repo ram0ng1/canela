@@ -36,7 +36,7 @@ interface SecondaryAction {
   run: () => void;
 }
 
-/** O que o leitor pode fazer com a mensagem — o chat-message-interactor do Discourse. */
+/** O que o leitor pode fazer com a mensagem. */
 export function secondaryActions(message: ChatMessage, pane: ChatPane, phone = false): SecondaryAction[] {
   const channel = pane.channel;
   const mine = message.userId === meId();

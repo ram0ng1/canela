@@ -1,7 +1,6 @@
 /*
  * O estado das conversas com o bot, compartilhado entre a página e a barra
- * lateral (que, na página de conversas, vira a lista de conversas, como no
- * Discourse).
+ * lateral (que, na página de conversas, vira a lista de conversas).
  *
  * - A lista é carregada uma vez e atualizada no lugar: uma pergunta nova põe
  *   a conversa no topo, o título que o servidor gera entra quando chega.

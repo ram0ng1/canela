@@ -67,7 +67,7 @@ export interface StreamLine {
  *
  * O `app.request` só entrega o corpo inteiro, no fim; aqui cada linha (um
  * objeto JSON completo) vai para `onLine` assim que chega — é o que dá o
- * efeito de "digitando" do Discourse. Um erro antes do stream (422 do limite,
+ * efeito de "digitando". Um erro antes do stream (422 do limite,
  * 403…) vira uma exceção com a mensagem da API, para o alerta.
  */
 export async function aiStream(path: string, body: Record<string, unknown>, onLine: (line: StreamLine) => void, signal?: AbortSignal): Promise<void> {

@@ -1,5 +1,5 @@
 /*
- * A barra de navegação da lista do Discourse (`.list-controls` no Horizon):
+ * A barra de navegação da lista:
  * dropdowns de categoria/etiqueta, as abas de ordenação (Recentes, Em alta,
  * Novos, Não lidos, Melhores…), o link de Categorias, os botões de ação e o
  * "Iniciar Discussão". Fica grudada no topo do cartão ao rolar.
@@ -44,7 +44,7 @@ export interface ListNavigationAttrs extends ComponentAttrs {
   page?: IndexPage;
 }
 
-/** Ordenações do core que o Discourse não tem como aba: ficam no menu "mais". */
+/** Ordenações do core que não viram aba: ficam no menu "mais". */
 const OVERFLOW_SORTS = ['oldest', 'az', 'za'];
 
 interface NavTab {
@@ -64,7 +64,7 @@ function sortHref(sort: string): string {
   const params: Record<string, any> = index ? { ...app.search.state.params() } : {};
   let routeName = index ? app.current.get('routeName') || 'index' : 'index';
 
-  // Na lista geral, as abas levam aos endereços do Discourse (/latest, /hot,
+  // Na lista geral, as abas levam aos endereços próprios (/latest, /hot,
   // /top…), com a ordenação na própria rota.
   const sortRoute = forumBool('canelaListRoutes', false) ? routeForSort(sort) : null;
 
@@ -101,15 +101,14 @@ interface DropRow {
   selected?: boolean;
 }
 
-/** `max_tags_in_filter_list` do Discourse: o resto aparece ao filtrar. */
+/** Quantas etiquetas o dropdown lista: o resto aparece ao filtrar. */
 const MAX_TAGS_IN_LIST = 30;
 
 /** Acima disso, "sem tags secundárias" viraria uma consulta com subconsultas demais. */
 const MAX_NEGATED_TAGS = 50;
 
 /**
- * URL de uma tag preservando a ordenação escolhida, como os dropdowns do
- * Discourse. `filter` entra na query (`filter[-tag][]=…`): o IndexPage o
+ * URL de uma tag preservando a ordenação escolhida. `filter` entra na query (`filter[-tag][]=…`): o IndexPage o
  * repassa à API, e o servidor também o usa no carregamento inicial.
  */
 function tagHref(tag: CanelaTag | null, filter?: Record<string, string[]>): string {
@@ -174,7 +173,7 @@ function dropRowContent(row: DropRow, symbols: boolean, showDescription: boolean
 export default class ListNavigation extends Component<ListNavigationAttrs> {
   view(): Mithril.Children {
     return (
-      // Grudar no topo é opção: o Horizon gruda, o meta.discourse.org não.
+      // Grudar no topo é opção do admin.
       <nav className={classList('CanelaNav', { 'CanelaNav--sticky': forumBool('canelaNavSticky', false) })} aria-label={t('nav.label')}>
         <div className="CanelaNav-start">{this.startItems().toArray()}</div>
         <div className="CanelaNav-end">{this.endItems().toArray()}</div>
@@ -241,13 +240,13 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
       if (!actions.isEmpty()) items.add('actions', <ul className="CanelaNav-actions">{listItems(actions.toArray())}</ul>, 100);
     }
 
-    // O Discourse só mostra "Iniciar Discussão" a quem está logado.
+    // "Iniciar Discussão" só aparece a quem está logado.
     if (app.session.user) items.add('newTopic', this.newTopicButton(), 50);
 
     return items;
   }
 
-  /** As abas na ordem do Discourse; ordenações de extensões entram depois de "Melhores". */
+  /** As abas na ordem do tema; ordenações de extensões entram depois de "Melhores". */
   tabs(): NavTab[] {
     const sortMap = app.discussions.sortMap();
     const index = onIndex();
@@ -266,7 +265,7 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
       active: current === key,
     }));
 
-    // Dentro de uma categoria o Discourse não mostra a aba "Categorias".
+    // Dentro de uma categoria a aba "Categorias" não aparece.
     if (isTagsEnabled() && forumBool('canelaNavCategoriesLink', true) && !currentTag()) {
       tabs.push({
         key: 'categories',
@@ -280,10 +279,10 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
   }
 
   /**
-   * Ordenações que vão para o menu "mais". "Novos" do Discourse é a lista de
+   * Ordenações que vão para o menu "mais". "Novos" é a lista de
    * tópicos não vistos, que só existe para quem está logado; para visitantes
-   * o "mais novos" do Flarum fica no menu, e as abas são as do Meta
-   * deslogado (Recentes, Em alta, Melhores, Categorias).
+   * o "mais novos" do Flarum fica no menu, e as abas são as de quem
+   * não entrou (Recentes, Em alta, Melhores, Categorias).
    */
   overflowKeys(): string[] {
     return app.session.user ? OVERFLOW_SORTS : ['newest', ...OVERFLOW_SORTS];
@@ -328,7 +327,7 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
     return (
       <SelectDropdown
         buttonClassName="Button Button--text CanelaNav-selectButton"
-        caretIcon="fas fa-discourse-chevron-expand"
+        caretIcon="fas fa-chevron-expand"
         defaultLabel={t('nav.latest')}
         accessibleToggleLabel={t('nav.sort_label')}
       >
@@ -346,7 +345,7 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
     const tag = currentTag();
 
     // Na página de uma categoria filha, o primeiro dropdown mostra a mãe e o
-    // segundo, a filha — como "Suporte › Instalação" no Discourse.
+    // segundo, a filha — como "Suporte › Instalação".
     const isCategory = !!tag && (tag.position() !== null || tag.isChild());
     const parent = tag && tag.isChild() ? (tag.parent() as CanelaTag | null) || null : null;
     const category = isCategory ? parent || tag : null;
@@ -411,8 +410,8 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
     const labels = secondaryTags();
 
     if (labels.length) {
-      // "sem tags secundárias": nenhuma das etiquetas (as categorias ficam de fora,
-      // como no Discourse). Com etiquetas demais, a consulta ficaria pesada.
+      // "sem tags secundárias": nenhuma das etiquetas (as categorias ficam de
+      // fora). Com etiquetas demais, a consulta ficaria pesada.
       const labelSlugs = labels.map((item) => item.slug());
       const noTagsSupported = labelSlugs.length <= MAX_NEGATED_TAGS;
       const noTags = noTagsSupported && labelSlugs.every((slug) => negated.includes(slug));
@@ -452,7 +451,7 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
   }
 
   /**
-   * O `category-drop`/`tag-drop` do Discourse: cabeçalho com "›" que vira
+   * O dropdown de categoria/etiqueta: cabeçalho com "›" que vira
    * "⌄" aberto, corpo com "Pesquisar…" e a lupa, as opções especiais em
    * negrito na cor de destaque e as categorias "ícone Nome × N".
    */
@@ -466,8 +465,8 @@ export default class ListNavigation extends Component<ListNavigationAttrs> {
     limit?: number;
   }): Mithril.Children {
     const { rows, limit } = options;
-    // A descrição das categorias só para visitantes (o Discourse a esconde
-    // de quem já tem conta com nível de confiança).
+    // A descrição das categorias só para visitantes (quem já tem conta não
+    // precisa dela).
     const showDescription = !app.session.user;
 
     const filtered = (filter: string): DropRow[] => {

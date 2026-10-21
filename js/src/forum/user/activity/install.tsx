@@ -1,6 +1,5 @@
 /*
- * As subabas de "Atividade" do perfil que faltavam para ficar como no
- * Discourse: Lidos, Reações, Votos e Resolvido. Cada uma só aparece com a
+ * As subabas de "Atividade" do perfil que faltavam: Lidos, Reações, Votos e Resolvido. Cada uma só aparece com a
  * extensão dela ligada e a chave dela no admin (card "Página de perfil"):
  *
  * - Lidos (`user.read`): os tópicos que a pessoa leu, do mais recente para o
@@ -31,9 +30,9 @@ import type Mithril from 'mithril';
 import { forumBool, isExtensionEnabled, t } from '../../utils/settings';
 
 /**
- * A ordem das subabas, como no Discourse: Todos, Tópicos, Lidos, Rascunhos,
- * Curtidas, Favoritos, Reações, Votos, Resolvido. Menções e mídia (que o
- * Discourse não tem nessa linha) vêm depois; as de outras extensões, no fim.
+ * A ordem das subabas: Todos, Tópicos, Lidos, Rascunhos,
+ * Curtidas, Favoritos, Reações, Votos, Resolvido. Menções e mídia vêm
+ * depois; as de outras extensões, no fim.
  */
 export const ACTIVITY_ORDER = [
   'posts',

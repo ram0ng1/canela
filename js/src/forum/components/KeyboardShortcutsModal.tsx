@@ -5,7 +5,7 @@ import type Mithril from 'mithril';
 import { t } from '../utils/settings';
 import { SHORTCUT_GROUPS, type Shortcut } from '../shell/shortcuts';
 
-/** Os nomes das teclas como o `d-shortcut` do Discourse os escreve. */
+/** Os nomes das teclas como aparecem nas pílulas de atalho. */
 const KEY_NAMES: Record<string, string> = {
   shift: 'Shift',
   ctrl: 'Ctrl',
@@ -26,7 +26,7 @@ function keyParts(combo: string): string[] {
 }
 
 /**
- * A janela de atalhos do Discourse (`keyboard-shortcuts-modal`), aberta pela
+ * A janela de atalhos, aberta pela
  * tecla "?": o campo de busca no topo e, em duas colunas, uma caixa por grupo
  * com a descrição à esquerda e as teclas em pílulas à direita. O corpo rola
  * dentro do modal (80% da altura), em vez de empurrar a página.

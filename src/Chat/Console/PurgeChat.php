@@ -25,8 +25,7 @@ use Ramon\Canela\Chat\Model\Upload;
 use Ramon\Canela\Chat\Upload\ChatUploads;
 
 /**
- * A limpeza diária do chat (`php flarum canela:chat:purge`), como os jobs de
- * retenção do Discourse:
+ * A limpeza diária do chat (`php flarum canela:chat:purge`):
  *
  * - mensagens mais velhas que a retenção do admin (uma para canais públicos e
  *   outra para MDs; 0 = guardar para sempre) saem de vez, com reações, fios e

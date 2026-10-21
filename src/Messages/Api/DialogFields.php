@@ -25,7 +25,7 @@ use Ramon\Canela\Messages\MessagesSchema;
 use Ramon\Canela\Messages\StaffGroups;
 
 /**
- * O que o tópico de mensagem do Discourse mostra e o flarum/messages não tem:
+ * O que o tópico de mensagem mostra e o flarum/messages não tem:
  *
  * - `viewCount`: as visualizações (RecordDialogView conta).
  * - `canelaTitle`: o título da mensagem (o Flarum só tem "Conversando com X").

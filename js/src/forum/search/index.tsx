@@ -1,7 +1,7 @@
 /*
- * A busca do Discourse: o menu de busca (SearchMenu) no lugar do botão que
+ * A busca: o menu de busca (SearchMenu) no lugar do botão que
  * abria o SearchModal do core. O do cabeçalho é desenhado pelo HeaderSearch
- * (shell/); aqui entra o do banner de boas-vindas, que no Discourse é o mesmo
+ * (shell/); aqui entra o do banner de boas-vindas, que é o mesmo
  * `search-menu`.
  */
 import { extend } from 'flarum/common/extend';

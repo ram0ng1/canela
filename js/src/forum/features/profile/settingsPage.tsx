@@ -1,6 +1,6 @@
 /*
  * A seção "Perfil" nas Configurações, logo depois de "Conta" — a ordem das
- * preferências do Discourse (Conta, Perfil, Notificações…).
+ * preferências (Conta, Perfil, Notificações…).
  *
  * O SettingsPage é carregado sob demanda (rota com import()), por isso o
  * extend usa o nome do módulo e não a classe importada.

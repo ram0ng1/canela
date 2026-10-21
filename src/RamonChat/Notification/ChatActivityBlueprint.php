@@ -21,8 +21,7 @@ use Ramon\Chat\Message;
 
 /**
  * A base dos dois alertas do chat no sino (menção e mensagem nova), que o
- * ramon/chat deixou de fora de propósito ("o chat tem os próprios contadores")
- * e o Discourse mostra.
+ * ramon/chat deixou de fora de propósito ("o chat tem os próprios contadores").
  *
  * O assunto é a mensagem: cada uma vira um aviso próprio (o NotificationSyncer
  * casa o aviso pelo tipo, assunto, remetente e dados) e marcar o canal como

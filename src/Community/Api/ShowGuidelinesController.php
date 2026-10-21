@@ -26,8 +26,8 @@ use Ramon\Canela\Community\Community;
 use Ramon\Canela\Community\GuidelinesPage;
 
 /**
- * GET /api/canela-guidelines — as "Diretrizes" (/guidelines e /faq do
- * Discourse). Com o fof/pages e uma página escolhida no admin, o conteúdo dela
+ * GET /api/canela-guidelines — as "Diretrizes" (/guidelines e /faq). Com o
+ * fof/pages e uma página escolhida no admin, o conteúdo dela
  * (com a visibilidade do próprio fof/pages); senão o texto do admin. Sem
  * nenhum dos dois, 404: o modelo do tema só serve para criar a página.
  */

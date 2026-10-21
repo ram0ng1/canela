@@ -1,5 +1,5 @@
 /*
- * Marcadores do Discourse.
+ * Marcadores.
  *
  * - Botão de marcador na barra de ações de cada post: marca direto; num post
  *   já marcado, abre o "Editar marcador" (nome, lembrete, excluir).
@@ -30,7 +30,7 @@ import { bookmarksEnabled, createBookmark, firstPostOf, isBusy, postBookmark } f
 import { reminderLabel } from './reminders';
 import { forumBool, t } from '../../utils/settings';
 
-/** Entre o "copiar link" (-10) e o "…" (-50) da barra do tema, como no Discourse. */
+/** Entre o "copiar link" (-10) e o "…" (-50) da barra do tema. */
 const POST_ACTION_PRIORITY = -20;
 
 export default function installBookmarks() {
@@ -43,8 +43,7 @@ export default function installBookmarks() {
 
 /**
  * Num post sem marcador, marca e avisa — com o atalho "Definir lembrete" no
- * próprio aviso, já que o Discourse abre o menu de lembrete logo depois de
- * marcar. Num post marcado, abre o modal.
+ * próprio aviso, para definir o lembrete logo depois de marcar. Num post marcado, abre o modal.
  */
 export function togglePostBookmark(post: Post): void {
   if (isBusy(post)) return;

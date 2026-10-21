@@ -7,10 +7,10 @@ namespace Ramon\Canela\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\System\Messages\AutoMessages;
 
-/** As mensagens automáticas: as variáveis do Discourse e as chaves do admin. */
+/** As mensagens automáticas: as variáveis no formato `%{nome}` e as chaves do admin. */
 final class AutoMessagesTest extends TestCase
 {
-    public function test_troca_as_variaveis_no_formato_do_discourse_e_com_chaves(): void
+    public function test_troca_as_variaveis_com_percentual_e_com_chaves(): void
     {
         $text = AutoMessages::interpolate('Boas-vindas ao %{site_name}, {username}!', ['site_name' => 'Canela', 'username' => 'ana']);
 

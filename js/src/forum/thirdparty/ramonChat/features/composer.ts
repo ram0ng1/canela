@@ -1,5 +1,5 @@
 /*
- * O compositor do ramon/chat com o que o do Discourse tem a mais:
+ * O compositor do ramon/chat com o que o do tema tem a mais:
  *
  * - (16) colar e arrastar imagens/arquivos: vão pelo mesmo envio do clipe do
  *   ramon/chat (`onFilesPicked` → `/api/chat/uploads` → `pendingUploads`),

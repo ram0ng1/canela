@@ -1,7 +1,7 @@
 /*
  * A página /notifications com a lista do menu do usuário (o
- * `.user-notifications-list` do Discourse usa o mesmo CSS do
- * `.quick-access-panel`) e as abas de notificações do menu como abas
+ * `.user-notifications-list` usa o mesmo CSS do `.quick-access-panel`) e as
+ * abas de notificações do menu como abas
  * horizontais (`?filter=replies`, `likes`, `chat`, `other`). A mesma vista
  * serve à aba "Notificações" do perfil (`/u/:username/notifications`).
  */

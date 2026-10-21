@@ -1,5 +1,5 @@
 /*
- * Gambits próprios do tema, no formato do Discourse:
+ * Gambits próprios do tema:
  *
  * - `em:título` (`in:title`): o texto só vale no título do tópico.
  * - `em:curtidos` (`in:likes`): tópicos com uma postagem que eu curti.
@@ -8,8 +8,8 @@
  *
  * Entram no GambitManager do core, então valem em qualquer busca de tópicos —
  * inclusive no modal, que passa a sugeri-los ao digitar — e a página de busca
- * os usa para guardar os filtros avançados na própria consulta, como o
- * Discourse faz ("horizon in:title min_posts:5").
+ * os usa para guardar os filtros avançados na própria consulta
+ * ("canela in:title min_posts:5").
  */
 import app from 'flarum/forum/app';
 import { BooleanGambit, KeyValueGambit } from 'flarum/common/query/IGambit';

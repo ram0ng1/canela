@@ -26,7 +26,7 @@ type Tab = 'members' | 'activity';
 const EXCERPT_LENGTH = 300;
 
 /**
- * A página de um grupo do Discourse (/g/:nome): o cabeçalho com o símbolo e o
+ * A página de um grupo (/g/:nome): o cabeçalho com o símbolo e o
  * nome, e as abas Membros e Atividade.
  *
  * A aba vai na própria URL (?tab=activity) pelo mesmo motivo do diretório:
@@ -223,7 +223,7 @@ export default class GroupPage extends CommunityPage {
     );
   }
 
-  /** Um item do "stream" de usuário do Discourse: avatar, tópico, quando e o começo do texto. */
+  /** Um item do "stream" de atividade: avatar, tópico, quando e o começo do texto. */
   streamItem(post: Post): Mithril.Children {
     const user = post.user();
     const discussion = post.discussion();

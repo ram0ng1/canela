@@ -1,5 +1,5 @@
 /*
- * "Navegar por todos os canais" (chat-browse-view do Discourse): os filtros
+ * "Navegar por todos os canais": os filtros
  * Tudo/Aberto/Fechados/Arquivados, a busca por nome e os cartões dos canais,
  * cada um com "Participar" ou "Sair".
  */

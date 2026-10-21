@@ -1,6 +1,6 @@
 /*
  * Troca a toolbar do core (dropdown de ordenação + botões) pela barra de
- * navegação do Discourse. Só o item `toolbar` muda: o aviso de novidades do
+ * navegação do tema. Só o item `toolbar` muda: o aviso de novidades do
  * realtime e o que mais as extensões puserem em contentItems fica onde está.
  */
 import { extend } from 'flarum/common/extend';

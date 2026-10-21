@@ -1,6 +1,5 @@
 // =====================================================================
 // Marcadores — o botão do post, o modal "Editar marcador" e a aba do perfil.
-// Medidas do Discourse (bookmark-reminder-modal, bookmark-list e topic-list).
 // =====================================================================
 
 // ---------------------------------------------------------------------
@@ -9,7 +8,7 @@
 .CanelaBookmarkButton.Button {
   position: relative;
 
-  // Marcado: o ícone cheio na cor de destaque, como o .bookmarked do Discourse.
+  // Marcado: o ícone cheio na cor de destaque.
   &.CanelaBookmarkButton--active,
   &.CanelaBookmarkButton--active:hover,
   &.CanelaBookmarkButton--active:focus-visible {
@@ -307,7 +306,7 @@
   color: var(--cn-primary-medium);
 }
 
-// A lista segue a topic-list: cabeçalho cinza, linhas separadas por uma borda
+// A lista segue a lista de tópicos: cabeçalho cinza, linhas separadas por uma borda
 // fina, a data numa coluna estreita à direita e o "…" no fim.
 .CanelaBookmarkList-head,
 .CanelaBookmarkList-item {
@@ -483,7 +482,7 @@
 
 // O core centraliza os botões dos formulários de modal e os empilha
 // (`.Modal .Form-group .Button` em bloco). No marcador, a ação fica numa
-// linha só, como no Discourse: Salvar + Cancelar à esquerda, Excluir à
+// linha só: Salvar + Cancelar à esquerda, Excluir à
 // direita; e os grupos ficam mais próximos.
 .Modal .CanelaBookmarkModal-footer.Form-group {
   display: flex;

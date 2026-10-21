@@ -1,8 +1,8 @@
 /*
- * O rodapé da barra lateral como o do Discourse: o seletor de paleta em texto
- * ("Padrão ⌄", como o "Meta Branded ⌄" do Meta) e o botão do modo de cor — sol,
+ * O rodapé da barra lateral: o seletor de paleta em texto ("Padrão ⌄") e o
+ * botão do modo de cor — sol,
  * lua ou meio círculo — com o menu Claro / Escuro / Automático
- * (`interface-color-selector`).
+ * (o seletor de cor da interface).
  *
  * O Flarum guarda um esquema só (`light`, `dark`, `auto`, `light-hc`,
  * `dark-hc`); aqui ele vira dois eixos: o modo e a paleta (padrão ou alto
@@ -153,7 +153,7 @@ function chooseTheme(id: string): void {
 }
 
 /**
- * O seletor em texto do rodapé, como o "🖌 Meta Branded ⌄" do Meta. Com o
+ * O seletor em texto do rodapé ("🖌 Nome do tema ⌄"). Com o
  * Wardrobe e mais de um tema, mostra o pincel e o nome do tema, e o menu lista
  * os temas; as paletas (Padrão / Alto contraste) ficam numa seção separada do
  * mesmo menu. Sem o Wardrobe, é só o seletor de paletas, como antes.

@@ -12,10 +12,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Stats\Http\Visitor;
 
 /**
- * Conta uma visualização de tópico com a regra do Discourse (ViewRule): uma
- * por pessoa e por dia, travada por N horas (`topic_view_duration_hours`).
+ * Conta uma visualização de tópico com a regra de ViewRule: uma por pessoa e
+ * por dia, travada por N horas.
  *
- * Como lá: recarregar a página ou voltar ao tópico logo depois não infla o
+ * Recarregar a página ou voltar ao tópico logo depois não infla o
  * número; um dia novo, ou N horas depois no mesmo dia, conta de novo. Quem
  * entrou na conta é reconhecido pela conta (o IP dela não é guardado); o
  * visitante, pelo IP. Cada visualização contada soma no tópico e no dia
@@ -55,8 +55,8 @@ final class TopicViewRecorder
         $hours = $this->settings->viewWindowHours();
         $windowStart = $now->copy()->subHours($hours);
 
-        // O Discourse identifica o visitante só pelo IP (a chave do Redis é
-        // `ip-<ip>`); aqui vai o hash com sal, para a tabela não guardar o IP.
+        // O visitante é identificado só pelo IP, mas pelo hash com sal, para
+        // a tabela não guardar o IP.
         $identity = $actor->isGuest()
             ? ['user_id' => null, 'ip_hash' => $visitor->ipHash($this->settings->visitorSalt())]
             : ['user_id' => $actor->id, 'ip_hash' => null];
@@ -86,8 +86,8 @@ final class TopicViewRecorder
     /**
      * Reserva a visualização para esta pessoa. Cada passo é condicional para
      * que duas abas abertas ao mesmo tempo não contem duas vezes: só uma das
-     * duas consegue inserir a linha ou avançar o `viewed_at` antigo — o mesmo
-     * papel do SETNX do Redis no Discourse.
+     * duas consegue inserir a linha ou avançar o `viewed_at` antigo — o papel
+     * de um SETNX.
      *
      * A linha guarda a hora da última visualização CONTADA; a primeira linha
      * de cada pessoa é o "tópicos vistos" do perfil (o `topics_entered`).

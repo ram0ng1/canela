@@ -1,6 +1,5 @@
 /*
- * As ações de mensagem no menu do composer (o `composer-actions` do
- * Discourse): ficam no pacote principal porque o composer de tópico e o de
+ * As ações de mensagem no menu do composer: ficam no pacote principal porque o composer de tópico e o de
  * resposta são do core. O resto da integração com o flarum/messages desce com
  * as telas dele (ver ui.ts).
  */
@@ -16,8 +15,8 @@ import { canSendMessages, lazyComponent, messagesOn, openMessageComposer } from 
 const ICON_NEW = 'far fa-envelope';
 
 /**
- * "Iniciar Discussão" no menu da mensagem nova: o Discourse troca o composer de
- * lugar levando o texto e o título. Aqui o composer de tópico abre com eles.
+ * "Iniciar Discussão" no menu da mensagem nova: o composer de tópico abre
+ * levando o texto e o título.
  */
 function switchToTopic(): void {
   const fields: any = app.composer.fields;
@@ -58,7 +57,7 @@ function switchToMessage(): void {
 
 /**
  * Abre a mensagem nova ao autor do tópico levando o texto já escrito e, no
- * começo, o link para o tópico (como o Discourse faz ao responder em privado).
+ * começo, o link para o tópico.
  */
 function replyAsMessage(discussion: any, author: User): void {
   const fields: any = app.composer.fields;

@@ -9,7 +9,7 @@ export interface GroupFlairAttrs extends ComponentAttrs {
 }
 
 /**
- * O "flair" do grupo no Discourse: um quadrado arredondado na cor do grupo
+ * O "flair" do grupo: um quadrado arredondado na cor do grupo
  * com o ícone dele. Sem ícone, a inicial do nome; sem cor, o cinza do tema.
  */
 export default class GroupFlair extends Component<GroupFlairAttrs> {

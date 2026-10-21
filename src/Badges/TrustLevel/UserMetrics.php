@@ -20,11 +20,11 @@ use Illuminate\Database\Query\Builder;
 use Ramon\Canela\Badges\Capabilities;
 
 /**
- * Os números de uma pessoa que os requisitos de nível comparam — o
- * `user_stat` do Discourse, mais as janelas do `TrustLevel3Requirements`.
+ * Os números de uma pessoa que os requisitos de nível comparam, mais as
+ * janelas dos requisitos do nível 3.
  *
  * Com o recurso de estatísticas do tema (canela_user_visits e
- * canela_topic_views), os números são os do Discourse. Sem ele, cada um cai
+ * canela_topic_views), os números são exatos. Sem ele, cada um cai
  * para o que o core do Flarum guarda:
  *
  * - tópicos vistos e postagens lidas: o estado de leitura de cada discussão
@@ -115,7 +115,7 @@ final class UserMetrics
                 ->selectRaw('COUNT(*) as days, COALESCE(SUM(posts_read), 0) as posts, COALESCE(SUM(time_read), 0) as seconds')
                 ->first();
             $this->postsRead = (int) ($visits->posts ?? 0);
-            // `time_read` em segundos, como o do Discourse.
+            // Tempo de leitura guardado em segundos.
             $this->timeReadMinutes = intdiv((int) ($visits->seconds ?? 0), 60);
             $this->daysVisited = (int) ($visits->days ?? 0);
         } else {
@@ -165,7 +165,7 @@ final class UserMetrics
         if ($capabilities->flags()) {
             // Postagens da pessoa sinalizadas por outras pessoas na janela. O
             // Flarum apaga a sinalização dispensada, então o que resta é o que a
-            // moderação não descartou — o mais perto do "concordado" do Discourse.
+            // moderação não descartou — o mais perto de uma sinalização "concordada".
             $this->periodFlaggedPosts = $db->table('flags')
                 ->join('posts', 'posts.id', '=', 'flags.post_id')
                 ->where('posts.user_id', $user->id)
@@ -188,7 +188,7 @@ final class UserMetrics
             ->where('discussion_user.last_read_post_number', '>', 0);
     }
 
-    /** Respostas a tópicos de outras pessoas (o `calc_topic_reply_count!` do Discourse). */
+    /** Respostas a tópicos de outras pessoas. */
     private function repliesQuery(ConnectionInterface $db, User $user): Builder
     {
         return $db->table('posts')

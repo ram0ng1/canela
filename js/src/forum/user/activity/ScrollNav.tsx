@@ -1,5 +1,5 @@
 /*
- * O `horizontal-overflow-nav` do Discourse: uma linha de abas que rola na
+ * Uma linha de abas que rola na
  * horizontal e, quando não cabe, ganha setas ‹ › nas pontas (e a borda que
  * esmaece) do lado em que ainda há abas escondidas.
  *
@@ -64,7 +64,7 @@ export default class ScrollNav extends Component<ScrollNavAttrs> {
       window.addEventListener('resize', this.sync);
     }
 
-    // A aba ativa à vista, como no Discourse ao abrir uma aba do fim da linha.
+    // A aba ativa à vista, mesmo quando é uma aba do fim da linha.
     const active = this.list?.querySelector<HTMLElement>('[active="true"], .active');
 
     if (this.list && active) {

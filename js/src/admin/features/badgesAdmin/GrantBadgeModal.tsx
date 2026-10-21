@@ -17,7 +17,7 @@ export interface GrantBadgeModalAttrs extends IFormModalAttrs {
 const SEARCH_DELAY_MS = 250;
 
 /**
- * O "Award badge" do Discourse: escolher o emblema e a pessoa (com
+ * Conceder um emblema: escolher o emblema e a pessoa (com
  * sugestões da busca de usuários), mais um motivo ou link opcional. A pessoa
  * recebe a notificação "Ganhou …".
  */

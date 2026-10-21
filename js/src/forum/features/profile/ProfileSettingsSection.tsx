@@ -1,6 +1,6 @@
 /*
- * A seção "Perfil" das Configurações, como a aba Perfil das preferências do
- * Discourse: título, sobre mim, local, site, aniversário, status e imagens.
+ * A seção "Perfil" das Configurações, com os campos do perfil:
+ * título, sobre mim, local, site, aniversário, status e imagens.
  *
  * Os campos são um rascunho local e só vão para a API no "Salvar perfil",
  * num único `user.save()` com o que mudou — salvar a cada tecla dispararia
@@ -33,7 +33,7 @@ import { statusUntilLabel } from './components';
 import EmojiPicker from './EmojiPicker';
 import ImageField from './ImageField';
 
-/** Opções do "Limpar depois de…" do Discourse. */
+/** Opções do "Limpar depois de…". */
 const CLEAR_OPTIONS = ['never', '30m', '1h', '4h', 'today', 'week', 'custom'] as const;
 
 type ClearOption = (typeof CLEAR_OPTIONS)[number] | 'current';
@@ -366,7 +366,7 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
         return end;
       }
       case 'week': {
-        // Até o fim do domingo, como o "Esta semana" do Discourse.
+        // Até o fim do domingo ("Esta semana").
         const end = new Date(now);
         end.setDate(end.getDate() + ((7 - end.getDay()) % 7));
         end.setHours(23, 59, 59, 0);

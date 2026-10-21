@@ -1,9 +1,8 @@
 /*
- * Camada única de ícones do tema: os ícones de interface do Meta.
+ * Camada única de ícones do tema: os ícones de interface em Lucide.
  *
- * O meta.discourse.org desenha a interface com o Lucide (traço de 2px, pontas
- * redondas), pelo componente "Discourse Lucide Icons"; o Flarum desenha com o
- * Font Awesome sólido. Em vez de trocar ícone por ícone em cada tela (e em
+ * O tema desenha a interface com o Lucide (traço de 2px, pontas redondas); o
+ * Flarum desenha com o Font Awesome sólido. Em vez de trocar ícone por ícone em cada tela (e em
  * cada extensão), o tema sobrescreve o `view` do componente `Icon` do core,
  * por onde passam o `icon=` dos botões, dos itens de menu, das notificações,
  * das extensões… Quando o nome está no mapa (iconMap.ts), sai um <svg> do
@@ -25,7 +24,7 @@ import { forumBool } from '../utils/settings';
 import { lucideNameFor } from './iconMap';
 import { GLYPHS } from './glyphs';
 
-/** Atributos do <svg> do Lucide; o traço de 2 é o "medium", padrão do componente do Meta. */
+/** Atributos do <svg> do Lucide; o traço de 2 é o "medium", o padrão do tema. */
 const SVG_ATTRS: Record<string, string> = {
   xmlns: 'http://www.w3.org/2000/svg',
   viewBox: '0 0 24 24',

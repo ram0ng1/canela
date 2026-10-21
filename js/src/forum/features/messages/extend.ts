@@ -1,5 +1,5 @@
 /*
- * As rotas da aba "Mensagens" do perfil, como no Discourse:
+ * As rotas da aba "Mensagens" do perfil:
  * `/u/:username/messages` (Últimos) e `/u/:username/messages/:box` (Enviadas,
  * Novo, Não lidos, Arquivo).
  *

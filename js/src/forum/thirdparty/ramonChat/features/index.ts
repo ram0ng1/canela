@@ -1,5 +1,5 @@
 /*
- * Os recursos do chat do Discourse que o chat próprio do tema tinha e o
+ * Os recursos que o chat próprio do tema tinha e o
  * ramon/chat não tem, postos por cima dele sem editar a extensão (o backend
  * mora em extend/ramonchat.php). Cada um tem a sua chave no admin (card
  * "Recursos extras do chat"), lida na hora de desenhar.

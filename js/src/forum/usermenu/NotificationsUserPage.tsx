@@ -1,6 +1,6 @@
 /*
- * A aba "Notificações" do perfil (`/u/:username/notifications`), como a do
- * Discourse: a mesma lista e as mesmas abas da página /notifications (todas,
+ * A aba "Notificações" do perfil (`/u/:username/notifications`): a mesma
+ * lista e as mesmas abas da página /notifications (todas,
  * respostas, curtidas, chat, outras), dentro do perfil. Só no próprio perfil:
  * a API só devolve as notificações de quem pede.
  */

@@ -1,16 +1,16 @@
 /*
- * As visualizações do jeito do Discourse, num lugar só para a lista de
+ * As visualizações num lugar só para a lista de
  * tópicos, os tópicos sugeridos, o mapa do tópico e as mensagens privadas
  * mostrarem o mesmo número com as mesmas regras:
  *
- * - `formatViews` é o helper `number` do Discourse (lib/formatter.js): 999,
+ * - `formatViews` é o número curto: 999,
  *   1,2k, 120k, 1,0M — com o separador decimal do idioma;
- * - `viewsTitle` é o `views_long` ("este tópico foi visto 1.234 vezes"), o
+ * - `viewsTitle` é o texto longo ("este tópico foi visto 1.234 vezes"), o
  *   title que a coluna "Visualizações" mostra ao passar o mouse;
  * - `viewsHeat` usa as três faixas do admin (topic_views_heat_low/medium/high,
- *   1000/2000/3500 no Discourse) e devolve 'low' | 'med' | 'high', o sufixo
- *   das classes `heatmap-*` de lá;
- * - `viewsNumber` monta o `<span class="number" title="…">` do `d-number`.
+ *   1000/2000/3500 por padrão) e devolve 'low' | 'med' | 'high', o sufixo
+ *   das classes `heatmap-*`;
+ * - `viewsNumber` monta o `<span class="number" title="…">`.
  */
 import app from 'flarum/forum/app';
 import type Mithril from 'mithril';
@@ -20,10 +20,10 @@ import { numberFormat } from './intl';
 
 export type ViewsHeat = 'low' | 'med' | 'high' | null;
 
-/** Os padrões do Discourse, quando o fórum ainda não serializou as faixas. */
+/** Os padrões, quando o fórum ainda não serializou as faixas. */
 export const VIEWS_HEAT_DEFAULTS = { low: 1000, medium: 2000, high: 3500 };
 
-/** `topic_view_duration_hours` (8 no Discourse): entra no texto do gráfico. */
+/** A janela de uma visualização, em horas (8 por padrão): entra no texto do gráfico. */
 export function viewDurationHours(): number {
   return forumInt('canelaStatsViewWindowHours', 8);
 }
@@ -36,7 +36,7 @@ function locale(): string {
   }
 }
 
-/** `I18n.toNumber(value, { precision })` do Discourse: casas fixas, com o separador do idioma. */
+/** Casas fixas, com o separador do idioma. */
 export function localNumber(value: number, precision = 0): string {
   try {
     return numberFormat(locale(), { minimumFractionDigits: precision, maximumFractionDigits: precision }).format(value);
@@ -46,8 +46,8 @@ export function localNumber(value: number, precision = 0): string {
 }
 
 /**
- * O `number()` do Discourse, passo a passo: arredonda, acima de 999.999 vira
- * milhões com uma casa ("1,0M" — a casa zero fica, como lá), acima de 99.999
+ * O número curto, passo a passo: arredonda, acima de 999.999 vira
+ * milhões com uma casa ("1,0M" — a casa zero fica), acima de 99.999
  * milhares sem casa ("120k", truncado), acima de 999 milhares com uma casa
  * ("1,2k"). `maxDisplay` corta em "50+".
  */
@@ -93,7 +93,7 @@ function heatThreshold(attribute: string, fallback: number): number {
   return value > 0 ? value : fallback;
 }
 
-/** O `viewsHeat` do modelo Topic do Discourse, com as faixas do admin. */
+/** O calor das visualizações, com as faixas do admin. */
 export function viewsHeat(count: number): ViewsHeat {
   const low = heatThreshold('canelaTopicViewsHeatLow', VIEWS_HEAT_DEFAULTS.low);
   const medium = heatThreshold('canelaTopicViewsHeatMedium', VIEWS_HEAT_DEFAULTS.medium);

@@ -10,7 +10,7 @@
  */
 
 /*
- * Tradução automática do conteúdo (o `ai_translation` do Discourse AI): cada
+ * Tradução automática do conteúdo: cada
  * postagem e título lidos num idioma diferente do de quem lê são traduzidos
  * pela IA na primeira leitura e guardados; o fórum mostra o 文A ao lado da data
  * para alternar com o original.

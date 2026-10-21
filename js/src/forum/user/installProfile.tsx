@@ -1,13 +1,13 @@
 /*
- * O perfil do Discourse sobre o UserPage do core.
+ * O perfil do Canela sobre o UserPage do core.
  *
  * O core desenha o perfil como um hero colorido de largura total e uma coluna
- * de navegação à esquerda. O Discourse põe tudo dentro do cartão: capa no
+ * de navegação à esquerda. Aqui tudo vai para dentro do cartão: capa no
  * topo, avatar grande, nomes, uma linha de estatísticas e as abas embaixo.
  * O agente da casca já move o hero para dentro do cartão (PageStructure);
  * aqui o UserCard ganha as peças que faltam e a navegação vira abas.
  *
- * Como no Discourse, o cabeçalho completo (capa, bio, estatísticas) só
+ * O cabeçalho completo (capa, bio, estatísticas) só
  * aparece no Resumo; nas outras abas ele encolhe para avatar pequeno e nomes
  * (`.collapsed-info`), e a lista ocupa a tela.
  *
@@ -49,7 +49,7 @@ import { userCoverUrl } from '../features/profile';
 const INFO_MOVED_TO_STATS = ['lastSeen', 'joined'];
 
 /**
- * As abas de primeiro nível do Discourse (Resumo, Atividade, Notificações,
+ * As abas de primeiro nível (Resumo, Atividade, Notificações,
  * Mensagens, Convites, Emblemas, Preferências). Todo o resto — postagens,
  * tópicos, curtidas, menções e o que as extensões acrescentarem — vai para
  * a segunda linha, dentro de "Atividade".
@@ -59,7 +59,7 @@ const PRIMARY_NAV_KEYS = ['summary', 'badges', 'settings', 'security', 'notifica
 /** Páginas do perfil que, para o próprio usuário, são abas das preferências. */
 const PREFERENCE_PAGES = ['security', 'ignored-users'];
 
-/** As abas de "Atividade" com o nome e o ícone do Discourse. */
+/** As abas de "Atividade" com o nome e o ícone do tema. */
 const ACTIVITY_LABELS: Record<string, { icon: string; label?: string }> = {
   posts: { icon: 'fas fa-bars', label: 'user.nav.posts' },
   discussions: { icon: 'fas fa-list-ul', label: 'user.nav.discussions' },
@@ -79,7 +79,7 @@ function summaryEnabled(): boolean {
   return forumBool('canelaUserSummary', true);
 }
 
-/** Fora do Resumo o cabeçalho encolhe, como o `.collapsed-info` do Discourse. */
+/** Fora do Resumo o cabeçalho encolhe (`.collapsed-info`). */
 export function profileCollapsed(): boolean {
   return summaryEnabled() && app.current.get('routeName') !== 'user.summary';
 }
@@ -98,8 +98,8 @@ export default function installProfile() {
 }
 
 /**
- * As abas de postagens do perfil (Postagens, Curtidas, Menções) como o
- * `user-stream-item` do Discourse: avatar de 48px, o título do tópico como
+ * As abas de postagens do perfil (Postagens, Curtidas, Menções) como itens
+ * de atividade: avatar de 48px, o título do tópico como
  * link, categoria e data embaixo e o começo do texto — sem o post inteiro com
  * seus botões, que é o que o PostListItem do core desenha.
  */
@@ -137,7 +137,7 @@ function extendUserPage() {
   });
 
   // Sem o AffixedSidebar nem o SelectDropdown: duas linhas de abas no fluxo,
-  // abaixo do cartão, como a `user-navigation` do Discourse.
+  // abaixo do cartão.
   override(UserPage.prototype, 'sidebar', function (this: UserPage) {
     const nav = this.navItems();
     const primary = new ItemList<Mithril.Children>();
@@ -148,7 +148,7 @@ function extendUserPage() {
 
     Object.entries(nav.toObject()).forEach(([key, item]) => {
       if (/separator/i.test(key)) return;
-      // Segurança e Ignorados viram abas das preferências, como no Discourse.
+      // Segurança e Ignorados viram abas das preferências.
       if (self && PREFERENCE_PAGES.includes(key)) return;
 
       const content = item.content as any;
@@ -162,7 +162,7 @@ function extendUserPage() {
       }
       const relabel = ACTIVITY_LABELS[key];
 
-      // Os nomes e ícones do `user-navigation-secondary` do Discourse
+      // Os nomes e ícones do tema
       // ("Postagens", "Tópicos", o coração das curtidas) no lugar dos do core.
       if (relabel && content?.attrs) {
         content.attrs.icon = relabel.icon;
@@ -174,7 +174,7 @@ function extendUserPage() {
         return;
       }
 
-      // A ordem do Discourse (Tópicos, Respostas, Lidos, Rascunhos, Curtidas,
+      // A ordem do tema (Tópicos, Respostas, Lidos, Rascunhos, Curtidas,
       // Favoritos, Reações, Votos, Resolvido…); as abas de outras extensões
       // vêm depois, na ordem delas.
       const order = ACTIVITY_ORDER.indexOf(key);
@@ -238,7 +238,7 @@ function extendProfileHero() {
     vnode.children = children as any;
   });
 
-  // O "flair" do Discourse: o ícone do grupo num círculo na cor dele, no canto
+  // O "flair": o ícone do grupo num círculo na cor dele, no canto
   // do avatar.
   extend(UserCard.prototype, 'profileItems', function (this: any, items: ItemList<Mithril.Children>) {
     if (!isProfileHero(this) || !items.has('avatar')) return;
@@ -298,7 +298,7 @@ function extendProfileHero() {
     const controls: ItemList<Mithril.Children> = UserControls.controls(user, this);
 
     // "Mensagem" (flarum/messages) sai do menu e vira o botão primário à
-    // direita, como no Discourse.
+    // direita.
     if (controls.has('sendMessage')) {
       const message = controls.get('sendMessage') as any;
       controls.remove('sendMessage');
@@ -312,7 +312,7 @@ function extendProfileHero() {
       );
     }
 
-    // O "Chat" do ramon/chat também sai do menu: botão ao lado da "Mensagem", como no perfil do Discourse.
+    // O "Chat" do ramon/chat também sai do menu: botão ao lado da "Mensagem".
     if (thirdParty.ramonChatUserButton() && controls.has('chatDirect')) {
       const chat = controls.get('chatDirect') as any;
       controls.remove('chatDirect');

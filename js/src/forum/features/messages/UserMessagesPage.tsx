@@ -1,6 +1,5 @@
 /*
- * A aba "Mensagens" do perfil (`/u/:username/messages[/:box]`), como a
- * `user-messages-page` do Discourse: a linha das caixas e a lista de
+ * A aba "Mensagens" do perfil (`/u/:username/messages[/:box]`): a linha das caixas e a lista de
  * mensagens no formato da lista de tópicos.
  *
  * Mensagens são pessoais: a API do flarum/messages só devolve as conversas de
@@ -82,7 +81,7 @@ export default class UserMessagesPage<Attrs extends IUserPageAttrs = IUserPageAt
   }
 
   /**
-   * O estado vazio do Discourse (`user.no_messages_title` / `_body`). O texto
+   * O estado vazio (título e texto). O texto
    * aponta para o botão de mensagem do cartão de usuário e para a página
    * "Sobre", onde estão os membros da equipe.
    */

@@ -19,10 +19,10 @@ use Ramon\Canela\Support\SchemaCache;
 use Throwable;
 
 /**
- * As visualizações por dia de cada tópico (o TopicViewStat do Discourse), que
+ * As visualizações por dia de cada tópico, que
  * alimentam o gráfico "Visualizações recentes" do mapa do tópico.
  *
- * Anônimos e logados ficam em colunas separadas, como lá: o gráfico soma as
+ * Anônimos e logados ficam em colunas separadas: o gráfico soma as
  * duas, mas o número dividido é o que um relatório futuro vai querer.
  */
 final class TopicViewStats
@@ -56,7 +56,7 @@ final class TopicViewStats
 
     /**
      * Soma uma visualização no dia, num comando só (INSERT … ON DUPLICATE KEY
-     * UPDATE, o ON CONFLICT do Discourse): duas visualizações simultâneas no
+     * UPDATE): duas visualizações simultâneas no
      * mesmo dia não podem uma apagar a outra.
      */
     public function add(int $discussionId, CarbonInterface $date, bool $loggedIn): void
@@ -87,8 +87,7 @@ final class TopicViewStats
 
     /**
      * Os dias com visualização entre `$from` e `$to` (inclusive), em ordem,
-     * no formato da rota `/t/{id}/view-stats.json` do Discourse:
-     * `[{viewed_at: 'AAAA-MM-DD', views: N}]`. Dias sem nada não vêm — o
+     * no formato `[{viewed_at: 'AAAA-MM-DD', views: N}]`. Dias sem nada não vêm — o
      * gráfico preenche os buracos com zero.
      *
      * @return list<array{viewed_at: string, views: int}>

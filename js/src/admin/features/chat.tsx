@@ -1,6 +1,6 @@
 /*
- * Cards do Chat no grupo "Mensagens e chat" — as configurações de chat do
- * Discourse: ligar/desligar (no cabeçalho do card Chat), quem usa, quem cria
+ * Cards do Chat no grupo "Mensagens e chat" — as configurações de chat:
+ * ligar/desligar (no cabeçalho do card Chat), quem usa, quem cria
  * canais, mensagens diretas, fios, fixadas, anexos, tamanho da mensagem e
  * retenção. Os outros cards dependem do Chat: com ele desligado, somem.
  *
@@ -112,7 +112,7 @@ const cards: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.chat_enabled_help`,
-        'O chat do Discourse: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse, as mensagens ficam guardadas.'
+        'O chat: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse, as mensagens ficam guardadas.'
       ),
     keywords: 'chat conversa mensagens canais mensagem direta md dm tempo real realtime websocket gaveta',
     master: CHAT,
@@ -204,7 +204,7 @@ const cards: CardDef[] = [
     dependsOn: CHAT,
     body: () => (
       <>
-        {groups('chat_dm_groups', 'Quem pode abrir mensagens diretas', 'O "direct_message_enabled_groups" do Discourse.', '3')}
+        {groups('chat_dm_groups', 'Quem pode abrir mensagens diretas', 'Os grupos que podem iniciar uma mensagem direta.', '3')}
         {number('chat_dm_max_users', 'Participantes por conversa', 'O máximo de pessoas num chat em grupo, contando quem cria.', 2, 100, 20)}
       </>
     ),
@@ -221,7 +221,7 @@ const cards: CardDef[] = [
         {number(
           'chat_max_message_length',
           'Tamanho máximo da mensagem',
-          'Em caracteres. O padrão do Discourse é 6000.',
+          'Em caracteres. O padrão é 6000.',
           50,
           50000,
           6000,

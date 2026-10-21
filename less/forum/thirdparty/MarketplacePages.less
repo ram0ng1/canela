@@ -1,5 +1,5 @@
 // =====================================================================
-// ramon/marketplace: as telas, uma a uma, no desenho do Discourse/Canela
+// ramon/marketplace: as telas, uma a uma, no desenho do Canela
 //
 // O Marketplace.less troca os tokens e as peças (botões, campos, pílulas);
 // aqui cada página ganha o leiaute do tema:
@@ -37,7 +37,7 @@
   transition: none;
 }
 
-// O selo quadrado tingido dos ícones (o `category-badge` grande do Horizon).
+// O selo quadrado tingido dos ícones.
 .cn-mp-tile(@size: 40px) {
   width: @size;
   height: @size;
@@ -202,7 +202,7 @@
     gap: var(--cn-space-4);
   }
 
-  // O cartão do produto: a caixa da categoria do Discourse.
+  // O cartão do produto: no formato da caixa de categoria.
   .MpShop-card {
     .cn-mp-box();
     min-height: 0;
@@ -238,7 +238,7 @@
     min-width: 0;
   }
 
-  // Nome em --font-up-1 negrito, como o título da caixa de categoria.
+  // Nome em --cn-font-up-1 negrito, como o título da caixa de categoria.
   .MpShop-cardTitle {
     margin: 0 0 4px;
     font-size: var(--cn-font-up-1);
@@ -1828,7 +1828,7 @@
 
   // -------------------------------------------------------------------
   // Estados vazios: o ícone num círculo cinza, o texto e a ação, no meio
-  // do cartão (o "empty-state" do Discourse)
+  // do cartão
   // -------------------------------------------------------------------
   .MpEmpty,
   .MarketplaceEmptyState,

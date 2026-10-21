@@ -1,6 +1,6 @@
 /*
  * As seções "Canais" e "Mensagens diretas" do ramon/chat na barra lateral do
- * tema — o modo combinado do Discourse, em que o chat mora na barra principal
+ * tema — o modo combinado, em que o chat mora na barra principal
  * (embaixo das categorias e etiquetas) e a página do chat não tem uma segunda
  * coluna de canais.
  *
@@ -37,7 +37,7 @@ function routeName(): string {
   return String(app.current.get('routeName') || '');
 }
 
-/** O indicador do Discourse: o número verde das menções ou o ponto das não lidas. */
+/** O indicador: o número verde das menções ou o ponto das não lidas. */
 function unreadIndicator(mentions: number, unread: boolean): Mithril.Children {
   if (mentions > 0) {
     return <span className="CanelaRamonChat-unread -urgent">{mentions > 99 ? '99+' : mentions}</span>;
@@ -106,7 +106,7 @@ function channelLink(channel: RamonChannel): Mithril.Children {
   );
 }
 
-/** Lista vazia: o convite do Discourse ("Explorar canais", "Iniciar uma conversa"). */
+/** Lista vazia: o convite ("Explorar canais", "Iniciar uma conversa"). */
 function emptyLink(key: string, icon: string, label: string, onclick: () => void, href: string): Mithril.Children {
   return (
     <li key={key} className="CanelaRamonChatItem --empty">

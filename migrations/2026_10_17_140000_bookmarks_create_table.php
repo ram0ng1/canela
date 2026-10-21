@@ -13,11 +13,11 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Marcadores (bookmarks) do Discourse: cada usuário marca posts, com um nome
+ * Marcadores (bookmarks): cada usuário marca posts, com um nome
  * opcional e um lembrete.
  *
  * - Um marcador por usuário e post (o índice único): marcar de novo edita o
- *   que já existe, como no Discourse.
+ *   que já existe.
  * - `reminded_at` separado de `reminder_at`: o comando agendado procura os
  *   lembretes vencidos que ainda não foram enviados, e trocar o horário zera o
  *   envio sem perder o histórico do anterior.

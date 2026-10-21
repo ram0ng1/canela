@@ -47,7 +47,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Message extends AbstractModel
 {
-    /** O `chat_maximum_message_length` padrão do Discourse. */
+    /** Tamanho máximo padrão de uma mensagem. */
     public const DEFAULT_MAX_LENGTH = 6000;
 
     protected $table = 'canela_chat_messages';

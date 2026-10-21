@@ -64,12 +64,12 @@ export function sortTags(tags: CanelaTag[]): CanelaTag[] {
   });
 }
 
-/** As "categorias" do Discourse: tags primárias de primeiro nível. */
+/** As "categorias": tags primárias de primeiro nível. */
 export function primaryTags(): CanelaTag[] {
   return sortTags(allTags().filter((tag) => tag.position() !== null && !tag.isChild()));
 }
 
-/** As "etiquetas" do Discourse: tags secundárias, as mais usadas primeiro. */
+/** As "etiquetas": tags secundárias, as mais usadas primeiro. */
 export function secondaryTags(): CanelaTag[] {
   return allTags()
     .filter((tag) => tag.position() === null)
@@ -84,7 +84,7 @@ export function discussionTags(discussion: Discussion): CanelaTag[] {
   return Array.isArray(tags) ? sortTags(tags.filter(Boolean)) : [];
 }
 
-/** Separa as tags da discussão como o Discourse separa categoria e etiquetas. */
+/** Separa as tags da discussão em categoria e etiquetas. */
 export function splitDiscussionTags(discussion: Discussion): { categories: CanelaTag[]; labels: CanelaTag[] } {
   const tags = discussionTags(discussion);
 
@@ -101,7 +101,7 @@ export function currentTag(): CanelaTag | null {
 }
 
 /**
- * Com os endereços do Discourse ligados, /categories é a página de categorias
+ * Com os endereços próprios das listas ligados, /categories é a página de categorias
  * e /tags, a de etiquetas; sem eles, /tags (do flarum/tags) faz as duas vezes.
  */
 export function separateTagsPage(): boolean {
@@ -122,7 +122,7 @@ export function tagUrl(tag: CanelaTag): string {
 }
 
 /**
- * O símbolo da categoria como o Discourse desenha: o ícone na cor dela ou,
+ * O símbolo da categoria: o ícone na cor dela ou,
  * sem ícone, um quadradinho preenchido.
  */
 export function categorySymbol(tag: CanelaTag | null, className = ''): Mithril.Children {
@@ -156,7 +156,7 @@ function childSymbol(tag: CanelaTag, parent: CanelaTag): Mithril.Children {
 }
 
 /**
- * "▪ Suporte" — o badge de categoria do Discourse, com ou sem link. Com o
+ * "▪ Suporte" — o badge de categoria, com ou sem link. Com o
  * pai, vira o badge da subcategoria: "▪ Suporte ▪ Instalação", um link só
  * (para a filha).
  */
@@ -204,7 +204,7 @@ export function tagSymbol(tag: CanelaTag | null, className = '', fallback: strin
   );
 }
 
-/** Etiqueta (tag secundária) no estilo "simple" do Discourse: o ícone do Flarum, se houver, e o texto. */
+/** Etiqueta (tag secundária) no estilo simples: o ícone do Flarum, se houver, e o texto. */
 export function labelBadge(tag: CanelaTag, link = true): Mithril.Children {
   const attrs = { className: 'CanelaTagBadge', title: tag.description() || undefined };
   const content = [tagSymbol(tag), <span>{tag.name()}</span>];

@@ -17,7 +17,7 @@ use Illuminate\Database\Schema\Blueprint;
  * tópico) e o resumo curto (gist) que aparece na lista.
  *
  * Um registro por tópico. O número do último post resumido diz se o resumo
- * está desatualizado — o "O resumo está desatualizado" do Discourse — sem
+ * está desatualizado ("O resumo está desatualizado") sem
  * guardar a lista de posts. Some junto com o tópico.
  */
 return Migration::createTable(

@@ -10,7 +10,7 @@
  */
 
 /*
- * As seções do Resumo do perfil do Discourse que dependem de contas no banco:
+ * As seções do Resumo do perfil que dependem de contas no banco:
  * "Mais respondidos(as)", "Mais curtido por", "Com mais curtidas" e "Melhores
  * categorias". Só leitura: nenhuma tabela nova, nenhuma migration.
  */

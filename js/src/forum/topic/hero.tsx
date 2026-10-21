@@ -1,6 +1,6 @@
 /*
  * Cabeçalho do tópico: o título grande e, embaixo, a categoria e as
- * etiquetas, como o Discourse — sem a faixa colorida que o flarum/tags pinta
+ * etiquetas — sem a faixa colorida que o flarum/tags pinta
  * com a cor da primeira tag. Os ícones de status do core (fixado, trancado…)
  * continuam antes do título.
  */
@@ -16,7 +16,7 @@ const COLORED_CLASS = /^(DiscussionHero--colored|text-contrast--\w+)$/;
 
 export default function installHero(): void {
   extend(DiscussionHero.prototype, 'items', function (this: DiscussionHero, items: ItemList<Mithril.Children>) {
-    // O rótulo de tags do flarum/tags vira a linha de badges do Discourse,
+    // O rótulo de tags do flarum/tags vira a linha de badges,
     // depois do título e não antes.
     if (items.has('tags')) items.remove('tags');
 

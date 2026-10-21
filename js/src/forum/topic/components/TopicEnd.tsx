@@ -30,7 +30,7 @@ export default class TopicEnd extends Component<TopicEndAttrs> {
 
     return (
       <div className="CanelaTopicEnd">
-        {/* O mapa se repete no fim dos tópicos longos (topic-map.--bottom). */}
+        {/* O mapa se repete no fim dos tópicos longos. */}
         {topicSettings.map() && hasBottomTopicMap(discussion) && <TopicMap discussion={discussion} position="bottom" />}
         {footer && <TopicFooter discussion={discussion} page={page} />}
         {/* A chave refaz a busca ao ir de um tópico direto para outro; fica

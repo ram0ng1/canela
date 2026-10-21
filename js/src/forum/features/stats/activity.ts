@@ -14,7 +14,7 @@ export interface UserActivity {
   daysVisited: number | null;
   /** Tempo de leitura, em segundos. */
   timeRead: number | null;
-  /** Tempo de leitura dos últimos 60 dias, em segundos (o "recente" do Discourse). */
+  /** Tempo de leitura dos últimos 60 dias, em segundos (o "recente"). */
   recentTimeRead: number | null;
   postsRead: number | null;
   /** Tópicos distintos que a pessoa abriu. */
@@ -56,7 +56,7 @@ export function userActivity(user: User): UserActivity | null {
 }
 
 /**
- * O tempo de leitura como o Discourse escreve: "45 s", "12 min", "3 h", "2 d".
+ * O tempo de leitura por extenso curto: "45 s", "12 min", "3 h", "2 d".
  * Uma unidade só, arredondada — o resumo é para ter ideia, não para auditoria.
  */
 export function formatReadTime(seconds: number): string {

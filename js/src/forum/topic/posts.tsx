@@ -1,5 +1,5 @@
 /*
- * O post no jeito do Discourse.
+ * O post no jeito do Canela.
  *
  * - Cabeçalho: nome em negrito, nome de usuário e grupo em cinza, "em resposta
  *   a" com avatar, o lápis de editado e a data curta (link para o post).
@@ -62,13 +62,13 @@ export default function installPosts(): void {
   });
 
   // O avatar dentro de um bloco próprio, com o "flair" do grupo no canto:
-  // assim os dois descem juntos com a leitura (o avatar do Discourse é sticky).
+  // assim os dois descem juntos com a leitura (o avatar é sticky).
   extend(CommentPost.prototype, 'sideItems', function (this: any, items: ItemList<Mithril.Children>) {
     if (!items.has('avatar')) return;
 
     const user = this.attrs.post.user();
     const badges = user ? user.badges().toArray() : [];
-    // A presença como no meta.discourse.org (plugin who's online, modo "ring"):
+    // A presença em modo "anel":
     // um anel verde em volta do avatar, sem pontinho.
     const online = !!user && user.isOnline();
 
@@ -135,7 +135,7 @@ export default function installPosts(): void {
     if (parentId) content.unshift(<ParentPost id={parentId} ui={ui} />);
   });
 
-  // A data curta do Discourse ("4 h", "8 jun") com a completa no title, mas
+  // A data curta ("4 h", "8 jun") com a completa no title, mas
   // o clique continua abrindo o menu do core (data completa + link do post),
   // como o usuário pediu.
   extend(PostMeta.prototype, 'viewItems', function (this: any, items: ItemList<Mithril.Children>) {
@@ -150,12 +150,12 @@ export default function installPosts(): void {
     items.setContent('time', m(original?.tag || 'button', { ...(original?.attrs || {}), title: fullDate(time) }, label));
   });
 
-  // "Editado" vira o lápis do Discourse, com o mesmo tooltip de quem editou.
+  // "Editado" vira um lápis, com o mesmo tooltip de quem editou.
   override(PostEdited.prototype, 'view', function (this: any, original: () => Mithril.Children) {
     const post = this.attrs.post;
 
     // Com revisões guardadas, vale o lápis do histórico (features/extras/
-    // history), que abre o modal comparando as versões, como no Discourse.
+    // history), que abre o modal comparando as versões.
     if (Number(post.attribute('canelaRevisionCount')) > 0) return original();
     const info = app.translator.trans('core.forum.post.edited_tooltip', { user: post.editedUser(), ago: humanTime(post.editedAt()) });
 
@@ -177,7 +177,7 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
   const model: PostModel = post.attrs.post;
   const user = model.user();
 
-  // A ordem do Discourse: nome em negrito, o nome de usuário (quando é
+  // A ordem: nome em negrito, o nome de usuário (quando é
   // outro) e o título em cinza (features/profile). O grupo não entra em
   // texto: ele já aparece como flair no avatar.
   if (user && user.username() !== user.displayName()) {
@@ -220,7 +220,7 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
   const parentId = parentPostId(model);
 
   // Na linha do avocado ele aparece também quando o post respondido é o de
-  // cima; o do Discourse só quando não é (logo acima, ele é óbvio).
+  // cima; o do tema só quando não é (logo acima, ele é óbvio).
   if (parentId && (line || !isPreviousPost(model, parentId))) {
     const ui = postUi(post);
     const parent = app.store.getById<PostModel>('posts', parentId);
@@ -273,7 +273,7 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
 }
 
 /**
- * O Discourse só mostra o "em resposta a" quando o post respondido não é o
+ * O "em resposta a" só aparece quando o post respondido não é o
  * imediatamente anterior — logo acima, ele é óbvio.
  */
 function isPreviousPost(post: PostModel, parentId: string): boolean {
@@ -284,7 +284,7 @@ function isPreviousPost(post: PostModel, parentId: string): boolean {
 
 /**
  * O post a que este responde: a primeira menção de post (`@fulano#123`) do
- * conteúdo. O Flarum não guarda um "respondendo a" como o Discourse, mas a
+ * conteúdo. O Flarum não guarda um "respondendo a", mas a
  * resposta do mentions sempre começa com essa menção.
  */
 function parentPostId(post: PostModel): string | null {
@@ -415,9 +415,9 @@ function addRepliesToggle(post: PostModel, ui: PostUi, items: ItemList<Mithril.C
 }
 
 /**
- * Curtidas como no Meta: à esquerda, o coração cheio com a contagem (abre os
+ * Curtidas: à esquerda, o coração cheio com a contagem (abre os
  * avatares de quem curtiu); à direita, só o coração de curtir. Visitante vê o
- * coração e, ao clicar, a janela de entrar — o Discourse manda para o login.
+ * coração e, ao clicar, a janela de entrar.
  */
 function restyleLike(post: PostModel, ui: PostUi, items: ItemList<Mithril.Children>) {
   if (!isExtensionEnabled('flarum-likes') || post.isHidden()) return;
@@ -455,7 +455,7 @@ function restyleLike(post: PostModel, ui: PostUi, items: ItemList<Mithril.Childr
       return;
     }
 
-    // A batida do coração do Discourse (heartBump) ao curtir.
+    // A batida do coração ao curtir.
     if (!liked) ui.likeBump = Date.now();
 
     const result = original?.attrs?.onclick?.(event);
@@ -490,7 +490,7 @@ function restyleLike(post: PostModel, ui: PostUi, items: ItemList<Mithril.Childr
 
 /**
  * O "Responder" do mentions (ou o do tema, sem ele), com ícone e texto. O
- * visitante não vê: no Discourse ele responde pelo botão do fim do tópico.
+ * visitante não vê: ele responde pelo botão do fim do tópico.
  */
 function restyleReply(post: PostModel, items: ItemList<Mithril.Children>) {
   const className = 'Button Button--flat CanelaPostAction CanelaPostAction--reply';
@@ -526,7 +526,7 @@ function restyleReply(post: PostModel, items: ItemList<Mithril.Children>) {
   );
 }
 
-/** O "…" do Discourse: some e dá lugar aos controles, como ícones na barra. */
+/** O "…": some e dá lugar aos controles, como ícones na barra. */
 function addMore(component: any, post: PostModel, ui: PostUi, items: ItemList<Mithril.Children>) {
   const list = PostControls.controls(post, component).toArray();
 
@@ -601,7 +601,7 @@ interface ShareActionAttrs {
 const COPIED_MS = 2000;
 
 /**
- * O link do Discourse: o clique copia o endereço do post na hora (sem
+ * O link: o clique copia o endereço do post na hora (sem
  * janela) e o ícone vira um "certo" por um instante.
  */
 class ShareAction {

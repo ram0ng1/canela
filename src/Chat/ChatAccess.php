@@ -23,13 +23,12 @@ use Ramon\Canela\Chat\Model\Membership;
 use Ramon\Canela\Chat\Model\Message;
 
 /**
- * Quem pode o quê no chat — o "guardian" do Discourse.
+ * Quem pode o quê no chat.
  *
  * - Usar o chat: os grupos de `chat_allowed_groups` (administradores sempre),
  *   com o e-mail confirmado, e sem ter desligado o chat nas preferências.
  * - Ver um canal público: o canal avulso, todo mundo que usa o chat; o canal de
- *   uma tag, quem enxerga a tag (as permissões da tag valem para o canal, como
- *   a segurança da categoria no Discourse).
+ *   uma tag, quem enxerga a tag (as permissões da tag valem para o canal).
  * - Ver uma mensagem direta: só os participantes — nem os administradores leem
  *   as MDs dos outros.
  * - Moderar (apagar mensagens alheias, fixar, fechar e arquivar canais):
@@ -110,7 +109,7 @@ final class ChatAccess
             && $this->inGroups($actor, ChatSettings::DM_GROUPS);
     }
 
-    /** Suspenso (flarum/suspend) lê, mas não escreve — o "silenciado" do Discourse. */
+    /** Suspenso (flarum/suspend) lê, mas não escreve. */
     public function isSuspended(User $actor): bool
     {
         $until = $actor->getAttribute('suspended_until');

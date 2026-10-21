@@ -1,6 +1,5 @@
 /*
- * O "Descartar" das listas Não lidos e Novos do Discourse
- * (topic-dismiss-buttons): em cima, à direita, e de novo no fim da lista.
+ * O "Descartar" das listas Não lidos e Novos: em cima, à direita, e de novo no fim da lista.
  * Marca como lidos os tópicos da lista — e, na lista geral de não lidos, tudo,
  * com o "marcar tudo como lido" do core, numa requisição só.
  */
@@ -58,7 +57,7 @@ async function dismiss(): Promise<void> {
       // A lista geral de não lidos é "tudo": o mesmo do botão do core.
       await app.session.user!.save({ markedAllAsReadAt: new Date() });
     } else {
-      // Numa categoria (ou em Novos) só os tópicos da lista, como o Discourse.
+      // Numa categoria (ou em Novos) só os tópicos da lista.
       await Promise.all(unreadLoaded().map((discussion) => discussion.save({ lastReadPostNumber: discussion.lastPostNumber() }).catch(() => null)));
     }
 

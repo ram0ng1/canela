@@ -1,5 +1,5 @@
 /*
- * O menu do usuário do Discourse (`.user-menu.revamped.menu-panel`): a lista
+ * O menu do usuário (`.menu-panel`): a lista
  * da aba ativa à esquerda (`.quick-access-panel`, 320px) e a coluna de abas
  * de ícones à direita (`.menu-tabs-container`), com as abas de cima
  * (notificações por tipo) e as de baixo (perfil) separadas por uma linha.
@@ -13,7 +13,7 @@
  *   });
  *
  * Os tipos de notificação que uma aba declara em `types` saem da aba
- * "Outras notificações", como no Discourse.
+ * "Outras notificações".
  */
 import app from 'flarum/forum/app';
 import Component from 'flarum/common/Component';
@@ -122,12 +122,12 @@ export default class UserMenu extends Component<UserMenuAttrs> {
   oncreate(vnode: Mithril.VnodeDOM<UserMenuAttrs, this>) {
     super.oncreate(vnode);
 
-    // Como o `focusFirstTab` do Discourse: o foco vai para a aba ativa.
+    // Ao abrir, o foco vai para a aba ativa.
     (this.element.querySelector('.CanelaUserMenu-tab.active') as HTMLElement | null)?.focus({ preventScroll: true });
   }
 
   /**
-   * As abas de cima, na ordem do Discourse: todas, respostas, curtidas,
+   * As abas de cima, nesta ordem: todas, respostas, curtidas,
    * mensagens, marcadores, (abas de extensões), revisão e "outras".
    */
   tabItems(): ItemList<UserMenuTab> {
@@ -239,8 +239,8 @@ export default class UserMenu extends Component<UserMenuAttrs> {
       );
     }
 
-    // O chat do tema (recurso `chat`): as notificações dele, como a aba
-    // `chat-notifications` do plugin do Discourse. O recurso pode trocar esta
+    // O chat do tema (recurso `chat`): as notificações dele numa aba
+    // própria. O recurso pode trocar esta
     // aba pela sua, com o mesmo nome. Com o ramon/chat no lugar do chat do
     // tema, a aba mostra as notificações dele.
     const chatTypes = forumBool('canelaChatEnabled', false)
@@ -358,7 +358,7 @@ export default class UserMenu extends Component<UserMenuAttrs> {
 
   /**
    * Os itens da aba Perfil: tudo o que o menu da sessão oferece (core, tema
-   * e extensões), mais o que o Discourse tem ali e o Flarum não: status,
+   * e extensões), mais o que o Flarum não tem ali: status,
    * Resumo, Atividade, Mensagens e o modo claro/escuro.
    */
   profileItems(): ItemList<Mithril.Children> {
@@ -368,8 +368,8 @@ export default class UserMenu extends Component<UserMenuAttrs> {
 
     const items: ItemList<Mithril.Children> = SessionDropdown.prototype.items.call(session);
 
-    // A identidade (avatar e nome) do menu da sessão não existe na aba do
-    // Discourse: o avatar já está no cabeçalho.
+    // A identidade (avatar e nome) do menu da sessão sai da aba: o avatar
+    // já está no cabeçalho.
     ['canelaIdentity', 'canelaIdentitySeparator'].forEach((key) => items.has(key) && items.remove(key));
 
     if (profileField('status') && !items.has('canelaStatus')) {
@@ -469,7 +469,7 @@ export default class UserMenu extends Component<UserMenuAttrs> {
   }
 
   /**
-   * Como o `handleTabClick` do Discourse: numa aba já ativa (ou abrindo em
+   * Numa aba já ativa (ou abrindo em
    * nova aba) o link segue para a página completa; nas outras, só troca o
    * conteúdo.
    */

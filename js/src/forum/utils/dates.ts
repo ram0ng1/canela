@@ -1,5 +1,5 @@
 /*
- * Datas no formato curto do Discourse: "agora", "5 min", "4 h", "3 d", "8 jun",
+ * Datas no formato curto: "agora", "5 min", "4 h", "3 d", "8 jun",
  * "set 2025". Usa Intl com o idioma ativo do fórum em vez do dayjs: o core só
  * carrega os plugins de que ele mesmo precisa, e o formato abreviado não está
  * entre eles.
@@ -27,7 +27,7 @@ export function formatWith(date: Date, options: Intl.DateTimeFormatOptions): str
   }
 }
 
-/** O Intl põe ponto e "de" no mês abreviado do pt-BR ("8 de jun."); o Discourse não. */
+/** O Intl põe ponto e "de" no mês abreviado do pt-BR ("8 de jun."); aqui eles saem. */
 function compact(text: string): string {
   return text
     .replace(/\./g, '')
@@ -51,7 +51,7 @@ export function shortAge(date: Date | null | undefined, now = new Date()): strin
 }
 
 /**
- * A data "média" com "atrás" do Discourse (`relativeAgeMedium`, `leaveAgo`):
+ * A data "média" com "atrás":
  * "5 minutos atrás", "2 horas atrás", "5 dias atrás" e, a partir de 6 dias, a
  * data ("11 out"). É a dos itens de atividade do perfil.
  */

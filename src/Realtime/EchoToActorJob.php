@@ -28,7 +28,7 @@ use Illuminate\Contracts\Cache\Repository as Cache;
  * atualizou a aba em que clicou), e quem está logado só escuta o próprio
  * canal privado. Resultado: a curtida, a reação ou a edição feita numa aba
  * não aparecia nas outras abas e aparelhos da mesma conta, só depois de
- * recarregar. O Discourse atualiza todas.
+ * recarregar. Agora todas se atualizam.
  *
  * O envio é o do próprio realtime (SendGeneratedPayloadJob: o post como essa
  * pessoa o vê, no canal privado dela) e só sai se ela estiver conectada: sem

@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * As mensagens (`chat_messages` do Discourse).
+ * As mensagens do chat.
  *
  * - `message` é o texto como foi digitado (é o que a edição mostra) e `cooked`
  *   o HTML já formatado: o chat é lido muito mais do que escrito, e formatar a
@@ -24,7 +24,7 @@ use Illuminate\Database\Schema\Blueprint;
  * - Exclusão é lógica (`deleted_at`/`deleted_by_id`), para a mensagem poder ser
  *   restaurada e a moderação ver o que foi apagado.
  * - O autor apagado vira nulo: a conversa continua legível, com "excluído(a)"
- *   no lugar do nome, como no Discourse.
+ *   no lugar do nome.
  * - `updated_at` muda a cada edição, exclusão, reação ou fixação: é por ele
  *   que o modo sem tempo real (polling) descobre o que mudou.
  */

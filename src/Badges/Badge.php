@@ -98,7 +98,7 @@ final class Badge extends AbstractModel
 
     /**
      * Pode ser concedido à mão: os personalizados com a opção ligada. Os do
-     * sistema são da regra automática, como no Discourse.
+     * sistema são da regra automática.
      */
     public function isManuallyGrantable(): bool
     {

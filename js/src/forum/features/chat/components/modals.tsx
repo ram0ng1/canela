@@ -145,7 +145,7 @@ export interface DeleteChannelModalAttrs extends IInternalModalAttrs {
   channel: ChatChannel;
 }
 
-/** Excluir de vez: só com o nome do canal digitado, como o Discourse pede. */
+/** Excluir de vez: só com o nome do canal digitado. */
 export class DeleteChannelModal extends Modal<DeleteChannelModalAttrs> {
   private typed = '';
 

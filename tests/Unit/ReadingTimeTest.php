@@ -18,7 +18,7 @@ use Ramon\Canela\Tests\Support\ArraySettings;
 use Ramon\Canela\Tests\Support\TestDatabase;
 
 /**
- * Tempo de leitura (o "timings" do Discourse): o navegador diz quanto leu, e o
+ * Tempo de leitura: o navegador diz quanto leu, e o
  * servidor só credita o que cabe no relógio real e no teto do dia.
  */
 final class ReadingTimeTest extends TestCase

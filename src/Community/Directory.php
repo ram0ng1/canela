@@ -27,17 +27,16 @@ use Ramon\Canela\System\SystemUser;
  * A consulta do diretório de usuários (/u) e da lista de membros de um grupo
  * (/g/:nome): cada usuário com o que fez no período escolhido.
  *
- * O Discourse guarda uma tabela pronta (`directory_items`) recalculada a cada
- * hora; aqui cada coluna é uma subconsulta agrupada por usuário, ligada com
+ * Não há tabela pronta recalculada de tempos em tempos: cada coluna é uma
+ * subconsulta agrupada por usuário, ligada com
  * LEFT JOIN, para a ordenação e a paginação acontecerem no banco. Só contam
- * tópicos e respostas públicos — sem ocultos nem privados —, o mesmo que o
- * Discourse conta.
+ * tópicos e respostas públicos — sem ocultos nem privados.
  */
 final class Directory
 {
     public const PAGE_SIZE = 50;
 
-    /** Período do Discourse => dias para trás (`null` = desde sempre). */
+    /** Período => dias para trás (`null` = desde sempre). */
     public const PERIODS = [
         'all' => null,
         'yearly' => 365,
@@ -65,7 +64,7 @@ final class Directory
     }
 
     /**
-     * As colunas que existem neste fórum, na ordem do Discourse. O fórum usa a
+     * As colunas que existem neste fórum, na ordem de exibição. O fórum usa a
      * lista para montar a tabela; ordenar por uma coluna fora dela é recusado.
      *
      * @return list<string>
@@ -118,7 +117,7 @@ final class Directory
             ->whereVisibleTo($actor)
             ->where('users.is_email_confirmed', true);
 
-        // O usuário do sistema não é uma pessoa: fica fora da lista, como no Discourse.
+        // O usuário do sistema não é uma pessoa: fica fora da lista.
         if ($systemId = resolve(SystemUser::class)->id()) {
             $users->where('users.id', '!=', $systemId);
         }
@@ -241,7 +240,7 @@ final class Directory
             ->groupBy('discussions.user_id');
     }
 
-    /** "Respostas" no Discourse não contam a primeira postagem do tópico. */
+    /** "Respostas" não contam a primeira postagem do tópico. */
     private function replies(?Carbon $since): QueryBuilder
     {
         return $this->publicPosts()

@@ -25,7 +25,7 @@ use Ramon\Canela\Ai\TopicEmbedding;
 use Ramon\Canela\Ai\Tools\PostText;
 
 /**
- * Os "Tópicos relacionados" semânticos do Discourse (o módulo de embeddings).
+ * Os "Tópicos relacionados" semânticos (por embeddings).
  *
  * - O vetor de cada tópico vem de uma API de embeddings compatível com a da
  *   OpenAI (`POST /embeddings`: OpenAI, Voyage, Mistral, Ollama…), a partir

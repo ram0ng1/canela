@@ -1,5 +1,5 @@
 /*
- * A janela de convites (invite-panel do Discourse), num chunk próprio: só
+ * A janela de convites, num chunk próprio: só
  * desce quando alguém abre "Convidar" (barra lateral ou compartilhar).
  */
 import app from 'flarum/forum/app';

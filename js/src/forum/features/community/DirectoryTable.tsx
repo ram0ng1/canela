@@ -13,7 +13,7 @@ import type { LoadedRow } from './DirectoryState';
 import { t } from '../../utils/settings';
 import { shortAge } from '../../utils/dates';
 
-/** Ícone de cada coluna, como os do cabeçalho do diretório do Discourse. */
+/** Ícone do cabeçalho de cada coluna do diretório. */
 const COLUMN_ICONS: Record<string, string> = {
   likesReceived: 'fas fa-heart',
   likesGiven: 'fas fa-heart',
@@ -29,7 +29,7 @@ export interface DirectoryTableAttrs extends ComponentAttrs {
 }
 
 /**
- * A tabela do diretório do Discourse: usuário à esquerda, uma coluna por
+ * A tabela do diretório: usuário à esquerda, uma coluna por
  * número, cabeçalhos clicáveis para ordenar e "carregar mais" no fim.
  *
  * "Último acesso" sempre aparece (quando o usuário o divulga), mas só ordena

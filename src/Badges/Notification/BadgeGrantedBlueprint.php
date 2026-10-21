@@ -22,7 +22,7 @@ use Ramon\Canela\Badges\UserBadge;
 use Ramon\Canela\System\SystemUser;
 
 /**
- * "Ganhou 'Primeira curtida'" — o `granted_badge` do Discourse.
+ * "Ganhou 'Primeira curtida'".
  *
  * O assunto é o emblema (o que o menu mostra) e a concessão vai nos dados:
  * sem ela, a segunda "Resposta interessante" casaria com a notificação da
@@ -43,7 +43,7 @@ final class BadgeGrantedBlueprint implements BlueprintInterface, AlertableInterf
     }
 
     /**
-     * O usuário do sistema, que concede os emblemas no Discourse; sem ele, a
+     * O usuário do sistema, que concede os emblemas; sem ele, a
      * própria pessoa (o avatar de quem ganhou, com o selo do emblema no canto).
      */
     #[\Override]

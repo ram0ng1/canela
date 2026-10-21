@@ -1,7 +1,7 @@
 /*
  * Uma mensagem do chat denunciada (ramon/chat: `chat-message-flags`) como
  * item da fila "Revisar" do tema (review/ReviewQueue.tsx), no mesmo
- * `.reviewable-item` do Discourse que os posts: o tipo, os motivos, o canal,
+ * `.reviewable-item` que os posts: o tipo, os motivos, o canal,
  * a mensagem, o autor, quem denunciou e por quê, e as ações da fila do
  * próprio ramon/chat (/chat/flags) pelos endpoints dele — descartar (resolver
  * as denúncias) e excluir a mensagem — mais o link para ela no chat.
@@ -130,7 +130,7 @@ function reasonChips(report: ChatReport): Mithril.Children {
   );
 }
 
-/** Quem denunciou, o motivo, quando e o detalhe (o `.reviewable-scores` do Discourse). */
+/** Quem denunciou, o motivo, quando e o detalhe (o `.reviewable-scores`). */
 function scores(report: ChatReport): Mithril.Children {
   return (
     <div className="reviewable-scores">

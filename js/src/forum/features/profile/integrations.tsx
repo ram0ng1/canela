@@ -71,7 +71,7 @@ export function installUserCard() {
     const bio = Bio(user);
 
     // Logo abaixo do nome (100), antes das insígnias (90). A bio vem depois do
-    // local e do site (o `info`, 80), na ordem do perfil do Discourse.
+    // local e do site (o `info`, 80).
     if (title) items.add('canelaTitle', title, 99);
     if (status) items.add('canelaStatus', status, 98);
     if (bio) items.add('canelaBio', bio, 75);
@@ -94,7 +94,7 @@ export function installUserCard() {
     const website = WebsiteFact(user);
     const birthday = BirthdayFact(user);
 
-    // Antes de "visto há" (100) e "entrou em" (90), como no Discourse.
+    // Antes de "visto há" (100) e "entrou em" (90).
     if (location) items.add('canelaLocation', location, 120);
     if (website) items.add('canelaWebsite', website, 115);
     if (birthday) items.add('canelaBirthday', birthday, 110);
@@ -103,7 +103,7 @@ export function installUserCard() {
 
 export function installPostUser() {
   // O emoji do status logo depois do nome, depois dos outros ícones (o selo
-  // de verificado vem antes dele, como no Discourse): utils/userIcons.
+  // de verificado vem antes dele): utils/userIcons.
   registerUserIcon(
     'canelaStatus',
     // Só no cabeçalho do post: no cartão e no perfil o status é a pílula
@@ -123,7 +123,7 @@ export function installPostUser() {
 }
 
 export function installSessionStatus() {
-  // O emoji em selo sobre o avatar do cabeçalho, como no Discourse.
+  // O emoji em selo sobre o avatar do cabeçalho.
   extend(SessionDropdown.prototype, 'getButtonContent', function (this: any, children: Mithril.Children[]) {
     const user = app.session.user;
     const emoji = user && StatusEmoji(user, 'CanelaStatusEmoji--avatar');

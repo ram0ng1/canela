@@ -1,7 +1,7 @@
 /*
- * Os atalhos de horário do lembrete, como os "time shortcuts" do Discourse.
+ * Os atalhos de horário do lembrete.
  *
- * As horas seguem as do Discourse: o fim da tarde (18h) para "mais tarde
+ * As horas: o fim da tarde (18h) para "mais tarde
  * hoje" e o começo da manhã (8h) para os outros, sempre no fuso do navegador
  * — o servidor recebe o instante em UTC e não precisa saber o fuso de ninguém.
  */
@@ -37,7 +37,7 @@ export function presetDate(preset: ReminderPreset, now = new Date()): Date | nul
     case 'tomorrow':
       return at(addDays(now, 1), MORNING_HOUR);
     case 'next_week': {
-      // A próxima segunda-feira (nunca hoje): o "início da semana" do Discourse.
+      // A próxima segunda-feira (nunca hoje): o "início da semana".
       const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
 
       return at(addDays(now, daysUntilMonday), MORNING_HOUR);
@@ -49,7 +49,7 @@ export function presetDate(preset: ReminderPreset, now = new Date()): Date | nul
   }
 }
 
-/** Os atalhos que fazem sentido agora, na ordem do Discourse. */
+/** Os atalhos que fazem sentido agora, na ordem. */
 export function availablePresets(now = new Date()): ReminderPreset[] {
   const presets: ReminderPreset[] = ['later_today', 'tomorrow', 'next_week', 'next_month'];
 

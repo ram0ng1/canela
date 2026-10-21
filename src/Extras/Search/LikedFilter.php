@@ -20,7 +20,7 @@ use Illuminate\Database\Query\Builder;
 
 /**
  * `filter[canelaLiked]`: tópicos em que quem pesquisa curtiu alguma postagem
- * ("curtidos por mim" do Discourse).
+ * ("curtidos por mim").
  *
  * O flarum/likes só filtra POSTAGENS por quem curtiu (`likedBy`); na busca de
  * tópicos o equivalente é "tem uma postagem curtida por mim". O valor é

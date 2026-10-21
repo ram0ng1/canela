@@ -1,9 +1,9 @@
 /*
- * O menu do usuário do Discourse no lugar do sino e do menu da sessão.
+ * O menu do usuário no lugar do sino e do menu da sessão.
  *
  * - O cabeçalho perde o sino (NotificationsDropdown), os posts sinalizados
  *   (FlagsDropdown, do flarum/flags) e o envelope (DialogsDropdown, do
- *   flarum/messages): tudo isso vira aba do menu, como no Discourse. O menu
+ *   flarum/messages): tudo isso vira aba do menu. O menu
  *   da sessão (SessionDropdown) vira o avatar que abre o menu — os itens dele
  *   continuam, na aba Perfil.
  * - Esc e clique fora fecham; navegar também.
@@ -65,8 +65,8 @@ export default function installUserMenu(): void {
 }
 
 /**
- * "Notificações" entre as abas de primeiro nível do perfil, como no Discourse
- * (só no próprio perfil). A chave `notifications` já está entre as que o
+ * "Notificações" entre as abas de primeiro nível do perfil (só no próprio
+ * perfil). A chave `notifications` já está entre as que o
  * perfil do tema põe na primeira linha.
  */
 function installProfileTab(): void {

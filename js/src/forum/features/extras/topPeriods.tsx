@@ -1,5 +1,5 @@
 /*
- * "Melhores" por período, como no Discourse: na aba Melhores, um seletor
+ * "Melhores" por período: na aba Melhores, um seletor
  * (Todo o período / Ano / Trimestre / Mês / Semana / Hoje) limita a lista aos
  * tópicos criados no intervalo.
  *

@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 /*
- * Os recursos do chat do Discourse que o chat próprio do tema tinha e o
+ * Os recursos de chat que o chat próprio do tema tinha e o
  * ramon/chat não tem, postos por cima dele — sem editar a extensão: os avisos
  * no sino, a MD consigo mesmo, o nome do chat em grupo, o limite de
  * participantes, a recusa de MD com quem não usa o chat, a limpeza dos canais
@@ -73,7 +73,7 @@ return (static function (): array {
                             && $context->getActor()->can('restore', $message)),
                 ]),
 
-            // As preferências de chat do Discourse que o ramon/chat não tem.
+            // As preferências de chat que o ramon/chat não tem.
             (new Extend\User())
                 ->registerPreference('canelaRamonChatHeaderIndicator', $oneOf(['all_new', 'dm_and_mentions', 'only_mentions', 'never'], 'all_new'), 'all_new')
                 ->registerPreference('canelaRamonChatQuickReactions', $oneOf(['frequent', 'custom'], 'frequent'), 'frequent')

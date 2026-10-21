@@ -26,8 +26,8 @@ use Ramon\Canela\Support\NullOrder;
  * Não usa o /api/users do core: ele exige a permissão de procurar usuários, e
  * quem pode conversar precisa achar com quem conversar. Por isso só devolve o
  * mínimo (nome, avatar) e só por prefixo, com no máximo 10 resultados. Com
- * `channel`, marca quem é membro (o aviso "não participa do canal" do
- * Discourse) e põe os membros primeiro.
+ * `channel`, marca quem é membro (o aviso "não participa do canal") e põe os
+ * membros primeiro.
  */
 final class UsersController extends AbstractChatController
 {

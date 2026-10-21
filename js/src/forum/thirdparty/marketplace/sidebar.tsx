@@ -3,8 +3,8 @@
  *
  * A extensão põe na navegação um item "Loja" que abre um submenu ao passar o
  * mouse (MpHoverNavItem). Na barra do tema ele abria para a esquerda, cortado
- * pela borda da tela, e um menu flutuante preso a um link da barra não existe
- * no Discourse: lá, um grupo de links é uma seção recolhível, como "Categorias"
+ * pela borda da tela, e um menu flutuante preso a um link da barra destoa
+ * do resto: no tema, um grupo de links é uma seção recolhível, como "Categorias"
  * e "Etiquetas" (e as seções personalizadas). Então o "Loja" sai da seção da
  * comunidade e os links dele viram a seção "Loja", que lembra se o leitor a
  * recolheu e funciona igual no painel deslizante do celular.
@@ -87,7 +87,7 @@ export default function installMarketplaceSidebar(): void {
           </li>
         )}
       </SidebarSection>,
-      // Como as seções personalizadas do Discourse: depois dos links (85) e
+      // Como as seções personalizadas: depois dos links (85) e
       // antes das tags (80).
       82
     );

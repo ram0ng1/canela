@@ -1,6 +1,5 @@
 /*
- * Os atalhos de teclado do Discourse que a casca ainda não tinha
- * (services/keyboard-shortcuts.js): andar pelos POSTS do tópico com j/k e
+ * Os atalhos de teclado que a casca ainda não tinha: andar pelos POSTS do tópico com j/k e
  * agir sobre o post selecionado (l curtir, b marcador, s compartilhar,
  * e editar, r responder, q citar, d excluir, ! sinalizar, t tópico
  * vinculado), # pular para um post, Home/End, shift+l para a primeira não
@@ -185,7 +184,7 @@ function scrollToTop(element: HTMLElement, fast: boolean): void {
   window.scrollTo({ top: Math.max(0, top), behavior: fast ? 'auto' : 'smooth' });
 }
 
-/** O _moveSelection do Discourse: posts longos rolam por página antes de trocar. */
+/** Posts longos rolam por página antes de trocar. */
 function movePostSelection(direction: number, scrollWithinPosts: boolean): void {
   const now = Date.now();
   const fast = now - lastMove < FAST_MS;
@@ -340,7 +339,7 @@ function runSequence(prefix: string, key: string, shift: boolean): boolean {
         adjacentTopic(-1);
         return true;
       case 's': {
-        // No tópico, o primeiro sugerido (Discourse); fora dele, a casca leva às configurações.
+        // No tópico, o primeiro sugerido; fora dele, a casca leva às configurações.
         const link = discussion
           ? document.querySelector<HTMLAnchorElement>('.CanelaSuggested a[href*="/d/"], .SuggestedTopics a[href*="/d/"]')
           : null;
@@ -502,7 +501,7 @@ function listKey(event: KeyboardEvent): boolean {
 function onKeydown(event: KeyboardEvent): void {
   if (!gaps.postShortcuts()) return;
 
-  // ctrl+alt+f vale até digitando, como no Discourse (é global).
+  // ctrl+alt+f vale até digitando (é global).
   if (event.ctrlKey && event.altKey && event.key.toLowerCase() === 'f') {
     event.preventDefault();
     event.stopImmediatePropagation();

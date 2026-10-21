@@ -1,6 +1,6 @@
 /*
- * A barrinha de carregamento do topo (`.loading-indicator-container` do
- * Discourse): na troca de página ela cresce até 80% no tempo médio das
+ * A barrinha de carregamento do topo (`.loading-indicator-container`): na
+ * troca de página ela cresce até 80% no tempo médio das
  * últimas cinco navegações, segue devagar até 90% enquanto a página não
  * chega e, quando chega, completa e some.
  *
@@ -8,7 +8,7 @@
  * hora e busca os dados no `oninit`. Então a navegação começa no `oninit` de
  * cada Page e termina quando as requisições disparadas naquele instante
  * voltam. Também cobre os módulos carregados sob demanda, que o core
- * anunciava com um alerta "Carregando…" — o Discourse não tem esse alerta.
+ * anunciava com um alerta "Carregando…" — esse alerta sai.
  */
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
@@ -16,7 +16,7 @@ import Page from 'flarum/common/components/Page';
 
 import { forumBool } from '../utils/settings';
 
-// Os números do serviço `loading-slider` do Discourse.
+// Os números da barra de carregamento.
 const STORE_LOADING_TIMES = 5;
 const DEFAULT_LOADING_TIME = 0.3;
 const MIN_LOADING_TIME = 0.2;
@@ -91,7 +91,7 @@ export function startLoading() {
   startedAt = performance.now();
   pending = 0;
 
-  // Como o `stateChanged` do Discourse: zera e, no quadro seguinte, cresce.
+  // Zera e, no quadro seguinte, cresce.
   if (deferred !== null) cancelAnimationFrame(deferred);
   setState('ready');
   deferred = requestAnimationFrame(() => {

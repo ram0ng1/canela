@@ -2,8 +2,7 @@
  * A gaveta do ramon/chat como a do chat do tema (chat-drawer):
  * - sem conversa aberta, a lista do tema (a seção "Canais" com o lápis, ou as
  *   MDs) e as abas de baixo, no lugar da lista própria dele;
- * - redimensionável pelo canto de cima à esquerda (o chat-drawer-resizer do
- *   Discourse), com o tamanho guardado no navegador.
+ * - redimensionável pelo canto de cima à esquerda, com o tamanho guardado no navegador.
  */
 import { extend, override } from 'flarum/common/extend';
 

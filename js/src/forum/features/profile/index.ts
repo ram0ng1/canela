@@ -1,5 +1,5 @@
 /*
- * Perfil estendido (os campos de perfil do Discourse): bio, local, site,
+ * Perfil estendido (campos extras de perfil): bio, local, site,
  * título, status com emoji, capa, fundo do cartão e aniversário.
  *
  * - Configurações → seção "Perfil" para editar os próprios campos.

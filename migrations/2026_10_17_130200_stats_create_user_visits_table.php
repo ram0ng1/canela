@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Um dia de visita por linha, como o `user_visits` do Discourse: daqui saem os
+ * Um dia de visita por linha: daqui saem os
  * "Dias visitados", o "Tempo de leitura" e as "Postagens lidas" do resumo do
  * perfil. Por dia (e não por acesso) para a tabela crescer no máximo uma
  * linha por pessoa por dia, e para a soma do perfil ser um SUM simples.

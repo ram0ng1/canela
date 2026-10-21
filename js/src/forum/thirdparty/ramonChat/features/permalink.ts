@@ -1,5 +1,5 @@
 /*
- * (14) O link permanente da mensagem, como o do Discourse: `/chat/c/ID?message=MSG`
+ * (14) O link permanente da mensagem: `/chat/c/ID?message=MSG`
  * (ou o do fio, `/chat/c/ID/t/FIO?message=MSG`). Ao abrir, a página do chat
  * carrega a conversa até a mensagem (o `revealMessage` do ramon/chat), rola
  * até ela e a destaca. É o endereço do "Copiar link" e dos avisos do sino.

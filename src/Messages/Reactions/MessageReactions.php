@@ -20,12 +20,12 @@ use Illuminate\Database\ConnectionInterface;
 use Ramon\Canela\Support\SchemaCache;
 
 /**
- * Reações nas mensagens privadas, como o discourse-reactions nas mensagens do
- * Discourse: uma reação por pessoa por mensagem (`canela_dialog_message_reactions`).
+ * Reações nas mensagens privadas: uma reação por pessoa por mensagem
+ * (`canela_dialog_message_reactions`).
  *
  * A lista de reações é a do fof/reactions quando ele está ligado (a chave é
  * o id da reação dele, e o fórum desenha com o componente dele); sem ele, a
- * lista padrão do Discourse, com a chave sendo o nome do emoji.
+ * lista padrão, com a chave sendo o nome do emoji.
  *
  * Sem a tabela (migration ainda não rodada) nada é lido nem gravado, e o
  * fórum esconde o botão.
@@ -34,7 +34,7 @@ final class MessageReactions
 {
     public const TABLE = 'canela_dialog_message_reactions';
 
-    /** As reações padrão do discourse-reactions (`discourse_reactions_enabled_reactions`). */
+    /** As reações padrão, sem o fof/reactions. */
     public const DEFAULTS = ['heart', '+1', 'laughing', 'open_mouth', 'cry', 'tada', 'rocket'];
 
     private static ?bool $exists = null;

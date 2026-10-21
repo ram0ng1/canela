@@ -15,8 +15,7 @@ const MAX_RECENT_SEARCHES = 5;
 // ---------------------------------------------------------------------------
 // Buscas recentes
 // ---------------------------------------------------------------------------
-// O Discourse guarda as buscas recentes no servidor (`log_search_queries`);
-// aqui elas ficam no navegador, por usuário: é uma conveniência de quem
+// As buscas recentes ficam no navegador, por usuário: é uma conveniência de quem
 // pesquisa, e não um dado do fórum.
 
 function recentKey(): string | null {
@@ -96,7 +95,7 @@ function groupedKeys(): Map<string, string[]> {
 }
 
 /**
- * Todos os atalhos, na ordem em que o Discourse os lista: primeiro os
+ * Todos os atalhos, nesta ordem: primeiro os
  * booleanos já completos ("é:fixada"), depois as chaves que pedem um valor
  * ("criado:") — exceto autor e tag, que já têm `@` e `#`.
  */

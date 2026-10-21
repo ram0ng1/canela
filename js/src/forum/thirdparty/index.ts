@@ -1,6 +1,6 @@
 /*
  * Integração com extensões de terceiros (FriendsOfFlarum) que cobrem
- * recursos do Discourse: cada uma só é tocada se estiver ativa, e nenhum
+ * recursos do tema: cada uma só é tocada se estiver ativa, e nenhum
  * módulo delas é importado direto — vêm do registro do Flarum, com guarda.
  * As chaves do admin (thirdparty/settings.ts) são lidas na hora de desenhar:
  * no initializer o fórum ainda não carregou as configurações.
@@ -38,6 +38,6 @@ export default function installThirdParty(): void {
   if (isExtensionEnabled('ramon-verified')) installVerified();
   if (isExtensionEnabled('linkrobins-wiki')) installWiki();
   if (isExtensionEnabled('ramon-marketplace')) installMarketplace();
-  // Os recursos do chat do Discourse por cima do ramon/chat (ramonChat/features).
+  // Os recursos extras de chat por cima do ramon/chat (ramonChat/features).
   if ('ramon-chat' in flarum.extensions) installRamonChatFeatures();
 }

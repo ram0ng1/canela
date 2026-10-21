@@ -10,7 +10,7 @@
  */
 
 /*
- * Cliques em links, como o `topic_link_clicks` do Discourse: o número ao lado
+ * Cliques em links: o número ao lado
  * de cada link externo nas postagens, os "Links populares" do mapa do tópico
  * e os "Melhores links" do resumo do perfil. O liga/desliga fica no card de
  * estatísticas do admin; desligado, a rota responde 404 e o atributo some.

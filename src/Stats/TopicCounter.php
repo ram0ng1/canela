@@ -14,7 +14,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Ramon\Canela\Topic\MarkUnread;
 
 /**
- * As contagens "Novos (N)" e "Não lidos (N)" do Discourse para quem entrou.
+ * As contagens "Novos (N)" e "Não lidos (N)" para quem entrou.
  *
  * - **Novo**: criado depois do último "marcar tudo como lido" (ou do cadastro),
  *   dentro dos últimos N dias, por outra pessoa, e nunca aberto.
@@ -37,7 +37,7 @@ final class TopicCounter
 
     /**
      * @param int[] $tagIds só os tópicos destas tags (a página de uma categoria
-     *                      conta só o que é dela, como o Discourse)
+     *                      conta só o que é dela)
      */
     public function newCount(User $actor, array $tagIds = []): int
     {
@@ -110,7 +110,7 @@ final class TopicCounter
     }
 
     /**
-     * "Não lido" do Discourse: já aberto, com respostas depois da última lida.
+     * "Não lido": já aberto, com respostas depois da última lida.
      * O filtro `unread` do core também conta o nunca aberto (que aqui é
      * "Novo"); por isso a lista usa `canelaUnread`, com esta mesma regra.
      */
@@ -138,7 +138,7 @@ final class TopicCounter
 
     /**
      * O que entra em qualquer das duas: o que a pessoa pode ver, menos
-     * mensagens privadas (o Discourse as conta à parte), tópicos ocultos e o
+     * mensagens privadas (contadas à parte), tópicos ocultos e o
      * que ela mesma pediu para não ver — tópicos ignorados e as tags ocultas
      * da lista principal, como a lista "Todas" já faz.
      */

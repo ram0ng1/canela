@@ -1,5 +1,5 @@
 /*
- * As abas "Em alta" e "Não lidos" do Discourse viram ordenações do
+ * As abas "Em alta" e "Não lidos" viram ordenações do
  * DiscussionListState. Assim elas aparecem na URL (`?sort=hot`), passam pelo
  * mesmo `changeSort` das outras e funcionam em qualquer página que filtre a
  * lista (tag, seguindo…) sem código à parte.
@@ -69,7 +69,7 @@ export default function installSorts(): void {
 
     // Com as contagens do servidor (recurso stats), as abas Novos e Não lidos
     // listam pela mesma regra do "(N)": nunca aberto / aberto com respostas
-    // novas, como no Discourse. Sem elas, vale o filtro `unread` do core.
+    // novas. Sem elas, vale o filtro `unread` do core.
     const personal = !!app.session.user && forumBool('canelaStatsCountsEnabled', false) && app.forum.attribute('canelaUnreadCount') !== undefined;
 
     if (sort === UNREAD_SORT && sort in this.sortMap()) {

@@ -27,7 +27,7 @@ use Ramon\Canela\System\SystemUser;
  *
  * O assunto é o post, e não o marcador: a notificação leva até ele, e o
  * NotificationResource do core já sabe serializar posts (com o tópico). O
- * nome do marcador vai nos dados, para o alerta mostrá-lo como no Discourse.
+ * nome do marcador vai nos dados, para o alerta mostrá-lo.
  *
  * O horário do lembrete também entra nos dados de propósito: o core reconhece
  * uma notificação "igual" pelos dados, e sem ele um segundo lembrete no mesmo
@@ -49,7 +49,7 @@ final class BookmarkReminderBlueprint implements BlueprintInterface, AlertableIn
 
     /**
      * O lembrete é do sistema: com o usuário do sistema criado, sai em nome
-     * dele (como no Discourse); sem ele, sem remetente.
+     * dele; sem ele, sem remetente.
      */
     #[\Override]
     public function getFromUser(): ?User

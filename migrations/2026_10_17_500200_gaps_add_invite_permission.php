@@ -14,8 +14,7 @@ use Flarum\Group\Group;
 
 /*
  * Quem pode gerar links de convite: os membros, por padrão (o admin muda em
- * Permissões). O Discourse libera a partir do nível de confiança 2; aqui a
- * permissão por grupo é o equivalente que o Flarum tem.
+ * Permissões): a permissão por grupo, em vez de um nível de confiança mínimo.
  */
 return Migration::addPermissions([
     'canela.createInvite' => Group::MEMBER_ID,

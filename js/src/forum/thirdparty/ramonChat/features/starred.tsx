@@ -1,5 +1,5 @@
 /*
- * (11) Canal favorito (a estrela do Discourse): a preferência
+ * (11) Canal favorito (a estrela): a preferência
  * `canelaRamonChatStarred` (lista de ids) do leitor. Os favoritos vão para o
  * topo das listas da barra lateral (pelo gancho `sortChannels`) e ganham a
  * estrela na linha (`channelSuffix`); o botão fica no cabeçalho do canal e

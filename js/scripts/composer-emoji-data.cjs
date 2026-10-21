@@ -12,7 +12,7 @@ const gh = read('en/shortcodes/github.json');
 const eb = read('en/shortcodes/emojibase.json');
 const ptByHex = new Map(pt.map((e) => [e.hexcode, e]));
 
-// Ordem do Discourse (o emojibase põe Viagem antes de Atividades).
+// Ordem das categorias (o emojibase põe Viagem antes de Atividades).
 const ORDER = [
   [0, 'smileys'],
   [1, 'people'],

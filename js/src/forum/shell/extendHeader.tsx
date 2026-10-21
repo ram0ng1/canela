@@ -1,6 +1,5 @@
 /*
- * Ajustes nos controles da direita do cabeçalho para ficarem como os do
- * Discourse: o idioma vira a pílula com o código ("PT ⌄"), o "Entrar" ganha o ícone e o
+ * Ajustes nos controles da direita do cabeçalho: o idioma vira a pílula com o código ("PT ⌄"), o "Entrar" ganha o ícone e o
  * seletor de tema sai do cabeçalho quando o rodapé da barra lateral já o
  * oferece.
  */
@@ -15,7 +14,7 @@ import LocaleSwitcher from './LocaleSwitcher';
 
 export default function extendHeader() {
   // O fof/drafts põe uma pena (DraftsDropdown, chave `Drafts`) no cabeçalho.
-  // O Discourse não tem esse ícone: os rascunhos ficam no "⌄" do botão "Novo
+  // Esse ícone sai: os rascunhos ficam no "⌄" do botão "Novo
   // tópico". O initializer do fof roda depois do tema, então a remoção é
   // registrada no `mount`, quando todos os itens já foram acrescentados.
   override(app as any, 'mount', function (this: any, original: (...args: any[]) => unknown, ...args: any[]) {
@@ -38,12 +37,12 @@ export default function extendHeader() {
       // os nomes dos idiomas num balão com seta.
       items.setContent('locale', LocaleSwitcher());
 
-      // Para o visitante, o Discourse põe o "PT" depois de Cadastrar-se/Entrar;
+      // Para o visitante, o "PT" vem depois de Cadastrar-se/Entrar;
       // logado, ele vem antes dos ícones.
       if (!app.session.user) items.setPriority('locale', -10);
     }
 
-    // "Entrar" leva o ícone de pessoa, como o .login-button do Discourse.
+    // "Entrar" leva o ícone de pessoa.
     if (items.has('logIn')) {
       const logIn = items.get('logIn') as Mithril.Vnode<any>;
 

@@ -22,7 +22,7 @@ use Ramon\Canela\Badges\Scope;
 
 /**
  * Postagem nova ou editada: Editor(a), Primeira citação, Primeiro link,
- * Primeira menção, Primeiro emoji (o `Trigger::PostRevision` do Discourse) e
+ * Primeira menção, Primeiro emoji e
  * a revisão de nível do autor — responder conta para o nível 2.
  */
 final class PostListener

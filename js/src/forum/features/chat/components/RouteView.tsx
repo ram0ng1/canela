@@ -1,6 +1,6 @@
 /*
- * O conteúdo de cada "rota" do chat, com a barra de cima de cada uma — o que
- * no Discourse são os drawer-routes/* e routes/*. A gaveta e a página cheia
+ * O conteúdo de cada "rota" do chat, com a barra de cima de cada uma.
+ * A gaveta e a página cheia
  * desenham a mesma coisa; muda só a navegação (estado da gaveta × URL) e os
  * botões da barra.
  */

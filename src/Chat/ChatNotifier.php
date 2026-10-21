@@ -28,7 +28,7 @@ use Ramon\Canela\Chat\Notification\ChatMessageBlueprint;
  * Menções e notificações das mensagens.
  *
  * - `@usuario` notifica quem participa do canal (numa MD, os participantes); um
- *   canal silenciado não notifica, como no Discourse.
+ *   canal silenciado não notifica.
  * - `@here` notifica quem está ativo agora (visto nos últimos 5 minutos) e
  *   `@all` todo mundo do canal — só nos canais que permitem, e não para quem
  *   ligou "Ignorar menções em todo o canal".

@@ -1,5 +1,5 @@
 /*
- * A busca do cabeçalho do Discourse: o menu de busca (search/SearchMenu), em
+ * A busca do cabeçalho: o menu de busca (search/SearchMenu), em
  * que o próprio campo do cabeçalho é o campo da busca e os resultados abrem
  * num painel colado embaixo dele — no lugar do botão do core que abria o
  * SearchModal.

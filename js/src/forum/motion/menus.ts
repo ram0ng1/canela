@@ -1,5 +1,5 @@
 /*
- * O fechamento dos menus (`.fk-d-menu.-animated.-closing` do Discourse): o
+ * O fechamento dos menus (`.fk-d-menu.-animated.-closing`): o
  * menu sobe esmaecendo em 125ms (`dissolve-up`), ou desce quando abria para
  * cima (`dissolve-down`). A abertura (`float-down`, 250ms) é só CSS.
  *
@@ -17,7 +17,7 @@ function ghostMenu(dropdown: HTMLElement) {
   if (!dropdown.classList.contains('open')) return;
 
   // Os painéis do cabeçalho (notificações, usuário, idioma) são os
-  // `.menu-panel` do Discourse, que fecham na hora.
+  // `.menu-panel`, que fecham na hora.
   if (dropdown.closest('.App-header, .App-navigation, .CanelaSidebar')) return;
 
   const menu = dropdown.querySelector<HTMLElement>(':scope > .Dropdown-menu');

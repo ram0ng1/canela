@@ -20,10 +20,10 @@ use Illuminate\Database\ConnectionInterface;
 use Ramon\Canela\Messages\MessagesSchema;
 
 /**
- * As contagens das abas "Novo (n)" e "Não lidos (n)" das mensagens do
- * Discourse — e a soma das duas na "Caixa de entrada" e em "Minhas
+ * As contagens das abas "Novo (n)" e "Não lidos (n)" das mensagens — e a
+ * soma das duas na "Caixa de entrada" e em "Minhas
  * mensagens". O `unreadDialogCount` do flarum/messages junta as duas e inclui
- * as arquivadas; o Discourse separa e deixa o arquivo de fora.
+ * as arquivadas; aqui elas ficam separadas e o arquivo fica de fora.
  *
  * Só para a própria pessoa, numa consulta só sobre a tabela de participação.
  *

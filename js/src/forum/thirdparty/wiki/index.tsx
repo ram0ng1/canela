@@ -1,5 +1,5 @@
 /*
- * linkrobins/wiki no visual do Canela (o Discourse/Horizon).
+ * linkrobins/wiki no visual do Canela.
  *
  * - Barra lateral: o "Wiki" sai do fim da seção da comunidade, onde a wiki o
  *   punha pela navegação do IndexSidebar, e entra no lugar escolhido na opção

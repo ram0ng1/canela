@@ -10,7 +10,7 @@ use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
 
 /**
- * Os números do resumo do perfil do Discourse: dias visitados, tempo de
+ * Os números do resumo do perfil: dias visitados, tempo de
  * leitura (total e dos últimos 60 dias), postagens lidas, tópicos vistos e curtidas dadas/recebidas.
  *
  * Calculados de uma vez por usuário e guardados até o fim da requisição: o
@@ -19,7 +19,7 @@ use Illuminate\Database\ConnectionInterface;
  */
 final class UserActivity
 {
-    /** O "tempo de leitura recente" do Discourse conta os últimos 60 dias. */
+    /** O "tempo de leitura recente" conta os últimos 60 dias. */
     public const RECENT_DAYS = 60;
 
     /** @var array<int, array<string, int|null>> */

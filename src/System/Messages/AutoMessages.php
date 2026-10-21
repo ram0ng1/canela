@@ -14,14 +14,13 @@ declare(strict_types=1);
 namespace Ramon\Canela\System\Messages;
 
 /**
- * As mensagens automáticas, com os nomes das `system_messages` do Discourse
- * (config/locales/server.en.yml). Cada uma tem a chave liga/desliga
+ * As mensagens automáticas. Cada uma tem a chave liga/desliga
  * `canela.sysmsg_<tipo>` e, opcionais, o assunto e o texto do admin em
  * `canela.sysmsg_<tipo>_subject` e `canela.sysmsg_<tipo>_body`; vazios, valem
  * os textos padrão das traduções (`ramon-canela.admin.sysmsg.<tipo>.*`), no
  * idioma de quem recebe.
  *
- * Os textos aceitam as variáveis do Discourse no formato `%{nome}`.
+ * Os textos aceitam as variáveis no formato `%{nome}`.
  */
 final class AutoMessages
 {
@@ -46,10 +45,10 @@ final class AutoMessages
     /** Um post denunciado foi ocultado ou apagado pela equipe. */
     public const FLAGS_AGREED = 'flags_agreed_and_post_deleted';
 
-    /** A conta foi suspensa (o `silenced_by_staff` do Discourse). */
+    /** A conta foi suspensa. */
     public const SUSPENDED = 'silenced_by_staff';
 
-    /** A suspensão acabou (o `unsilenced` do Discourse). */
+    /** A suspensão acabou. */
     public const UNSUSPENDED = 'unsilenced';
 
     /**
@@ -81,7 +80,7 @@ final class AutoMessages
     }
 
     /**
-     * Troca `%{nome}` (o formato do Discourse) e também `{nome}` pelos
+     * Troca `%{nome}` e também `{nome}` pelos
      * valores; uma variável desconhecida fica como está, para o admin ver
      * que escreveu errado.
      *

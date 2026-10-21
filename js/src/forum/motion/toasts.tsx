@@ -1,6 +1,6 @@
 /*
- * Os alertas que aparecem e somem (o AlertManager do core) viram os toasts
- * do Discourse (`.fk-d-toast` + `DDefaultToast`): o ícone do tema à esquerda
+ * Os alertas que aparecem e somem (o AlertManager do core) viram toasts
+ * (`.fk-d-toast`): o ícone do tema à esquerda
  * (certo, triângulo, exclamação, "i"), o texto e o ✕; fecham sozinhos depois
  * de 3s ("short") — ou 5s ("long") — esmaecendo, param de contar com o mouse
  * em cima e, no celular, saem com um peteleco para cima.
@@ -132,8 +132,8 @@ function bindSwipe(element: HTMLElement, close: () => void) {
 }
 
 /**
- * Os toasts do Discourse são uma coluna só no alto à direita
- * (`.fk-d-toasts`). Aqui há duas pilhas — o AlertManager do core e as
+ * Os toasts formam uma coluna só no alto à direita
+ * (`.fk-d-toasts`), mas há duas pilhas — o AlertManager do core e as
  * notificações do flarum/realtime —, então a segunda começa onde a primeira
  * termina: a altura dos alertas vai para `--cn-toasts-offset`.
  */

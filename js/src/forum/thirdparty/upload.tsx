@@ -1,5 +1,5 @@
 /*
- * fof/upload: o aviso "Enviando…" do editor do Discourse (#file-uploading),
+ * fof/upload: o aviso "Enviando…" do editor,
  * com a barra de progresso. A extensão não informa a porcentagem (a
  * requisição é uma só), então a barra é indeterminada; ela some quando o
  * envio termina ou falha. O botão na barra de ferramentas é do editor.

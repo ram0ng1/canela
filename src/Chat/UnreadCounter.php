@@ -18,7 +18,7 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
 
 /**
- * As contagens do "tracking state" do Discourse para um usuário: não lidas,
+ * As contagens de leitura de um usuário: não lidas,
  * menções não lidas e fios não lidos de cada canal — três consultas agrupadas,
  * para todos os canais de uma vez, em vez de três por canal.
  *
@@ -180,8 +180,7 @@ final class UnreadCounter
 
     /**
      * A mensagem aparece na conversa principal: não é resposta de um fio, ou é a
-     * original dele, ou os fios estão desligados (aí tudo volta ao canal, como
-     * no Discourse quando se desliga o recurso).
+     * original dele, ou os fios estão desligados (aí tudo volta ao canal).
      */
     private function mainStream(Builder $query, bool $threadsGlobal): void
     {

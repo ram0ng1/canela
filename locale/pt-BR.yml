@@ -34,7 +34,7 @@ ramon-canela:
       requires_fof_drafts: Precisa da extensão FoF Drafts, que está desligada.
       requires_sidebar: A barra lateral está desligada (card Barra lateral, acima).
       section_colors: Cores
-      colors_help: 'O tema não tem cores próprias: a paleta inteira sai da cor primária do Flarum, como o Horizon do Discourse faz com a cor terciária. O fundo tingido, a seleção, os links e o anel de foco são derivados dela, no modo claro e no escuro.'
+      colors_help: 'O tema não tem cores próprias: a paleta inteira sai da cor primária do Flarum. O fundo tingido, a seleção, os links e o anel de foco são derivados dela, no modo claro e no escuro.'
       colors_link: Mudar a cor em Aparência
       section_font: Fonte
       font_label: Fonte do fórum
@@ -45,22 +45,22 @@ ramon-canela:
       font_notice: Trocar a fonte recompila o CSS do fórum; a gravação leva alguns segundos.
       section_surfaces: Fundo e cartão
       tinted_background_label: Fundo tingido com a cor primária
-      tinted_background_help: O fundo atrás do conteúdo e da barra lateral ganha um toque leve da cor primária, como no Horizon. Desligado, fica num cinza neutro.
+      tinted_background_help: O fundo atrás do conteúdo e da barra lateral ganha um toque leve da cor primária. Desligado, fica num cinza neutro.
       forum_background_label: "Fundo do fórum"
-      forum_background_help: "O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária, como no Horizon; o liso fica num cinza neutro."
+      forum_background_help: "O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária; o liso fica num cinza neutro."
       auth_pages_modals_label: "Todos os links levam às páginas"
       auth_pages_modals_help: "Responder, curtir, seguir e qualquer outro botão que pede login também abrem as páginas de entrar e cadastrar, e não os modais. Desligada, só os botões do cabeçalho levam às páginas."
       content_card_label: Conteúdo dentro de um cartão
       content_card_help: A lista, a discussão e o perfil ficam num cartão de cantos arredondados sobre o fundo. Desligado, o conteúdo ocupa a área toda, sem moldura.
       section_buttons: Botões
       pill_buttons_label: Botões em pílula
-      pill_buttons_help: Botões com as pontas totalmente arredondadas, como no Horizon. Desligado, ficam com cantos levemente arredondados.
+      pill_buttons_help: Botões com as pontas totalmente arredondadas. Desligado, ficam com cantos levemente arredondados.
       section_logo: Logo
       show_title_with_logo_label: Mostrar o título do fórum ao lado do logo
       show_title_with_logo_help: Com um logo enviado em Aparência, o título só aparece ao lado dele com esta opção ligada. Sem logo, o título aparece sempre.
       section_sidebar: Barra lateral
       sidebar_enabled_label: Mostrar a barra lateral
-      sidebar_enabled_help: A coluna à esquerda com a navegação e as tags, como no Discourse. Desligada, o fórum volta à navegação padrão do Flarum.
+      sidebar_enabled_help: A coluna à esquerda com a navegação e as tags. Desligada, o fórum volta à navegação padrão do Flarum.
       sidebar_open_default_label: Começar aberta
       sidebar_open_default_help: Como a barra aparece para quem ainda não a abriu nem fechou pelo botão do cabeçalho. Depois disso vale a escolha de cada visitante, guardada no navegador.
       sidebar_new_topic_label: Botão "Iniciar Discussão"
@@ -76,13 +76,13 @@ ramon-canela:
       sidebar_tags_limit_help: Quantas tags secundárias listar antes do link "Todas as tags", de {min} a {max}.
       section_header_search: Busca no cabeçalho
       header_search_label: Campo de busca no centro do cabeçalho
-      header_search_help: A pílula de busca no meio do cabeçalho, como no Discourse. Desligada, o cabeçalho volta à busca padrão do Flarum.
+      header_search_help: A pílula de busca no meio do cabeçalho. Desligada, o cabeçalho volta à busca padrão do Flarum.
       section_shortcuts: Atalhos de teclado
       keyboard_shortcuts_label: Atalhos de teclado
-      keyboard_shortcuts_help: 'Os atalhos do Discourse: / busca, c nova discussão, r responder, j e k percorrem a lista, g h volta ao início, = abre ou fecha a barra lateral e ? mostra a lista completa. Não valem enquanto se digita num campo.'
+      keyboard_shortcuts_help: 'Atalhos de teclado: / busca, c nova discussão, r responder, j e k percorrem a lista, g h volta ao início, = abre ou fecha a barra lateral e ? mostra a lista completa. Não valem enquanto se digita num campo.'
       section_welcome_banner: Banner de boas-vindas
       welcome_banner_label: Mostrar o banner de boas-vindas
-      welcome_banner_help: O título e a mensagem de boas-vindas de Aparência num banner sobre o fundo tingido, como no Horizon. Desligado, a página começa direto na lista.
+      welcome_banner_help: O título e a mensagem de boas-vindas de Aparência num banner sobre o fundo tingido. Desligado, a página começa direto na lista.
       welcome_banner_guests_only_label: Só para visitantes
       welcome_banner_guests_only_help: Quem já entrou na conta vai direto para a lista; o banner fica para quem chega pela primeira vez.
       welcome_banner_search_label: Campo de busca no banner
@@ -101,23 +101,23 @@ ramon-canela:
       hot_days_help: O período considerado, de {min} a {max} dias.
       section_nav_categories: Filtros por tag
       nav_dropdowns_label: Menus de tags
-      nav_dropdowns_help: Os menus à esquerda das abas, para filtrar a lista por tag primária e por tag secundária, como no Discourse.
+      nav_dropdowns_help: Os menus à esquerda das abas, para filtrar a lista por tag primária e por tag secundária.
       nav_categories_link_label: Aba Tags
       nav_categories_link_help: Uma aba que leva à página com todas as tags.
       section_list_columns: Colunas da lista
       list_header_label: Cabeçalho das colunas
       list_header_help: A linha com Discussão, Respostas, Visualizações e Atividade acima da lista.
       list_posters_label: Avatares de quem participou
-      list_posters_help: Os avatares do autor e de quem respondeu por último ao lado de cada discussão, como a coluna de participantes do Discourse.
+      list_posters_help: Os avatares do autor e de quem respondeu por último ao lado de cada discussão, numa coluna de participantes.
       list_views_label: Coluna de visualizações
       list_views_help: O número de visualizações de cada discussão, contado pelo card Visualizações de discussão.
       list_heat_label: Destacar contagens altas
-      list_heat_help: Pinta as contagens em laranja ou vermelho quando estão bem acima das demais, como o mapa de calor do Discourse.
+      list_heat_help: Pinta as contagens em laranja ou vermelho quando estão bem acima das demais, como um mapa de calor.
       list_excerpts_label: Resumo das discussões fixadas
       list_excerpts_help: Abaixo do título, o começo da primeira postagem das discussões fixadas.
       list_status_icons_label: Ícones antes do título
       list_status_icons_help: O alfinete de fixada, a estrela de acompanhando e os demais ícones de situação ao lado do título, na lista e na discussão.
-      list_status_icons_muted: 'Atual: em cinza, como o Discourse'
+      list_status_icons_muted: 'Atual: em cinza'
       list_status_icons_colored: 'Colorido: cada ícone com a sua cor'
       section_categories_page: Página de tags
       categories_layout_label: Formato
@@ -132,7 +132,7 @@ ramon-canela:
       topic_timeline_help: A barra à direita que mostra em que ponto da discussão se está e leva a qualquer postagem dela.
       section_topic_footer: Rodapé da discussão
       topic_footer_label: Botões no fim da discussão
-      topic_footer_help: Responder, compartilhar e acompanhar depois da última postagem, como no Discourse. Acompanhar precisa da extensão Subscriptions.
+      topic_footer_help: Responder, compartilhar e acompanhar depois da última postagem. Acompanhar precisa da extensão Subscriptions.
       topic_footer_notifications_label: "Acompanhar no rodapé (computador)"
       topic_footer_notifications_help: "O botão \"Acompanhando\" e a frase do nível de notificação abaixo dos botões do rodapé. No computador o sino da linha do tempo já faz o mesmo; no celular e no tablet o do rodapé sempre aparece, porque é o único."
       section_suggested: Discussões sugeridas
@@ -142,7 +142,7 @@ ramon-canela:
       suggested_count_help: Quantas discussões sugerir, de {min} a {max}.
       section_user_page: Página de perfil
       user_cover_label: Capa no topo do perfil
-      user_cover_help: Uma faixa larga atrás do avatar grande e do nome, como no Discourse.
+      user_cover_help: Uma faixa larga atrás do avatar grande e do nome.
       user_stats_label: Estatísticas
       user_stats_help: Quando entrou, a última visita e os números de postagens e discussões, abaixo do nome. As curtidas só aparecem com a extensão Likes.
       user_summary_label: Aba Resumo
@@ -180,15 +180,15 @@ ramon-canela:
         group_moderation: Moderação
         group_integrations: Integrações
         group_appearance_desc: Cores, fonte, superfícies, botões, ícones, banner e avisos.
-        group_navigation_desc: A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral do Discourse.
+        group_navigation_desc: A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral.
         group_list_desc: A página inicial, as abas, as colunas, as tags e os contadores da lista.
         group_topic_desc: As postagens, a linha do tempo, o mapa, o rodapé e os recursos de leitura.
-        group_composer_desc: O editor do Discourse, os rascunhos, as hashtags e a busca avançada.
+        group_composer_desc: O editor do tema, os rascunhos, as hashtags e a busca avançada.
         group_people_desc: A página de perfil, o cartão de usuário, os campos extras e a atividade.
         group_messages_desc: As mensagens privadas e o chat em tempo real.
         group_community_desc: Sobre, diretrizes, usuários, grupos, emblemas, níveis de confiança e convites.
         group_moderation_desc: 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'
-        group_integrations_desc: O visual do Discourse para extensões de terceiros. Cada uma só vale com a extensão ligada.
+        group_integrations_desc: O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.
         group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
         group_system: "Mensagens automáticas"
         group_system_desc: "O usuário do sistema e as mensagens que ele manda sozinho: boas-vindas, níveis de confiança, equipe, denúncias e suspensões."
@@ -214,7 +214,7 @@ ramon-canela:
       logo_colored_label: Pintar o logo
       logo_colored_help: O logo enviado vira só a forma, pintado na cor de destaque (e na cor da tag nas páginas de tag e discussões). Funciona melhor com SVG ou PNG com fundo transparente.
       loading_slider_label: Barra de carregamento no topo
-      loading_slider_help: Na troca de página, uma barrinha fina corre no topo da tela até a página chegar, como no Discourse, no lugar do aviso "Carregando…" do Flarum.
+      loading_slider_help: Na troca de página, uma barrinha fina corre no topo da tela até a página chegar, no lugar do aviso "Carregando…" do Flarum.
       loader:
         title: Indicador de carregamento
         help: "O desenho que aparece enquanto algo carrega: na lista, nos posts, no perfil, nos modais, nos menus, nos botões, no editor, nas extensões e na primeira carga da página. Troque o anel cinza do Flarum por um SVG animado."
@@ -223,7 +223,7 @@ ramon-canela:
         style_default: Padrão do Flarum
         style_avocado: Avocado
         style_orbital: Órbita
-        style_ring: Anel do Discourse
+        style_ring: Anel fino
         style_dots: Pontos
         style_bars: Barras
         style_pulse: Pulso
@@ -246,27 +246,27 @@ ramon-canela:
         preview: Prévia
         notice: Trocar o indicador recompila o CSS do fórum; a gravação leva alguns segundos.
       toast_auto_close_label: Avisos que fecham sozinhos
-      toast_auto_close_help: Os avisos do canto da tela ("Salvo", "Link copiado"…) somem sozinhos depois de alguns segundos, com a barrinha de tempo, como os toasts do Discourse. Desligado, ficam até alguém fechar.
-      user_menu_label: Menu do usuário do Discourse
+      toast_auto_close_help: Os avisos do canto da tela ("Salvo", "Link copiado"…) somem sozinhos depois de alguns segundos, com a barrinha de tempo. Desligado, ficam até alguém fechar.
+      user_menu_label: Menu do usuário do tema
       user_menu_help: O avatar do cabeçalho abre o painel com as abas de notificações, respostas, curtidas, mensagens, marcadores, chat, revisão e perfil (no lugar do sino e do menu da sessão do Flarum).
       nav_sticky_label: Abas grudadas no topo
-      nav_sticky_help: Ao rolar a lista, a barra das abas fica presa embaixo do cabeçalho, como no Horizon. O meta.discourse.org não gruda.
+      nav_sticky_help: Ao rolar a lista, a barra das abas fica presa embaixo do cabeçalho.
       list_infinite_scroll_label: Rolagem infinita
-      list_infinite_scroll_help: A próxima página da lista carrega sozinha quando o fim chega perto da tela, como no Discourse. Desligada, fica o botão "Carregar mais" do Flarum.
-      post_actions_label: Barra de ações do Discourse
-      post_actions_help: Curtir, copiar o link, marcar, responder e o "…" que expande o resto, na barra de cada postagem, como no Discourse. Desligada, volta o menu de controles do Flarum.
+      list_infinite_scroll_help: A próxima página da lista carrega sozinha quando o fim chega perto da tela. Desligada, fica o botão "Carregar mais" do Flarum.
+      post_actions_label: Barra de ações do tema
+      post_actions_help: Curtir, copiar o link, marcar, responder e o "…" que expande o resto, na barra de cada postagem. Desligada, volta o menu de controles do Flarum.
       embedded_replies_label: Respostas embutidas
-      embedded_replies_help: O "N respostas" de cada postagem abre as respostas ali mesmo, embaixo dela, e a postagem citada aparece acima, como no Discourse.
+      embedded_replies_help: O "N respostas" de cada postagem abre as respostas ali mesmo, embaixo dela, e a postagem citada aparece acima.
       post_style_label: Estilo das postagens
-      post_style_help: 'Com a linha do tempo, os posts continuam iguais aos do Discourse, mas uma linha vertical, como a do tema avocado, liga os avatares de um post ao outro, passa pelos avisos de evento e marca com um círculo os intervalos de tempo ("um mês depois"). A partir do tablet; no celular o post fica igual.'
-      post_style_discourse: Discourse (padrão)
+      post_style_help: 'Com a linha do tempo, os posts continuam iguais aos do estilo padrão, mas uma linha vertical, como a do tema avocado, liga os avatares de um post ao outro, passa pelos avisos de evento e marca com um círculo os intervalos de tempo ("um mês depois"). A partir do tablet; no celular o post fica igual.'
+      post_style_discourse: Padrão
       post_style_direct: Com a linha do tempo (estilo avocado)
       topic_reply_to_style_label: '"Em resposta a" nas postagens'
-      topic_reply_to_style_help: 'Como a postagem que responde a outra mostra a quem responde. No Discourse, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
-      topic_reply_to_style_discourse: 'Discourse (padrão: ↩ nome à direita do cabeçalho)'
+      topic_reply_to_style_help: 'Como a postagem que responde a outra mostra a quem responde. No estilo padrão, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
+      topic_reply_to_style_discourse: 'Padrão: ↩ nome à direita do cabeçalho'
       topic_reply_to_style_avocado: Linha abaixo do nome (estilo avocado)
       new_replies_bar_label: Aviso de respostas novas
-      new_replies_bar_help: Quem está no meio da discussão quando chegam respostas em tempo real vê a barra "Há N novas respostas", que leva até elas, como no Discourse.
+      new_replies_bar_help: Quem está no meio da discussão quando chegam respostas em tempo real vê a barra "Há N novas respostas", que leva até elas.
       content_width_label: 'Largura do conteúdo'
       content_width_default: 'Padrão'
       content_width_wide: 'Largo'
@@ -275,25 +275,25 @@ ramon-canela:
       content_width_full: 'Largura toda'
       content_width_custom: 'Personalizado'
       content_width_reset: 'Padrão'
-      content_width_help: 'A largura máxima do cartão de conteúdo (lista, discussão, perfil); na discussão, a coluna dos posts cresce junto. O padrão é 1110px, como no Discourse; 90% e Largura toda acompanham a tela. A prévia mostra o fórum de verdade numa tela de 1440px.'
+      content_width_help: 'A largura máxima do cartão de conteúdo (lista, discussão, perfil); na discussão, a coluna dos posts cresce junto. O padrão é 1110px; 90% e Largura toda acompanham a tela. A prévia mostra o fórum de verdade numa tela de 1440px.'
       content_width_caption: 'Tela de 1440px'
       content_width_preview_index: 'Início'
       content_width_preview_discussion: 'Discussão'
       topic_sticky_avatar_label: Avatar fixo nos posts
       topic_sticky_avatar_help: 'Em posts longos, o avatar do autor acompanha a rolagem e fica visível até o fim do post, como no tema avocado. Só no computador.'
       topic_event_posts_label: Posts de evento
-      topic_event_posts_help: Mostra na discussão os avisos do Flarum como "trancou a discussão" e "fixou a discussão". O Discourse não os mostra assim.
+      topic_event_posts_help: Mostra na discussão os avisos do Flarum como "trancou a discussão" e "fixou a discussão".
       badges:
         section_manager: Gerenciar emblemas
         section_main: Emblemas e níveis de confiança
         badges_enabled_label: Emblemas
-        badges_enabled_help: Os emblemas automáticos do Discourse (Primeira curtida, Resposta interessante, Aniversário…), a página /badges, a aba Emblemas do perfil e a notificação "Ganhou …". Desligados, nada disso aparece e a API responde 404.
+        badges_enabled_help: Os emblemas automáticos (Primeira curtida, Resposta interessante, Aniversário…), a página /badges, a aba Emblemas do perfil e a notificação "Ganhou …". Desligados, nada disso aparece e a API responde 404.
         badges_user_card_label: Emblemas no cartão do usuário
         badges_user_card_help: Até três emblemas de destaque (ouro, prata, bronze) no cartão que abre ao clicar num avatar.
         badges_summary_label: Melhores emblemas no Resumo
         badges_summary_help: A seção de emblemas na aba Resumo do perfil.
         badges_max_likes_per_day_label: Curtidas por dia dos emblemas "Por amor"
-        badges_max_likes_per_day_help: O Flarum não limita curtidas; os emblemas Por amor, Amor maior e Apaixonado(a) contam os dias em que a pessoa deu pelo menos este número de curtidas (o padrão do Discourse é 50).
+        badges_max_likes_per_day_help: O Flarum não limita curtidas; os emblemas Por amor, Amor maior e Apaixonado(a) contam os dias em que a pessoa deu pelo menos este número de curtidas (o padrão é 50).
         run_now: Conceder emblemas agora
         run_done: Pronto.
         run_help: O comando canela:badges roda uma vez por dia pelo agendador do Flarum (php flarum schedule:run no cron). A primeira carga concede o histórico do fórum sem notificar ninguém. Este botão roda só a parte dos emblemas, agora.
@@ -302,7 +302,7 @@ ramon-canela:
         requires_badges: Os emblemas estão desligados (card Emblemas e níveis, acima).
         requires_trust_levels: Os níveis de confiança estão desligados (card Emblemas e níveis, acima).
         section_requirements: Requisitos dos níveis de confiança
-        source_stats: 'Leitura medida pelas estatísticas do tema: dias visitados, tempo de leitura, discussões vistas e postagens lidas são os de verdade, como no Discourse.'
+        source_stats: 'Leitura medida pelas estatísticas do tema: dias visitados, tempo de leitura, discussões vistas e postagens lidas são os de verdade.'
         source_core: Sem as estatísticas do tema, a leitura vem do estado de leitura do Flarum (até onde cada pessoa leu cada discussão), os dias visitados viram dias desde o cadastro e o tempo de leitura não conta.
         no_likes: Sem o flarum/likes, os requisitos de curtidas não contam.
         level_1: 1 · Básico
@@ -417,7 +417,7 @@ ramon-canela:
         chars: caracteres
         days: dias
         chat_enabled_label: Chat
-        chat_enabled_help: 'O chat do Discourse: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse; as mensagens ficam guardadas.'
+        chat_enabled_help: 'O chat do tema: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse; as mensagens ficam guardadas.'
         replaced_by_ramon_chat: "O ramon/chat está habilitado: ele substitui o chat do tema, que fica desligado. O tema adapta o visual e a barra lateral dele."
         chat_allowed_groups_label: Quem pode usar o chat
         chat_allowed_groups_help: Os grupos que veem o chat. Cada pessoa ainda pode desligá-lo nas próprias configurações.
@@ -430,7 +430,7 @@ ramon-canela:
         chat_dm_enabled_label: Mensagens diretas
         chat_dm_enabled_help: Conversas privadas entre duas pessoas ou em grupo, abertas por "Nova mensagem" ou pelo botão "Chat" do perfil.
         chat_dm_groups_label: Quem pode abrir mensagens diretas
-        chat_dm_groups_help: O "direct_message_enabled_groups" do Discourse.
+        chat_dm_groups_help: Grupos cujos membros podem iniciar mensagens diretas.
         chat_dm_max_users_label: Participantes por conversa
         chat_dm_max_users_help: O máximo de pessoas num chat em grupo, contando quem cria.
         chat_threads_enabled_label: Fios
@@ -438,7 +438,7 @@ ramon-canela:
         chat_pins_enabled_label: Mensagens fixadas
         chat_pins_enabled_help: A moderação fixa até 20 mensagens por canal (numa MD, qualquer participante), que aparecem na faixa do topo da conversa.
         chat_max_message_length_label: Tamanho máximo da mensagem
-        chat_max_message_length_help: Em caracteres. O padrão do Discourse é 6000.
+        chat_max_message_length_help: Em caracteres. O padrão é 6000.
         chat_uploads_enabled_label: Imagens nas mensagens
         chat_uploads_enabled_help: O "+" do composer, colar e arrastar imagens (JPG, PNG, GIF e WebP), com a mesma validação do avatar. Ficam em public/assets/canela-chat.
         chat_upload_max_kb_label: Tamanho máximo da imagem
@@ -454,7 +454,7 @@ ramon-canela:
         view_page: Ver a página no fórum
         section_about: Página Sobre
         about_enabled_label: Página Sobre (/about)
-        about_enabled_help: A página do Discourse com a descrição do fórum, um texto seu, o contato, a equipe e os números do site. Ganha um link no menu "Mais" da barra lateral.
+        about_enabled_help: Uma página com a descrição do fórum, um texto seu, o contato, a equipe e os números do site. Ganha um link no menu "Mais" da barra lateral.
         about_text_label: Texto sobre o fórum
         about_text_help: Aparece abaixo do título. Aceita Markdown e BBCode (os que o fórum tiver ligados); se o texto tiver tags HTML, ele vai como HTML, sem formatação.
         about_contact_email_label: E-mail de contato
@@ -468,10 +468,10 @@ ramon-canela:
         stats_notice: Os números contam só o que é público e são recalculados a cada 30 minutos.
         section_legal: Diretrizes, termos e privacidade
         guidelines_enabled_label: Página Diretrizes (/guidelines)
-        guidelines_enabled_help: As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).
+        guidelines_enabled_help: As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).
         guidelines_page_label: Página do fof/pages
         guidelines_page_none: "Nenhuma: usar o texto abaixo"
-        guidelines_page_help: Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema, inspirado nas diretrizes do Discourse.
+        guidelines_page_help: Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema.
         guidelines_page_create: 'Criar a página "Diretrizes" com o texto atual'
         guidelines_text_label: Texto das diretrizes
         guidelines_text_help: Aceita Markdown e BBCode; com tags HTML, vai como HTML. Vazio e sem página do fof/pages, a página Diretrizes não aparece.
@@ -493,7 +493,7 @@ ramon-canela:
         legal_notice: Sem endereço (aqui ou no FoF Terms), a aba não aparece. As outras políticas do FoF Terms entram como abas com o próprio nome.
         section_directory: Diretório de usuários
         directory_enabled_label: Página Usuários (/u)
-        directory_enabled_help: A tabela do Discourse com curtidas recebidas e dadas, discussões, respostas e último acesso de cada pessoa, por período, ordenável por coluna.
+        directory_enabled_help: Uma tabela com curtidas recebidas e dadas, discussões, respostas e último acesso de cada pessoa, por período, ordenável por coluna.
         directory_guests_label: Visitantes também podem ver
         directory_guests_help: Por padrão, só quem tem a permissão "Ver a lista de usuários" (em Permissões) vê o diretório e os membros dos grupos. Ligado, visitantes sem conta também veem, menos num fórum fechado.
         directory_notice: As colunas de curtidas aparecem com a extensão Likes ligada; Visitas e Postagens lidas, com as estatísticas do tema. Ordenar por último acesso segue a permissão do core de ver quando cada um esteve online.
@@ -508,28 +508,28 @@ ramon-canela:
         notifications_title: Avisos ao autor
         mention_cards_help: Clicar numa menção @fulano abre o cartão de usuário em vez de ir ao perfil.
       integrations:
-        messages_label: Mensagens privadas do Discourse
-        messages_help: 'Sobre o flarum/messages: as caixas do perfil (Últimos, Enviadas, Novo, Não lidos, Arquivo), o arquivo por pessoa, o título da mensagem, as reações e o "sair da mensagem", como no Discourse.'
+        messages_label: Mensagens privadas aprimoradas
+        messages_help: 'Sobre o flarum/messages: as caixas do perfil (Últimos, Enviadas, Novo, Não lidos, Arquivo), o arquivo por pessoa, o título da mensagem, as reações e o "sair da mensagem".'
         solved_label: Solução aceita
-        solved_help: O "✓ Solução" na barra da postagem e a resposta aceita logo abaixo do primeiro post, como o discourse-solved.
+        solved_help: O "✓ Solução" na barra da postagem e a resposta aceita logo abaixo do primeiro post.
         reactions_label: Reações
-        reactions_help: O resumo dos emoji na barra da postagem, como o discourse-reactions.
+        reactions_help: O resumo dos emoji na barra da postagem.
         polls_label: Enquetes
-        polls_help: 'As enquetes com a grade do poll do Discourse: as barras de resultado e a contagem grande de votos ao lado.'
+        polls_help: 'As enquetes em grade: as barras de resultado e a contagem grande de votos ao lado.'
         links_sidebar_label: Links na barra lateral
-        links_sidebar_help: Os links do FoF Links saem do cabeçalho e vão para uma seção da barra lateral, como os links personalizados do Discourse.
+        links_sidebar_help: Os links do FoF Links saem do cabeçalho e vão para uma seção da barra lateral.
         upload_progress_label: Progresso do envio
-        upload_progress_help: A barra "Enviando…" no editor enquanto um arquivo do FoF Upload sobe, como no Discourse.
+        upload_progress_help: A barra "Enviando…" no editor enquanto um arquivo do FoF Upload sobe.
         profile_cover_label: Capa do perfil (forumaker/profile-cover)
         profile_cover_help: 'A capa da extensão no lugar da capa interna do tema: na faixa do perfil, no fundo do cartão do usuário (na miniatura, quando existe) e na posição escolhida no editor dela, que abre pelo menu "…" do perfil e pelas Configurações. As imagens internas ficam guardadas e voltam se esta chave for desligada.'
         thumbnails_label: Miniaturas na lista
-        thumbnails_help: A miniatura do FoF Discussion Thumbnail ao lado do título na lista de discussões, no lugar onde o Discourse mostra a dele.
+        thumbnails_help: A miniatura do FoF Discussion Thumbnail ao lado do título na lista de discussões.
         verified_label: Selo de verificado
-        verified_help: 'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como os ícones de usuário do Discourse: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
+        verified_help: 'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como um ícone de usuário: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
         wiki_label: 'Wiki no padrão do tema'
-        wiki_help: 'A wiki da linkrobins/wiki com a cara do Discourse: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever (com rascunho, opções avançadas e perguntas frequentes) e o link "Wiki" na seção da comunidade da barra lateral.'
-        ramon_chat_label: Chat (ramon/chat) no visual do Discourse
-        ramon_chat_help: 'O chat da extensão ramon/chat com a cara do chat do Discourse: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
+        wiki_help: 'A wiki da linkrobins/wiki com a cara do tema: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever (com rascunho, opções avançadas e perguntas frequentes) e o link "Wiki" na seção da comunidade da barra lateral.'
+        ramon_chat_label: Chat (ramon/chat) no visual do tema
+        ramon_chat_help: 'O chat da extensão ramon/chat com a cara do chat do tema: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
         ramon_chat_sidebar_label: Canais na barra lateral
         ramon_chat_sidebar_help: As seções "Canais" e "Mensagens diretas" (com "Meus fios", "Pesquisar" e "Salvos") na barra lateral do tema; a página do chat perde a coluna de canais dela.
         ramon_chat_notifications_label: 'Aba "Chat" no menu do usuário'
@@ -627,15 +627,15 @@ ramon-canela:
         related_enabled_help: No fim da discussão, as discussões mais parecidas no significado. Precisa da API de embeddings (configurada aqui, com o recurso ligado); os vetores são gerados de hora em hora e na primeira visita a cada discussão.
       auth:
         pages_label: Entrar e cadastrar em página própria
-        pages_help: Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup, como no Discourse. Desligada, eles abrem os modais.
+        pages_help: Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup. Desligada, eles abrem os modais.
         layout_card_title: "Leiaute e fundo"
         layout_card_help: "Como as páginas de entrar e de cadastro se organizam na tela e o que fica atrás do formulário."
         texts_card_title: "Textos"
         texts_card_help: "O título e o subtítulo de cada página. Vazio, fica o texto padrão do tema."
         layout_label: "Leiaute"
-        layout_help: "Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no do Discourse, ao lado dele)."
+        layout_help: "Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no lado a lado, ao lado dele)."
         layout_card: "Cartão único sobre o fundo (padrão)"
-        layout_discourse: "Discourse: sem cartão, login social ao lado"
+        layout_discourse: "Lado a lado: sem cartão, login social ao lado"
         layout_split: "Tela dividida: painel colorido à esquerda"
         background_label: "Fundo das páginas de entrar e cadastrar"
         background_help: "Na tela dividida, a imagem vai para o painel da esquerda; os outros fundos ficam atrás do formulário."
@@ -654,13 +654,13 @@ ramon-canela:
         bookmarks_enabled_label: Marcadores
         bookmarks_enabled_help: Cada usuário marca posts para voltar depois, com um nome e um lembrete opcionais, e encontra todos na aba "Marcadores" do próprio perfil. Desligado, os botões somem e a API responde como se o recurso não existisse, os marcadores já criados ficam guardados.
         bookmarks_topic_button_label: Marcar discussão
-        bookmarks_topic_button_help: Acrescenta "Marcar discussão" aos controles da discussão (o menu "…" do rodapé). Marca o primeiro post, como o Discourse.
+        bookmarks_topic_button_help: Acrescenta "Marcar discussão" aos controles da discussão (o menu "…" do rodapé). Marca o primeiro post.
         bookmarks_user_menu_label: Item no menu do usuário
         bookmarks_user_menu_help: Um atalho "Marcadores" no menu do avatar, logo abaixo de "Perfil".
         reminders_notice: Os lembretes saem pelo agendador do Flarum, a cada cinco minutos, o servidor precisa rodar "php flarum schedule:run" pelo cron a cada minuto. Sem o cron, os marcadores funcionam, mas nenhum lembrete é enviado.
       composer:
-        section_editor: Editor do Discourse
-        enabled_label: Recursos do editor do Discourse
+        section_editor: Editor do tema
+        enabled_label: Recursos do editor do tema
         enabled_help: 'A chave geral: desligada, o composer volta a ser o do Flarum, sem nenhum dos recursos abaixo.'
         emoji_label: Seletor de emoji
         emoji_help: O botão de emoji da barra abre o seletor com busca, categorias, usados recentemente e tom de pele. Com a extensão Emoji, os emoji aparecem como as imagens dela.
@@ -673,17 +673,17 @@ ramon-canela:
         linked_topic_help: No composer de resposta, o menu "↩ ▾" troca a resposta por uma discussão nova com o mesmo texto, um link de volta e as mesmas tags.
         section_drafts: Rascunhos
         drafts_label: Rascunhos (fof/drafts)
-        drafts_help: 'Com a extensão FoF Drafts, o tema mostra os rascunhos como o Discourse: a discussão nova e a resposta são salvas sozinhas dois segundos depois de parar de escrever, responder numa discussão retoma o rascunho dela, fechar com texto pergunta se descarta ou guarda, e o botão Iniciar Discussão ganha o ⌄ com a lista. Também ficam no menu do usuário e na aba Rascunhos do perfil.'
+        drafts_help: 'Com a extensão FoF Drafts, o tema cuida dos rascunhos assim: a discussão nova e a resposta são salvas sozinhas dois segundos depois de parar de escrever, responder numa discussão retoma o rascunho dela, fechar com texto pergunta se descarta ou guarda, e o botão Iniciar Discussão ganha o ⌄ com a lista. Também ficam no menu do usuário e na aba Rascunhos do perfil.'
         drafts_note: Os rascunhos são guardados pelo fof/drafts (tabela drafts), que também cuida das permissões e do agendamento. Edições de postagens não têm rascunho.
         section_hashtags: '#tag'
         hashtags_label: Hashtags de tags
         hashtags_help: 'Digitar # no editor sugere as tags e insere um link para elas; nos posts, esses links (e as menções de tag da extensão Menções) viram a pílula com o símbolo da tag.'
-        hashtags_mentions_notice: 'Com a extensão Menções ligada, o # do editor é dela (menção de tag); o tema só desenha as menções como hashtags do Discourse.'
-        requires_composer: Os recursos do editor estão desligados (card Editor do Discourse, acima).
+        hashtags_mentions_notice: 'Com a extensão Menções ligada, o # do editor é dela (menção de tag); o tema só desenha as menções como hashtags.'
+        requires_composer: Os recursos do editor estão desligados (card Editor do tema, acima).
       extras:
         search_title: Página de busca
         search_page_enabled_label: Página de busca avançada
-        search_page_enabled_help: 'A página /search do Discourse: abas de discussões, postagens, tags e usuários, filtros avançados (autor, tag primária, tags, só no título, curtidos, status, datas, mínimo de postagens) e ordenação. O modal de busca ganha o link “Busca avançada”.'
+        search_page_enabled_help: 'A página /search: abas de discussões, postagens, tags e usuários, filtros avançados (autor, tag primária, tags, só no título, curtidos, status, datas, mínimo de postagens) e ordenação. O modal de busca ganha o link “Busca avançada”.'
         search_notice: 'Os filtros também viram atalhos que se digitam na busca: em:título, em:curtidos, em:marcadores e mín-postagens:5, ao lado dos do Flarum (autor:, tag:, é:trancada…).'
         bulk_title: Seleção em massa
         bulk_select_enabled_label: Seleção em massa para a moderação
@@ -693,7 +693,7 @@ ramon-canela:
         top_periods_enabled_help: Na aba Melhores aparece “Todo o período / Ano / Trimestre / Mês / Semana / Hoje”, que limita a lista às discussões criadas no intervalo.
         text_size_title: Tamanho do texto
         text_size_enabled_label: Escolha do tamanho do texto
-        text_size_enabled_help: Em Configurações, cada pessoa escolhe Menor, Normal, Maior ou Máximo. A escolha vale para o aparelho (fica no navegador), como no Discourse.
+        text_size_enabled_help: Em Configurações, cada pessoa escolhe Menor, Normal, Maior ou Máximo. A escolha vale para o aparelho (fica no navegador).
         banner_title: Banner de anúncio
         banner_enabled_label: Mostrar o banner
         banner_enabled_help: Uma faixa acima do conteúdo, em todas as páginas, com um botão de fechar. Quem fecha não vê de novo, até o texto mudar.
@@ -709,29 +709,29 @@ ramon-canela:
         post_history_enabled_help: Cada edição guarda o texto anterior. O “Editado” do post vira um lápis com o número de revisões, que abre a comparação entre as versões (no texto ou lado a lado).
         history_notice: Só as edições feitas com o recurso ligado entram no histórico. Desligado, nada novo é guardado e o histórico some do fórum, o que já foi guardado fica no banco. O texto das versões de um post oculto só aparece para quem pode editá-lo.
       section_icons: Ícones
-      lucide_icons_label: Ícones do Discourse (Lucide)
-      lucide_icons_help: Os ícones de interface (busca, sino, responder, curtir, menus…) com o traço fino do Lucide, como no meta.discourse.org. Desligado, voltam os ícones sólidos do Font Awesome. Os que o Meta não troca (marcas e parte dos escolhidos para tags e grupos) continuam no Font Awesome.
+      lucide_icons_label: Ícones Lucide
+      lucide_icons_help: Os ícones de interface (busca, sino, responder, curtir, menus…) com o traço fino do Lucide. Desligado, voltam os ícones sólidos do Font Awesome. Os que não têm substituto no Lucide (marcas e parte dos escolhidos para tags e grupos) continuam no Font Awesome.
       metoo:
         title: Eu também (Me too)
         enabled_label: Botão "Eu também" no primeiro post
-        enabled_help: 'A pílula "✋ Eu também" abaixo do primeiro post, como no Meta do Discourse: quem tem o mesmo problema clica, a contagem aparece entre parênteses e a pessoa passa a acompanhar a discussão. O autor e as discussões trancadas veem o botão só para leitura; visitantes são levados ao login. Desligado, o botão some e a API responde 404; as marcações ficam guardadas.'
+        enabled_help: 'A pílula "✋ Eu também" abaixo do primeiro post: quem tem o mesmo problema clica, a contagem aparece entre parênteses e a pessoa passa a acompanhar a discussão. O autor e as discussões trancadas veem o botão só para leitura; visitantes são levados ao login. Desligado, o botão some e a API responde 404; as marcações ficam guardadas.'
         tags_label: Onde o botão aparece
-        tags_help: 'Marque as tags de suporte (no Meta do Discourse: Support, Bug…). Nenhuma marcada vale para todas as discussões. Marcar uma tag pai inclui as filhas.'
+        tags_help: 'Marque as tags de suporte (por exemplo: Suporte, Bug…). Nenhuma marcada vale para todas as discussões. Marcar uma tag pai inclui as filhas.'
         tags_loading: Carregando as tags…
         tags_some: '{count, plural, one {# selecionada} other {# selecionadas}}'
         tags_all: Todas as tags
         tags_clear: Limpar (todas)
         hide_solved_label: Esconder quando a discussão tiver solução
-        hide_solved_help: Com a melhor resposta escolhida (FoF Best Answer), o botão some, e volta se a solução for retirada, o padrão do Discourse. Desligado, continua na discussão resolvida (o "várias soluções" do plugin).
+        hide_solved_help: Com a melhor resposta escolhida (FoF Best Answer), o botão some, e volta se a solução for retirada. Desligado, continua na discussão resolvida (o modo "várias soluções").
         follow_label: Quem marca passa a seguir a discussão
-        follow_help: Ao clicar em "Eu também", a pessoa passa a seguir a discussão (extensão Inscrições) para saber da solução, como o "Acompanhando" do Discourse. Quem já segue continua igual; desmarcar não deixa de seguir.
+        follow_help: Ao clicar em "Eu também", a pessoa passa a seguir a discussão (extensão Inscrições) para saber da solução. Quem já segue continua igual; desmarcar não deixa de seguir.
         no_best_answer_notice: 'Sem a extensão FoF Best Answer, nenhuma discussão conta como resolvida: o botão fica em todas as discussões escolhidas.'
       profile:
         blocked_by_master: Ligue os campos extras no card "Perfil estendido".
         characters_suffix: caracteres
         section_main: Perfil estendido
         profile_enabled_label: Campos extras no perfil
-        profile_enabled_help: 'Os campos do Discourse: cada pessoa conta quem é, onde está e o que anda fazendo. Desligado, os campos somem do fórum e da API, mas o que já foi preenchido fica guardado.'
+        profile_enabled_help: 'Os campos de perfil: cada pessoa conta quem é, onde está e o que anda fazendo. Desligado, os campos somem do fórum e da API, mas o que já foi preenchido fica guardado.'
         profile_bio_label: Sobre mim (bio)
         profile_bio_help: Texto curto no perfil e no cartão de usuário. Aceita links, **negrito**, *itálico* e `código`; nenhum HTML.
         profile_bio_max_length_label: Tamanho máximo da bio
@@ -752,7 +752,7 @@ ramon-canela:
         profile_status_help: Um emoji e uma frase ("🌴 De férias até sexta") ao lado do nome nos posts, no cartão e no avatar do cabeçalho. A pessoa escolhe quando o status some sozinho.
         section_cover: Capa e fundo do cartão
         profile_cover_label: Imagens do perfil
-        profile_cover_help: Uma capa larga no topo do perfil e um fundo para o cartão de usuário, como no Discourse. Sem imagem, a capa usa a cor do usuário.
+        profile_cover_help: Uma capa larga no topo do perfil e um fundo para o cartão de usuário. Sem imagem, a capa usa a cor do usuário.
         profile_cover_upload_label: Permitir envio de imagem
         profile_cover_upload_help: As imagens são reduzidas (a capa a 2000px, o cartão a 900px), convertidas para WebP e guardadas em assets/canela-covers. Desligado, só se aceita o endereço https de uma imagem.
         cover_notice: Endereços externos precisam ser https. O navegador de quem visita o perfil busca a imagem direto no outro site.
@@ -760,40 +760,40 @@ ramon-canela:
       stats:
         section_links: Cliques em links
         stats_links_enabled_label: Contar cliques em links
-        stats_links_enabled_help: 'Cada clique num link externo de uma postagem é contado, como no Discourse: o número aparece ao lado do link, os "Links populares" no mapa da discussão e os "Melhores links" no resumo do perfil.'
+        stats_links_enabled_help: 'Cada clique num link externo de uma postagem é contado: o número aparece ao lado do link, os "Links populares" no mapa da discussão e os "Melhores links" no resumo do perfil.'
         links_notice: Um clique por link por pessoa (ou IP, para visitantes) a cada 24 horas; robôs não contam. Só links externos que estão na postagem.
         section_views: Visualizações de discussão
         stats_views_enabled_label: Contar visualizações
-        stats_views_enabled_help: Cada discussão conta quantas vezes foi aberta, como no Discourse. O número aparece na coluna Visualizações da lista e permite ordenar por mais vistas.
+        stats_views_enabled_help: Cada discussão conta quantas vezes foi aberta. O número aparece na coluna Visualizações da lista e permite ordenar por mais vistas.
         stats_view_window_hours_label: Horas até contar a mesma pessoa de novo
-        stats_view_window_hours_help: Conte uma nova visualização de discussão uma vez por IP/usuário(a) a cada N horas, e sempre de novo num dia novo, como no Discourse (topic_view_duration_hours). De {min} a {max} horas; o Discourse usa 8.
+        stats_view_window_hours_help: Conte uma nova visualização de discussão uma vez por IP/usuário(a) a cada N horas, e sempre de novo num dia novo. De {min} a {max} horas; o padrão é 8.
         hours_suffix: horas
-        views_notice: 'Como no Discourse: uma visualização por discussão por dia para cada conta (ou IP, para visitantes), travada pelas horas acima; só conta quem pode ver a discussão, e robôs não contam. O IP de quem está na conta não é guardado, e o de visitantes fica só como um código com sal, nunca o IP em si. Cada dia fica guardado para o gráfico "Visualizações recentes" do mapa da discussão.'
+        views_notice: 'Uma visualização por discussão por dia para cada conta (ou IP, para visitantes), travada pelas horas acima; só conta quem pode ver a discussão, e robôs não contam. O IP de quem está na conta não é guardado, e o de visitantes fica só como um código com sal, nunca o IP em si. Cada dia fica guardado para o gráfico "Visualizações recentes" do mapa da discussão.'
         heat_title: Realce da coluna Visualizações
-        heat_help: As cores de calor da coluna Visualizações da lista (heatmap do Discourse). Valem quando "Destacar contagens altas" está ligado na Lista de discussões.
+        heat_help: As cores de calor da coluna Visualizações da lista (mapa de calor). Valem quando "Destacar contagens altas" está ligado na Lista de discussões.
         topic_views_heat_low_label: Realce leve a partir de
-        topic_views_heat_low_help: Após uma quantidade de visualizações, o campo de visualizações é levemente realçado. O Discourse usa 1000.
+        topic_views_heat_low_help: Após uma quantidade de visualizações, o campo de visualizações é levemente realçado. O padrão é 1000.
         topic_views_heat_medium_label: Realce moderado a partir de
-        topic_views_heat_medium_help: Após esta quantidade de visualizações, o campo de visualizações é moderadamente realçado. O Discourse usa 2000.
+        topic_views_heat_medium_help: Após esta quantidade de visualizações, o campo de visualizações é moderadamente realçado. O padrão é 2000.
         topic_views_heat_high_label: Realce forte a partir de
-        topic_views_heat_high_help: Após esta quantidade de visualizações, o campo de visualizações é fortemente realçado. O Discourse usa 3500.
+        topic_views_heat_high_help: Após esta quantidade de visualizações, o campo de visualizações é fortemente realçado. O padrão é 3500.
         views_suffix: visualizações
         section_counts: Contagem de novos e não lidos
         stats_counts_enabled_label: Mostrar as contagens
         stats_counts_enabled_help: 'Para quem entrou na conta: "Novos (3)" e "Não lidos (2)" nas abas da lista, e um ponto ao lado de Todas as Discussões na barra lateral quando há novidade.'
         stats_new_days_label: Dias em que uma discussão é nova
-        stats_new_days_help: Discussões criadas nesse período que a pessoa ainda não abriu. 0 conta tudo desde o cadastro ou o último "marcar tudo como lido". De {min} a {max}; o Discourse usa 2.
+        stats_new_days_help: Discussões criadas nesse período que a pessoa ainda não abriu. 0 conta tudo desde o cadastro ou o último "marcar tudo como lido". De {min} a {max}; o padrão é 2.
         days_suffix: dias
         section_activity: Atividade no perfil
         stats_activity_enabled_label: Registrar a atividade
-        stats_activity_enabled_help: Dias visitados, tempo de leitura (total e dos últimos 60 dias), postagens lidas, discussões vistas e curtidas dadas e recebidas, no resumo do perfil, como no Discourse.
+        stats_activity_enabled_help: Dias visitados, tempo de leitura (total e dos últimos 60 dias), postagens lidas, discussões vistas e curtidas dadas e recebidas, no resumo do perfil.
         activity_notice: O tempo de leitura só conta com a aba visível e alguém mexendo na página. Os números começam do zero no dia em que o recurso é ligado; discussões vistas dependem de Visualizações ligado.
       ramon_chat_features:
         group_moderation: "Moderação"
         review_flags_label: "Denúncias do chat em \"Revisar\""
         review_flags_help: "As mensagens do chat denunciadas entram na fila de revisão do tema (página, barra lateral e menu do usuário), junto com as postagens e na ordem das datas, para quem vê as sinalizações ou modera o chat."
         title: "Recursos extras do chat (ramon/chat)"
-        description: "O que o chat do Discourse tem e o ramon/chat não: avisos no sino, reações de um clique, \"Nova mensagem\", favoritos, link da mensagem, \"está digitando\" sem websocket e mais: sem mudar a extensão."
+        description: "O que falta no ramon/chat: avisos no sino, reações de um clique, \"Nova mensagem\", favoritos, link da mensagem, \"está digitando\" sem websocket e mais: sem mudar a extensão."
         backend_off: "O recurso \"ramonchat\" do tema não está ligado (extend/.enabled)."
         group_reader: "Para o leitor"
         group_messages: "Mensagens"
@@ -805,7 +805,7 @@ ramon-canela:
         header_indicator_label: "Indicador do cabeçalho configurável"
         header_indicator_help: "O leitor escolhe o que o botão do chat conta: todas as novas, MDs e menções, só menções ou nada."
         drawer_shortcut_label: "Atalho \"-\" para a gaveta"
-        drawer_shortcut_help: "Abre e fecha a gaveta do chat, como no Discourse."
+        drawer_shortcut_help: "Abre e fecha a gaveta do chat."
         bell_label: "Avisos no sino"
         bell_help: "Menções (@here só para quem esteve ativo nos últimos 5 minutos) e mensagens novas nos canais acompanhados viram notificações; ler o canal as marca como lidas."
         quick_reactions_label: "Reações de um clique"
@@ -846,7 +846,7 @@ ramon-canela:
         dm_guard_help: "Recusa MD com quem não pode usar o chat ou o desligou, e aplica o limite de participantes abaixo."
     system_user:
       title: "Usuário do sistema"
-      help: "Como o \"system\" do Discourse: assina as notificações automáticas (lembretes de marcador e emblemas) e as mensagens automáticas abaixo. É um usuário comum no fórum, com perfil, avatar e bio, mas nunca entra: não tem login, senha, redefinição de senha nem sessão. Ninguém consegue mandar mensagem para ele, e ele fica fora da lista de usuários."
+      help: "Uma conta de sistema: assina as notificações automáticas (lembretes de marcador e emblemas) e as mensagens automáticas abaixo. É um usuário comum no fórum, com perfil, avatar e bio, mas nunca entra: não tem login, senha, redefinição de senha nem sessão. Ninguém consegue mandar mensagem para ele, e ele fica fora da lista de usuários."
       bio: "Não é uma pessoa de verdade. Um usuário global para notificações e outras tarefas do sistema."
       create: "Criar usuário do sistema"
       created_as: "Usuário do sistema: {name}"
@@ -861,7 +861,7 @@ ramon-canela:
     sysmsg:
       custom:
         title: "Mensagens personalizadas"
-        help: "Mensagens suas, além das do Discourse: escolha quando cada uma sai (conta ativada, dias depois, grupo, nível, emblema, primeira postagem, aniversário de conta, conta verificada). Cada uma sai uma vez só por pessoa."
+        help: "Mensagens suas, além das que já vêm prontas: escolha quando cada uma sai (conta ativada, dias depois, grupo, nível, emblema, primeira postagem, aniversário de conta, conta verificada). Cada uma sai uma vez só por pessoa."
         empty: "Nenhuma mensagem personalizada ainda."
         add: "Adicionar mensagem"
         remove: "Apagar"
@@ -945,7 +945,7 @@ ramon-canela:
           Com ele vêm as ferramentas da equipe, e com grandes poderes vêm grandes responsabilidades. Se moderação é novidade para você, leia as [diretrizes da comunidade](%{guidelines_url}).
       user_added_to_group_as_member:
         title: "Adicionado a um grupo"
-        help: "Quando a pessoa entra em outro grupo (fora Admin e Moderadores). Desligada por padrão, como no Discourse."
+        help: "Quando a pessoa entra em outro grupo (fora Admin e Moderadores). Desligada por padrão."
         subject: "Você entrou no grupo %{group_name}"
         body: "Você foi adicionado(a) como membro do grupo [%{group_name}](%{base_url}%{group_path})."
       flags_agreed_and_post_deleted:

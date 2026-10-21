@@ -1,6 +1,6 @@
 /*
- * O composer de mensagem do flarum/messages na forma do composer do Discourse
- * para mensagens pessoais (`creatingPrivateMessage`), dentro da mesma casca
+ * O composer de mensagem do flarum/messages na forma de um composer de
+ * mensagem pessoal, dentro da mesma casca
  * do composer do tema (`composer/installComposerShell.tsx`):
  *
  *   alça · "✉ Criar mensagem ▾" ...................... «  ⤢  —  ✕
@@ -10,7 +10,7 @@
  *   B I H 🔗 " </> … ................ Descartar  [Enviar mensagem]
  *
  * Na resposta, só a ação ("↪ Mensagem") e o link para a mensagem quando ela
- * não está aberta atrás do composer — como o Discourse ao responder.
+ * não está aberta atrás do composer.
  *
  * A casca já cuida do rodapé (Descartar + botão primário sem ícone), dos
  * botões do canto, da prévia ao lado e das alturas; aqui entram só os campos
@@ -34,15 +34,15 @@ import { boxesOn, dialogHref, dialogTitle, messageGroup, messagesOn, type Dialog
 
 const COMPOSER = 'ext:flarum/messages/forum/components/MessageComposer';
 
-/** O `max_allowed_message_recipients` do Discourse (o backend confere). */
+/** O máximo de destinatários por mensagem (o backend confere). */
 const MAX_RECIPIENTS = 30;
 
-/** Os rótulos de ícone das ações do Discourse (`envelope` e `share`). */
+/** Os ícones das ações (envelope e compartilhar). */
 const ICON_NEW = 'far fa-envelope';
 const ICON_REPLY = 'fas fa-arrow-up-from-bracket';
 
 /**
- * O placeholder do composer de tópico do tema (o do Discourse, dizendo só o
+ * O placeholder do composer de tópico do tema (dizendo só o
  * que este fórum faz) — a mesma regra de `composer/installComposerShell.tsx`,
  * que não a exporta.
  */
@@ -68,7 +68,7 @@ interface MessageActionAttrs extends ComponentAttrs {
 
 /**
  * A primeira linha (`.reply-to`): "✉ Criar mensagem ▾" na mensagem nova, com
- * o menu de ações do Discourse (trocar por um tópico), e "↪ Mensagem" na
+ * o menu de ações (trocar por um tópico), e "↪ Mensagem" na
  * resposta. Minimizado, vira a barra do rascunho.
  */
 class MessageAction extends Component<MessageActionAttrs> {
@@ -233,7 +233,7 @@ export default function installComposer(): void {
     if (title) data.canelaTitle = title;
   });
 
-  // Mensagem sem destinatário não sai: o Discourse desabilita o envio.
+  // Mensagem sem destinatário não sai: o envio fica desabilitado.
   override(COMPOSER as any, 'onsubmit', function (this: any, original: () => void) {
     if (messagesOn() && !this.attrs.replyingTo && !this.recipients().length) {
       app.alerts.show({ type: 'error' }, t('messages.composer.recipients_missing'));

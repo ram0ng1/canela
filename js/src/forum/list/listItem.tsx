@@ -1,10 +1,10 @@
 /*
- * A linha da lista de tópicos do Discourse: [Tópico | Postadores | Respostas |
+ * A linha da lista de tópicos: [Tópico | Postadores | Respostas |
  * Visualizações | Atividade] no desktop; avatar, título e contagem no celular.
  *
  * Mexe só nas ItemLists do DiscussionListItem: o que outras extensões põem em
  * infoItems (o excerto do sticky, a digitação do realtime) e em statsItems
- * continua aparecendo, só que no lugar do Discourse.
+ * continua aparecendo, só que no lugar que o tema dá a eles.
  */
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
@@ -62,8 +62,7 @@ function posterAvatar(user: User | null | false, role: string, className = ''): 
 }
 
 export default function installListItem(): void {
-  // Ao voltar de um tópico, o Discourse pinta a linha dele com --tertiary-low
-  // e apaga em 2,5s (`.topic-list-item.highlighted`). O core já guarda qual
+  // Ao voltar de um tópico, a linha dele acende e apaga em 2,5s. O core já guarda qual
   // foi (lastDiscussion) e rola até ela; o tema só acende a linha.
   extend(IndexPage.prototype, 'oncreate', function (this: IndexPage) {
     const last = this.lastDiscussion;
@@ -82,11 +81,11 @@ export default function installListItem(): void {
     if (isMinimal(this)) return;
 
     // O avatar grande da esquerda e a coluna de estatísticas do core saem:
-    // o Discourse mostra os postadores e os números em colunas próprias.
+    // os postadores e os números vão para colunas próprias.
     items.remove('author');
     items.remove('stats');
 
-    // Só no celular (o CSS esconde no desktop), como o avatar de 48px do Discourse.
+    // Só no celular (o CSS esconde no desktop): o avatar de 48px.
     items.add('canelaAvatar', avatarView(this), 100);
 
     if (forumBool('canelaListPosters', true)) {
@@ -125,7 +124,7 @@ export default function installListItem(): void {
 
     const badgeList = discussion.badges();
 
-    // No Discourse o cadeado (fechado) vem antes do alfinete (fixado).
+    // O cadeado (fechado) vem antes do alfinete (fixado).
     if (badgeList.has('locked')) badgeList.setPriority('locked', 1000);
 
     const badges = badgeList.toArray();
@@ -151,8 +150,8 @@ export default function installListItem(): void {
 }
 
 /**
- * Bolinha de "tópico novo" (nunca aberto) ou pílula com as não lidas, como o
- * Discourse. As duas marcam como lido ao clicar, igual à contagem do core.
+ * Bolinha de "tópico novo" (nunca aberto) ou pílula com as não lidas. As
+ * duas marcam como lido ao clicar, igual à contagem do core.
  */
 function unreadView(item: DiscussionListItem): Mithril.Children {
   const discussion = item.attrs.discussion;
@@ -179,8 +178,8 @@ function unreadView(item: DiscussionListItem): Mithril.Children {
 }
 
 /**
- * O excerto do fixado termina com "… ler mais" quando foi cortado, como o
- * `.topic-excerpt-more` do Discourse. O flarum/sticky entrega o texto já
+ * O excerto do fixado termina com "… ler mais" quando foi cortado. O
+ * flarum/sticky entrega o texto já
  * truncado dentro de um div; o tema refaz o corte para pôr o link na mesma
  * linha. O da busca (trecho com destaque) fica como veio.
  */
@@ -226,7 +225,7 @@ function postersView(item: DiscussionListItem): Mithril.Children {
   const relevantPost = item.attrs.params.q ? discussion.mostRelevantPost() : null;
   const relevant = relevantPost ? relevantPost.user() : null;
 
-  // O "último postador" do Discourse (`a.latest`): quem respondeu por último
+  // O "último postador": quem respondeu por último
   // ou, sem respostas, o próprio autor. É o único avatar que sobra no tablet.
   const latest = last || author;
 
@@ -278,7 +277,7 @@ function viewsView(item: DiscussionListItem): Mithril.Children {
 
   return (
     <div className={classList('CanelaCell CanelaCell--views', views !== null && heatClass(viewsHeat(views)))}>
-      {/* O `dNumber … numberKey="views_long"` do Discourse: "1,2k" com o title por extenso. */}
+      {/* "1,2k" com o title por extenso. */}
       {views === null ? null : viewsNumber(views)}
     </div>
   );

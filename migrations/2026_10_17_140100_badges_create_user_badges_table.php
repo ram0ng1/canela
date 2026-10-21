@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Cada concessão de um emblema a alguém, como o `user_badges` do Discourse.
+ * Cada concessão de um emblema a alguém.
  *
  * Os emblemas de concessão múltipla ("Resposta interessante", "Aniversário")
  * têm uma linha por vez; o `post_id` diz qual postagem rendeu o emblema. O
@@ -22,8 +22,8 @@ use Illuminate\Database\Schema\Blueprint;
  * mesmo tempo; para as concessões sem postagem (NULL não colide num índice
  * único) quem garante é o BadgeGranter.
  *
- * Postagem apagada não leva o emblema junto: `nullOnDelete`, como no Discourse,
- * onde o emblema continua e só perde o link.
+ * Postagem apagada não leva o emblema junto: `nullOnDelete` — o emblema
+ * continua e só perde o link.
  */
 return Migration::createTable(
     'canela_user_badges',

@@ -1,5 +1,5 @@
 /*
- * O "Resumir" do mapa do tópico (o ai-summary-trigger do Discourse) e os
+ * O "Resumir" do mapa do tópico e os
  * resumos curtos na lista de tópicos.
  *
  * O botão entra no fim do mapa do tópico, numa seção própria
@@ -41,8 +41,8 @@ export default function installSummary(): void {
     );
   });
 
-  // O resumo curto (gist) toma o lugar do excerto da lista — "Expandido, com
-  // resumos de IA" no Discourse. A lista decide se mostra excertos.
+  // O resumo curto (gist) toma o lugar do excerto da lista — o modo
+  // "Expandido, com resumos de IA". A lista decide se mostra excertos.
   extend(DiscussionListItem.prototype, 'infoItems', function (this: DiscussionListItem, items: ItemList<Mithril.Children>) {
     if (!aiFeature('gists')) return;
 

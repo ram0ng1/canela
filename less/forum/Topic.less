@@ -1,16 +1,16 @@
 // =====================================================================
-// Página do tópico: o título dentro do cartão e o layout de duas colunas
-// do Discourse — o stream (largura de leitura) e, à direita, a coluna da
-// linha do tempo, que acompanha a rolagem.
+// Página do tópico: o título dentro do cartão e o layout de duas colunas —
+// o stream (largura de leitura) e, à direita, a coluna da linha do tempo,
+// que acompanha a rolagem.
 //
-// Medidas de meta.discourse.org a 1440px: cartão de 1110px com 16px de
+// Medidas a 1440px: cartão de 1110px com 16px de
 // respiro, stream de ~760px (avatar 45 + 12 + 690 + 12), a linha do tempo
 // começando ~65px depois.
 // =====================================================================
 
 .CanelaTopic {
   // A coluna dos posts cresce com a largura do conteúdo (admin): os 351px são
-  // a linha do tempo e os espaços (1110 − 759 no padrão do Discourse).
+  // a linha do tempo e os espaços (1110 − 759 no padrão).
   --cn-topic-stream-max: ~"calc(var(--cn-main-max, 1110px) - 351px)";
   --cn-topic-timeline-gap: 66px;
   --cn-topic-sticky-top: calc(var(--cn-header-height) + var(--cn-space-6));
@@ -20,8 +20,8 @@
 // Título (DiscussionHero, que o tema põe dentro do cartão)
 // ---------------------------------------------------------------------
 .DiscussionHero.CanelaTopicHero {
-  // O tags pinta o hero com a cor da tag e o core centraliza; o Discourse
-  // não faz nenhum dos dois.
+  // O tags pinta o hero com a cor da tag e o core centraliza; aqui não se
+  // faz nenhum dos dois.
   --hero-bg: transparent;
   background: none;
   color: var(--cn-primary);
@@ -31,7 +31,7 @@
   padding: 0 0 14px;
   border-bottom: 0;
 
-  // O título ocupa a largura do cartão (o #topic-title do Discourse), mas a
+  // O título ocupa a largura do cartão, mas a
   // linha embaixo dele é a borda do primeiro post: só a largura do stream.
   &::after {
     content: "";
@@ -73,14 +73,14 @@
     vertical-align: baseline;
   }
 
-  // Os ícones de status (fixado, trancado, oculto…) do Discourse são só o
+  // Os ícones de status (fixado, trancado, oculto…) são só o
   // ícone em cinza, sem o círculo colorido do badge.
   .DiscussionHero-badges {
     display: inline-flex;
     gap: var(--cn-space-1);
     margin: 0 var(--cn-space-2) 0 0;
     padding: 0;
-    // Medidas do `.topic-statuses` do Discourse: na escala do título (28px),
+    // Medidas dos ícones de status: na escala do título (28px),
     // ícone de 0.75em em primary-low-mid, alinhado à linha de base.
     font-size: 1.751rem;
     .canela-status-align(0.75em);
@@ -118,8 +118,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Duas colunas — só a partir de 925px: abaixo disso o Discourse esconde a
-// linha do tempo e mostra a aba "1 / 11" no pé da tela (veja Timeline.less).
+// Duas colunas — só a partir de 925px: abaixo disso a linha do tempo some
+// e aparece a aba "1 / 11" no pé da tela (veja Timeline.less).
 // ---------------------------------------------------------------------
 @media (min-width: 925px) {
   .Canela .CanelaTopic .Page-container.container,

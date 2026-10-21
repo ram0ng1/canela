@@ -48,7 +48,7 @@ final class MessagesSchema
     /** O tipo das conversas que deixam de ser a dois (grupo ou convidados). */
     public const GROUP_TYPE = 'canela_group';
 
-    /** O tamanho do título do Discourse (`max_topic_title_length`). */
+    /** O tamanho máximo do título. */
     public const TITLE_MAX = 255;
 
     /** @var array<string, bool> */

@@ -1,9 +1,9 @@
 /*
  * O estado da busca, compartilhado entre os menus (o do cabeçalho e o do
- * banner de boas-vindas), como o serviço `search` do Discourse: o termo, se a
+ * banner de boas-vindas): o termo, se a
  * busca já inclui os tópicos (depois do Enter) e os resultados.
  *
- * Como no Discourse, digitar faz só a busca "rápida" (`exclude_topics`):
+ * Digitar faz só a busca "rápida":
  * categorias, etiquetas e usuários, com 400ms de espera. Os tópicos entram
  * quando a pessoa pressiona Enter ou escolhe uma sugestão.
  *
@@ -28,7 +28,7 @@ export interface SearchResults {
 
 export class SearchMenuState {
   term = '';
-  /** `typeFilter !== exclude_topics` do Discourse: a busca já inclui os tópicos. */
+  /** A busca já inclui os tópicos. */
   searchTopics = false;
   loading = false;
   invalidTerm = false;
@@ -38,7 +38,7 @@ export class SearchMenuState {
   suggestionKeyword: string | false = false;
   suggestionResults: Array<CanelaTag | User> = [];
 
-  /** `searchTermChanged` do Discourse. */
+  /** Troca o termo da busca. */
   setTerm(term: string, opts: { searchTopics?: boolean } = {}): void {
     this.term = term.replace(/[​-‍﻿]/g, '');
     this.searchTopics = !!opts.searchTopics;

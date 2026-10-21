@@ -20,7 +20,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * Quais categorias e etiquetas têm tópicos novos ou não lidos para quem
- * está vendo — o ponto ao lado da categoria na barra lateral do Discourse.
+ * está vendo — o ponto ao lado da categoria na barra lateral.
  *
  * Uma consulta só por requisição (as tags vêm todas juntas no documento do
  * fórum), e só olha as últimas duas semanas: um tópico antigo que a pessoa
@@ -85,7 +85,7 @@ final class UnreadTags
         foreach ($ids as $row) {
             $result[(int) $row->tag_id] = true;
 
-            // A categoria mãe acende junto com a filha, como no Discourse.
+            // A categoria mãe acende junto com a filha.
             if ($row->parent_id) {
                 $result[(int) $row->parent_id] = true;
             }

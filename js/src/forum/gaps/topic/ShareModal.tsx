@@ -1,8 +1,8 @@
 /*
- * "Compartilhar discussão" do Discourse (share-topic): o endereço num campo com
+ * "Compartilhar discussão": o endereço num campo com
  * o botão de copiar e, embaixo, os botões das redes (X, Facebook, e-mail… —
  * as que o admin escolher). No celular, com a folha de compartilhamento do
- * sistema disponível, vale ela, como no Discourse.
+ * sistema disponível, vale ela.
  */
 import app from 'flarum/forum/app';
 import Modal, { type IInternalModalAttrs } from 'flarum/common/components/Modal';
@@ -22,7 +22,7 @@ interface Network {
   url: (link: string, title: string) => string;
 }
 
-/** As redes do share_links do Discourse, mais as que o Brasil usa. */
+/** As redes de compartilhamento, incluindo as que o Brasil usa. */
 const NETWORKS: Record<string, Network> = {
   x: { icon: 'fab fa-x-twitter', url: (link, title) => `https://x.com/intent/tweet?url=${link}&text=${title}` },
   facebook: { icon: 'fab fa-facebook', url: (link) => `https://www.facebook.com/sharer.php?u=${link}` },
@@ -122,7 +122,7 @@ export default class ShareModal extends Modal<ShareModalAttrs> {
             );
           })}
         </div>
-        {/* O "Convite" do Discourse, para trazer alguém novo ao fórum. */}
+        {/* O "Convite", para trazer alguém novo ao fórum. */}
         {!this.attrs.post && canInvite() && (
           <div className="CanelaShareModal-invite">
             <Button className="Button" icon="fas fa-user-plus" onclick={() => openInviteModal(true)}>

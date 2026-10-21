@@ -1,5 +1,5 @@
 /*
- * O composer do chat (chat-composer.gjs do Discourse): o campo que cresce com
+ * O composer do chat: o campo que cresce com
  * o texto, o "+" com o anexo, o emoji, o enviar, a faixa de "respondendo a" ou
  * "editando", as miniaturas dos anexos e o "fulano está digitando…".
  *
@@ -158,7 +158,7 @@ export default class ChatComposer extends Component<ChatComposerAttrs> {
     return (this.element as HTMLElement | undefined)?.querySelector('.chat-composer__input') ?? null;
   }
 
-  /** O campo cresce até um quarto da tela, como o `max-height: 25dvh` do Discourse. */
+  /** O campo cresce até um quarto da tela (`max-height: 25dvh`). */
   private autosize(): void {
     const area = this.textarea();
 

@@ -1,12 +1,12 @@
 /*
- * Notificações no formato do menu do usuário do Discourse.
+ * Notificações no formato do menu do usuário.
  *
  * O Flarum não agrupa as notificações por tipo no servidor (não há filtro
  * `type` na API), então as abas filtram no cliente, pelo `contentType()`, o
  * que o `app.notifications` já carregou. Os textos vêm dos componentes que
  * cada extensão registra (`app.notificationComponents`): o tema só muda a
  * forma — avatar de quem gerou com o ícone do tipo num selo, nome em negrito
- * e o título do tópico, como o `.user-menu.show-avatars` do Discourse.
+ * e o título do tópico.
  */
 import app from 'flarum/forum/app';
 import Avatar from 'flarum/common/components/Avatar';
@@ -20,9 +20,9 @@ import type Mithril from 'mithril';
 
 import { userMenu } from './state';
 
-/** As abas que filtram notificações: "Respostas" é o `replies` do Discourse (mencionado, citado, respondido, postado). */
+/** As abas que filtram notificações: "Respostas" junta mencionado, citado, respondido e postado. */
 export const REPLY_TYPES = ['newPost', 'postMentioned', 'userMentioned', 'groupMentioned'];
-/** `postReacted` é o tipo das reações (fof/reactions), que o Discourse também põe em Curtidas. */
+/** `postReacted` é o tipo das reações (fof/reactions), que também vão para Curtidas. */
 export const LIKE_TYPES = ['postLiked', 'postReacted'];
 export const MESSAGE_TYPES = ['messageReceived'];
 export const BOOKMARK_TYPES = ['canelaBookmarkReminder'];
@@ -97,8 +97,8 @@ export function markNotificationRead(notification: Notification): Promise<unknow
 
 /**
  * "Descartar": sem filtro, o POST /notifications/read do core (todas). Com
- * filtro, só as não lidas daquele grupo, uma a uma — o Flarum não tem o
- * `dismiss_types` do Discourse.
+ * filtro, só as não lidas daquele grupo, uma a uma — o Flarum não descarta
+ * por tipo.
  */
 export function dismissNotifications(filter: NotificationFilter | null): Promise<unknown> {
   if (!filter || (!filter.types && !filter.exclude)) {
@@ -129,11 +129,11 @@ export interface NotificationView {
 }
 
 /**
- * O que o Discourse mostra numa notificação: quem gerou (`item-label`, em
- * negrito) e o título do tópico (`item-description`), com o tipo só no ícone.
+ * O que uma notificação mostra: quem gerou (em negrito) e o título do
+ * tópico, com o tipo só no ícone.
  * Sem tópico ou sem outra pessoa (um emblema ganho, uma suspensão), o texto
- * do próprio componente vira a descrição, sem rótulo — como o "Ganhou
- * 'Primeira curtida'" do Meta. A frase inteira fica no `title`.
+ * do próprio componente vira a descrição, sem rótulo — como "Ganhou
+ * 'Primeira curtida'". A frase inteira fica no `title`.
  */
 export function describeNotification(notification: Notification): NotificationView | null {
   const Component = (app as any).notificationComponents?.[notification.contentType() || ''];
@@ -169,14 +169,14 @@ export function describeNotification(notification: Notification): NotificationVi
   };
 }
 
-/** Sem pessoa (o "system" do Discourse): o ícone do fórum no lugar do avatar. */
+/** Sem pessoa (notificação do sistema): o ícone do fórum no lugar do avatar. */
 function systemAvatar(): Mithril.Children {
   const src = app.forum.attribute<string | null>('faviconUrl') || app.forum.attribute<string | null>('logoUrl');
 
   return src ? <img className="Avatar CanelaUserMenu-systemAvatar" src={src} alt="" loading="lazy" /> : <Avatar user={null} />;
 }
 
-/** O `.icon-avatar` do Discourse: avatar de 2em com o ícone do tipo num selo redondo no canto. */
+/** O `.icon-avatar`: avatar de 2em com o ícone do tipo num selo redondo no canto. */
 export function IconAvatar(user: User | null | false | undefined, icon: string, system = false): Mithril.Children {
   return (
     <span className={classList('CanelaUserMenu-iconAvatar', system || !user ? 'system-avatar' : 'user-avatar')}>
@@ -199,7 +199,7 @@ export interface MenuItemAttrs {
   onclick?: (e: MouseEvent) => void;
 }
 
-/** O `<li>` do `menu-item` do Discourse. Fecha o menu ao seguir o link. */
+/** O `<li>` do `menu-item`. Fecha o menu ao seguir o link. */
 export function MenuItem(attrs: MenuItemAttrs): Mithril.Children {
   const external = attrs.href.includes('://');
 

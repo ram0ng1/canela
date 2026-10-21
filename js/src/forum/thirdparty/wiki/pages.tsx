@@ -8,8 +8,8 @@
  *   "+ Novo artigo" à direita, como "Novo tópico"); os artigos em linhas com
  *   colunas, como a lista de tópicos ("Artigo · autor · Atividade"); na página
  *   inicial agrupada, uma seção por categoria com o badge dela.
- * - Artigo (/wiki/:id): o título do tópico, o artigo como o primeiro post do
- *   Discourse (avatar, nome, data e o lápis das edições; o texto "cooked"; a
+ * - Artigo (/wiki/:id): o título do tópico, o artigo como o primeiro post de um
+ *   tópico (avatar, nome, data e o lápis das edições; o texto "cooked"; a
  *   barra de ações com "Editar" e o "⋯"), o mapa do tópico (criado,
  *   atualizado, revisões) e as revisões num modal (o do histórico de edições
  *   dos posts), que abre pelo lápis ou pelo mapa.
@@ -243,7 +243,7 @@ function listSkeleton(page: any): Mithril.Children {
 }
 
 /**
- * O vazio do Discourse (`.empty-state`): o ícone grande, a frase e a ação.
+ * O estado vazio (`.empty-state`): o ícone grande, a frase e a ação.
  * Na busca, "limpar a busca"; sem artigos, "Novo artigo" para quem pode.
  */
 function emptyState(page: any, error: boolean): Mithril.Children {

@@ -5,8 +5,7 @@
  * são renovadas por GET /api/canela-counts quando a pessoa volta à lista —
  * que é quando ela pode ter acabado de ler alguma coisa.
  *
- * Na página de uma tag, as abas mostram os números dela (`?tag=slug`), como
- * o Discourse faz na categoria: o "(1)" global numa categoria vazia mentia.
+ * Na página de uma tag, as abas mostram os números dela (`?tag=slug`): o "(1)" global numa categoria vazia mentia.
  */
 import app from 'flarum/forum/app';
 

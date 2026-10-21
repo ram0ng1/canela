@@ -1,6 +1,5 @@
 /*
- * O composer do Flarum com a forma do composer do Discourse (o redesenho que o
- * meta.discourse.org usa, `uc-enable-composer-redesign`):
+ * O composer do Flarum com a forma do composer do Canela:
  *
  *   alça · "Iniciar Discussão" / "Tópico ▾" ............ «  ⤢  —  ✕
  *   categoria ▾                 | 🏷 etiquetas opcionais ▾
@@ -41,7 +40,7 @@ const REPLY = 'flarum/forum/components/ReplyComposer';
 const EDIT = 'flarum/forum/components/EditPostComposer';
 const DISCUSSION = 'flarum/forum/components/DiscussionComposer';
 
-/** As alturas iniciais do Discourse: resposta 255px, o resto 400px. */
+/** As alturas iniciais: resposta 255px, o resto 400px. */
 function defaultHeight(): number {
   return app.composer.bodyMatches(REPLY) ? 255 : 400;
 }
@@ -82,7 +81,7 @@ function controlButton(icon: string, label: string, onclick: () => void, classNa
 }
 
 /**
- * O ✕ do Discourse é "Salvar e fechar": com rascunhos, guarda o texto e fecha
+ * O ✕ é "Salvar e fechar": com rascunhos, guarda o texto e fecha
  * sem perguntar. Sem rascunhos, fecha como o core (que pergunta se há texto).
  */
 function saveAndClose(): void {
@@ -95,7 +94,7 @@ function saveAndClose(): void {
 }
 
 /**
- * O placeholder do Discourse, que muda com o modo: no "A", "Digite aqui. Use
+ * O placeholder, que muda com o modo: no "A", "Digite aqui. Use
  * a barra de ferramentas ou Markdown para formatar."; no Markdown, "Digite
  * aqui. Use Markdown, BBCode, ou HTML para formatar." — aqui só com os
  * formatos ligados neste fórum. "Arraste ou cole imagens." só com o
@@ -116,7 +115,7 @@ function bodyPlaceholder(rich: boolean = richMode()): string {
 }
 
 /**
- * Os rótulos do Discourse ("Iniciar Discussão", "Responder", "Salvar edição") e os
+ * Os rótulos ("Iniciar Discussão", "Responder", "Salvar edição") e os
  * placeholders, só quando quem abriu o composer não passou os seus.
  */
 function installLabels(): void {
@@ -143,7 +142,7 @@ function installHeights(): void {
   override(ComposerState.prototype, 'minimumHeight', () => 255);
 
   // O Composer pega a altura padrão uma vez, ao montar; os composers abertos
-  // depois herdam a do anterior. O Discourse decide a cada abertura.
+  // depois herdam a do anterior. Aqui ela é decidida a cada abertura.
   override(ComposerState.prototype, 'load', async function (this: ComposerState, original: (...args: any[]) => Promise<any>, ...args: any[]) {
     const result = await original(...args);
 
@@ -166,7 +165,7 @@ function installRoot(): void {
     vdom.attrs.className = `${vdom.attrs.className} CanelaComposer ${kindClass()} ${splitPreviewVisible() && !rich ? 'show-preview' : 'hide-preview'}${rich ? ' is-rich' : ' is-markdown'}`;
   });
 
-  // «, tela cheia, minimizar e ✕ — a ordem e os ícones do Discourse. Minimizado,
+  // «, tela cheia, minimizar e ✕ — a ordem e os ícones do canto. Minimizado,
   // só o ✕, sobre a barra colorida.
   extend('flarum/forum/components/Composer' as any, 'controlItems', function (items: ItemList<Mithril.Children>) {
     const state = app.composer;
@@ -181,7 +180,7 @@ function installRoot(): void {
       return;
     }
 
-    // Os ícones do canto do Discourse: tela cheia, minimizar e fechar — e, no
+    // Os ícones do canto: tela cheia, minimizar e fechar — e, no
     // modo Markdown, o « da prévia antes deles. O que outras extensões ponham
     // aqui sai.
     Object.keys(items.toObject()).forEach((key) => {
@@ -206,7 +205,7 @@ function installRoot(): void {
     }
 
     // Sem o `App-backControl` do core, que no celular vira o "voltar" do
-    // cabeçalho: o composer móvel do Discourse mostra — e ✕ na própria linha.
+    // cabeçalho: o composer móvel mostra — e ✕ na própria linha.
     put(
       items,
       'minimize',
@@ -225,7 +224,7 @@ function installRoot(): void {
  */
 function installHeader(): void {
   // A enquete do fof/polls: o botão "Adicionar enquete" do cabeçalho vira um
-  // item do menu ⊕ da barra, como o "Criar enquete" do Discourse.
+  // item "Criar enquete" do menu ⊕ da barra.
   addMoreAction(() => {
     const poll = (app.composer as any).canelaPoll;
 
@@ -325,7 +324,7 @@ function installTagRequirements(): void {
 }
 
 function installFooter(): void {
-  // O rodapé do Discourse: a barra de formatação à esquerda e, à direita,
+  // O rodapé: a barra de formatação à esquerda e, à direita,
   // "Descartar" e o botão primário sem ícone.
   extend(TextEditor.prototype, 'controlItems', function (this: TextEditor, items: ItemList<Mithril.Children>) {
     if (!editorComposer(this) || editorComposer(this) !== app.composer) return;
@@ -339,7 +338,7 @@ function installFooter(): void {
       items.setContent(
         'submit',
         // Sem o `App-primaryControl` do core: no celular essa classe leva o
-        // botão para o cabeçalho e esconde o rótulo; no Discourse ele fica no
+        // botão para o cabeçalho e esconde o rótulo; aqui ele fica no
         // rodapé, em texto.
         <Button className="Button Button--primary CanelaComposer-submit" onclick={() => (this as any).onsubmit()}>
           {attrs.submitLabel}
@@ -358,7 +357,7 @@ function installFooter(): void {
     );
 
     // Onde cabe a prévia ao lado (mesmo escondida pelo «), o "olho" do core
-    // — que leva à prévia dentro do tópico — sobra: o Discourse não tem.
+    // — que leva à prévia dentro do tópico — sobra.
     if (splitPossible() && items.has('preview')) items.remove('preview');
   });
 }

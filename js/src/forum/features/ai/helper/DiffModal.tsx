@@ -1,5 +1,5 @@
 /*
- * "Edições sugeridas" — o modal de diff do ajudante de IA do Discourse.
+ * "Edições sugeridas" — o modal de diff do ajudante de IA.
  *
  * - Revisar texto: o diff palavra a palavra no próprio texto (o que sai
  *   riscado em vermelho, o que entra em verde), refeito a cada pedaço que

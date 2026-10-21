@@ -1,9 +1,8 @@
 // ---------------------------------------------------------------------
-// fof/best-answer no jeito do discourse-solved
-// (css-discourse-solved.css + d-post-accordion do Meta)
+// fof/best-answer no visual do tema
 // ---------------------------------------------------------------------
 
-// "✓ Solução" na barra do post aceito: `.accepted-text`, verde, font-up-1.
+// "✓ Solução" na barra do post aceito: verde, font-up-1.
 .CanelaSolved--accepted {
   &.Button.CanelaPostAction,
   &.CanelaSolved--static {
@@ -50,7 +49,7 @@
   }
 }
 
-// A resposta aceita sob o 1º post: `.accepted-answers.d-post-accordion`.
+// A resposta aceita sob o 1º post, num acordeão.
 // A melhor resposta no primeiro post e a própria resposta no fluxo: o mesmo
 // desenho do post sinalizado (borda de 2px e faixa no topo), em verde.
 .CanelaSolution {
@@ -138,7 +137,7 @@
   }
 }
 
-// Seis linhas e o degradê por cima do fim, como o `data-overflowing` do Discourse.
+// Seis linhas e o degradê por cima do fim.
 .CanelaSolution-content.Post-body {
   position: relative;
   max-height: calc(var(--canela-solution-lines, 6) * 1.6em);

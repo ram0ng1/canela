@@ -1,5 +1,5 @@
 /*
- * O banner de boas-vindas do Horizon: título grande, a mensagem de boas-vindas
+ * O banner de boas-vindas: título grande, a mensagem de boas-vindas
  * do admin e um campo de busca em pílula, sobre o fundo tingido da página.
  *
  * Herda do Hero do core para manter a classe `.Hero` — o IndexPage mede a

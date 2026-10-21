@@ -1,13 +1,11 @@
 /*
- * O gráfico "Visualizações recentes" do mapa do tópico (topic-views-chart do
- * Discourse), desenhado em SVG.
+ * O gráfico "Visualizações recentes" do mapa do tópico, desenhado em SVG.
  *
- * O Discourse usa o Chart.js; aqui a mesma figura sai em SVG para não pôr
- * 200 KB de biblioteca no fórum por um gráfico de linha. Os cálculos são os
- * dele, um por um:
+ * Em vez do Chart.js, a figura sai em SVG para não pôr 200 KB de
+ * biblioteca no fórum por um gráfico de linha. Os cálculos, um por um:
  *
- * - os dias sem visualização entram com zero (fillMissingDates);
- * - o ponto de hoje é trocado por uma PREVISÃO (predictTodaysViews: média
+ * - os dias sem visualização entram com zero;
+ * - o ponto de hoje é trocado por uma PREVISÃO (média
  *   móvel ponderada de 3 dias, ajustada pela parte do dia que já passou),
  *   ligada a ontem por uma linha tracejada;
  * - o eixo X vai do primeiro dia a hoje, com os marcos do Chart.js (passo
@@ -16,7 +14,7 @@
  * - a dica mostra a data (dd/mm/aaaa) e "Visualizações: N" ou, no ponto de
  *   hoje, "Visualizações previstas: N".
  *
- * As cores são as do `.topic-map` de lá: a linha e os pontos no tom médio da
+ * As cores: a linha e os pontos no tom médio da
  * cor de destaque, a previsão em cinza (`--chart-*-color`, no LESS).
  */
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -80,8 +78,7 @@ function predictTodaysViews(data: Point[]): number {
   const currentViews = data[data.length - 1].y;
   const now = new Date();
   const currentTimeUTC = Date.now() + now.getTimezoneOffset() * 60 * 1000;
-  // A mesma conta do Discourse (que soma o fuso ao relógio antes de comparar
-  // com a meia-noite UTC), para a previsão dar o mesmo número de lá.
+  // A conta soma o fuso ao relógio antes de comparar com a meia-noite UTC.
   const elapsed = (currentTimeUTC - startOfDayUTC()) / ONE_DAY;
 
   const adjusted =
@@ -167,7 +164,7 @@ export default class TopicViewsChart extends Component<TopicViewsChartAttrs> {
     const box = this.element?.querySelector('.CanelaViewsChart-canvas') as HTMLElement | null;
     if (!box) return false;
 
-    // clientWidth inclui o padding do bloco (o do `canvas` de lá); o gráfico
+    // clientWidth inclui o padding do bloco (o do `canvas`); o gráfico
     // ocupa só o miolo.
     const style = getComputedStyle(box);
     const width = Math.floor(box.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));

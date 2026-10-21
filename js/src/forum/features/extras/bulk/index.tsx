@@ -1,5 +1,5 @@
 /*
- * Seleção em massa do Discourse (para quem modera): um botão na barra da
+ * Seleção em massa (para quem modera): um botão na barra da
  * lista liga caixas de seleção em cada tópico e uma barra de ações acima da
  * lista — marcar como lido, fixar, trancar, alterar etiquetas, ocultar,
  * excluir.

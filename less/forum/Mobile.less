@@ -1,10 +1,10 @@
 // =====================================================================
-// Celular (< 768px), como o meta.discourse.org no celular: o mesmo
+// Celular (< 768px): o mesmo
 // cabeçalho de 52px (logo | Entrar · PT · busca · hambúrguer · avatar) e a
 // barra lateral num painel que desliza da esquerda por cima de tudo.
 //
 // A barra de navegação do core (.App-navigation, com o botão do drawer e o
-// título no meio) não existe no Discourse: o cabeçalho, que no core mora
+// título no meio) não existe no tema: o cabeçalho, que no core mora
 // dentro do drawer, vira a barra fixa do topo.
 // =====================================================================
 
@@ -57,7 +57,7 @@
   }
 
   // Os itens da direita entram na mesma fileira que a busca e o hambúrguer,
-  // na ordem do Discourse.
+  // nessa ordem.
   .Canela #header-secondary,
   .Canela #header-secondary > .Header-controls {
     display: contents;
@@ -183,7 +183,7 @@
     position: static !important;
   }
 
-  // O cartão no celular (#main-outlet do Discourse): 20px abaixo do
+  // O cartão no celular: 20px abaixo do
   // cabeçalho, 0,67em das bordas, cantos de 16px.
   .Canela .Page-hero:not(.Page-hero--inline) {
     padding: 0 var(--cn-space-3);
@@ -203,8 +203,7 @@
   }
 }
 
-// Celular e tablet: os controles do cabeçalho são só ícones, como no
-// Discourse — o core mostra o rótulo ("Notificações", "Posts Sinalizados")
+// Celular e tablet: os controles do cabeçalho são só ícones — o core mostra o rótulo ("Notificações", "Posts Sinalizados")
 // porque no celular eles moravam no drawer. Entrar continua com o texto.
 @media (max-width: 1023.98px) {
   .Canela .Header-secondary .Header-controls > li:not(.item-logIn):not(.item-signUp) {

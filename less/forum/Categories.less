@@ -1,10 +1,9 @@
 // =====================================================================
-// Página de categorias (/tags): caixas em grade (print p2) ou tabela do
-// Discourse, e as etiquetas com a contagem (print p4-e). Medidas do CSS
-// computado de meta.discourse.org/categories e /tags.
+// Página de categorias (/tags): caixas em grade (print p2) ou tabela, e as
+// etiquetas com a contagem (print p4-e).
 // =====================================================================
 
-// Em rem, como a lista: o body do tema é 15px e o Discourse mede em 16px.
+// Em rem, como a lista: o body do tema é 15px e aqui se mede em 16px.
 .CanelaCategoryBoxes,
 .CanelaCategoryTable,
 .CanelaTagCloud {
@@ -23,8 +22,8 @@
   list-style: none;
 }
 
-// `.category-box-inner`: borda primary-low, raio grande, 16px de padding.
-// O Horizon acende a borda na cor de destaque no hover.
+// A caixa: borda primary-low, raio grande, 16px de padding.
+// A borda acende na cor de destaque no hover.
 .CanelaCategoryBox {
   position: relative;
   display: flex;
@@ -33,8 +32,7 @@
   border: 1px solid var(--cn-border);
   border-radius: var(--cn-radius-large);
   background: var(--cn-surface);
-  // Sem transição: no Meta a borda acende na hora (nenhuma regra de
-  // transition em `.category-box-inner`).
+  // Sem transição: a borda acende na hora.
 
   &:hover,
   &:focus-within {
@@ -42,7 +40,7 @@
   }
 }
 
-// `.category-box-heading h3`: nome em --font-up-1 negrito, 8px até a descrição.
+// O nome da caixa: --cn-font-up-1 negrito, 8px até a descrição.
 .CanelaCategoryBox-title {
   margin: 0 0 8px;
   font-size: var(--cn-font-up-1);
@@ -119,7 +117,7 @@
   }
 }
 
-// `.subcategories`: 8px entre os badges, nome em primary e --font-down-1.
+// Subcategorias: 8px entre os badges, nome em primary e --cn-font-down-1.
 .CanelaCategoryBox-children {
   position: relative;
   z-index: 1;
@@ -177,7 +175,7 @@
   }
 
   td.CanelaCategoryTable-category {
-    // A faixa colorida à esquerda das categorias do Discourse.
+    // A faixa colorida à esquerda das categorias.
     border-left: 6px solid var(--category-color, var(--cn-primary-low));
   }
 }
@@ -262,7 +260,7 @@ td.CanelaCategoryTable-latest {
 }
 
 // ---------------------------------------------------------------------
-// Etiquetas (print p4-e e /tags do Meta): grupo com título de 18.7px, e as
+// Etiquetas (print p4-e): grupo com título de 18.7px, e as
 // etiquetas em caixas de 300px ("nome x 658"), 16px entre as linhas.
 // ---------------------------------------------------------------------
 .CanelaTagCloud {
@@ -340,8 +338,7 @@ td.CanelaCategoryTable-latest {
 }
 
 // ---------------------------------------------------------------------
-// Página de etiquetas (/tags com os endereços do Discourse): `.tags-index`
-// do meta.discourse.org/tags — título de 24px, "Ordenar por contagem nome"
+// Página de etiquetas (/tags): título de 24px, "Ordenar por contagem nome"
 // com a escolhida em negrito, a linha (hr) e a lista com borda embaixo.
 // ---------------------------------------------------------------------
 .CanelaTagsPage {

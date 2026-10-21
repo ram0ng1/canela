@@ -39,7 +39,7 @@ use Ramon\Canela\Community\UserPresenter;
  * o texto do admin, o contato, a equipe e as estatísticas do site.
  *
  * As estatísticas contam a tabela inteira de tópicos e postagens, então ficam
- * 30 minutos em cache (o Discourse também as recalcula de tempos em tempos).
+ * 30 minutos em cache (recalculadas de tempos em tempos).
  * Elas só contam o que um visitante veria — sem ocultos, privados nem tópicos
  * de tags restritas —, o que as torna iguais para todo mundo e permite um
  * cache único. A equipe não entra no
@@ -156,8 +156,8 @@ final class ShowAboutController implements RequestHandlerInterface
             'topics' => $this->countPeriods($periods, fn () => $this->publicDiscussions(), 'discussions.created_at'),
             'posts' => $this->countPeriods($periods, fn () => $this->publicPosts(), 'posts.created_at'),
             'users' => $this->countPeriods($periods, fn () => $this->members(), 'users.joined_at'),
-            // "Usuários ativos" de sempre seria igual a "usuários": o Discourse
-            // também deixa essa célula vazia.
+            // "Usuários ativos" de sempre seria igual a "usuários": essa
+            // célula fica vazia.
             'activeUsers' => $this->countPeriods($periods, fn () => $this->members(), 'users.last_seen_at', withTotal: false),
         ];
 
@@ -202,8 +202,8 @@ final class ShowAboutController implements RequestHandlerInterface
 
     /**
      * Os tópicos que um visitante vê: as regras de visibilidade do core e das
-     * extensões (tags restritas, aprovação…) com o ator visitante, como o
-     * Discourse, que só conta o que é público.
+     * extensões (tags restritas, aprovação…) com o ator visitante: só conta o
+     * que é público.
      */
     private function publicDiscussions(): Builder
     {

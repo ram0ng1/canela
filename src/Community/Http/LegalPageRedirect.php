@@ -22,7 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Community\LegalPages;
 
 /**
- * /tos e /privacy, como no Discourse com `tos_url`/`privacy_policy_url`: levam
+ * /tos e /privacy: levam
  * ao endereço da política (do fof/terms ou do admin do tema). Sem endereço, a
  * página não existe — 404, e não uma página vazia.
  */

@@ -25,8 +25,8 @@ use Ramon\Canela\Chat\Model\Upload;
 /**
  * As imagens do chat, no disco `canela-chat` (public/assets/canela-chat).
  *
- * O arquivo vai como foi enviado — um GIF animado continua animado, como no
- * Discourse —, depois de o ChatUploadValidator decodificá-lo de verdade (o
+ * O arquivo vai como foi enviado — um GIF animado continua animado —, depois
+ * de o ChatUploadValidator decodificá-lo de verdade (o
  * mesmo AbstractImageValidator do avatar). Só a medida é lida, para a
  * miniatura reservar o espaço certo e a conversa não pular ao carregar.
  */

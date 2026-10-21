@@ -39,8 +39,8 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
  * A listagem passa pelo UserBadgeSearcher (o Flarum filtra por searcher, não
  * pelo recurso), que aplica a mesma visibilidade do `scope()` daqui.
  *
- * O admin concede à mão (`POST /canela-user-badges/grant`, o "Award badge" do
- * Discourse) e revoga (`DELETE /canela-user-badges/:id`).
+ * O admin concede à mão (`POST /canela-user-badges/grant`) e revoga
+ * (`DELETE /canela-user-badges/:id`).
  *
  * @extends AbstractDatabaseResource<UserBadge>
  */
@@ -106,7 +106,7 @@ final class UserBadgeResource extends AbstractDatabaseResource
                 ->admin()
                 ->action(fn (Context $context) => $this->grant($context))
                 ->response(fn (Context $context, UserBadge $userBadge) => new JsonResponse(['meta' => ['id' => (string) $userBadge->id]], 201)),
-            // Revogar uma concessão, como no admin do Discourse. A notificação
+            // Revogar uma concessão, pelo admin. A notificação
             // daquela concessão vai junto (UserBadge::booted).
             Endpoint\Delete::make()
                 ->visible($installed)
@@ -119,8 +119,8 @@ final class UserBadgeResource extends AbstractDatabaseResource
     {
         return [
             Schema\DateTime::make('grantedAt'),
-            // O motivo (ou link) de uma concessão manual — público, como no
-            // Discourse, onde ele aparece na página do emblema.
+            // O motivo (ou link) de uma concessão manual — público: ele
+            // aparece na página do emblema.
             Schema\Str::make('reason')
                 ->nullable()
                 ->visible(fn () => $this->capabilities->adminColumns()),

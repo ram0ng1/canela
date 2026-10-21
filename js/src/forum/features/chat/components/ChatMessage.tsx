@@ -1,5 +1,5 @@
 /*
- * Uma mensagem do chat, com a estrutura do chat-message.gjs do Discourse:
+ * Uma mensagem do chat, com esta estrutura:
  *
  * - o separador de dia (e o "último acesso") antes da primeira mensagem do dia;
  * - mensagens seguidas da mesma pessoa, com menos de 5 minutos entre elas, sem
@@ -143,7 +143,7 @@ export default class ChatMessage extends Component<ChatMessageAttrs> {
   }
 
   /**
-   * O que o Discourse faz no "decorateCookedMessage": a menção ao próprio
+   * Decora o conteúdo da mensagem: a menção ao próprio
    * leitor fica destacada, e os links abrem fora da conversa.
    */
   private decorate(): void {

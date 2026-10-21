@@ -1,5 +1,5 @@
 /*
- * O "timings" do Discourse, simplificado: enquanto o tópico está na tela e a
+ * O registro de leitura, simplificado: enquanto o tópico está na tela e a
  * pessoa está de fato ali (aba visível, mexeu na página há pouco), conta os
  * segundos de leitura e as postagens que ficaram tempo bastante à vista, e
  * manda os dois para o servidor a cada 30 segundos.
@@ -19,7 +19,7 @@ const TICK_MS = 1000;
 /** De quanto em quanto tempo os segundos acumulados vão para o servidor. */
 const FLUSH_EVERY_TICKS = 30;
 
-/** Sem mexer na página por 3 minutos, a pessoa saiu de perto (o mesmo do Discourse). */
+/** Sem mexer na página por 3 minutos, a pessoa saiu de perto. */
 const IDLE_AFTER_MS = 3 * 60 * 1000;
 
 /** Uma postagem conta como lida depois de 2 segundos à vista. */

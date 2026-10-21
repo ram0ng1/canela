@@ -33,7 +33,7 @@ use Ramon\Canela\Ai\Llm\LlmResult;
 use Throwable;
 
 /**
- * A tradução automática do conteúdo (o `ai_translation` do Discourse AI):
+ * A tradução automática do conteúdo:
  * detecta o idioma de cada postagem, traduz para o idioma de quem lê e guarda
  * o resultado, que daí em diante serve a todos que leem nesse idioma.
  *
@@ -430,7 +430,7 @@ final class ContentTranslator
     }
 
     /**
-     * O idioma do título é o da primeira postagem (como no Discourse); sem ele
+     * O idioma do título é o da primeira postagem; sem ele
      * guardado, a heurística na primeira postagem que o leitor vê e, por fim,
      * no próprio título.
      *

@@ -10,7 +10,7 @@ use Flarum\Search\SearchState;
 use Ramon\Canela\Stats\TopicCounter;
 
 /**
- * `filter[canelaNew]=1` — a aba "Novos" do Discourse: só os tópicos que a
+ * `filter[canelaNew]=1` — a aba "Novos": só os tópicos que a
  * pessoa nunca abriu, pela mesma regra da contagem "Novos (N)".
  *
  * @implements FilterInterface<DatabaseSearchState>

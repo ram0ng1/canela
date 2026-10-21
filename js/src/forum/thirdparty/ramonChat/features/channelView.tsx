@@ -1,6 +1,6 @@
 /*
- * A conversa aberta (ChannelView do ramon/chat) com o que o chat do Discourse
- * tem a mais:
+ * A conversa aberta (ChannelView do ramon/chat) com o que o chat do tema tem
+ * a mais:
  *
  * - (11) a estrela do canal favorito no cabeçalho;
  * - (18) mensagens excluídas seguidas viram uma linha só, "N mensagens foram

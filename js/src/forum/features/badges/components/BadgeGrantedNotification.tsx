@@ -6,9 +6,9 @@ import { badgeUrl } from '../utils';
 import { t } from '../../../utils/settings';
 
 /**
- * 'Ganhou "Primeira curtida"' — o `granted_badge` do Discourse. O avatar é o
+ * 'Ganhou "Primeira curtida"' — a notificação de emblema concedido. O avatar é o
  * da própria pessoa (o servidor manda ela como remetente), com o ícone de
- * emblema no canto, como no menu do usuário do Discourse.
+ * emblema no canto.
  */
 export default class BadgeGrantedNotification extends Notification {
   icon() {

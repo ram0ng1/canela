@@ -28,7 +28,7 @@ use Ramon\Chat\Event\ChannelWasCreated;
 use Ramon\Chat\Service\MembershipManager;
 
 /**
- * `POST /api/canela-ramon-chat/self`: a MD consigo mesmo do Discourse
+ * `POST /api/canela-ramon-chat/self`: a MD consigo mesmo
  * ("Anotar algo"). O `/chat/direct` do ramon/chat recusa uma lista só com o
  * próprio ator; aqui o canal direto é achado (o que só tem o ator) ou criado,
  * pelo MembershipManager dele.

@@ -1,5 +1,5 @@
 /*
- * O topo da página inicial. Sem tag: o banner de boas-vindas do Horizon (ou
+ * O topo da página inicial. Sem tag: o banner de boas-vindas (ou
  * nada). Com tag: o hero grande da categoria (ou o TagHero do flarum/tags).
  *
  * O override roda depois do do flarum/tags (dependência opcional, carregada

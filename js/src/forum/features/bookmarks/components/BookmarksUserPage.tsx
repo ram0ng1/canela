@@ -1,6 +1,5 @@
 /*
- * A aba "Marcadores" do perfil (`/u/:username/bookmarks`), como a lista de
- * marcadores do Discourse: busca no topo e, por marcador, o tópico (com
+ * A aba "Marcadores" do perfil (`/u/:username/bookmarks`): busca no topo e, por marcador, o tópico (com
  * categoria e etiquetas), o nome e o lembrete, o trecho do post, quando foi
  * marcado e o menu "…" com Editar, Tirar lembrete e Excluir.
  *
@@ -300,7 +299,7 @@ export default class BookmarksUserPage<Attrs extends IUserPageAttrs = IUserPageA
   }
 
   remove(bookmark: Bookmark, post: Post): void {
-    // Com lembrete marcado, apagar perde também o lembrete: o Discourse pede
+    // Com lembrete marcado, apagar perde também o lembrete: pede
     // confirmação nesse caso, e só nele.
     if (bookmark.hasPendingReminder() && !window.confirm(t('bookmarks.page.delete_confirm'))) return;
 

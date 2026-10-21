@@ -14,7 +14,7 @@ import { CATEGORY_SLUG_REGEXP, discussionFilter, SUGGESTIONS_REGEXP, USERNAME_RE
 import { addRecentSearch } from './assist';
 import type { SearchMenuState, SearchResults } from './state';
 
-/** Quantos itens o Discourse mostra por tipo no menu (`Search.per_facet`). */
+/** Quantos itens o menu mostra por tipo. */
 export const PER_FACET = 5;
 const DEBOUNCE_MS = 400;
 
@@ -49,7 +49,7 @@ function canSearchUsers(): boolean {
   return !!app.forum.attribute('canSearchUsers');
 }
 
-/** Termos curtos demais não buscam, a menos que tenham um filtro (como o Discourse). */
+/** Termos curtos demais não buscam, a menos que tenham um filtro. */
 function isValidTerm(term: string): boolean {
   const trimmed = term.trim();
 
@@ -183,7 +183,7 @@ class Engine {
     if (!canSearchUsers()) return [];
 
     try {
-      // Sem texto (só "@"), o Discourse sugere quem passou por aqui por último.
+      // Sem texto (só "@"), a sugestão é quem passou por aqui por último.
       const params = text ? { filter: { q: text }, page: { limit } } : { sort: '-lastSeenAt', page: { limit } };
 
       return await app.store.find<User[]>('users', params as any);

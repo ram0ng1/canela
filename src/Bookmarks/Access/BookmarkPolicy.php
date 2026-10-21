@@ -21,8 +21,7 @@ use Ramon\Canela\Bookmarks\Bookmark;
  * Marcadores são pessoais: só o dono vê, edita e apaga.
  *
  * `forceDeny` para os outros, e não `deny`: sem ele o Gate deixaria passar os
- * administradores, e nem eles leem os marcadores dos outros (no Discourse
- * também não).
+ * administradores, e nem eles leem os marcadores dos outros.
  */
 final class BookmarkPolicy extends AbstractPolicy
 {

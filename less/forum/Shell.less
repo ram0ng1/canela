@@ -1,7 +1,6 @@
 // =====================================================================
 // Casca (tablet e desktop): cabeçalho fixo, barra lateral à esquerda e o
-// conteúdo num cartão branco sobre o fundo tingido, nas medidas do
-// meta.discourse.org (#main-outlet-wrapper):
+// conteúdo num cartão branco sobre o fundo tingido, nestas medidas:
 //
 //   ┌──────────────────── .App-header (52px) ────────────────────┐
 //   │ aside.CanelaSidebar │ ≥16px │ .Page-hero (fora do cartão)  │
@@ -18,15 +17,15 @@
     padding-top: var(--cn-header-height);
   }
 
-  // O conteúdo: abre espaço para a barra quando ela está encaixada. O
-  // Discourse deixa no mínimo 16px entre a barra e o cartão, e 32px de cada
+  // O conteúdo: abre espaço para a barra quando ela está encaixada. Ficam
+  // no mínimo 16px entre a barra e o cartão, e 32px de cada
   // lado quando a barra está fechada.
   .Canela .App-content,
   .Canela .App-footer {
     padding-left: var(--cn-main-gap-wide);
     padding-right: var(--cn-main-gap-wide);
     box-sizing: border-box;
-    // Sem animação ao abrir/fechar a barra, como no Meta.
+    // Sem animação ao abrir/fechar a barra.
     transition: none;
   }
 
@@ -41,7 +40,7 @@
     }
   }
 
-  // A lista do Discourse termina 48px acima do pé da página.
+  // A lista termina 48px acima do pé da página.
   .Canela .Page {
     padding-bottom: 48px;
   }
@@ -60,7 +59,7 @@
   }
 
   // ---------------------------------------------------------------------
-  // O cartão (.list-container / .regular do Discourse): 16px abaixo do
+  // O cartão: 16px abaixo do
   // cabeçalho, 16px de respiro, cantos de 16px e a sombra tingida.
   // ---------------------------------------------------------------------
   .Canela .Page-container.container {

@@ -1,7 +1,7 @@
 /*
- * Barra lateral aberta ou fechada, como o botão de hambúrguer do Discourse.
+ * Barra lateral aberta ou fechada pelo botão de hambúrguer.
  *
- * Do tablet para cima (≥ 768px, como no Discourse) ela fica encaixada ao lado do conteúdo, e a escolha do
+ * Do tablet para cima (≥ 768px) ela fica encaixada ao lado do conteúdo, e a escolha do
  * leitor vai para o localStorage; enquanto ele não escolheu, vale o padrão do
  * admin. No celular ela vira o painel do hambúrguer, por cima do conteúdo,
  * que começa fechado a cada página.

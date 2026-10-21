@@ -26,8 +26,8 @@ use Ramon\Canela\Badges\TrustLevel\TrustLevel;
  * "Nível de confiança: membro"), `trustLevelLocked` só para o admin.
  *
  * O admin pode escolher o nível à mão — é o único caminho para o 4 (Líder).
- * Escolher à mão também fixa o nível, como o "bloquear nível de confiança" do
- * Discourse: sem isso, o comando diário rebaixaria o Regular escolhido na hora.
+ * Escolher à mão também fixa o nível ("bloquear nível de confiança"): sem
+ * isso, o comando diário rebaixaria o Regular escolhido na hora.
  */
 final class UserResourceFields
 {

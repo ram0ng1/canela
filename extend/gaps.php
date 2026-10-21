@@ -10,14 +10,14 @@
  */
 
 /*
- * O backend dos recursos do Discourse que faltavam (gaps):
+ * O backend dos recursos que faltavam (gaps):
  *
  * - notificações "editou sua postagem" e "vinculou seu tópico";
  * - o ponto de novidades por categoria na barra lateral (canelaHasUnread);
  * - datas locais [date=…] no formatador;
  * - links de convite (gerar, listar, apagar, o link /invites/{código} e o
  *   resgate no cadastro), com a notificação "aceitou seu convite";
- * - a página 404 do Discourse (a view de erro do core, sobreposta).
+ * - a página 404 do tema (a view de erro do core, sobreposta).
  *
  * Acompanhar/silenciar categorias, ignorar usuários e mover/dividir/mesclar
  * tópicos ficam com fof/follow-tags, fof/ignore-users, fof/split e
@@ -107,7 +107,7 @@ $extenders = [
     (new Extend\Routes('forum'))
         ->get('/invites/{code:[A-Za-z0-9]+}', 'canela.invite', RedeemInviteController::class),
 
-    // A página 404 do Discourse: a view de erro do core, sobreposta.
+    // A página 404 do tema: a view de erro do core, sobreposta.
     (new Extend\View())
         ->namespace('ramon-canela-gaps', __DIR__.'/../views/gaps')
         ->extendNamespace('flarum.forum', __DIR__.'/../views/override'),

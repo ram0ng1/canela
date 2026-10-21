@@ -4,8 +4,8 @@
  * Os skeletons da extensão (MpSkeleton) desenham o leiaute do avocado: caixas
  * com borda e blocos cinza do tamanho da página. Aqui cada variante desenha o
  * leiaute que o tema dá à tela pronta (Marketplace*.less), com os mesmos
- * containers e medidas, e os blocos são os `.CanelaSkeleton` do tema (o brilho
- * do Discourse, no claro e no escuro):
+ * containers e medidas, e os blocos são os `.CanelaSkeleton` do tema (com o
+ * brilho, no claro e no escuro):
  *
  * - vitrine (`cards`): a grade de cartões, com o selo, o nome, o preço e duas
  *   linhas de descrição;

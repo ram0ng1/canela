@@ -39,7 +39,7 @@ use Ramon\Canela\System\Messages\CustomMessages;
 use Ramon\Canela\System\Messages\MessageSender;
 
 /**
- * Quando cada mensagem automática sai, como no Discourse:
+ * Quando cada mensagem automática sai:
  *
  * - boas-vindas: ao ativar a conta (ou no cadastro já ativado, por OAuth ou
  *   pelo admin); `welcome_invite` no lugar de `welcome_user` para quem
@@ -59,7 +59,7 @@ use Ramon\Canela\System\Messages\MessageSender;
  */
 final class SendAutoMessages
 {
-    /** O texto do post copiado na mensagem, como o Discourse faz, até este tamanho. */
+    /** O texto do post copiado na mensagem, até este tamanho. */
     private const POST_EXCERPT = 2000;
 
     private const FLAG_MODEL = 'Flarum\\Flags\\Flag';
@@ -200,8 +200,7 @@ final class SendAutoMessages
     }
 
     /**
-     * Um post com denúncias saiu do ar pela mão da equipe (o
-     * `flags_agreed_and_post_deleted` do Discourse). Quem ocultou o próprio
+     * Um post com denúncias saiu do ar pela mão da equipe. Quem ocultou o próprio
      * post não recebe nada.
      */
     public function flaggedPostRemoved(Post $post, ?User $actor): bool

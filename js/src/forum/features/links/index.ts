@@ -1,5 +1,5 @@
 /*
- * Cliques em links, como no Discourse: cada clique num link externo de uma
+ * Cliques em links: cada clique num link externo de uma
  * postagem é contado, e o número aparece ao lado do link (`span.badge.clicks`,
  * a partir de 1 clique). Os "Links populares" ficam no mapa do tópico
  * (TopicMap) e os "Melhores links" no resumo do perfil.
@@ -27,8 +27,7 @@ export default function installLinks(): void {
 /**
  * Um ouvinte só, no documento: os posts entram e saem da página o tempo todo
  * (a rolagem do PostStream), e um ouvinte por link teria de acompanhar isso.
- * `auxclick` pega o botão do meio (abrir em outra aba), que o Discourse também
- * conta.
+ * `auxclick` pega o botão do meio (abrir em outra aba), que também conta.
  */
 function installTracker(): void {
   const onClick = (event: MouseEvent) => {
@@ -51,7 +50,7 @@ function installTracker(): void {
     trackClick(postId, href, (post?.discussion() as Discussion | undefined) || null);
 
     // O post não redesenha por causa disso (o Post do core só se refaz quando
-    // ele muda): o número novo entra direto no DOM, como no Discourse.
+    // ele muda): o número novo entra direto no DOM.
     if (post) decorateBody(body as HTMLElement, post);
   };
 
@@ -93,7 +92,7 @@ export function decorateBody(body: HTMLElement, post: Post): void {
     }
 
     const label = t('links.clicks', { count: clicks });
-    // O `number` do Discourse: 1,2 mil, 120 mil.
+    // O número abreviado: 1,2 mil, 120 mil.
     const text = formatViews(clicks);
 
     if (badge) {

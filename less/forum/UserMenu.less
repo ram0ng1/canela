@@ -1,14 +1,13 @@
 // =====================================================================
-// Menu do usuário do Discourse (`.user-menu.revamped.menu-panel`), medido no
-// meta.discourse.org (1440×900, 1:1): painel de raio 8 com a sombra curta do
-// `.menu-panel`, a lista de 320px à esquerda e a coluna de abas de 46px à
+// Menu do usuário: painel de raio 8 com a sombra curta dos menus, a lista
+// de 320px à esquerda e a coluna de abas de 46px à
 // direita; itens com avatar de 2em e o ícone do tipo num selo de 22px.
 //
-// Em rem/em de 16px, como o Discourse: o body do tema é 15px.
+// Em rem/em de 16px: o body do tema é 15px.
 // =====================================================================
 
 // ---------------------------------------------------------------------
-// Avatar do cabeçalho (`.header-dropdown-toggle.current-user`)
+// Avatar do cabeçalho
 // ---------------------------------------------------------------------
 .CanelaUserMenuWrap {
   position: relative;
@@ -48,7 +47,7 @@
   }
 }
 
-// A bolha (`.d-header-icons .badge-notification`): borda da cor do
+// A bolha: borda da cor do
 // cabeçalho, no canto de cima do avatar.
 .CanelaUserMenuButton-badge {
   position: absolute;
@@ -95,7 +94,7 @@
 // Painel
 // ---------------------------------------------------------------------
 .CanelaUserMenu {
-  // `--list-item-padding` do `.menu-panel`.
+  // Respiro dos itens do painel.
   --cn-um-item-padding: 0.5em 1rem;
 
   position: absolute;
@@ -142,7 +141,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Abas (`.menu-tabs-container`)
+// Abas
 // ---------------------------------------------------------------------
 .CanelaUserMenu-tabs {
   display: flex;
@@ -161,8 +160,8 @@
   }
 }
 
-// `.btn.user-menu-tab`: 0.375em em volta do ícone, que tem 0.5em de padding
-// e raio 8 — 46px por aba, com a borda transparente do `.btn`.
+// O botão da aba: 0.375em em volta do ícone, que tem 0.5em de padding
+// e raio 8 — 46px por aba, com a borda transparente do botão.
 .CanelaUserMenu-tab {
   position: relative;
   display: flex;
@@ -222,7 +221,7 @@
     0 0 0 4px var(--cn-accent);
 }
 
-// `.badge-notification` da aba: no canto de cima, na cor de destaque.
+// O contador da aba: no canto de cima, na cor de destaque.
 .CanelaUserMenu-badge {
   position: absolute;
   top: 6px;
@@ -252,7 +251,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Lista da aba (`.quick-access-panel`)
+// Lista da aba
 // ---------------------------------------------------------------------
 .CanelaUserMenu-panel {
   display: flex;
@@ -275,7 +274,7 @@
   max-height: 100%;
 }
 
-// Os itens (`li` do `menu-item`), no menu e na página /notifications.
+// Os itens (`li`), no menu e na página /notifications.
 .canela-um-items() {
   .CanelaUserMenu-list {
     display: flex;
@@ -364,7 +363,7 @@
     }
   }
 
-  // `.icon-avatar`: avatar de 2em e o selo de 22px no canto de cima.
+  // Avatar de 2em e o selo de 22px no canto de cima.
   .CanelaUserMenu-iconAvatar {
     position: relative;
     display: flex;
@@ -456,7 +455,7 @@
   .canela-um-items();
 }
 
-// `.panel-body-bottom`: o botão largo com a setinha e o "Descartar".
+// O pé do painel: o botão largo com a setinha e o "Descartar".
 .CanelaUserMenu-bottom {
   display: flex;
   flex: 0 0 auto;
@@ -464,7 +463,7 @@
   padding: 0.75em 0.75em ~"max(env(safe-area-inset-bottom), 0.75em)";
 }
 
-// `.btn.btn-default` do Horizon: pílula branca de borda cinza.
+// Botão padrão: pílula branca de borda cinza.
 .CanelaUserMenu-showAll.Button,
 .CanelaUserMenu-dismiss.Button {
   display: inline-flex;
@@ -573,7 +572,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Aba Perfil (`#quick-access-profile`): os itens do menu da sessão em
+// Aba Perfil: os itens do menu da sessão em
 // linhas de até 3,25em, ícone cinza e rótulo normal.
 // ---------------------------------------------------------------------
 .CanelaUserMenu-profile {
@@ -599,7 +598,7 @@
     }
   }
 
-  // O `<hr>` do Discourse entre o status e o resto.
+  // O separador entre o status e o resto.
   > li.Dropdown-separator {
     flex: 0 0 auto;
     height: 0;
@@ -748,7 +747,7 @@
   }
 }
 
-// As abas sublinhadas do `.nav-pills` do Horizon (as mesmas da lista).
+// As abas sublinhadas (as mesmas da lista).
 .CanelaNotificationsPage-tabs {
   display: flex;
   flex-wrap: wrap;

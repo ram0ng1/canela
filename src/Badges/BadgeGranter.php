@@ -114,7 +114,7 @@ final class BadgeGranter
     }
 
     /**
-     * Concessão manual (o "Award badge" do Discourse). Quem chama já validou
+     * Concessão manual. Quem chama já validou
      * se o emblema aceita concessão manual e se a pessoa já o tem; aqui só se
      * grava e notifica — sempre, porque foi um gesto da administração agora.
      */

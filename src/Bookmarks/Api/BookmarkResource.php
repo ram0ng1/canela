@@ -128,8 +128,8 @@ final class BookmarkResource extends AbstractDatabaseResource
             Schema\DateTime::make('reminderAt')
                 ->nullable()
                 ->writable()
-                // Um lembrete no passado nunca seria enviado — e o Discourse
-                // também só aceita horários à frente.
+                // Um lembrete no passado nunca seria enviado: só valem
+                // horários à frente.
                 ->rule('after:now')
                 ->set(static fn (Bookmark $bookmark, ?\DateTimeInterface $value) => $bookmark->setReminder($value)),
 

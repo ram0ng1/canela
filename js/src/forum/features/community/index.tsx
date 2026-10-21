@@ -1,5 +1,5 @@
 /*
- * Páginas de comunidade do Discourse: Sobre (/about), Usuários (/u) e Grupos
+ * Páginas de comunidade: Sobre (/about), Usuários (/u) e Grupos
  * (/g, /g/:nome). Aqui ficam os pontos de entrada nas outras áreas: os links
  * no menu "Mais" da barra lateral e os grupos clicáveis no perfil.
  */
@@ -27,7 +27,7 @@ export default function installCommunity() {
 function extendSidebarMore() {
   extend(CanelaSidebar.prototype, 'moreItems', function (items: ItemList<Mithril.Children>) {
     // Logo abaixo de Configurações (80) e acima dos atalhos (10), na ordem do
-    // menu "Mais" do Discourse.
+    // menu "Mais".
     if (forumBool('canelaAboutEnabled', true)) {
       items.add(
         'canelaAbout',
@@ -38,7 +38,7 @@ function extendSidebarMore() {
       );
     }
 
-    // "Diretrizes" (o antigo "FAQ" do menu do Discourse).
+    // "Diretrizes" (o antigo "FAQ" do menu).
     if (guidelinesEnabled()) {
       items.add(
         'canelaGuidelines',

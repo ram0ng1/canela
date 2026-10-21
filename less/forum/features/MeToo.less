@@ -1,11 +1,10 @@
-// "Me too" do Discourse (o `.solved-shared-issue-row` do discourse-solved):
-// a pílula btn-default logo abaixo do texto do primeiro post, alinhada à
-// esquerda com ele, antes da barra de ações (que já desce 20px).
+// "Me too": a pílula do botão padrão logo abaixo do texto do primeiro post,
+// alinhada à esquerda com ele, antes da barra de ações (que já desce 20px).
 //
-// Medidas do Meta: 38px de altura, 8px × 0.65em de respiro, ícone de 16px a
+// Medidas: 38px de altura, 8px × 0.65em de respiro, ícone de 16px a
 // 0.45em do texto, 16px de fonte; fundo do cartão, borda cinza clara e texto
 // primary-high. No hover só o fundo, o texto e a borda escurecem — sem anel.
-// Marcado (`has-shared-issue`), a mão fica na cor de destaque (tertiary).
+// Marcado, a mão fica na cor de destaque.
 
 .CanelaMeToo {
   display: flex;
@@ -62,7 +61,7 @@
     }
   }
 
-  // O `.btn[disabled]` do Discourse: o botão segue à vista (com a contagem),
+  // Desabilitado: o botão segue à vista (com a contagem),
   // só apagado.
   &[disabled] {
     opacity: 0.4;
@@ -70,7 +69,7 @@
   }
 }
 
-// No escuro o Meta clareia tudo um degrau: texto quase branco, borda e
+// No escuro tudo clareia um degrau: texto quase branco, borda e
 // fundo do hover mais visíveis que os tokens do claro dariam.
 [data-theme^=dark] .CanelaMeToo-button.Button {
   border-color: var(--cn-primary-low-mid);

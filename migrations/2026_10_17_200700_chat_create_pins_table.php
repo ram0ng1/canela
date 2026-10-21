@@ -13,8 +13,8 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Mensagens fixadas no canal (`chat_pinned_messages` do Discourse, até 20 por
- * canal). Uma mensagem só pode ser fixada uma vez.
+ * Mensagens fixadas no canal (até 20 por canal). Uma mensagem só pode ser
+ * fixada uma vez.
  */
 return Migration::createTable(
     'canela_chat_pins',

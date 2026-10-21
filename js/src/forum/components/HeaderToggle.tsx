@@ -5,7 +5,7 @@ import { menuIcon } from '../utils/shellIcons';
 import { isSidebarOpen, toggleSidebar } from '../utils/sidebarState';
 
 /**
- * O hambúrguer do Discourse: à esquerda do logo no tablet e no desktop, onde
+ * O hambúrguer: à esquerda do logo no tablet e no desktop, onde
  * abre e fecha a barra encaixada, e à direita no celular, onde abre o painel.
  */
 export default class HeaderToggle extends Component {

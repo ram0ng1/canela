@@ -28,8 +28,8 @@ use Ramon\Canela\Ai\Http\AiGate;
 
 /**
  * `PATCH` e `DELETE /api/canela/ai/conversations/{id}`: renomear e excluir
- * uma conversa — o menu de contexto da barra lateral de conversas do
- * Discourse. Só a dona; a de outra pessoa responde 404.
+ * uma conversa — o menu de contexto da barra lateral de conversas. Só a
+ * dona; a de outra pessoa responde 404.
  */
 final class UpdateConversationController implements RequestHandlerInterface
 {

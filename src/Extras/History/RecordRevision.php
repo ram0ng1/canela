@@ -24,8 +24,8 @@ use Ramon\Canela\Extras\Extras;
  * Grava o texto anterior de cada postagem editada.
  *
  * O evento `Revised` traz `$oldContent` já como texto-fonte (o markdown que o
- * autor digitou), e é ele que o histórico compara — o mesmo que o Discourse
- * mostra na vista "markdown" do histórico.
+ * autor digitou), e é ele que o histórico compara — o que aparece na vista
+ * "markdown" do histórico.
  *
  * Com o recurso desligado nada é gravado: o admin que desliga o histórico não
  * espera que o fórum siga guardando cópias das versões antigas.

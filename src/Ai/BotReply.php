@@ -214,7 +214,7 @@ final class BotReply
 
     /**
      * O título da conversa, escrito pelo modelo rápido a partir da primeira
-     * pergunta, como o Discourse faz. Se a chamada falhar, fica o começo da
+     * pergunta. Se a chamada falhar, fica o começo da
      * pergunta — uma conversa sem título não se acha na barra lateral.
      */
     private function title(string $question, string $answer): string

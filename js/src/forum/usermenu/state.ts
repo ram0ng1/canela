@@ -12,7 +12,7 @@ class UserMenuState {
   open = false;
   tab: string = DEFAULT_TAB;
 
-  /** A rota de quando abriu: ao navegar, o menu fecha, como o do Discourse. */
+  /** A rota de quando abriu: ao navegar, o menu fecha. */
   route: string | null = null;
 
   /** Devolver o foco ao avatar só quando quem fechou foi o teclado. */
@@ -20,7 +20,7 @@ class UserMenuState {
 
   show(): void {
     this.open = true;
-    // O Discourse sempre reabre em "Todas as notificações".
+    // O menu sempre reabre em "Todas as notificações".
     this.tab = DEFAULT_TAB;
     this.route = m.route.get();
 

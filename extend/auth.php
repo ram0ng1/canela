@@ -10,7 +10,7 @@
  */
 
 /*
- * As páginas de entrar e de cadastro do Discourse (/login e /signup): o
+ * As páginas de entrar e de cadastro (/login e /signup): o
  * formulário em página cheia, e não no modal. Só o documento do fórum, sem
  * conteúdo pré-carregado — o JS desenha a página com a lógica dos modais do
  * core (validações, campos de extensões, login social).

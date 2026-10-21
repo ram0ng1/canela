@@ -13,7 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * O arquivo de mensagens do Discourse (`user_archived_messages`) é por pessoa:
+ * O arquivo de mensagens é por pessoa:
  * cada um arquiva a conversa na própria caixa. A linha de participação do
  * flarum/messages (`dialog_user`) já é "a conversa vista por esta pessoa",
  * então o arquivo é uma data nela — sem tabela nova, sem junção a mais.

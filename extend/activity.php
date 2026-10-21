@@ -10,8 +10,8 @@
  */
 
 /*
- * Subabas de "Atividade" do perfil que precisam do servidor, como no
- * Discourse: Lidos (só a própria pessoa e administradores), Reações
+ * Subabas de "Atividade" do perfil que precisam do servidor: Lidos (só a
+ * própria pessoa e administradores), Reações
  * (curtidas e reações do fof/reactions numa lista só) e Votos (fof/polls). "Resolvido" usa o filtro `solution`
  * do próprio fof/best-answer. Cada parte só existe com a extensão dela; as
  * abas ligam e desligam no card "Página de perfil" do admin.

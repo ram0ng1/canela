@@ -25,7 +25,7 @@ use Ramon\Canela\Messages\StaffGroups;
 
 /**
  * `DELETE /api/dialogs/{id}/canela-membership`: o "✕" ao lado do próprio nome
- * no mapa de participantes do Discourse ("Tem certeza de que quer sair desta
+ * no mapa de participantes ("Tem certeza de que quer sair desta
  * mensagem?").
  *
  * Sair é tirar a própria linha da `dialog_user`: a conversa deixa de ser

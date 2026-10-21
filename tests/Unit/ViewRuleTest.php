@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\Stats\ViewRule;
 
-/** A regra de visualização do Discourse: uma por dia, travada por N horas. */
+/** A regra de visualização: uma por dia, travada por N horas. */
 final class ViewRuleTest extends TestCase
 {
     public function test_primeira_visualizacao_conta(): void

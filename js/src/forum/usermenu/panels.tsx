@@ -1,7 +1,7 @@
 /*
- * O conteúdo de cada aba do menu do usuário (o `.quick-access-panel` do
- * Discourse): a lista (`items-list`), o rodapé com "ver todas" (⌄) e
- * "Descartar", e o estado vazio com os textos do Discourse.
+ * O conteúdo de cada aba do menu do usuário (o `.quick-access-panel`): a
+ * lista, o rodapé com "ver todas" (⌄) e "Descartar", e o estado vazio com
+ * seus textos.
  *
  * As listas usam os estados que o core e as extensões já mantêm
  * (`app.notifications`, `app.dialogs` do flarum/messages, `app.flags` do
@@ -60,8 +60,8 @@ export function preferencesLink(): Mithril.Vnode<any, any> {
 }
 
 // ---------------------------------------------------------------------
-// Estado vazio (`DEmptyState`): título e um parágrafo, com o `<br><br>` do
-// Discourse entre as duas frases.
+// Estado vazio: título e um parágrafo, com um `<br><br>` entre as duas
+// frases.
 // ---------------------------------------------------------------------
 
 export function EmptyState(title: Mithril.Children, body?: Mithril.Children[]): Mithril.Children {
@@ -167,7 +167,7 @@ export function PanelBottom(attrs: { showAllHref?: string | null; showAllTitle?:
           aria-label={attrs.showAllTitle}
           onclick={() => userMenu.close()}
         >
-          {/* Só o chevron (o `show-all` do Discourse) não dizia o que fazia. */}
+          {/* Só o chevron não dizia o que fazia. */}
           <span className="CanelaUserMenu-showAllLabel">{um('view_all')}</span>
         </Link>
       ) : null}
@@ -225,7 +225,7 @@ export class NotificationsPanel extends Component<NotificationsPanelAttrs> {
       PanelBottom({
         showAllHref: this.attrs.showAllHref,
         showAllTitle: this.attrs.showAllTitle,
-        // O Discourse mostra "Descartar" em qualquer aba de notificações quando
+        // "Descartar" aparece em qualquer aba de notificações quando
         // há alguma não lida, e descarta só os tipos daquela aba.
         dismiss: anyUnread ? () => dismissNotifications(this.attrs.filter) : null,
         dismissTitle: this.attrs.dismissTitle || umText('dismiss_notifications_tooltip'),
@@ -507,8 +507,7 @@ export function ProfilePanel(items: ItemList<Mithril.Children>): Mithril.Childre
     <ul
       className="CanelaUserMenu-profile"
       onclick={(e: MouseEvent) => {
-        // Seguir um item (ou sair, ou trocar o tema) fecha o menu, como o
-        // `closeUserMenu` do Discourse.
+        // Seguir um item (ou sair, ou trocar o tema) fecha o menu.
         if ((e.target as HTMLElement).closest('a, button')) userMenu.close();
       }}
     >

@@ -2,8 +2,7 @@
  * Os cliques em links (recurso `links`): o que o tópico traz em
  * `canelaLinks` e o envio de um clique.
  *
- * O envio vai por `navigator.sendBeacon`, como o `/clicks/track` do
- * Discourse: o navegador já está saindo para o link, e o beacon é entregue
+ * O envio vai por `navigator.sendBeacon`: o navegador já está saindo para o link, e o beacon é entregue
  * mesmo com a página fechando. O corpo é de formulário (com o csrfToken), o
  * único tipo que o beacon manda sem pré-verificação.
  */

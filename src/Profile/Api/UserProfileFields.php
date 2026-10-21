@@ -139,7 +139,7 @@ final class UserProfileFields
     }
 
     /**
-     * O status do Discourse: emoji + frase + "limpar depois de…". O que já
+     * O status: emoji + frase + "limpar depois de…". O que já
      * venceu sai como nulo — não precisa de tarefa agendada para apagar, e o
      * dado antigo fica até o usuário pôr outro.
      *

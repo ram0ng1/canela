@@ -13,7 +13,7 @@ export interface SummaryBadgesAttrs extends ComponentAttrs {
   user: User;
 }
 
-/** Quantos cartões no resumo, como os "Melhores emblemas" do Discourse. */
+/** Quantos cartões no resumo ("Melhores emblemas"). */
 const LIMIT = 6;
 
 /**

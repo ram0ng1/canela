@@ -1,6 +1,6 @@
 /*
  * "Sua discussão é semelhante a…" — enquanto a pessoa escreve o título de um
- * tópico novo, o Discourse procura tópicos parecidos e os mostra num balão ao
+ * tópico novo, o tema procura tópicos parecidos e os mostra num balão ao
  * lado do composer, para evitar a pergunta repetida.
  *
  * A busca começa com três palavras ou mais e espera a pessoa parar de digitar.

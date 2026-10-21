@@ -13,8 +13,8 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Um clique por linha num link de postagem, como o `topic_link_clicks` do
- * Discourse: daqui saem o número ao lado do link no post, os "Links populares"
+ * Um clique por linha num link de postagem: daqui saem o número ao lado do
+ * link no post, os "Links populares"
  * do mapa do tópico e os "Melhores links" do resumo do perfil.
  *
  * O endereço vai inteiro em `url` (para mostrar) e num sha1 em `url_hash`

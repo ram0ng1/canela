@@ -1,8 +1,7 @@
 /*
- * O campo de destinatários do composer de mensagem do Discourse
- * (`.user-selector` com o `email-group-user-chooser`): na metade esquerda da
+ * O campo de destinatários do composer de mensagem: na metade esquerda da
  * linha de cima, "Adicionar usuários(as) ou grupos  +"; clicado, abre colado
- * embaixo o corpo do select-kit com "Pesquisar…", as escolhas em pílulas com
+ * embaixo o corpo do SelectKit com "Pesquisar…", as escolhas em pílulas com
  * avatar e ✕ e a lista com avatar, nome de usuário e nome.
  *
  * É o mesmo SelectKit do composer de tópico (o seletor de etiquetas): só as
@@ -82,7 +81,7 @@ export default class RecipientChooser extends Component<RecipientChooserAttrs> {
       <SelectKit
         className={classList(this.attrs.className || 'CanelaComposerFields-cell', 'CanelaRecipients', {
           'has-selection': hasSelection,
-          // Sem nada digitado, o Discourse mostra só o "Pesquisar…".
+          // Sem nada digitado, mostra só o "Pesquisar…".
           'CanelaRecipients--idle': !this.query.trim(),
         })}
         label={placeholder}
@@ -164,7 +163,7 @@ export default class RecipientChooser extends Component<RecipientChooserAttrs> {
     const rows: SelectKitRow[] = [];
 
     // A equipe como destinatária (`--group-name-first`): aparece quando a
-    // busca bate com o nome do grupo, como os grupos com mensagens do Discourse.
+    // busca bate com o nome do grupo.
     const group = messageGroupModel();
     const needle = filter.trim().toLowerCase();
 
@@ -303,7 +302,7 @@ export default class RecipientChooser extends Component<RecipientChooserAttrs> {
     this.query = '';
     this.results = [];
 
-    // Escolhido o destinatário, o Discourse leva o foco para o título.
+    // Escolhido o destinatário, o foco vai para o título.
     requestAnimationFrame(() => {
       const title = document.querySelector<HTMLInputElement>('.Composer .CanelaMessageTitle-input');
       (title || document.querySelector<HTMLTextAreaElement>('.Composer .TextEditor-editor'))?.focus();

@@ -1,16 +1,15 @@
 /*
- * A página de conversas com o bot de IA do Discourse
- * (`/discourse-ai/ai-bot/conversations`, aqui `/ai/conversations`).
+ * A página de conversas com o bot de IA (`/ai/conversations`).
  *
  * - Sem conversa aberta: o "Como posso ajudar?" no meio da tela, o campo
  *   grande "Faça uma pergunta…", o seletor de persona embaixo e o aviso de
  *   que a IA pode errar.
  * - Com conversa: as mensagens como posts (a pessoa e o bot, com a persona e
  *   o modelo), a resposta chegando em streaming, e o campo encaixado no pé da
- *   página, como o "docked composer" do Discourse.
+ *   página.
  *
  * A lista de conversas mora na barra lateral global (./sidebar.tsx), que
- * nesta página troca de conteúdo, como a do Discourse.
+ * nesta página troca de conteúdo.
  */
 import app from 'flarum/forum/app';
 import Page, { type IPageAttrs } from 'flarum/common/components/Page';
@@ -306,7 +305,7 @@ export default class ConversationsPage extends Page<IPageAttrs> {
     });
   }
 
-  /** O campo cresce com o texto até 30% da altura da tela, como no Discourse. */
+  /** O campo cresce com o texto até 30% da altura da tela. */
   autoExpand(): void {
     const textarea = this.textarea;
 

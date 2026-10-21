@@ -19,7 +19,7 @@ use Illuminate\Database\ConnectionInterface;
 
 /**
  * O limite diário de pedidos à IA por pessoa (`canela.ai_daily_limit`; 0 =
- * sem limite), como as cotas por grupo do Discourse.
+ * sem limite).
  *
  * Cada pedido conta na hora em que começa — uma resposta em andamento já
  * gastou —, e os tokens entram quando ela termina. Administradores não têm

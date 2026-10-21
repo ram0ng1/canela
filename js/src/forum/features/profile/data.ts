@@ -161,7 +161,7 @@ export function userWebsite(user: User): string | null {
   return url && /^https?:\/\//i.test(url) ? url : null;
 }
 
-/** "https://www.exemplo.com/blog/" → "exemplo.com/blog", como o Discourse mostra. */
+/** "https://www.exemplo.com/blog/" → "exemplo.com/blog", para exibir. */
 export function websiteLabel(url: string): string {
   return url
     .replace(/^https?:\/\/(www\.)?/i, '')

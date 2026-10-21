@@ -1,11 +1,11 @@
 /*
- * "Discussões relacionadas" (o módulo de embeddings do Discourse): no fim do
+ * "Discussões relacionadas" (por embeddings): no fim do
  * tópico, antes dos sugeridos, os tópicos mais parecidos no significado — não
  * só nas palavras.
  *
  * O servidor devolve a lista pronta (já filtrada pelo que a pessoa vê, na
  * ordem da semelhança). A tabela reusa as classes dos sugeridos: as duas
- * listas são a mesma peça do Discourse (`more-topics`), com títulos
+ * listas são a mesma peça, com títulos
  * diferentes.
  */
 import app from 'flarum/forum/app';

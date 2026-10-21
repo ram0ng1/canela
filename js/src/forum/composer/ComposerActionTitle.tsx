@@ -1,5 +1,5 @@
 /*
- * A primeira linha do composer do Discourse (`.reply-to`): a ação em negrito
+ * A primeira linha do composer: a ação em negrito
  * com o ícone ("Iniciar Discussão", "Tópico ▾", "Editando postagem") e, quando o
  * tópico de destino não está na tela, o link "🔗 título" para ele.
  *
@@ -44,7 +44,7 @@ export interface ComposerActionTitleAttrs extends ComponentAttrs {
   title?: () => string;
 }
 
-/** Os ícones das ações do Discourse (`far-pen-to-square`, `share` — no sprite dele, a caixa com a seta —, `pencil`). */
+/** Os ícones das ações (lápis no quadrado, a caixa com a seta, lápis). */
 const ICONS: Record<string, string> = {
   new_topic: 'far fa-pen-to-square',
   reply: 'fas fa-arrow-up-from-bracket',
@@ -61,7 +61,7 @@ function minimizeIfFullScreen(e: MouseEvent): void {
 
 /**
  * Troca o tipo do composer levando o texto já escrito (as ações "Responder
- * ao tópico" / "Iniciar Discussão" do menu do Discourse). A pergunta "descartar?"
+ * ao tópico" / "Iniciar Discussão" do menu). A pergunta "descartar?"
  * não faz sentido: o texto vai junto.
  */
 async function switchTo(kind: 'reply' | 'new_topic', discussion: Discussion | null): Promise<void> {
@@ -128,7 +128,7 @@ export default class ComposerActionTitle extends Component<ComposerActionTitleAt
     const label = this.label();
     const actions = this.actionItems().toArray();
 
-    // Sem outras ações, o Discourse mostra o rótulo parado, sem a seta.
+    // Sem outras ações, o rótulo fica parado, sem a seta.
     if (!actions.length) {
       return (
         <span className="CanelaComposerAction-trigger CanelaComposerAction-trigger--static">
@@ -233,7 +233,7 @@ export default class ComposerActionTitle extends Component<ComposerActionTitleAt
 
   /** Um item do menu de ações: ícone, rótulo em negrito e a descrição. */
   actionButton(icon: string, label: string, description: string, onclick: (() => void) | null, current = false): Mithril.Children {
-    // A ação atual não entra mais no menu (como no Discourse); `current` fica
+    // A ação atual não entra mais no menu; `current` fica
     // para quem estender.
     return (
       <Button
@@ -254,8 +254,8 @@ export default class ComposerActionTitle extends Component<ComposerActionTitleAt
 
   /**
    * "🔗 título": o destino da resposta ou da edição. Na resposta, só quando o
-   * tópico não está aberto atrás do composer — como no Discourse, onde ele
-   * some ao responder do próprio tópico. No celular, sempre: lá o editor
+   * tópico não está aberto atrás do composer — ele some ao responder do
+   * próprio tópico. No celular, sempre: lá o editor
    * ocupa a tela e esconde o tópico.
    */
   targetLink(): Mithril.Children {

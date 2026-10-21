@@ -1,7 +1,7 @@
 /*
  * Os desenhos do Lucide de todos os nomes do mapa (iconMap.ts): os ícones de
  * interface e os que um admin pode escolher para tags e grupos (foguete,
- * troféu, paleta…), que no Meta também viram Lucide.
+ * troféu, paleta…), que também viram Lucide.
  *
  * Tudo no pacote principal, de propósito: com os desenhos num chunk sob
  * demanda, o primeiro desenho sairia no Font Awesome e as partes que o Flarum
@@ -9,9 +9,9 @@
  * Só os ícones importados por nome entram no pacote (o lucide declara
  * `sideEffects: false`, então o webpack descarta os outros ~3.500).
  *
- * O lucide está fixado na 0.555.0: é a versão mais próxima do sprite do
- * componente "Discourse Lucide Icons" (226 de 238 desenhos idênticos; a 1.x
- * redesenhou dezenas). Os poucos que divergem vêm do próprio sprite do Meta.
+ * O lucide está fixado na 0.555.0: a 1.x redesenhou dezenas de ícones. Os
+ * poucos desenhos que o tema quer na versão anterior vêm escritos à mão no
+ * fim da tabela.
  *
  * Lucide (https://lucide.dev), licença ISC. Copyright (c) for portions of
  * Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other
@@ -412,7 +412,7 @@ export const GLYPHS: Record<string, IconNode> = {
   'message-circle-more': MessageCircleMore,
   'message-circle-off': MessageCircleOff,
   'message-square': MessageSquare,
-  // O "d-chat" do Discourse (aba de chat do menu do usuário).
+  // O balão do chat (aba de chat do menu do usuário).
   'message-square-text': MessageSquareText,
   'messages-square': MessagesSquare,
   'mic-off': MicOff,
@@ -502,7 +502,7 @@ export const GLYPHS: Record<string, IconNode> = {
   x: X,
   'zoom-in': ZoomIn,
   'zoom-out': ZoomOut,
-  // Desenhos do sprite do Meta: o lucide@0.555.0 já traz a versão revista destes.
+  // Desenhos escritos à mão: o lucide@0.555.0 já traz a versão revista destes.
   'align-left': [
     ['path', { d: 'M15 12H3' }],
     ['path', { d: 'M17 18H3' }],

@@ -1,5 +1,5 @@
 /*
- * Entrar e cadastrar em página própria (/login, /signup), como o Discourse.
+ * Entrar e cadastrar em página própria (/login, /signup).
  * Com a opção desligada (ou sem o extend/auth.php carregado, que dá as rotas
  * no servidor), Entrar e Cadastrar-se do cabeçalho continuam abrindo os
  * modais do core.

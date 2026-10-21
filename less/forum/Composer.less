@@ -1,6 +1,5 @@
 // =====================================================================
-// Composer como o do Discourse (o redesenho que o meta.discourse.org usa,
-// `uc-enable-composer-redesign`), medido no próprio Meta a 1440×900:
+// Composer, medido a 1440×900:
 //
 //   alça (12px) · "✎ Criar tópico" ............ «  ⤢  —  ✕   (55px)
 //   categoria ▾              | 🏷 etiquetas opcionais ▾       (45px)
@@ -34,8 +33,8 @@
 // Tablet e computador: a janela encaixada embaixo
 // ---------------------------------------------------------------------
 @media @tablet-up {
-  // O composer se posiciona sozinho pela largura da janela (como o
-  // #reply-control, que é `position: fixed` na tela toda).
+  // O composer se posiciona sozinho pela largura da janela (como um
+  // painel `position: fixed` na tela toda).
   .App-composer {
     left: 0;
     right: 0;
@@ -59,12 +58,12 @@
     border-bottom: 0;
     border-radius: var(--cn-composer-radius) var(--cn-composer-radius) 0 0;
     box-shadow: var(--cn-composer-shadow);
-    // As do #reply-control. A altura em si é animada pelo core (jQuery,
-    // 200ms), igual à transição de 0.2s do Discourse.
+    // A altura em si é animada pelo core (jQuery, 200ms), igual à
+    // transição de 0.2s.
     transition: max-width 0.2s, margin 0.2s, background-color 0.2s;
 
     // O core desenha um anel da cor primária quando o composer tem foco;
-    // o Discourse não.
+    // aqui não.
     &.active,
     &.active:not(.fullScreen) {
       background: var(--cn-surface);
@@ -72,8 +71,8 @@
     }
   }
 
-  // Sem a prévia, o composer fica alinhado à coluna do conteúdo, como no
-  // Discourse, mas mais largo que os 759px dele (a pedido do usuário: 960px).
+  // Sem a prévia, o composer fica alinhado à coluna do conteúdo, mas mais
+  // largo que os 759px dela (a pedido do usuário: 960px).
   .Composer.CanelaComposer.hide-preview:not(.fullScreen) {
     max-width: 960px;
     margin-left: 0.67em;
@@ -90,7 +89,7 @@
   }
 
   // Com a prévia, a largura toda (até 1475px), por cima da barra lateral nas
-  // telas em que não cabe ao lado — como no Meta.
+  // telas em que não cabe ao lado.
   .Composer.CanelaComposer.show-preview:not(.fullScreen) {
     max-width: 1475px;
     margin-left: auto;
@@ -159,8 +158,8 @@
     display: none;
   }
 
-  // O core dá 20px de respiro (e 900px no máximo em tela cheia); o Discourse
-  // encosta cada linha nas bordas.
+  // O core dá 20px de respiro (e 900px no máximo em tela cheia); aqui cada
+  // linha encosta nas bordas.
   .Composer.CanelaComposer .Composer-content,
   .Composer.CanelaComposer.minimized .Composer-content,
   .Composer.CanelaComposer.fullScreen .Composer-content {
@@ -196,7 +195,7 @@
       order: 5;
     }
 
-    // A linha da ação (`.reply-to`): 8px 16px, separada por um traço. O
+    // A linha da ação: 8px 16px, separada por um traço. O
     // espaço à direita é dos botões do canto (4 × 32px + 16px).
     > .item-title {
       order: 0;
@@ -296,7 +295,7 @@
   font-weight: 600;
 }
 
-// O menu de ações (`composer-actions-dropdown`): ícone, rótulo em negrito e
+// O menu de ações: ícone, rótulo em negrito e
 // a descrição em cinza.
 .CanelaComposerAction-dropdown.Dropdown-menu {
   min-width: 280px;
@@ -376,7 +375,7 @@
   white-space: normal;
 }
 
-// "🔗 título" (`composer-actions-reply-target-link`): botão transparente
+// "🔗 título": botão transparente
 .CanelaComposerAction-target {
   display: inline-flex;
   align-items: center;
@@ -407,8 +406,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Botões do canto: «  ⤢  —  ✕ (`composer-controls`). Área de 32 × 32 com
-// ícone de 18px: no tamanho do Discourse (btn-small) eles ficavam miúdos
+// Botões do canto: «  ⤢  —  ✕. Área de 32 × 32 com
+// ícone de 18px: no tamanho pequeno (btn-small) eles ficavam miúdos
 // perto do título. `top` compensa a altura para o centro seguir alinhado com
 // "Iniciar Discussão ⌄".
 // ---------------------------------------------------------------------
@@ -455,7 +454,7 @@
   }
 }
 
-// A seta « gira quando a prévia está escondida (`.toggle-preview.active`).
+// A seta « gira quando a prévia está escondida.
 .CanelaComposerPreview-toggle .Button-icon {
   color: var(--cn-primary-medium);
   transition: transform 0.33s ease-out;
@@ -466,8 +465,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Categoria | etiquetas (`.title-and-category`): duas metades com um
-// select-kit cada. O cabeçalho escurece aberto (seta ⌃); o corpo abre colado
+// Categoria | etiquetas: duas metades com um
+// seletor cada. O cabeçalho escurece aberto (seta ⌃); o corpo abre colado
 // embaixo da metade (ou em cima, se faltar espaço), com a busca "Pesquisar…",
 // a lista rolável de barra fina e o item em foco tingido.
 // ---------------------------------------------------------------------
@@ -607,7 +606,7 @@
   background: linear-gradient(90deg, var(--category-parent-color) 50%, var(--category-color) 50%);
 }
 
-// O corpo (`.select-kit-body`)
+// O corpo do seletor
 .CanelaSelectKit-body {
   position: absolute;
   top: ~"calc(100% + 3px)";
@@ -752,7 +751,7 @@
   }
 }
 
-// Linha de categoria (`.category-row`): badge, "× 20586" e a descrição em
+// Linha de categoria: badge, "× 20586" e a descrição em
 // duas linhas cinza.
 .CanelaCategoryRow-status {
   display: flex;
@@ -783,7 +782,7 @@
   color: var(--cn-primary-medium);
 }
 
-// Linha de etiqueta (`.tag-row`): "ia x1026".
+// Linha de etiqueta: "ia x1026".
 .CanelaTagRow-name {
   color: var(--cn-primary-high);
 }
@@ -821,7 +820,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Título (`#reply-title`): sem moldura, 600, separado por um traço
+// Título: sem moldura, 600, separado por um traço
 // ---------------------------------------------------------------------
 .CanelaComposer .ComposerBody-header > .item-discussionTitle {
   border-bottom: 1px solid var(--cn-composer-border);
@@ -863,7 +862,7 @@
 // ---------------------------------------------------------------------
 .CanelaComposer .TextEditor-editorContainer {
   position: relative;
-  // O respiro de cima (o `padding: 8px 16px` do .d-editor-input) fica aqui;
+  // O respiro de cima (`padding: 8px 16px` do campo de texto) fica aqui;
   // veja o comentário do topo.
   padding: 8px 0 0;
   margin: 0;
@@ -894,7 +893,7 @@
   }
 }
 
-// Prévia ao lado: a grade do Discourse ("editor preview" / rodapé embaixo
+// Prévia ao lado: uma grade ("editor preview" / rodapé embaixo
 // das duas). O TextEditor some da grade (`display: contents`) para o rodapé
 // dele ocupar a largura toda, debaixo da prévia também.
 .CanelaComposer .ComposerBody-editor.CanelaComposer-split {
@@ -925,7 +924,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Rodapé (`.composer-footer`): a barra à esquerda, Descartar + primário
+// Rodapé: a barra à esquerda, Descartar + primário
 // ---------------------------------------------------------------------
 .CanelaComposer .TextEditor-controls {
   display: flex;
@@ -1008,8 +1007,8 @@
   }
 }
 
-// A barra de formatação (`.d-editor-button-bar`): botões 30 × 28, ícones de
-// 16px em cinza, 8px entre eles. Um pouco maiores que no Discourse para
+// A barra de formatação: botões 30 × 28, ícones de
+// 16px em cinza, 8px entre eles. Um pouco maiores que o padrão para
 // conversar com os 18px dos botões do canto (⤢ — ✕).
 .CanelaComposer .TextEditor-toolbar {
   display: flex !important;
@@ -1040,7 +1039,7 @@
     background: transparent !important;
     color: var(--cn-primary-high);
     font-size: var(--cn-font-down-1);
-    // Sem transição, como todo `.btn` do Discourse.
+    // Sem transição, como todo botão do tema.
     transition: none;
 
     .icon,
@@ -1068,7 +1067,7 @@
   }
 }
 
-// O alternador Markdown/"A" (`.composer-toggle-switch`, 52 × 26): a pílula
+// O alternador Markdown/"A" (52 × 26): a pílula
 // cinza com a bolinha tingida atrás do lado ativo.
 .CanelaComposer .TextEditor-toolbar .CanelaRichToggle {
   --toggle-switch-width: 56px;
@@ -1157,7 +1156,7 @@
   }
 }
 
-// "N" e "Tт" em letras, como os botões de negrito e de tamanho do Discourse.
+// "N" e "Tт" em letras, nos botões de negrito e de tamanho.
 .CanelaTextIcon {
   display: inline-block;
   font-style: normal;
@@ -1270,7 +1269,7 @@
   }
 }
 
-// "Descartar" (`.discard-button.btn-transparent`): texto, fica vermelho no hover.
+// "Descartar": texto, fica vermelho no hover.
 .CanelaComposer-cancel.Button {
   height: auto;
   min-height: 36px;
@@ -1290,7 +1289,7 @@
   }
 }
 
-// O primário (`.btn-primary.create`): 38px, sem ícone.
+// O primário: 38px, sem ícone.
 .CanelaComposer-submit.Button--primary {
   height: auto;
   min-height: 38px;
@@ -1308,7 +1307,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Minimizado (`#reply-control.draft`): 45px na cor de destaque, texto branco
+// Minimizado: 45px na cor de destaque, texto branco
 // ---------------------------------------------------------------------
 @media @tablet-up {
   .Composer.CanelaComposer.minimized {
@@ -1403,8 +1402,8 @@
     }
   }
 
-  // Sem a prévia, a coluna de 740px (`--composer-max-width--hide-preview`)
-  // no meio, sobre uma folha branca na tela toda (o `::before` do Discourse).
+  // Sem a prévia, a coluna de 740px no meio, sobre uma folha branca na tela
+  // toda (o `::before`).
   .Composer.CanelaComposer.fullScreen.hide-preview {
     max-width: 740px;
     margin: 0 auto;
@@ -1420,7 +1419,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Celular: a tela toda, como o composer móvel do Discourse — a linha da
+// Celular: a tela toda — a linha da
 // ação no topo (com — e ✕), os campos, o texto, a barra de formatação e,
 // embaixo, "Descartar" e o primário só em texto.
 // ---------------------------------------------------------------------
@@ -1523,7 +1522,7 @@
       z-index: auto;
     }
 
-    // `.reply-to` no celular: 4px 12px (e `li.` para vencer o `:first-child`)
+    // A linha da ação no celular: 4px 12px (e `li.` para vencer o `:first-child`)
     .ComposerBody-header > li.item-title {
       min-height: 46px;
       padding: 4px 96px 4px 12px;
@@ -1627,8 +1626,8 @@
   }
 }
 
-// Dentro de um modal, o seletor abre NO FLUXO e o modal cresce para caber
-// (como o select-kit do Discourse nos modais), em vez de flutuar e ser
+// Dentro de um modal, o seletor abre NO FLUXO e o modal cresce para caber,
+// em vez de flutuar e ser
 // cortado pela borda do modal.
 .Modal .CanelaSelectKit-body {
   position: static;

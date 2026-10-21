@@ -2,7 +2,7 @@
 
 Please treat this discussion forum with the same respect you would a public park. We, too, are a shared community resource — a place to share skills, knowledge and interests through ongoing conversation.
 
-These are not hard and fast rules. They are guidelines to aid the human judgment of our community and keep this a kind, friendly place for civilized public discourse.
+These are not hard and fast rules. They are guidelines to aid the human judgment of our community and keep this a kind, friendly place for civilized public conversation.
 
 ## Improve the discussion
 

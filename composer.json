@@ -1,10 +1,9 @@
 {
     "name": "ramon/canela",
-    "description": "An unofficial theme for Flarum 2 inspired by Discourse Horizon, not affiliated with Discourse",
+    "description": "An unofficial theme for Flarum 2.",
     "keywords": [
         "flarum",
-        "theme",
-        "discourse"
+        "theme"
     ],
     "type": "flarum-extension",
     "license": "MIT",
@@ -46,9 +45,9 @@
         "flarum/subscriptions": "Link \"Seguindo\" e o sino de notificações do tópico.",
         "flarum/likes": "Curtidas no mapa do tópico e no resumo do perfil.",
         "flarum/messages": "Link \"Minhas mensagens\" na barra lateral.",
-        "fof/polls": "Enquetes no estilo do plugin poll do Discourse.",
-        "fof/best-answer": "Solução aceita (discourse-solved).",
-        "fof/reactions": "Reações (discourse-reactions).",
+        "fof/polls": "Enquetes com barras de resultado e contagem de votos.",
+        "fof/best-answer": "Solução aceita logo abaixo do primeiro post.",
+        "fof/reactions": "Reações com resumo de emoji na barra da postagem.",
         "fof/upload": "Envio de imagens e arquivos no editor.",
         "fof/follow-tags": "Observar/silenciar categorias e etiquetas.",
         "fof/split": "Dividir tópicos.",

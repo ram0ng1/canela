@@ -221,7 +221,7 @@ export class AuthPagesEditor extends AdminComponent {
   layoutView() {
     const layouts: Record<string, string> = {
       card: trans(`${AUTH}.layout_card`, 'Cartão único sobre o fundo (padrão)'),
-      discourse: trans(`${AUTH}.layout_discourse`, 'Discourse: sem cartão, login social ao lado'),
+      discourse: trans(`${AUTH}.layout_discourse`, 'Lado a lado: sem cartão, login social ao lado'),
       split: trans(`${AUTH}.layout_split`, 'Tela dividida: painel colorido à esquerda'),
     };
 
@@ -245,7 +245,7 @@ export class AuthPagesEditor extends AdminComponent {
         <p className="helpText">
           {trans(
             `${AUTH}.layout_help`,
-            'Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no do Discourse, ao lado dele).'
+            'Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no sem cartão, ao lado dele).'
           )}
         </p>
       </div>,

@@ -1,7 +1,7 @@
 /*
  * Peças comuns do chat: a tradução, as permissões do `canelaChat`, o acesso
- * à API, os usuários no store, os títulos dos canais e as datas no formato do
- * Discourse ("Hoje", "Ontem", "13 de outubro", "14:35").
+ * à API, os usuários no store, os títulos dos canais e as datas no formato
+ * curto ("Hoje", "Ontem", "13 de outubro", "14:35").
  */
 import app from 'flarum/forum/app';
 import type User from 'flarum/common/models/User';
@@ -85,7 +85,7 @@ export function channelPath(channel: ChatChannel, rest = ''): string {
   return app.route('canela.chat.channel', { slug: channel.slug || '-', id: channel.id }) + (rest ? `/${rest}` : '');
 }
 
-/** O placeholder do composer, com os textos do Discourse. */
+/** O placeholder do composer. */
 export function composerPlaceholder(channel: ChatChannel, inThread: boolean): string {
   const reason = channel.cannotPostReason;
 
@@ -153,8 +153,8 @@ export function emoji(char: string, className = 'emoji'): Mithril.Children {
 let audio: AudioContext | null = null;
 
 /**
- * Os sons "Sino" e "Ding" do Discourse, sintetizados — sem arquivos de áudio
- * para baixar. Só tocam com a aba em primeiro plano, como lá.
+ * Os sons "Sino" e "Ding", sintetizados — sem arquivos de áudio
+ * para baixar. Só tocam com a aba em primeiro plano.
  */
 export function playSound(kind: string): void {
   if (kind === 'none' || document.visibilityState !== 'visible') return;

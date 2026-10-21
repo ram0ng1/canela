@@ -2,14 +2,14 @@
 // Atalhos de teclado: o tópico selecionado com j/k e a janela "?".
 // =====================================================================
 
-// O destaque do Discourse para o tópico selecionado pelo teclado: uma barra
+// O destaque do tópico selecionado pelo teclado: uma barra
 // da cor de destaque à esquerda.
 .DiscussionList-discussions > li.CanelaSelected {
   box-shadow: inset 3px 0 0 var(--cn-accent);
   background: var(--cn-hover);
 }
 
-// A janela "?" (`keyboard-shortcuts-modal`, `--max`): 70% da largura, até
+// A janela "?": 70% da largura, até
 // 80% da altura com o corpo rolando dentro; a busca em cima e as caixas dos
 // grupos em duas colunas (`columns: 2 20em`).
 @media @tablet-up {
@@ -43,7 +43,7 @@
   column-gap: 1em;
 }
 
-// `.shortcut-category`: a caixa com borda e o título no fundo cinza claro.
+// A caixa de cada categoria: borda e o título no fundo cinza claro.
 .CanelaShortcuts-group {
   display: inline-block;
   width: 100%;
@@ -85,7 +85,7 @@
   white-space: nowrap;
 }
 
-// `kbd.d-shortcut`: a pílula cinza com as teclas separadas por 8px.
+// As teclas (`kbd`): a pílula cinza com as teclas separadas por 8px.
 .CanelaShortcuts-kbd {
   display: inline-flex;
   align-items: center;

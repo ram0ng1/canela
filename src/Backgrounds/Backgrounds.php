@@ -16,7 +16,7 @@ namespace Ramon\Canela\Backgrounds;
 /**
  * O fundo do fórum e o das páginas de entrar/cadastrar, escolhidos no admin.
  *
- * - tinted: o degradê tingido com as peças desfocadas (o do Meta, o padrão);
+ * - tinted: o degradê tingido com as peças desfocadas (o padrão);
  * - gradient: o mesmo degradê, sem as peças;
  * - solid: a cor tingida, lisa;
  * - plain: a superfície lisa, sem tinta;

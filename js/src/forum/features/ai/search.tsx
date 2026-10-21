@@ -1,5 +1,5 @@
 /*
- * "Pesquisar ou perguntar à IA" (o "Search or Ask AI" do Meta): o campo de
+ * "Pesquisar ou perguntar à IA": o campo de
  * busca do cabeçalho muda de texto, e o modal de busca ganha, no topo dos
  * resultados, a linha "Perguntar à IA: <consulta>" — que abre a página de
  * conversas com a pergunta já enviada.
@@ -54,7 +54,7 @@ export default function installAskAi(): void {
           </li>
         </ul>
       </div>,
-      // Acima de tudo, como o "Ask AI" no topo do menu de busca do Meta.
+      // Acima de tudo, no topo do menu de busca.
       110
     );
   });

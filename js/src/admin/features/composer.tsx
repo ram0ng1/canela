@@ -1,5 +1,5 @@
 /*
- * Cards do editor (composer) do Discourse: a chave geral no cabeçalho do card
+ * Cards do editor (composer): a chave geral no cabeçalho do card
  * principal e cada recurso. As chaves são `canela.composer_*`, registradas em
  * extend/composer.php — todas ligadas por padrão. Rascunhos e hashtags
  * dependem da chave geral: com ela desligada, os cards deles somem.
@@ -22,7 +22,7 @@ const cards: CardDef[] = [
     id: 'composer',
     group: 'composer',
     icon: 'fas fa-pen-to-square',
-    title: () => trans(`${KEY}.section_editor`, 'Editor do Discourse'),
+    title: () => trans(`${KEY}.section_editor`, 'Editor'),
     description: () => trans(`${KEY}.enabled_help`, 'A chave geral: desligada, o composer volta a ser o do Flarum, sem nenhum dos recursos abaixo.'),
     keywords: 'editor composer emoji seletor picker prévia preview lado a lado split semelhante similar vinculado linked responder tópico',
     master: 'canela.composer_enabled',
@@ -67,7 +67,7 @@ const cards: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.drafts_help`,
-        'Com a extensão FoF Drafts, o tema mostra os rascunhos como o Discourse: a discussão nova e a resposta são salvas sozinhas, responder numa discussão retoma o rascunho dela, fechar com texto pergunta se descarta ou guarda, e o botão Iniciar Discussão ganha o ⌄ com a lista.'
+        'Com a extensão FoF Drafts, o tema mostra os rascunhos assim: a discussão nova e a resposta são salvas sozinhas, responder numa discussão retoma o rascunho dela, fechar com texto pergunta se descarta ou guarda, e o botão Iniciar Discussão ganha o ⌄ com a lista.'
       ),
     keywords: 'rascunho rascunhos drafts salvar save automático autosave fof',
     master: 'canela.composer_drafts',
@@ -102,7 +102,7 @@ const cards: CardDef[] = [
         <AdminNotice>
           {trans(
             `${KEY}.hashtags_mentions_notice`,
-            'Com a extensão Menções ligada, o # do editor é dela (menção de tag); o tema só desenha as menções como hashtags do Discourse.'
+            'Com a extensão Menções ligada, o # do editor é dela (menção de tag); o tema só desenha as menções como hashtags.'
           )}
         </AdminNotice>
       ) : null,

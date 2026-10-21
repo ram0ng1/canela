@@ -26,7 +26,7 @@ import {
   type ProfileStatus,
 } from './data';
 
-/** Emoji padrão de quem pôs só a frase, como o Discourse faz. */
+/** Emoji padrão de quem pôs só a frase. */
 export const DEFAULT_STATUS_EMOJI = '💬';
 
 /** "até 15:30" no mesmo dia, "até sex., 18 out." depois. */
@@ -157,7 +157,7 @@ export function profileImageStyle(user: User): Record<string, string> {
 }
 
 /**
- * Tudo junto, na ordem do cartão de usuário do Discourse: status, título, bio
+ * Tudo junto, na ordem do cartão de usuário: status, título, bio
  * e a linha de local/site/aniversário. Para o cartão do tópico, que é um
  * componente próprio e não um UserCard.
  */

@@ -8,9 +8,9 @@ import { forumBool, isExtensionEnabled } from '../utils/settings';
 export const thirdParty = {
   /** fof/best-answer: "✓ Solução" na barra do post e a resposta aceita sob o 1º post. */
   solved: () => isExtensionEnabled('fof-best-answer') && forumBool('canelaThirdPartySolved', true),
-  /** fof/reactions: resumo dos emojis na barra do post, como o discourse-reactions. */
+  /** fof/reactions: resumo dos emojis na barra do post. */
   reactions: () => isExtensionEnabled('fof-reactions') && forumBool('canelaThirdPartyReactions', true),
-  /** fof/polls: a grade do poll do Discourse, com a contagem grande ao lado. */
+  /** fof/polls: a enquete em grade, com a contagem grande ao lado. */
   polls: () => isExtensionEnabled('fof-polls') && forumBool('canelaThirdPartyPolls', true),
   /** fof/links: os links saem do cabeçalho e vão para a barra lateral. */
   linksSidebar: () => isExtensionEnabled('fof-links') && forumBool('canelaThirdPartyLinksSidebar', true),
@@ -27,7 +27,7 @@ export const thirdParty = {
   verified: () => isExtensionEnabled('ramon-verified') && forumBool('canelaThirdPartyVerified', true),
   /** linkrobins/wiki: índice, artigo e edição no padrão do tema, e o "Wiki" da barra lateral. */
   wiki: () => isExtensionEnabled('linkrobins-wiki') && forumBool('canelaThirdPartyWiki', true),
-  /** ramon/chat: o chat da extensão no visual do chat do Discourse (a chave geral). */
+  /** ramon/chat: o chat da extensão no visual do chat do tema (a chave geral). */
   ramonChat: () => isExtensionEnabled('ramon-chat') && forumBool('canelaThirdPartyRamonChat', true),
   /** ramon/chat: as seções "Canais" e "Mensagens diretas" na barra lateral do tema. */
   ramonChatSidebar: () => thirdParty.ramonChat() && forumBool('canelaThirdPartyRamonChatSidebar', true),

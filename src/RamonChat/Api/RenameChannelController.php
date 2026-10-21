@@ -31,7 +31,7 @@ use Ramon\Chat\Event\ChannelWasEdited;
 
 /**
  * `POST /api/canela-ramon-chat/channels/{id}/name`: o nome do chat em grupo,
- * que no Discourse qualquer participante muda. O ramon/chat só deixa o
+ * que qualquer participante muda. O ramon/chat só deixa o
  * moderador do chat editar uma MD (a política `edit` dele); aqui basta ser
  * participante ativo — e só o nome muda, nada mais do canal.
  *

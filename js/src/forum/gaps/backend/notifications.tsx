@@ -1,5 +1,5 @@
 /*
- * As notificações do Discourse que o Flarum não tinha, geradas pelo
+ * As notificações que o Flarum não tinha, geradas pelo
  * backend dos recursos (extend/gaps.php):
  *
  * - "Fulano editou sua postagem" (edited);

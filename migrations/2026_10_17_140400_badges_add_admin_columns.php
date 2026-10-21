@@ -13,10 +13,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * O que o admin de emblemas (como o /admin/badges do Discourse) precisa:
+ * O que o admin de emblemas precisa:
  *
- * - `image_url`: imagem no lugar do ícone (o `image_upload` do Discourse,
- *   aqui por endereço);
+ * - `image_url`: imagem no lugar do ícone, por endereço;
  * - `allow_title`: o emblema pode virar o título da pessoa (`allow_title`);
  * - `manual_grant`: a administração pode concedê-lo à mão. Os do sistema
  *   nascem sem isso — quem os concede é a regra automática, como lá;

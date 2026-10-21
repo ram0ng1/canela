@@ -38,7 +38,7 @@ const label = (style: string): string => {
     default: 'Padrão do Flarum',
     avocado: 'Avocado',
     orbital: 'Órbita',
-    ring: 'Anel do Discourse',
+    ring: 'Anel',
     dots: 'Pontos',
     bars: 'Barras',
     pulse: 'Pulso',

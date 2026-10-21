@@ -22,7 +22,7 @@ use Ramon\Canela\Badges\BadgeSettings;
 use Ramon\Canela\Badges\Capabilities;
 
 /**
- * Promoção e rebaixamento automáticos — o `lib/promotion.rb` do Discourse.
+ * Promoção e rebaixamento automáticos.
  *
  * - Os eventos (post, curtida, leitura) chamam `review()`, que só olha os
  *   níveis 0→1 e 1→2: são consultas baratas, e é onde a pessoa nova espera ver
@@ -30,8 +30,8 @@ use Ramon\Canela\Badges\Capabilities;
  * - O comando diário chama `recalculate()`, que também promove 2→3 e rebaixa
  *   o 3 que deixou de cumprir os requisitos (depois do período de carência).
  * - Nível fixado pelo admin (`canela_trust_level_locked`) não se mexe, e o 4
- *   (Líder) nunca é automático. Fora isso, ninguém perde os níveis 1 e 2: o
- *   Discourse também só rebaixa o Regular.
+ *   (Líder) nunca é automático. Fora isso, ninguém perde os níveis 1 e 2: só
+ *   o Regular é rebaixado.
  */
 final class Promotion
 {
@@ -188,7 +188,7 @@ final class Promotion
         return $this->settings->trustLevelsEnabled() && ! $user->getAttribute('canela_trust_level_locked');
     }
 
-    /** O Discourse não rebaixa um Regular nos primeiros 100 dias (`tl3_promotion_min_duration`). */
+    /** Um Regular não é rebaixado nos primeiros 100 dias. */
     private function tl3GracePeriodOver(User $user): bool
     {
         $changedAt = $user->getAttribute('canela_trust_level_at');

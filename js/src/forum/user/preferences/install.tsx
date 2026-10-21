@@ -1,5 +1,5 @@
 /*
- * Preferências em abas, como no Discourse: `/u/:username/preferences/:tab`
+ * Preferências em abas: `/u/:username/preferences/:tab`
  * com a navegação em pílulas sob o cabeçalho do perfil (ver o `sidebar` em
  * installProfile.tsx) e cada aba com as suas seções.
  *
@@ -97,7 +97,7 @@ export default function installPreferences() {
     return renderTab(this);
   });
 
-  // "Senha" na aba Segurança, como no Discourse (o botão é o do core).
+  // "Senha" na aba Segurança (o botão é o do core).
   extend('flarum/forum/components/UserSecurityPage' as any, 'settingsItems', function (this: any, items: ItemList<Mithril.Children>) {
     if (!this.user || this.user !== app.session.user) return;
 

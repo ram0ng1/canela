@@ -1,10 +1,8 @@
 /*
- * O mapa do tópico do Discourse atual (topic-map.--op), logo abaixo do
- * primeiro post: uma faixa entre duas linhas com os números em destaque
+ * O mapa do tópico, logo abaixo do primeiro post: uma faixa entre duas linhas com os números em destaque
  * (visualizações, curtidas, usuários) e, ao lado, os avatares de quem mais
  * participou. Curtidas e usuários abrem um menu ("Respostas mais curtidas",
- * "Autores frequentes"), como lá. Em tópicos longos ele se repete no fim
- * (topic-map.--bottom).
+ * "Autores frequentes"). Em tópicos longos ele se repete no fim.
  *
  * Só o menu das visualizações faz requisição (os dias do gráfico, ao abrir).
  * Visualizações só aparecem quando alguma extensão já manda o atributo; usuários e curtidas são contados dos posts, mas só
@@ -39,12 +37,12 @@ export interface TopicMapAttrs extends ComponentAttrs {
 /** Quantos avatares cabem na faixa, e quantos posts no menu de curtidas. */
 const POSTERS_LIMIT = 5;
 const LIKED_LIMIT = 3;
-/** A partir de quantas respostas o mapa se repete no fim (o Meta repete em 11). */
+/** A partir de quantas respostas o mapa se repete no fim. */
 const BOTTOM_MIN_REPLIES = 10;
 
 type MenuKey = 'views' | 'likes' | 'links' | 'users';
 
-/** Quantos links o menu "Links populares" mostra antes do "Mostrar mais" (o Discourse mostra 5). */
+/** Quantos links o menu "Links populares" mostra antes do "Mostrar mais". */
 const LINKS_LIMIT = 5;
 
 function numericAttribute(discussion: Discussion, names: string[]): number | null {
@@ -131,7 +129,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
 
     const stats: Mithril.Children[] = [];
 
-    // `minViewsCount` do Discourse: o tópico aberto agora nunca tem zero
+    // O tópico aberto agora nunca tem zero
     // visualizações. O número abre o gráfico "Visualizações recentes" quando
     // as visualizações são as do tema (o recurso stats tem os dias).
     const shownViews = views === null ? null : Math.max(views, 1);
@@ -140,7 +138,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
     if (shownViews !== null) stats.push(this.stat('views', shownViews, viewsLabel(shownViews), viewsMenu));
     if (likes) stats.push(this.stat('likes', likes, t('topic.map.likes', { count: likes }), 'likes'));
 
-    // "N links" entre curtidas e usuários, como no Discourse (recurso `links`).
+    // "N links" entre curtidas e usuários (recurso `links`).
     const links = discussionLinks(discussion);
     if (links && links.total > 0) stats.push(this.stat('links', links.total, t('topic.map.links', { count: links.total }), 'links'));
     if (users !== null && users > 0) stats.push(this.stat('users', users, t('topic.map.users', { count: users }), 'users'));
@@ -179,7 +177,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
 
   stat(key: string, value: number, label: string, menu?: MenuKey): Mithril.Children {
     const content = [
-      // O `dNumber … noTitle` do Discourse: 1,2k, 120k, 1,0M.
+      // O número curto: 1,2k, 120k, 1,0M.
       <span className="CanelaTopicMap-number number">{formatViews(value)}</span>,
       <span className="CanelaTopicMap-label">{label}</span>,
     ];
@@ -216,7 +214,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
     this.open = menu;
     this.anchorLeft = trigger.offsetLeft;
 
-    // Fecha ao clicar fora ou com Esc, como os menus do Discourse.
+    // Fecha ao clicar fora ou com Esc, como os outros menus.
     this.closer = (event: Event) => {
       if (event instanceof KeyboardEvent && event.key !== 'Escape') return;
       if (event.type === 'mousedown' && (event.target as HTMLElement).closest?.('.CanelaTopicMap-menu, .CanelaTopicMap-stat')) return;
@@ -262,7 +260,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
     );
   }
 
-  /** As respostas mais curtidas (o primeiro post não conta, como no Discourse). */
+  /** As respostas mais curtidas (o primeiro post não conta). */
   likesMenu(posts: Post[]): Mithril.Children {
     const liked = posts
       .filter((post) => post.number() > 1 && likesOf(post) > 0)

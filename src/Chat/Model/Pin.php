@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Pin extends AbstractModel
 {
-    /** O `MAX_PINS_PER_CHANNEL` do Discourse. */
+    /** Mensagens fixadas por canal. */
     public const MAX_PER_CHANNEL = 20;
 
     protected $table = 'canela_chat_pins';

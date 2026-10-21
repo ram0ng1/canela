@@ -56,7 +56,7 @@ const CORE_CARDS: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.colors_help`,
-        'O tema não tem cores próprias: a paleta inteira sai da cor primária do Flarum, como o Horizon do Discourse faz com a cor terciária. O fundo tingido, a seleção, os links e o anel de foco são derivados dela, no modo claro e no escuro.'
+        'O tema não tem cores próprias: a paleta inteira sai da cor primária do Flarum. O fundo tingido, a seleção, os links e o anel de foco são derivados dela, no modo claro e no escuro.'
       ),
     keywords: 'cor cores color colors primária primary paleta palette aparência appearance claro escuro light dark oklch',
     body: () => (
@@ -118,7 +118,7 @@ const CORE_CARDS: CardDef[] = [
           label={trans(`${KEY}.forum_background_label`, 'Fundo do fórum')}
           help={trans(
             `${KEY}.forum_background_help`,
-            'O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária, como no Horizon; o liso fica num cinza neutro.'
+            'O que fica atrás do conteúdo e da barra lateral. O degradê tingido (com ou sem os ícones desfocados) e a cor tingida puxam a cor primária; o liso fica num cinza neutro.'
           )}
         />
         {toggle(
@@ -154,10 +154,7 @@ const CORE_CARDS: CardDef[] = [
     group: 'appearance',
     icon: 'fas fa-capsules',
     title: () => trans(`${KEY}.pill_buttons_label`, 'Botões em pílula'),
-    description: help(
-      'pill_buttons',
-      'Botões com as pontas totalmente arredondadas, como no Horizon. Desligado, ficam com cantos levemente arredondados.'
-    ),
+    description: help('pill_buttons', 'Botões com as pontas totalmente arredondadas. Desligado, ficam com cantos levemente arredondados.'),
     keywords: 'botões botão buttons button pílula pill arredondado rounded cantos radius',
     master: 'canela.pill_buttons',
   },
@@ -165,12 +162,12 @@ const CORE_CARDS: CardDef[] = [
     id: 'lucide-icons',
     group: 'appearance',
     icon: 'fas fa-icons',
-    title: () => trans(`${KEY}.lucide_icons_label`, 'Ícones do Discourse (Lucide)'),
+    title: () => trans(`${KEY}.lucide_icons_label`, 'Ícones Lucide'),
     description: help(
       'lucide_icons',
-      'Os ícones de interface (busca, sino, responder, curtir, menus…) com o traço fino do Lucide, como no meta.discourse.org. Desligado, voltam os ícones sólidos do Font Awesome. Os que o Meta não troca (marcas e parte dos escolhidos para tags e grupos) continuam no Font Awesome.'
+      'Os ícones de interface (busca, sino, responder, curtir, menus…) com o traço fino do Lucide. Desligado, voltam os ícones sólidos do Font Awesome. Os que não têm versão no Lucide (marcas e parte dos escolhidos para tags e grupos) continuam no Font Awesome.'
     ),
-    keywords: 'ícones ícone icons icon lucide font awesome traço stroke discourse meta',
+    keywords: 'ícones ícone icons icon lucide font awesome traço stroke',
     master: 'canela.lucide_icons',
   },
   {
@@ -192,7 +189,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.loading_slider_label`, 'Barra de carregamento no topo'),
     description: help(
       'loading_slider',
-      'Na troca de página, uma barrinha fina corre no topo da tela até a página chegar, como no Discourse, no lugar do aviso "Carregando…" do Flarum.'
+      'Na troca de página, uma barrinha fina corre no topo da tela até a página chegar, no lugar do aviso "Carregando…" do Flarum.'
     ),
     keywords: 'carregamento loading barra bar progresso progress topo top navegação transição',
     master: 'canela.loading_slider',
@@ -219,7 +216,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.toast_auto_close_label`, 'Avisos que fecham sozinhos'),
     description: help(
       'toast_auto_close',
-      'Os avisos do canto da tela ("Salvo", "Link copiado"…) somem sozinhos depois de alguns segundos, com a barrinha de tempo, como os toasts do Discourse. Desligado, ficam até alguém fechar.'
+      'Os avisos do canto da tela ("Salvo", "Link copiado"…) somem sozinhos depois de alguns segundos, com a barrinha de tempo. Desligado, ficam até alguém fechar.'
     ),
     keywords: 'avisos alertas alerts toasts notificação fechar close automático auto tempo',
     master: 'canela.toast_auto_close',
@@ -231,10 +228,7 @@ const CORE_CARDS: CardDef[] = [
     group: 'navigation',
     icon: 'fas fa-magnifying-glass',
     title: () => trans(`${KEY}.section_header_search`, 'Busca no cabeçalho'),
-    description: help(
-      'header_search',
-      'A pílula de busca no meio do cabeçalho, como no Discourse. Desligada, o cabeçalho volta à busca padrão do Flarum.'
-    ),
+    description: help('header_search', 'A pílula de busca no meio do cabeçalho. Desligada, o cabeçalho volta à busca padrão do Flarum.'),
     keywords: 'busca search pesquisa cabeçalho header pílula pill',
     master: 'canela.header_search',
   },
@@ -242,7 +236,7 @@ const CORE_CARDS: CardDef[] = [
     id: 'user-menu',
     group: 'navigation',
     icon: 'far fa-circle-user',
-    title: () => trans(`${KEY}.user_menu_label`, 'Menu do usuário do Discourse'),
+    title: () => trans(`${KEY}.user_menu_label`, 'Menu do usuário'),
     description: help(
       'user_menu',
       'O avatar do cabeçalho abre o painel com as abas de notificações, respostas, curtidas, mensagens, marcadores, chat, revisão e perfil (no lugar do sino e do menu da sessão do Flarum).'
@@ -260,7 +254,7 @@ const CORE_CARDS: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.auth.pages_help`,
-        'Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup, como no Discourse. Desligada, eles abrem os modais.'
+        'Os botões Entrar e Cadastrar-se do cabeçalho levam às páginas /login e /signup. Desligada, eles abrem os modais.'
       ),
     keywords: 'entrar login cadastrar cadastro signup sign up registrar página page modal conta account leiaute layout fundo background imagem',
     master: 'canela.auth_pages',
@@ -289,7 +283,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.auth.layout_card_title`, 'Leiaute e fundo'),
     description: () =>
       trans(`${KEY}.auth.layout_card_help`, 'Como as páginas de entrar e de cadastro se organizam na tela e o que fica atrás do formulário.'),
-    keywords: 'entrar login cadastrar cadastro signup leiaute layout cartão card tela dividida split discourse fundo background imagem',
+    keywords: 'entrar login cadastrar cadastro signup leiaute layout cartão card tela dividida split fundo background imagem',
     dependsOn: 'canela.auth_pages',
     body: () => <AuthPagesEditor section="layout" />,
   },
@@ -310,7 +304,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_shortcuts`, 'Atalhos de teclado'),
     description: help(
       'keyboard_shortcuts',
-      'Os atalhos do Discourse: / busca, c nova discussão, r responder, j e k percorrem a lista, g h volta ao início, = abre ou fecha a barra lateral e ? mostra a lista completa. Não valem enquanto se digita num campo.'
+      'Os atalhos de teclado: / busca, c nova discussão, r responder, j e k percorrem a lista, g h volta ao início, = abre ou fecha a barra lateral e ? mostra a lista completa. Não valem enquanto se digita num campo.'
     ),
     keywords: 'atalhos shortcuts teclado keyboard teclas keys hotkeys',
     master: 'canela.keyboard_shortcuts',
@@ -320,10 +314,7 @@ const CORE_CARDS: CardDef[] = [
     group: 'navigation',
     icon: 'fas fa-table-columns',
     title: () => trans(`${KEY}.section_sidebar`, 'Barra lateral'),
-    description: help(
-      'sidebar_enabled',
-      'A coluna à esquerda com a navegação e as tags, como no Discourse. Desligada, o fórum volta à navegação padrão do Flarum.'
-    ),
+    description: help('sidebar_enabled', 'A coluna à esquerda com a navegação e as tags. Desligada, o fórum volta à navegação padrão do Flarum.'),
     keywords: 'barra lateral sidebar menu navegação navigation aberta open novo tópico new topic rodapé footer',
     master: 'canela.sidebar_enabled',
     body: () => (
@@ -387,7 +378,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_welcome_banner`, 'Banner de boas-vindas'),
     description: help(
       'welcome_banner',
-      'O título e a mensagem de boas-vindas de Aparência num banner sobre o fundo tingido, como no Horizon. Desligado, a página começa direto na lista.'
+      'O título e a mensagem de boas-vindas de Aparência num banner sobre o fundo tingido. Desligado, a página começa direto na lista.'
     ),
     keywords: 'banner boas-vindas welcome hero visitantes guests busca search página inicial home',
     master: 'canela.welcome_banner',
@@ -431,11 +422,7 @@ const CORE_CARDS: CardDef[] = [
           </AdminSubGroup>
         )}
         <SubDivider />
-        {toggle(
-          'nav_sticky',
-          'Abas grudadas no topo',
-          'Ao rolar a lista, a barra das abas fica presa embaixo do cabeçalho, como no Horizon. O meta.discourse.org não gruda.'
-        )}
+        {toggle('nav_sticky', 'Abas grudadas no topo', 'Ao rolar a lista, a barra das abas fica presa embaixo do cabeçalho.')}
       </>
     ),
   },
@@ -448,11 +435,7 @@ const CORE_CARDS: CardDef[] = [
     extensions: TAGS,
     body: () => (
       <>
-        {toggle(
-          'nav_dropdowns',
-          'Menus de tags',
-          'Os menus à esquerda das abas, para filtrar a lista por tag primária e por tag secundária, como no Discourse.'
-        )}
+        {toggle('nav_dropdowns', 'Menus de tags', 'Os menus à esquerda das abas, para filtrar a lista por tag primária e por tag secundária.')}
         {toggle('nav_categories_link', 'Aba Tags', 'Uma aba que leva à página com todas as tags.')}
       </>
     ),
@@ -467,11 +450,7 @@ const CORE_CARDS: CardDef[] = [
     body: () => (
       <>
         {toggle('list_header', 'Cabeçalho das colunas', 'A linha com Discussão, Respostas, Visualizações e Atividade acima da lista.')}
-        {toggle(
-          'list_posters',
-          'Avatares de quem participou',
-          'Os avatares do autor e de quem respondeu por último ao lado de cada discussão, como a coluna de participantes do Discourse.'
-        )}
+        {toggle('list_posters', 'Avatares de quem participou', 'Os avatares do autor e de quem respondeu por último ao lado de cada discussão.')}
         {toggle(
           'list_views',
           'Coluna de visualizações',
@@ -480,11 +459,7 @@ const CORE_CARDS: CardDef[] = [
             dependsOn: 'canela.stats_views_enabled',
           }
         )}
-        {toggle(
-          'list_heat',
-          'Destacar contagens altas',
-          'Pinta as contagens em laranja ou vermelho quando estão bem acima das demais, como o mapa de calor do Discourse.'
-        )}
+        {toggle('list_heat', 'Destacar contagens altas', 'Pinta as contagens em laranja ou vermelho quando estão bem acima das demais.')}
         {toggle('list_excerpts', 'Resumo das discussões fixadas', 'Abaixo do título, o começo da primeira postagem das discussões fixadas.')}
         <AdminSelect
           settingKey="canela.list_status_icons"
@@ -494,7 +469,7 @@ const CORE_CARDS: CardDef[] = [
             'O alfinete de fixada, a estrela de acompanhando e os demais ícones de situação ao lado do título, na lista e na discussão.'
           )}
           options={{
-            muted: trans(`${KEY}.list_status_icons_muted`, 'Atual: em cinza, como o Discourse'),
+            muted: trans(`${KEY}.list_status_icons_muted`, 'Atual: em cinza'),
             colored: trans(`${KEY}.list_status_icons_colored`, 'Colorido: cada ícone com a sua cor'),
           }}
           default="muted"
@@ -509,7 +484,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.list_infinite_scroll_label`, 'Rolagem infinita'),
     description: help(
       'list_infinite_scroll',
-      'A próxima página da lista carrega sozinha quando o fim chega perto da tela, como no Discourse. Desligada, fica o botão "Carregar mais" do Flarum.'
+      'A próxima página da lista carrega sozinha quando o fim chega perto da tela. Desligada, fica o botão "Carregar mais" do Flarum.'
     ),
     keywords: 'rolagem infinita infinite scroll carregar mais load more paginação pagination',
     master: 'canela.list_infinite_scroll',
@@ -568,25 +543,24 @@ const CORE_CARDS: CardDef[] = [
     ),
   },
   {
-    // O post do Discourse com a linha do tempo do avocado ligando os avatares
+    // O post padrão com a linha do tempo do avocado ligando os avatares
     // (less/forum/PostDirect.less, pela classe Canela--postDirect). Vale para
     // todos: a escolha é só do admin.
     id: 'post-style',
     group: 'topic',
     icon: 'fas fa-comments',
     title: () => trans(`${KEY}.post_style_label`, 'Estilo das postagens'),
-    keywords:
-      'estilo style postagens posts discussão discussion direto direct avocado discourse linha do tempo timeline avatar conversa conversation',
+    keywords: 'estilo style postagens posts discussão discussion direto direct avocado linha do tempo timeline avatar conversa conversation',
     body: () => (
       <AdminSelect
         settingKey="canela.post_style"
         label={trans(`${KEY}.post_style_label`, 'Estilo das postagens')}
         help={trans(
           `${KEY}.post_style_help`,
-          'Com a linha do tempo, os posts continuam iguais aos do Discourse, mas uma linha vertical, como a do tema avocado, liga os avatares de um post ao outro, passa pelos avisos de evento e marca com um círculo os intervalos de tempo ("um mês depois"). A partir do tablet; no celular o post fica igual.'
+          'Com a linha do tempo, os posts continuam iguais aos do padrão, mas uma linha vertical, como a do tema avocado, liga os avatares de um post ao outro, passa pelos avisos de evento e marca com um círculo os intervalos de tempo ("um mês depois"). A partir do tablet; no celular o post fica igual.'
         )}
         options={{
-          discourse: trans(`${KEY}.post_style_discourse`, 'Discourse (padrão)'),
+          discourse: trans(`${KEY}.post_style_discourse`, 'Padrão'),
           direct: trans(`${KEY}.post_style_direct`, 'Com a linha do tempo (estilo avocado)'),
         }}
         default="discourse"
@@ -600,7 +574,7 @@ const CORE_CARDS: CardDef[] = [
     group: 'topic',
     icon: 'fas fa-reply',
     title: () => trans(`${KEY}.topic_reply_to_style_label`, '"Em resposta a" nas postagens'),
-    keywords: 'em resposta a in reply to resposta reply menção mention cabeçalho header avocado discourse linha line',
+    keywords: 'em resposta a in reply to resposta reply menção mention cabeçalho header avocado linha line',
     extensions: ['flarum-mentions'],
     body: () => (
       <AdminSelect
@@ -608,10 +582,10 @@ const CORE_CARDS: CardDef[] = [
         label={trans(`${KEY}.topic_reply_to_style_label`, '"Em resposta a" nas postagens')}
         help={trans(
           `${KEY}.topic_reply_to_style_help`,
-          'Como a postagem que responde a outra mostra a quem responde. No Discourse, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
+          'Como a postagem que responde a outra mostra a quem responde. No padrão, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
         )}
         options={{
-          discourse: trans(`${KEY}.topic_reply_to_style_discourse`, 'Discourse (padrão: ↩ nome à direita do cabeçalho)'),
+          discourse: trans(`${KEY}.topic_reply_to_style_discourse`, 'Padrão (↩ nome à direita do cabeçalho)'),
           avocado: trans(`${KEY}.topic_reply_to_style_avocado`, 'Linha abaixo do nome (estilo avocado)'),
         }}
         default="discourse"
@@ -622,10 +596,10 @@ const CORE_CARDS: CardDef[] = [
     id: 'post-actions',
     group: 'topic',
     icon: 'fas fa-ellipsis',
-    title: () => trans(`${KEY}.post_actions_label`, 'Barra de ações do Discourse'),
+    title: () => trans(`${KEY}.post_actions_label`, 'Barra de ações'),
     description: help(
       'post_actions',
-      'Curtir, copiar o link, marcar, responder e o "…" que expande o resto, na barra de cada postagem, como no Discourse. Desligada, volta o menu de controles do Flarum.'
+      'Curtir, copiar o link, marcar, responder e o "…" que expande o resto, na barra de cada postagem. Desligada, volta o menu de controles do Flarum.'
     ),
     keywords: 'ações actions barra bar postagem post curtir like responder reply menu controles controls',
     master: 'canela.post_actions',
@@ -637,7 +611,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.embedded_replies_label`, 'Respostas embutidas'),
     description: help(
       'embedded_replies',
-      'O "N respostas" de cada postagem abre as respostas ali mesmo, embaixo dela, e a postagem citada aparece acima, como no Discourse.'
+      'O "N respostas" de cada postagem abre as respostas ali mesmo, embaixo dela, e a postagem citada aparece acima.'
     ),
     keywords: 'respostas replies embutidas embedded menções mentions citação quote abaixo inline',
     master: 'canela.embedded_replies',
@@ -650,7 +624,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.new_replies_bar_label`, 'Aviso de respostas novas'),
     description: help(
       'new_replies_bar',
-      'Quem está no meio da discussão quando chegam respostas em tempo real vê a barra "Há N novas respostas", que leva até elas, como no Discourse.'
+      'Quem está no meio da discussão quando chegam respostas em tempo real vê a barra "Há N novas respostas", que leva até elas.'
     ),
     keywords: 'novas respostas new replies tempo real realtime barra bar aviso websocket',
     master: 'canela.new_replies_bar',
@@ -661,10 +635,7 @@ const CORE_CARDS: CardDef[] = [
     group: 'topic',
     icon: 'fas fa-thumbtack',
     title: () => trans(`${KEY}.topic_event_posts_label`, 'Posts de evento'),
-    description: help(
-      'topic_event_posts',
-      'Mostra na discussão os avisos do Flarum como "trancou a discussão" e "fixou a discussão". O Discourse não os mostra assim.'
-    ),
+    description: help('topic_event_posts', 'Mostra na discussão os avisos do Flarum como "trancou a discussão" e "fixou a discussão".'),
     keywords: 'eventos event posts trancou fixou locked pinned renomeou renamed avisos',
     master: 'canela.topic_event_posts',
   },
@@ -687,7 +658,7 @@ const CORE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_topic_footer`, 'Rodapé da discussão'),
     description: help(
       'topic_footer',
-      'Responder, compartilhar e acompanhar depois da última postagem, como no Discourse. Acompanhar precisa da extensão Subscriptions.'
+      'Responder, compartilhar e acompanhar depois da última postagem. Acompanhar precisa da extensão Subscriptions.'
     ),
     keywords: 'rodapé footer botões buttons responder reply compartilhar share acompanhar follow subscriptions acompanhando notificações',
     master: 'canela.topic_footer',
@@ -722,7 +693,7 @@ const CORE_CARDS: CardDef[] = [
       'perfil profile usuário user capa cover estatísticas stats resumo summary aba tab atividade activity lidos read reações reactions votos votes resolvido solved',
     body: () => (
       <>
-        {toggle('user_cover', 'Capa no topo do perfil', 'Uma faixa larga atrás do avatar grande e do nome, como no Discourse.')}
+        {toggle('user_cover', 'Capa no topo do perfil', 'Uma faixa larga atrás do avatar grande e do nome.')}
         {toggle(
           'user_stats',
           'Estatísticas',
@@ -738,13 +709,13 @@ const CORE_CARDS: CardDef[] = [
               help={trans(`${KEY}.user_default_tab_help`, 'Em qual aba o perfil abre quando se clica num avatar ou nome.')}
               options={{
                 activity: trans(`${KEY}.user_default_tab_activity`, 'Atividade (postagens), como no Flarum'),
-                summary: trans(`${KEY}.user_default_tab_summary`, 'Resumo, como no Discourse'),
+                summary: trans(`${KEY}.user_default_tab_summary`, 'Resumo'),
               }}
               default="summary"
             />
           </AdminSubGroup>
         )}
-        {/* As subabas de "Atividade" do Discourse que dependem de uma extensão (extend/activity.php). */}
+        {/* As subabas de "Atividade" que dependem de uma extensão (extend/activity.php). */}
         {toggle(
           'user_activity_read',
           'Subaba Lidos',

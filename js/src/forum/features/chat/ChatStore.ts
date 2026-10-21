@@ -1,7 +1,6 @@
 /*
- * O estado do chat no fórum — o que no Discourse são os serviços `chat`,
- * `chatChannelsManager`, `chatStateManager`, `chatDrawerRouter` e
- * `chatTrackingStateManager`, num objeto só:
+ * O estado do chat no fórum — canais, conversa aberta, gaveta e
+ * acompanhamento das não lidas, num objeto só:
  *
  * - os canais do leitor, com as contagens de não lidas e menções;
  * - um "painel" por conversa aberta (canal ou fio), com as mensagens
@@ -357,7 +356,7 @@ export class ChatPane {
   }
 
   startReply(message: ChatMessage): void {
-    // Com os fios ligados, "Responder" abre o fio da mensagem, como no Discourse.
+    // Com os fios ligados, "Responder" abre o fio da mensagem.
     if (!this.threadId && this.channel?.threadingEnabled && message.thread) {
       this.store.openThread(this.channelId, message.thread.id);
       return;
@@ -644,7 +643,7 @@ export class ChatStore {
       .sort((a, b) => Number(!!b.membership?.starred) - Number(!!a.membership?.starred) || (a.name || '').localeCompare(b.name || ''));
   }
 
-  /** As MDs, da conversa mais recente para a mais antiga, como no Discourse. */
+  /** As MDs, da conversa mais recente para a mais antiga. */
   directChannels(): ChatChannel[] {
     return [...this.channels.values()]
       .filter((c) => c.type === 'direct' && c.membership?.following)
@@ -902,7 +901,7 @@ export class ChatStore {
     if (changed) m.redraw();
   }
 
-  /** Avisa que o leitor está digitando — no máximo a cada 4 s, como o Discourse. */
+  /** Avisa que o leitor está digitando — no máximo a cada 4 s. */
   sendTyping(pane: ChatPane, typing: boolean): void {
     const last = this.typingSentAt.get(pane.key) || 0;
 

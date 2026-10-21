@@ -1,6 +1,5 @@
 /*
- * A conversa do flarum/messages como o tópico de mensagem pessoal do
- * Discourse (`archetype-private_message`):
+ * A conversa do flarum/messages como um tópico de mensagem pessoal:
  *
  *   ✉ Título da mensagem
  *   ┌──────────────────────────────────────┐  cada mensagem numa caixa de
@@ -14,8 +13,8 @@
  *   🔗  🗂 Arquivar ............... [↩ Responder]
  *
  * No flarum/messages a lista de conversas e a conversa aberta dividem a mesma
- * página, como um chat; no Discourse a lista mora no perfil e a mensagem é um
- * tópico. Aqui `/messages` leva à caixa de entrada do perfil e
+ * página, como um chat; aqui a lista mora no perfil e a mensagem é um
+ * tópico: `/messages` leva à caixa de entrada do perfil e
  * `/messages/dialog/:id` desenha só a conversa, no formato do tópico.
  *
  * MessagesPage, DialogSection, MessageStream e Message vêm num pedaço
@@ -84,7 +83,7 @@ function replyTo(dialog: Dialog, stream: any): void {
 }
 
 function installPage(): void {
-  // `/messages` sozinho é a caixa de entrada — a do perfil, como no Discourse.
+  // `/messages` sozinho é a caixa de entrada — a do perfil.
   override(PAGE as any, 'oninit', function (this: any, original: (vnode: any) => void, vnode: any) {
     if (messagesOn() && hasProfileRoute() && app.session.user && !m.route.param('id')) {
       // Só o oninit do Page (atributos, classe do body): o do MessagesPage
@@ -291,7 +290,7 @@ function installStream(): void {
   override(STREAM as any, 'scrollToBottom', function (this: any, original: () => void) {
     if (!messagesOn()) return original();
 
-    // Como o Discourse ao abrir uma mensagem já lida: na última postagem.
+    // Ao abrir uma mensagem já lida: na última postagem.
     const items = this.element?.querySelectorAll('.MessageStream-item[data-id]');
     const last = items && items.length ? (items[items.length - 1] as HTMLElement) : null;
 
@@ -311,7 +310,7 @@ function installStream(): void {
     window.history.replaceState(null, '', dialogHref(this.attrs.dialog));
   });
 
-  // Sem a caixa "Escreva uma resposta…": o tópico do Discourse tem o botão
+  // Sem a caixa "Escreva uma resposta…": o tópico de mensagem tem o botão
   // "Responder" no rodapé.
   extend(STREAM as any, 'content', function (this: any, items: Mithril.Vnode[]) {
     if (!messagesOn() || !Array.isArray(items)) return;
@@ -419,7 +418,7 @@ function installMessage(): void {
   });
 
   // O escudo da equipe ao lado do nome (`.poster-icon` dos moderadores e
-  // administradores do Discourse).
+  // administradores).
   extend(MESSAGE as any, 'headerItems', function (this: any, items: ItemList<Mithril.Children>) {
     if (!messagesOn()) return;
 

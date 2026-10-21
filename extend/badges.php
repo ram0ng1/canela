@@ -12,11 +12,11 @@ declare(strict_types=1);
  */
 
 /*
- * Emblemas e níveis de confiança do Discourse.
+ * Emblemas e níveis de confiança.
  *
- * - Níveis 0–4 calculados pelos requisitos do Discourse (Promotion), com as
+ * - Níveis 0–4 calculados pelos requisitos de cada nível (Promotion), com as
  *   estatísticas de leitura do tema quando existem.
- * - Os emblemas automáticos do núcleo do Discourse que o Flarum consegue
+ * - Os emblemas automáticos que o Flarum consegue
  *   detectar (SystemBadges), concedidos por eventos e por `canela:badges`,
  *   agendado uma vez por dia.
  * - API `canela-badges` e `canela-user-badges`, a notificação "Ganhou …" e as páginas

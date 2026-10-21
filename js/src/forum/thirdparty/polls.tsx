@@ -1,5 +1,5 @@
 /*
- * fof/polls no jeito do poll do Discourse: a contagem grande de votos na
+ * fof/polls no jeito do Canela: a contagem grande de votos na
  * coluna da direita ("0 / votos"), sempre visível, e as instruções da
  * extensão embaixo dela. A grade em si (opções | informações / botões) é CSS.
  */
@@ -33,7 +33,7 @@ export default function installPolls(): void {
     );
   });
 
-  // Como no Discourse, a porcentagem (e a barra, que depende dela no CSS) só
+  // A porcentagem (e a barra, que depende dela no CSS) só
   // aparece depois de votar ou quando a enquete termina: antes disso, as
   // opções são só os círculos de escolher.
   extend('ext:fof/polls/forum/components/Poll/PollOption', 'textItems', function (this: any, items: ItemList<Mithril.Children>) {

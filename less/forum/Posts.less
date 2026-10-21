@@ -1,7 +1,6 @@
 // =====================================================================
-// Posts no jeito do Discourse (Horizon), medidos em meta.discourse.org a
-// 1440px: coluna do avatar de 45px (o avatar de 48px transborda 3px, como
-// lá) que acompanha a rolagem; cabeçalho de 16px com o nome de usuário em
+// Posts, medidos a 1440px: coluna do avatar de 45px (o avatar de 48px
+// transborda 3px) que acompanha a rolagem; cabeçalho de 16px com o nome de usuário em
 // negrito cinza; corpo em 16px/1.5 com 12px de respiro dos lados; barra de
 // ações redonda, de 38px, só de ícones (e "Responder" com texto); separador
 // fino entre os posts; posts de evento como as "small actions".
@@ -11,13 +10,13 @@
 // perfil e na busca.
 [data-theme^=light],
 [data-theme^=dark] {
-  // O --love do Discourse: o coração das curtidas não usa a cor do tema.
+  // O coração das curtidas não usa a cor do tema.
   // O vermelho do emoji ❤️ (twemoji): o mesmo no coração de curtir e na
-  // contagem. O rosa do Discourse (#fa6c8d) parecia apagado ao lado dela.
+  // contagem. O rosa (#fa6c8d) parecia apagado ao lado dela.
   --cn-topic-love: #dd2e44;
   --cn-topic-love-low: ~"color-mix(in srgb, var(--cn-topic-love) 15%, var(--cn-surface))";
-  // O fundo e a barra das citações (--d-post-aside-*): no escuro o Discourse
-  // clareia bem mais do que o "muito baixo" da paleta.
+  // O fundo e a barra das citações: no escuro clareiam bem mais do que o
+  // "muito baixo" da paleta.
   --cn-post-aside-bg: var(--cn-primary-very-low);
   --cn-post-aside-border: var(--cn-primary-300);
   // O texto dos posts acompanha o "tamanho do texto" do leitor (extras).
@@ -25,7 +24,7 @@
 }
 
 .CanelaTopic {
-  // --topic-avatar-width e --topic-body-width-padding do Discourse.
+  // Largura do avatar e respiro do corpo.
   --cn-post-avatar: 45px;
   --cn-post-gap: 12px;
 }
@@ -76,7 +75,7 @@
     margin: 0 0 1em;
   }
 
-  // Links do Discourse: só a cor, sem o sublinhado nem o negrito do core.
+  // Links: só a cor, sem o sublinhado nem o negrito do core.
   a {
     color: var(--cn-link);
     font-weight: inherit;
@@ -90,7 +89,7 @@
     }
   }
 
-  // Os títulos em rem, como no Discourse: não crescem dentro de citações.
+  // Os títulos em rem: não crescem dentro de citações.
   h1,
   h2,
   h3,
@@ -214,7 +213,7 @@
     box-shadow: none;
   }
 
-  // Tabela do Discourse: cabeçalho em negrito sem fundo, linha grossa no
+  // Tabela: cabeçalho em negrito sem fundo, linha grossa no
   // topo do corpo e uma fina entre as linhas; rola quando passa do post.
   table {
     display: block;
@@ -264,7 +263,7 @@
     max-height: 500px;
   }
 
-  // O [details] do Discourse: caixa cinza, triângulo de texto, sem negrito.
+  // O [details]: caixa cinza, triângulo de texto, sem negrito.
   details {
     position: relative;
     margin: 0 0 0.5rem;
@@ -304,7 +303,7 @@
     text-decoration: none;
   }
 
-  // Menções: a pílula cinza do Discourse (.mention).
+  // Menções: uma pílula cinza.
   .UserMention,
   .PostMention {
     display: inline-block;
@@ -390,8 +389,8 @@
     font-style: italic;
   }
 
-  // A menção que só marca "respondendo a" (o Discourse mostra isso no
-  // cabeçalho do post, e não no texto).
+  // A menção que só marca "respondendo a" (isso aparece no cabeçalho do
+  // post, e não no texto).
   .CanelaReplyMarker {
     display: none;
   }
@@ -407,7 +406,7 @@
     background: var(--cn-surface);
   }
 
-  // Citação de outro post (o aside.quote do Discourse): o tema põe o
+  // Citação de outro post: o tema põe o
   // cabeçalho "avatar Fulano:" dentro do blockquote que o mentions gera.
   blockquote.CanelaQuote {
     padding: 0.8em 0.75em 0.75em;
@@ -489,8 +488,8 @@
     border-radius: 0;
   }
 
-  // O separador do core (::after de cada item) é a borda de cima dos posts
-  // do Discourse: ponta a ponta do stream, na cor das bordas do conteúdo.
+  // O separador do core (::after de cada item) é a borda de cima dos posts:
+  // ponta a ponta do stream, na cor das bordas do conteúdo.
   .PostStream-item:has(+ .PostStream-item)::after {
     width: 100%;
     background-color: var(--cn-border);
@@ -555,8 +554,8 @@
       margin-right: auto;
     }
 
-    // O título do usuário (.user-title) vem depois dos nomes, como no
-    // Discourse — sem ordem, ele caía antes do nome. Quando existe, é ele
+    // O título do usuário vem depois dos nomes — sem ordem, ele caía antes
+    // do nome. Quando existe, é ele
     // quem empurra a data para a direita.
     .item-canelaUserTitle {
       order: 2;
@@ -573,7 +572,7 @@
       margin-left: 0.33em;
     }
 
-    // Cinza e reto, como o .user-title do Discourse (o itálico é do perfil).
+    // Cinza e reto (o itálico é do perfil).
     .CanelaPostUserTitle {
       font-size: inherit;
       font-style: normal;
@@ -639,7 +638,7 @@
     cursor: default;
   }
 
-  // "↪ [avatar] Fulano" (o reply-to-tab): abre o post respondido acima deste.
+  // "↪ [avatar] Fulano": abre o post respondido acima deste.
   .CanelaReplyTo {
     display: inline-flex;
     align-items: center;
@@ -764,7 +763,7 @@
     }
   }
 
-  // A "time-gap" do Discourse ("3 meses depois"): uma small action sem ícone.
+  // O intervalo de tempo ("3 meses depois"): uma small action sem ícone.
   .PostStream-timeGap {
     padding: var(--cn-space-3) 0 var(--cn-space-3) calc(var(--cn-post-avatar) + var(--cn-post-gap));
     text-transform: none;
@@ -797,7 +796,7 @@
       column-gap: 0;
     }
 
-    // O corpo do Discourse tem 12px de respiro dos dois lados (690px de texto).
+    // O corpo tem 12px de respiro dos dois lados (690px de texto).
     .Post-main {
       padding: 0 var(--cn-post-gap);
     }
@@ -915,7 +914,7 @@
 
 // ---------------------------------------------------------------------
 // Ícones depois do nome (utils/userIcons: o selo de verificado, o emoji do
-// status) — os "poster icons" do Discourse: na linha do texto, do tamanho
+// status): na linha do texto, do tamanho
 // dele, logo depois do nome, sem empurrar o nome.
 // ---------------------------------------------------------------------
 .CanelaUserIcons {
@@ -998,7 +997,7 @@
   }
 }
 
-// O core esconde as ações até o hover no desktop; no Discourse elas ficam.
+// O core esconde as ações até o hover no desktop; aqui elas ficam.
 @media @tablet-up {
   .no-touch .Post-actions:has(.CanelaPostAction) {
     opacity: 1;
@@ -1026,7 +1025,7 @@
     font-size: 16px;
   }
 
-  // O hover do Discourse (--d-post-control-background--hover): cinza
+  // O hover: cinza
   // primary-low, nunca a cor de destaque — nem depois do clique (o link
   // "copiado" fica com o mouse em cima).
   &:hover,
@@ -1064,7 +1063,7 @@
   color: #fff;
 }
 
-// "Responder" (o botão "create" do Discourse): o único com texto, mais escuro.
+// "Responder": o único com texto, mais escuro.
 .CanelaPostAction--reply.Button {
   color: var(--cn-primary-high);
 
@@ -1114,7 +1113,7 @@
   }
 }
 
-// A batida do coração ao curtir (heartBump, .4s, do Discourse).
+// A batida do coração ao curtir (.4s).
 @keyframes canelaHeartBump {
   0% {
     transform: scale(1);
@@ -1135,14 +1134,14 @@
   }
 }
 
-// A contagem à esquerda (o resumo de reações do Meta): coração cheio e o
+// A contagem à esquerda: coração cheio e o
 // número em cinza claro.
 .CanelaLikeCount.Button {
   height: 34px;
   padding: 1px 6px;
   gap: 0;
 
-  // O emoji ❤️ do Discourse (twemoji), a mesma cor do botão de curtir.
+  // O emoji ❤️ (twemoji), a mesma cor do botão de curtir.
   .Button-icon {
     color: var(--cn-topic-love);
   }
@@ -1195,7 +1194,7 @@
   }
 }
 
-// Os posts embutidos do Discourse: sem caixa, ligados ao post por uma linha
+// Os posts embutidos: sem caixa, ligados ao post por uma linha
 // vertical fina que passa atrás dos avatares.
 .CanelaEmbedded {
   position: relative;
@@ -1316,7 +1315,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Posts de evento: a "small action" do Discourse, numa linha compacta: o
+// Posts de evento: uma "small action", numa linha compacta: o
 // ícone pequeno num círculo na coluna do avatar, o avatar de quem fez e o
 // texto em cinza com o nome em negrito.
 // ---------------------------------------------------------------------
@@ -1396,8 +1395,7 @@
 @media @phone {
   // No celular o post não tem a coluna do avatar (.Post-container é bloco):
   // o ícone ia para uma linha só dele, com o fio esticado até a borda. Aqui
-  // ícone, avatar e texto ficam na mesma linha, sem o fio, como o
-  // small-action do Discourse no celular.
+  // ícone, avatar e texto ficam na mesma linha, sem o fio.
   .CanelaTopic .EventPost {
     padding-left: 0;
 
@@ -1428,8 +1426,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Destaque do post-alvo (/d/x/N): o background-fade-highlight do Discourse
-// — o corpo do post (não o avatar) na cor de destaque clara, que esmaece.
+// Destaque do post-alvo (/d/x/N): o corpo do post (não o avatar) na cor de destaque clara, que esmaece.
 // ---------------------------------------------------------------------
 @keyframes canelaHighlight {
   0% {
@@ -1478,7 +1475,7 @@
 
 // ---------------------------------------------------------------------
 // Caixa "Responder…" no fim do stream e o "Ninguém está digitando" do
-// realtime: o Discourse não tem nenhum dos dois — responde-se pelo botão do
+// realtime: o tema esconde os dois — responde-se pelo botão do
 // rodapé do tópico ou do post. O aviso de digitação só aparece quando alguém
 // está mesmo digitando.
 // ---------------------------------------------------------------------
@@ -1491,14 +1488,14 @@
   display: none;
 }
 
-// Posts de evento (trancou, fixou, renomeou, mudou tags…): o Discourse não os
-// mostra como o Flarum; o toggle "topic_event_posts" do admin os traz de volta.
+// Posts de evento (trancou, fixou, renomeou, mudou tags…): ficam escondidos
+// por padrão; o toggle "topic_event_posts" do admin os traz de volta.
 .Canela--noEventPosts .PostStream-item:has(> .EventPost) {
   display: none;
 }
 
 // ---------------------------------------------------------------------
-// Celular (o .topic-post do Discourse até 640px): avatar de 48px no
+// Celular (até 640px): avatar de 48px no
 // cabeçalho, nomes empilhados em 14px, corpo na largura toda.
 // ---------------------------------------------------------------------
 @media @phone {
@@ -1616,7 +1613,7 @@
         flex-basis: 100%;
       }
 
-      // No celular o título empilha embaixo dos nomes, como no Discourse.
+      // No celular o título empilha embaixo dos nomes.
       .item-canelaUserTitle,
       .item-canelaNames + .item-canelaUserTitle,
       .item-user + .item-canelaUserTitle {
@@ -1665,7 +1662,7 @@
   }
 }
 
-// No Discourse só tem flair quem pertence a um grupo com ícone: grupo sem
+// Só tem flair quem pertence a um grupo com ícone: grupo sem
 // ícone (como "Membro") não desenha um círculo vazio no avatar.
 .PostUser-badges li:not(:has(.icon)) {
   display: none;
@@ -1821,7 +1818,7 @@
   display: none !important;
 }
 
-// Online, como no meta.discourse.org (discourse-whos-online, "ring"): um anel
+// Online: um anel
 // verde em volta do avatar do post, separado dele por 1px da cor do cartão.
 .CanelaPostAvatar--online .Post-avatar,
 .CanelaPostAvatar--online > a .Avatar {

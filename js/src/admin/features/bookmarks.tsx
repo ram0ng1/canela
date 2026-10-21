@@ -33,7 +33,7 @@ const cards: CardDef[] = [
         {toggle(
           'bookmarks_topic_button',
           'Marcar discussão',
-          'Acrescenta "Marcar discussão" aos controles da discussão (o menu "…" do rodapé). Marca o primeiro post, como o Discourse.'
+          'Acrescenta "Marcar discussão" aos controles da discussão (o menu "…" do rodapé). Marca o primeiro post.'
         )}
         {toggle('bookmarks_user_menu', 'Item no menu do usuário', 'Um atalho "Marcadores" no menu do avatar, logo abaixo de "Perfil".')}
         <AdminNotice icon="far fa-clock">

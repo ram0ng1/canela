@@ -1,5 +1,5 @@
 /*
- * ramon/verified no visual do Discourse.
+ * ramon/verified no visual do Canela.
  *
  * A extensão põe o selo como um item próprio do cabeçalho do post
  * (`headerItems.verified`), como um <ul> extra na prévia da resposta

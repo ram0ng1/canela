@@ -1,5 +1,5 @@
 /*
- * O lightbox do Discourse (PhotoSwipe): clicar numa imagem do post abre a
+ * O lightbox (PhotoSwipe): clicar numa imagem do post abre a
  * imagem grande sobre um fundo escuro, com as setas entre as imagens do mesmo
  * post, o contador "1 de 3", zoom (tecla Z), "Imagem original", "Baixar" e
  * Esc para fechar.
@@ -53,7 +53,7 @@ function isZoomable(img: HTMLImageElement): boolean {
   if (img.matches(SKIP) || img.closest(SKIP)) return false;
 
   // Uma imagem dentro de um link para uma página (e não para uma imagem)
-  // continua sendo um link: o clique navega, como no Discourse.
+  // continua sendo um link: o clique navega.
   const link = img.closest('a');
   if (link && link.getAttribute('href') && !linksToImage(link)) return false;
 

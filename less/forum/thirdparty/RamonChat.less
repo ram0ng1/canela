@@ -1,10 +1,10 @@
 // =====================================================================
-// ramon/chat no visual do chat do Discourse (o plugin de chat do Meta)
+// ramon/chat no visual do chat do tema
 //
 // O ramon/chat foi desenhado para o tema avocado: cartões com sombra,
 // pílulas, tons fixos e tokens `--avocado-*`. Aqui cada tela dele fica com
-// as medidas do chat próprio do tema (less/forum/features/Chat.less, que
-// copia o css-chat do Meta): avatar de 28px numa coluna de 42px, nome em
+// as medidas do chat próprio do tema (less/forum/features/Chat.less):
+// avatar de 28px numa coluna de 42px, nome em
 // negrito, hora em cinza, fundo no hover da linha, o editor de borda
 // arredondada, as reações quadradas, a gaveta de 400px, a lista de canais.
 //
@@ -23,7 +23,7 @@
 // ---------------------------------------------------------------------
 [data-theme^=light],
 [data-theme^=dark] {
-  // Medidas do chat do Discourse (as mesmas do Chat.less).
+  // Medidas do chat (as mesmas do Chat.less).
   --chat-message-left-width: 42px;
   --chat-full-page-sidebar-width: 275px;
   --chat-header-offset: 45px;
@@ -77,7 +77,7 @@
   --chat-scrollbar-thumb-hover: var(--cn-primary-low-mid);
 }
 
-// A rolagem fina do Discourse (o mixin chat-scrollbar).
+// A rolagem fina (como o mixin do Chat.less).
 .canela-rc-scrollbar() {
   scrollbar-width: thin;
   scrollbar-color: var(--cn-primary-low) transparent;
@@ -168,7 +168,7 @@ body :is(.ChatComposer-shell, .ChatBrowse-search, .ChatSearch-bar, .ChatAddMembe
 
 // ---------------------------------------------------------------------
 // Barra lateral do tema: as seções "Canais" e "Mensagens diretas"
-// (thirdparty/ramonChat/sidebar.tsx), como as do chat do Discourse.
+// (thirdparty/ramonChat/sidebar.tsx).
 // ---------------------------------------------------------------------
 .CanelaSidebar-sectionContent > li > .CanelaRamonChatLink {
   position: relative;
@@ -248,7 +248,7 @@ body :is(.ChatComposer-shell, .ChatBrowse-search, .ChatSearch-bar, .ChatAddMembe
   }
 }
 
-// O "+" das mensagens diretas fica à vista, como no Discourse (o lápis de
+// O "+" das mensagens diretas fica à vista (o lápis de
 // "Navegar por todos os canais" aparece no hover, como o das categorias).
 .CanelaSidebar-section--ramon-chat-direct .CanelaSidebar-sectionEdit {
   color: var(--cn-primary-high);
@@ -329,7 +329,7 @@ body.ChatFullPage {
   }
 
   // O título que o ramon/chat põe na barra do celular do core caía por cima
-  // do cabeçalho do tema: o Discourse móvel mantém o cabeçalho do fórum e o
+  // do cabeçalho do tema: no celular fica o cabeçalho do fórum e o
   // nome fica na barra da própria tela.
   .ChatToolbarTitle {
     display: none !important;
@@ -607,7 +607,7 @@ body.ChatFullPage {
     line-height: 1.4;
   }
 
-  // O Discourse não repete a descrição na barra: ela mora nas informações.
+  // A descrição não se repete na barra: ela mora nas informações.
   &-description {
     display: none;
   }
@@ -663,7 +663,7 @@ body.ChatFullPage {
     .canela-rc-scrollbar();
   }
 
-  // "Pular para o fim": o botão cinza do Discourse.
+  // "Pular para o fim": um botão cinza.
   &-scrollDown {
     z-index: 1;
     border: 0;
@@ -688,7 +688,7 @@ body.ChatFullPage {
     color: var(--cn-primary-high);
     font-size: var(--cn-font-down-1);
 
-    // Quem ainda não entrou: o cartão de prévia do Discourse (chat-channel-preview-card).
+    // Quem ainda não entrou: um cartão de prévia.
     &--join {
       border-color: var(--chat-tertiary-medium);
       background: ~"color-mix(in srgb, var(--cn-accent) 7.5%, transparent)";
@@ -760,7 +760,7 @@ body.ChatFullPage {
     padding: 0.15rem 1rem;
   }
 
-  // O Discourse não tinge a linha que menciona o leitor nem a fixada: a
+  // Não se tinge a linha que menciona o leitor nem a fixada: a
   // menção acende na pílula e a fixada leva a marca ao lado da hora.
   &--mentioned,
   &--pinned {
@@ -965,7 +965,7 @@ body.ChatFullPage {
   }
 
   // Dentro da própria mensagem, no canto de cima: subindo para a linha de
-  // cima (o -0.75em do Discourse), a barra da mensagem seguinte cobria o pé
+  // cima (-0.75em), a barra da mensagem seguinte cobria o pé
   // da anterior — e o indicador do fio dela deixava de receber o clique.
   // Acima do "pular para o fim" (z-index 1, ChatChannel-scrollDown): com a
   // última mensagem no hover, o botão redondo cobria a barra de ações dela.
@@ -1027,7 +1027,7 @@ body.ChatFullPage {
 
 // Na gaveta e nas telas estreitas a barra tem os mesmos botões num tamanho
 // menor: com a barra do tamanho da página cheia (o ramon/chat mostra todas as
-// ações, não três e um "…" como o Discourse), ela cobria o nome do autor.
+// ações, não três e um "…"), ela cobria o nome do autor.
 .ChatDrawer .ChatMessage-actions,
 .ChatThreadPanel .ChatMessage-actions {
   top: 2px;
@@ -1167,8 +1167,8 @@ body.ChatFullPage {
   }
 }
 
-// O indicador do fio debaixo da original (chat-message-thread-indicator).
-// O clique é sempre do botão inteiro (o Discourse tira os filhos do alvo) e
+// O indicador do fio debaixo da original.
+// O clique é sempre do botão inteiro (os filhos saem do alvo) e
 // ele fica acima da barra de ações das linhas vizinhas.
 .ChatThreadIndicator {
   position: relative;
@@ -1446,7 +1446,7 @@ body.ChatFullPage {
 }
 
 // ---------------------------------------------------------------------
-// Pesquisar, Meus tópicos, Salvos e Denúncias: as listas do Discourse
+// Pesquisar, Meus tópicos, Salvos e Denúncias: listas simples
 // (fio embaixo de cada item, fundo no hover).
 // ---------------------------------------------------------------------
 .ChatSearch {
@@ -1936,7 +1936,7 @@ body.ChatFullPage {
 
 // ---------------------------------------------------------------------
 // O ícone do cabeçalho: o balão dos ícones do tema, com o ponto azul das
-// não lidas e o número verde das menções (chat-header-icon do Discourse).
+// não lidas e o número verde das menções.
 // ---------------------------------------------------------------------
 .Canela .Header-secondary .Header-controls > li > .ChatNavButton {
   position: relative;
@@ -2136,7 +2136,7 @@ body.CanelaRamonChatSurface {
     }
   }
 
-  // As abas (Todos, Abertos, Fechados, Arquivados): as pílulas do Discourse.
+  // As abas (Todos, Abertos, Fechados, Arquivados): em pílulas.
   &-filters {
     grid-area: filters;
     gap: 0;
@@ -3164,7 +3164,7 @@ body.CanelaRamonChatSurface {
 }
 
 // As informações do canal (Ajustes, Membros, Cargos) no formato horizontal
-// das configurações de canal do Discourse (control-group): o modal largo,
+// de configurações: o modal largo,
 // cada seção com o rótulo à esquerda e o controle, com a ajuda logo abaixo,
 // à direita. No celular volta a uma coluna.
 .ChatChannelInfoModal.Modal--medium {
@@ -3557,7 +3557,7 @@ body.CanelaRamonChatSurface {
 }
 
 // ---------------------------------------------------------------------
-// Celular (css-chat_mobile do Discourse): a lista de canais é a tela
+// Celular: a lista de canais é a tela
 // inteira, com linhas de 4em separadas por fio; a conversa tem os toques
 // maiores e o enviar na bolinha de destaque.
 // ---------------------------------------------------------------------

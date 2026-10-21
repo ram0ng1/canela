@@ -9,7 +9,7 @@ namespace Ramon\Canela\Profile;
  *
  * Não usa o formatter do Flarum de propósito: ele carrega a configuração de
  * todas as extensões (menções, BBCode, embeds…), e algumas esperam um post
- * como contexto. A bio do Discourse aceita pouco além de links e ênfase, e um
+ * como contexto. A bio aceita pouco além de links e ênfase, e um
  * renderizador pequeno, que escapa TUDO antes de acrescentar as poucas tags
  * permitidas, não tem como deixar passar HTML do usuário.
  *

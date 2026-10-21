@@ -1,5 +1,5 @@
 /*
- * "Informações do canal" (c-channel-info do Discourse), com as abas Membros e
+ * "Informações do canal", com as abas Membros e
  * Configurações:
  *
  * - Configurações: nome, slug e descrição; as preferências pessoais
@@ -119,7 +119,7 @@ class ChannelSettings extends Component<SectionAttrs> {
                 this.editing !== 'name' &&
                 Row(
                   <>
-                    {/* eslint-disable-next-line i18n/no-hardcoded-text -- "Slug" é o termo técnico, igual ao do Discourse em todo idioma */}
+                    {/* eslint-disable-next-line i18n/no-hardcoded-text -- "Slug" é o termo técnico, igual em todo idioma */}
                     <strong>Slug</strong>
                     <div className="c-channel-settings__slug">{channel.slug}</div>
                   </>

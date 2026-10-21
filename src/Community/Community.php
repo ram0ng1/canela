@@ -72,7 +72,7 @@ final class Community
     /**
      * Listar usuários é a permissão `searchUsers` do core ("Ver a lista de
      * usuários", que o core só dá aos membros). O admin pode abrir o diretório
-     * aos visitantes como o Discourse faz por padrão — mas nunca num fórum
+     * aos visitantes — mas nunca num fórum
      * fechado, em que o visitante nem pode ver o fórum.
      */
     public function canListUsers(User $actor): bool
