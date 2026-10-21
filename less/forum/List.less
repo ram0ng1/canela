@@ -459,6 +459,59 @@
     display: none;
   }
 }
+
+// Na lista, categoria e etiquetas viram pílulas: a categoria com o fundo
+// clarinho na cor dela e o nome num tom escuro da mesma cor; as etiquetas e
+// os números das extensões (votos, curtidas), só com o contorno.
+.CanelaTopic > .CanelaTopic-meta {
+  gap: 6px;
+
+  .CanelaBadges {
+    gap: 6px;
+  }
+  // Cada etiqueta quebra sozinha, logo depois da categoria, e não o grupo
+  // inteiro de uma vez para a linha de baixo.
+  .CanelaBadges-labels {
+    display: contents;
+  }
+
+  .CanelaCategoryBadge,
+  .CanelaTagBadge,
+  .CanelaTopic-stats .DiscussionListItem-stats-item {
+    padding: 0.2em 0.65em;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    line-height: 1.3;
+  }
+
+  .CanelaCategoryBadge {
+    background: ~"color-mix(in srgb, var(--category-color, var(--cn-primary-medium)) 13%, transparent)";
+    color: ~"color-mix(in srgb, var(--category-color, var(--cn-primary-medium)) 55%, var(--cn-primary))";
+
+    &:hover,
+    &:focus-visible {
+      background: ~"color-mix(in srgb, var(--category-color, var(--cn-primary-medium)) 22%, transparent)";
+      color: ~"color-mix(in srgb, var(--category-color, var(--cn-primary-medium)) 45%, var(--cn-primary))";
+    }
+  }
+
+  .CanelaTagBadge,
+  .CanelaTopic-stats .DiscussionListItem-stats-item {
+    border-color: var(--cn-primary-low);
+    color: var(--cn-primary-high);
+  }
+
+  .CanelaTagBadge:hover,
+  .CanelaTagBadge:focus-visible {
+    border-color: var(--cn-primary-low-mid);
+    color: var(--cn-primary);
+  }
+
+  .CanelaTopic-stats {
+    gap: 6px;
+  }
+}
+
 .CanelaTopic-info.DiscussionListItem-info {
   display: inline-flex;
   flex-wrap: wrap;

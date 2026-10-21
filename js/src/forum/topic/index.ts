@@ -16,12 +16,14 @@ import installAuthorFilter from './authorFilter';
 import installEventPosts from './eventPosts';
 import installReplyToComposer from './replyToComposer';
 import installMarkUnread from './markUnread';
+import installBackHistory from './backHistory';
 
 export default function installTopic(): void {
   // O composer no "em resposta a" do avocado (extends por nome de módulo:
   // os corpos do composer vêm em chunks).
   installReplyToComposer();
   installMarkUnread();
+  installBackHistory();
 
   // Tudo é registrado no beforeMount, que roda depois de todos os
   // initializers: o extend registrado por último roda por último, e é assim

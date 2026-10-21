@@ -169,7 +169,12 @@ export function categoryBadge(tag: CanelaTag, link = true, parent: CanelaTag | n
         <span className="CanelaCategoryBadge-name">{tag.name()}</span>,
       ]
     : [categorySymbol(tag), <span className="CanelaCategoryBadge-name">{tag.name()}</span>];
-  const attrs = { className: classList('CanelaCategoryBadge', { 'CanelaCategoryBadge--child': !!parent }), title: tag.description() || undefined };
+  // A cor também no badge: na lista, ela pinta o fundo da pílula.
+  const attrs = {
+    className: classList('CanelaCategoryBadge', { 'CanelaCategoryBadge--child': !!parent }),
+    title: tag.description() || undefined,
+    style: tag.color() ? { '--category-color': tag.color() } : undefined,
+  };
 
   return link ? (
     <Link {...attrs} href={tagUrl(tag)}>
