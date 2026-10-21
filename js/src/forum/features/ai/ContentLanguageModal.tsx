@@ -1,6 +1,6 @@
 /*
  * "Preferências de idioma do conteúdo", o modal do 文A no topo da linha do
- * tempo (o content-localization do Discourse):
+ * tempo:
  *
  * - o idioma da interface (o mesmo seletor do cabeçalho: muda e recarrega);
  * - os idiomas que a pessoa entende: postagens e títulos neles saem no
@@ -22,7 +22,56 @@ import { displayNames } from '../../utils/intl';
 import { autoTranslate, saveContentLanguagePreferences, understoodLocales } from './translation';
 
 /** Os idiomas oferecidos, além dos instalados no fórum e dos já escolhidos. */
-const COMMON_LANGUAGES = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt', 'ru', 'sv', 'tr', 'uk', 'vi', 'zh'];
+const COMMON_LANGUAGES = [
+  'ar',
+  'be',
+  'bg',
+  'bs',
+  'ca',
+  'cs',
+  'da',
+  'de',
+  'el',
+  'en',
+  'es',
+  'et',
+  'fa',
+  'fi',
+  'fr',
+  'he',
+  'hi',
+  'hr',
+  'hu',
+  'hy',
+  'id',
+  'it',
+  'ja',
+  'ka',
+  'kk',
+  'ko',
+  'lt',
+  'lv',
+  'mk',
+  'ms',
+  'nb',
+  'nl',
+  'pl',
+  'pt',
+  'ro',
+  'ru',
+  'sk',
+  'sl',
+  'sq',
+  'sr',
+  'sv',
+  'sw',
+  'th',
+  'tr',
+  'uk',
+  'ur',
+  'vi',
+  'zh',
+];
 
 function tr(key: string, params: Record<string, unknown> = {}): string {
   return app.translator.trans(`ramon-canela.forum.ai.translation.prefs.${key}`, params, true) as string;
@@ -35,6 +84,18 @@ function languageName(code: string): string {
     return name.charAt(0).toLocaleUpperCase() + name.slice(1);
   } catch {
     return code;
+  }
+}
+
+/** O nome do idioma nele mesmo ("Árabe (العربية)"), quando é diferente. */
+function nativeName(code: string): string {
+  try {
+    const own = displayNames([code], { type: 'language' }).of(code) || '';
+    const native = own.charAt(0).toLocaleUpperCase(code) + own.slice(1);
+
+    return native && native !== languageName(code) ? native : '';
+  } catch {
+    return '';
   }
 }
 
@@ -143,13 +204,22 @@ export default class ContentLanguageModal extends Modal<IInternalModalAttrs> {
                 const wanted = filter.trim().toLocaleLowerCase();
 
                 return this.languages()
-                  .filter((code) => !wanted || languageName(code).toLocaleLowerCase().includes(wanted) || code.toLowerCase().startsWith(wanted))
+                  .filter(
+                    (code) =>
+                      !wanted ||
+                      languageName(code).toLocaleLowerCase().includes(wanted) ||
+                      nativeName(code).toLocaleLowerCase().includes(wanted) ||
+                      code.toLowerCase().startsWith(wanted)
+                  )
                   .map((code) => ({
                     key: code,
                     selected: chosen.includes(code),
                     content: (
                       <span className="CanelaContentLanguage-row">
-                        <span>{languageName(code)}</span>
+                        <span>
+                          {languageName(code)}
+                          {nativeName(code) && <span className="CanelaContentLanguage-native"> ({nativeName(code)})</span>}
+                        </span>
                         {chosen.includes(code) && <Icon name="fas fa-check" />}
                       </span>
                     ),

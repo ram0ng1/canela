@@ -1,12 +1,11 @@
-// IA do Discourse (discourse-ai): página de conversas, painel de resumo,
-// ajudante ✨ do editor, "Perguntar à IA" na busca, resumos curtos e
-// relacionados. Medidas e transições tiradas do CSS do Meta
-// (css-discourse-ai*.css); as cores vêm dos tokens --cn-*.
+// IA: página de conversas, painel de resumo, ajudante ✨ do editor,
+// "Perguntar à IA" na busca, resumos curtos e relacionados. As cores vêm
+// dos tokens --cn-*.
 
 // Só com o recurso ligado (@config-canela-ai, registrada no extend.php).
 & when (@config-canela-ai = true) {
 
-// ── Animações (os nomes do Discourse, com prefixo) ──────────────────────────
+// ── Animações (com prefixo) ─────────────────────────────────────────────────
 
 @keyframes canela-ai-flashing {
   0%,
@@ -70,8 +69,7 @@
   }
 }
 
-// O painel de resumo entra pela direita e sai por ela (float-left /
-// float-out-right do Discourse).
+// O painel de resumo entra pela direita e sai por ela.
 @keyframes canela-ai-float-left {
   from {
     opacity: 0;
@@ -94,7 +92,7 @@
   }
 }
 
-// Os menus do float-kit aparecem com um fade e um deslize curto.
+// Os menus flutuantes aparecem com um fade e um deslize curto.
 @keyframes canela-ai-menu-in {
   from {
     opacity: 0;
@@ -148,7 +146,7 @@
   font-size: 1rem;
   line-height: normal;
   vertical-align: baseline;
-  // O `--tertiary-medium` do Discourse: a cor de destaque clareada.
+  // A cor de destaque clareada.
   color: ~"color-mix(in srgb, var(--cn-accent) 55%, var(--cn-surface))";
   animation: canela-ai-flashing 1.5s 3s infinite;
 }
@@ -184,7 +182,7 @@
     canela-ai-appear 0.5s cubic-bezier(0.445, 0.05, 0.55, 0.95) ~"calc(var(--i) * 250ms)" forwards,
     canela-ai-blink 5s cubic-bezier(0.55, 0.085, 0.68, 0.53) ~"calc(5s + var(--i) * 250ms)" infinite;
 
-  // As larguras do Discourse, bloco a bloco.
+  // As larguras, bloco a bloco.
   @widths: 10%, 12%, 18%, 14%, 18%, 14%, 22%, 5%, 25%, 14%, 18%, 12%, 22%, 18%, 13%, 22%, 19%, 13%, 22%, 25%;
 
   .width-loop(@i) when (@i > 0) {
@@ -200,7 +198,7 @@
   }
 }
 
-// "Pesquisou por …" — o .ai-details do Discourse.
+// "Pesquisou por …".
 .CanelaAi-tools {
   margin-bottom: 0.5rem;
 }
@@ -300,7 +298,7 @@
       vertical-align: -0.05em;
     }
 
-    // Centralização ótica, como no Discourse.
+    // Centralização ótica.
     @media screen and (min-height: 600px) {
       margin-top: -6em;
     }
@@ -671,7 +669,7 @@
     }
   }
 
-  // O "…" aparece ao passar o mouse, como o menu de contexto do Discourse.
+  // O "…" aparece ao passar o mouse.
   .CanelaAiSidebar-menu {
     position: absolute;
     right: 0.25em;
@@ -1257,7 +1255,7 @@
 }
 
 // ---------------------------------------------------------------------------
-// Tradução automática: o 文A ao lado da data (.post-language do Discourse),
+// Tradução automática: o 文A ao lado da data,
 // com o balão do idioma original e o aviso em cinza, e o botão redondo da
 // linha do tempo que alterna o tópico inteiro.
 // ---------------------------------------------------------------------------
@@ -1399,13 +1397,34 @@
 }
 
 // ── Preferências de idioma do conteúdo ──────────────────────────────────────
-// O modal do Discourse: o título sobre um traço, os campos na largura toda
+// O modal: o título sobre um traço, os campos na largura toda
 // com rótulos pequenos em negrito, a ajuda em cinza, e o rodapé com os botões
 // sobre outro traço de ponta a ponta.
 
 .CanelaContentLanguageModal {
+  // A lista de idiomas abre por cima e passa da borda do modal, em vez de
+  // ficar presa (e cortada) dentro dele.
+  .Modal-content {
+    overflow: visible;
+  }
+
   .Modal-header {
     border-bottom: 1px solid var(--cn-primary-low);
+    border-radius: var(--cn-radius) var(--cn-radius) 0 0;
+  }
+
+  // Flutuando por cima (os outros modais abrem o seletor no fluxo, e o modal
+  // cresce): aqui a lista sai do modal, que não muda de tamanho.
+  .CanelaSelectKit-body {
+    position: absolute;
+    top: ~"calc(100% + 3px)";
+    z-index: 10;
+    margin-top: 0;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .CanelaSelectKit-collection {
+    max-height: 300px;
   }
 
   .Modal-body {
@@ -1421,7 +1440,7 @@
   text-align: left;
 
   // O core dá 10px entre o rótulo e o campo (flex com gap) e margem entre os
-  // grupos: aqui o espaçamento é o do Discourse, mais junto.
+  // grupos: aqui o espaçamento é mais junto.
   .Form-group {
     display: block;
     margin: 0;
@@ -1459,7 +1478,7 @@
 }
 
 // O campo dos idiomas: "Selecionar…" à esquerda e o + na ponta, na largura
-// toda, como o multi-select do Discourse.
+// toda, como um multi-select.
 .CanelaContentLanguage-understood.CanelaSelectKit {
   display: block;
   width: 100%;
@@ -1535,7 +1554,12 @@
   }
 }
 
+.CanelaContentLanguage-native {
+  color: var(--cn-primary-medium);
+}
+
 .CanelaContentLanguageModal .Modal-footer.CanelaContentLanguage-footer {
+  border-radius: 0 0 var(--cn-radius) var(--cn-radius);
   display: flex;
   align-items: center;
   gap: 8px;
