@@ -999,6 +999,16 @@ ramon-canela:
         disclaimer: AI による翻訳は正確でない場合があります。
         show_original_all: 原文を表示
         show_translated_all: 翻訳を表示
+        prefs:
+          title: コンテンツの言語設定
+          interface_language: インターフェースの言語
+          understood_label: 理解できる言語
+          understood_help: これらの言語のトピックと投稿は翻訳されません。インターフェースの言語は常に理解できるものとして扱われます。
+          understood_placeholder: 選択…
+          remove: '{language} を削除'
+          auto_translate: 他の言語のトピックと投稿を自動的に翻訳する
+          save: 変更を保存
+          cancel: キャンセル
       errors:
         generic: AI は現在応答できません。もう一度お試しください。
       tools:

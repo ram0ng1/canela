@@ -29,6 +29,7 @@ import { leaveDialog } from './actions';
 import { shortDate } from '../../utils/dates';
 import humanTime from 'flarum/common/helpers/humanTime';
 import { t } from '../../utils/settings';
+import { bellIcon } from '../../utils/bells';
 import { boxesOn, dialogViews, groupLabel, messageCount, messageGroup, participants, staffGroups, type Dialog } from './util';
 
 // ---------------------------------------------------------------------
@@ -311,8 +312,20 @@ interface Level {
 
 /** Os níveis do Discourse para mensagens (`watching_pm` … `muted_pm`). */
 const LEVELS: Level[] = [
-  { value: 3, key: 'watching', icon: 'fas fa-bell' },
-  { value: 2, key: 'tracking', icon: 'far fa-bell' },
+  {
+    value: 3,
+    key: 'watching',
+    get icon() {
+      return bellIcon('watching');
+    },
+  },
+  {
+    value: 2,
+    key: 'tracking',
+    get icon() {
+      return bellIcon('tracking');
+    },
+  },
   { value: 1, key: 'regular', icon: 'far fa-bell' },
   { value: 0, key: 'muted', icon: 'fas fa-bell-slash' },
 ];

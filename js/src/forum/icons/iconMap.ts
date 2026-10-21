@@ -439,6 +439,11 @@ export const CANELA_EXTRAS: Record<string, string> = {
   // destoava, menor e preenchido, entre os ícones de traço.
   'sticky-note': 'sticky-note',
   'note-sticky': 'sticky-note',
+  // O sino de "acompanhando" (o d-watching do Discourse Lucide): com ondas,
+  // diferente do sino simples de "normal".
+  'bell-ring': 'bell-ring',
+  // E o de "monitorando" (d-tracking), com o ponto.
+  'bell-dot': 'bell-dot',
   'calendar-days': 'calendar-days',
   'circle-dot': 'circle-dot',
   // O seletor de tema do core usa o laptop para "automático"

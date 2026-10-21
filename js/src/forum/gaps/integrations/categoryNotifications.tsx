@@ -23,6 +23,7 @@ import type Mithril from 'mithril';
 import ListNavigation from '../../list/ListNavigation';
 import { currentTag } from '../../utils/tags';
 import { isExtensionEnabled, t } from '../../utils/settings';
+import { bellIcon } from '../../utils/bells';
 
 interface Level {
   value: string | null;
@@ -31,7 +32,13 @@ interface Level {
 }
 
 const LEVELS: Level[] = [
-  { value: 'lurk', key: 'watching', icon: 'fas fa-bell' },
+  {
+    value: 'lurk',
+    key: 'watching',
+    get icon() {
+      return bellIcon('watching');
+    },
+  },
   { value: 'follow', key: 'watching_first_post', icon: 'far fa-circle-dot' },
   { value: null, key: 'normal', icon: 'far fa-bell' },
   { value: 'ignore', key: 'muted', icon: 'fas fa-bell-slash' },

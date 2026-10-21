@@ -999,6 +999,16 @@ ramon-canela:
         disclaimer: Traduções geradas por IA podem ser imprecisas.
         show_original_all: Mostrar o conteúdo original
         show_translated_all: Mostrar o conteúdo traduzido
+        prefs:
+          title: Preferências de idioma do conteúdo
+          interface_language: Idioma da interface
+          understood_label: Idiomas que eu entendo
+          understood_help: Tópicos e posts nesses idiomas não serão traduzidos. O idioma da interface sempre conta como entendido.
+          understood_placeholder: Selecionar…
+          remove: 'Remover {language}'
+          auto_translate: Traduzir automaticamente tópicos e posts em outros idiomas
+          save: Salvar alterações
+          cancel: Cancelar
       errors:
         generic: A IA não conseguiu responder agora. Tente de novo.
       tools:

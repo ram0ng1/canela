@@ -999,6 +999,16 @@ ramon-canela:
         disclaimer: AI-generated translations may be inaccurate.
         show_original_all: Show original content
         show_translated_all: Show translated content
+        prefs:
+          title: Content language preferences
+          interface_language: Interface language
+          understood_label: Languages I understand
+          understood_help: Topics and posts in these languages won't be translated. Your interface language is always considered understood.
+          understood_placeholder: Select…
+          remove: 'Remove {language}'
+          auto_translate: Automatically translate topics and posts in other languages
+          save: Save changes
+          cancel: Cancel
       errors:
         generic: The AI could not answer right now. Please try again.
       tools:

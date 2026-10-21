@@ -15,6 +15,7 @@ import classList from 'flarum/common/utils/classList';
 import type Discussion from 'flarum/common/models/Discussion';
 
 import { t } from '../../utils/settings';
+import { bellIcon } from '../../utils/bells';
 
 export type SubscriptionLevel = 'follow' | 'ignore' | null;
 
@@ -25,9 +26,15 @@ interface Level {
 }
 
 export const LEVELS: Level[] = [
-  { value: 'follow', key: 'watching', icon: 'fas fa-bell' },
-  { value: null, key: 'normal', icon: 'far fa-bell' },
-  { value: 'ignore', key: 'muted', icon: 'fas fa-bell-slash' },
+  {
+    value: 'follow',
+    key: 'watching',
+    get icon() {
+      return bellIcon('watching');
+    },
+  },
+  { value: null, key: 'normal', icon: bellIcon('normal') },
+  { value: 'ignore', key: 'muted', icon: bellIcon('muted') },
 ];
 
 export function currentLevel(discussion: Discussion): Level {

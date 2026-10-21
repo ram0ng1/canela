@@ -19,7 +19,7 @@ function shortCode(locale: string): string {
 }
 
 /** A mesma troca do core: logado grava a preferência; visitante grava o cookie; a página recarrega. */
-function choose(locale: string): void {
+export function chooseLocale(locale: string): void {
   if (locale === (app.data as any).locale) return;
 
   if (app.session.user) {
@@ -64,7 +64,7 @@ export default function LocaleSwitcher(): Mithril.Children {
           role="menuitemradio"
           aria-checked={String(locale === current)}
           lang={locale}
-          onclick={() => choose(locale)}
+          onclick={() => chooseLocale(locale)}
           onkeydown={move}
         >
           <span className="CanelaLocale-name">{name}</span>

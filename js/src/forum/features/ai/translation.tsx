@@ -9,8 +9,9 @@
  * A tradução entra pelo próprio modelo (`contentHtml()` e `title()`), então
  * aparece em todo lugar que mostra o post ou o título; o 文A à esquerda da
  * data alterna aquela postagem (na primeira, também o título do tópico), e o
- * botão redondo da linha do tempo alterna o tópico inteiro (lembrado neste
- * navegador, como o "mostrar original" do Discourse). Enquanto uma postagem
+ * 文A do topo da linha do tempo abre as "Preferências de idioma do conteúdo"
+ * do Discourse: os idiomas que a pessoa lê no original e a tradução
+ * automática (na conta, ou neste navegador para visitantes). Enquanto uma postagem
  * está sendo traduzida, um ícone girando fica no lugar do 文A. Editar o
  * título sempre parte do título original.
  */
@@ -54,24 +55,104 @@ function info(): TranslationInfo | null {
 // Original ou tradução
 // ─────────────────────────────────────────────────────────────────────────────
 
-let allOriginal = readStored();
 /** Os itens que a pessoa virou um a um, ao contrário do modo do tópico. */
 const flipped = new Set<string>();
 /** Ligado enquanto o título original precisa sair do modelo (renomear). */
 let bypass = 0;
 
-function readStored(): boolean {
+// ─────────────────────────────────────────────────────────────────────────────
+// Preferências de idioma do conteúdo (o modal do 文A da linha do tempo)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const UNDERSTOOD_KEY = 'canela.translation.understood';
+
+function readStorage(key: string): string | null {
   try {
-    return window.localStorage.getItem(STORAGE_KEY) === '1';
+    return window.localStorage.getItem(key);
   } catch {
-    return false;
+    return null;
   }
+}
+
+function writeStorage(key: string, value: string): void {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // Navegação privada: vale só nesta página.
+  }
+}
+
+/** Os idiomas que a pessoa lê sem tradução (na conta; no navegador, para visitantes). */
+export function understoodLocales(): string[] {
+  const user = app.session.user;
+
+  if (user) {
+    const value = (user.preferences() as Record<string, unknown> | undefined)?.canelaUnderstoodLocales;
+
+    return Array.isArray(value) ? value.filter((code): code is string => typeof code === 'string') : [];
+  }
+
+  try {
+    const value = JSON.parse(readStorage(UNDERSTOOD_KEY) || '[]');
+
+    return Array.isArray(value) ? value.filter((code): code is string => typeof code === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+/** "Traduzir automaticamente": desligado, o tópico abre no original. */
+export function autoTranslate(): boolean {
+  const user = app.session.user;
+
+  if (user) return (user.preferences() as Record<string, unknown> | undefined)?.canelaAutoTranslate !== false;
+
+  // O "mostrar original" que este navegador já guardava vale como desligado.
+  return readStorage(STORAGE_KEY) !== '1';
+}
+
+export function saveContentLanguagePreferences(understood: string[], auto: boolean): Promise<unknown> {
+  const user = app.session.user;
+
+  flipped.clear();
+
+  if (user) return user.savePreferences({ canelaUnderstoodLocales: understood, canelaAutoTranslate: auto }).then(() => m.redraw());
+
+  writeStorage(UNDERSTOOD_KEY, JSON.stringify(understood));
+  writeStorage(STORAGE_KEY, auto ? '0' : '1');
+  m.redraw();
+
+  return Promise.resolve();
+}
+
+/** "pt-BR" e "pt" contam como o mesmo idioma: quem entende português lê os dois. */
+function baseLanguage(code: string): string {
+  return code.split(/[-_]/)[0].toLowerCase();
+}
+
+function understood(locale: string | null | undefined): boolean {
+  if (!locale) return false;
+
+  const base = baseLanguage(locale);
+
+  return understoodLocales().some((code) => baseLanguage(code) === base);
+}
+
+function itemLocale(kind: Kind, id: string): string | null {
+  if (kind === 'p') return app.store.getById<Post>('posts', id)?.attribute<string | null>('canelaLocale') ?? null;
+
+  return app.store.getById<Discussion>('discussions', id)?.attribute<string | null>('canelaTitleLocale') ?? null;
+}
+
+/** Sem virar nada à mão, o item sai no original? */
+function originalByDefault(kind: Kind, id: string): boolean {
+  return !autoTranslate() || understood(itemLocale(kind, id));
 }
 
 function showing(kind: Kind, id: string | undefined): boolean {
   if (bypass > 0 || !id) return false;
 
-  return allOriginal ? flipped.has(`${kind}${id}`) : !flipped.has(`${kind}${id}`);
+  return originalByDefault(kind, id) ? flipped.has(`${kind}${id}`) : !flipped.has(`${kind}${id}`);
 }
 
 /** Vira juntos (o 文A da primeira postagem vira também o título). */
@@ -80,19 +161,6 @@ function flip(keys: string[]): void {
     if (flipped.has(key)) flipped.delete(key);
     else flipped.add(key);
   });
-
-  m.redraw();
-}
-
-function setAllOriginal(value: boolean): void {
-  allOriginal = value;
-  flipped.clear();
-
-  try {
-    window.localStorage.setItem(STORAGE_KEY, value ? '1' : '0');
-  } catch {
-    // Navegação privada: vale só nesta página.
-  }
 
   m.redraw();
 }
@@ -153,6 +221,10 @@ function enqueue(kind: Kind, model: Post | Discussion | undefined | null): void 
   const flag = kind === 'p' ? 'canelaTranslatable' : 'canelaTitleTranslatable';
 
   if (!model.attribute(flag)) return;
+
+  // Nada de gastar o modelo com o que a pessoa vai ler no original: tradução
+  // automática desligada, ou um idioma que ela entende.
+  if (!autoTranslate() || understood(model.attribute<string | null>(kind === 'p' ? 'canelaLocale' : 'canelaTitleLocale'))) return;
 
   const key = versionKey(kind, model);
 
@@ -331,13 +403,6 @@ function translating(): Mithril.Children {
   );
 }
 
-/** O tópico tem algo traduzido (título ou postagem carregada)? */
-function topicHasTranslation(discussion: Discussion): boolean {
-  if (titleTranslation(discussion)) return true;
-
-  return app.store.all<Post>('posts').some((post) => post.discussion() === discussion && !!postTranslation(post));
-}
-
 export default function installTranslation(): void {
   // A tradução pelo próprio modelo: aparece no post, nas citações e na prévia.
   override(Post.prototype as any, 'contentHtml', function (this: Post, original: () => string | null | undefined) {
@@ -411,24 +476,23 @@ export default function installTranslation(): void {
     if (info()?.titles) enqueue('d', this.attrs.discussion);
   });
 
-  // O botão redondo da linha do tempo: o tópico inteiro no original, ou
-  // traduzido. Aceso (`active`) enquanto a tradução está ligada.
+  // O 文A do topo da linha do tempo, como no Discourse: abre as
+  // "Preferências de idioma do conteúdo" (idioma da interface, os que a
+  // pessoa entende e a tradução automática). Cada postagem continua com o
+  // 文A dela, que alterna só aquela.
   extend('flarum/forum/components/DiscussionPage' as any, 'sidebarItems', function (this: any, items: ItemList<Mithril.Children>) {
-    const discussion: Discussion | undefined = this.discussion;
+    if (!info() || !this.discussion) return;
 
-    if (!info() || !discussion || !topicHasTranslation(discussion)) return;
-
-    const label = app.translator.trans(`ramon-canela.forum.ai.translation.${allOriginal ? 'show_translated_all' : 'show_original_all'}`) as string;
+    const label = app.translator.trans('ramon-canela.forum.ai.translation.prefs.title') as string;
 
     items.add(
-      'canelaTranslationToggle',
+      'canelaContentLanguage',
       <Tooltip text={label}>
         <Button
-          className={classList('Button Button--icon CanelaTranslationToggle', { active: !allOriginal })}
+          className={classList('Button Button--icon CanelaTranslationToggle', { active: autoTranslate() })}
           icon="fas fa-language"
           aria-label={label}
-          aria-pressed={allOriginal ? 'false' : 'true'}
-          onclick={() => setAllOriginal(!allOriginal)}
+          onclick={() => app.modal.show(() => import('./ContentLanguageModal'))}
         />
       </Tooltip>,
       79
