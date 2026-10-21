@@ -20,11 +20,11 @@ use Illuminate\Database\Query\Builder;
 use Ramon\Canela\Messages\MessagesSchema;
 
 /**
- * `filter[canelaBox]`: as caixas de mensagens do Discourse
- * (`TopicQuery::PrivateMessageLists`), sobre as conversas do flarum/messages.
+ * `filter[canelaBox]`: as caixas de mensagens, sobre as conversas do
+ * flarum/messages.
  *
  * - `inbox` ("Últimos"): fora do arquivo e com mensagem de outra pessoa
- *   (`have_posts_from_others`) — uma conversa que só eu comecei e ninguém
+ *   — uma conversa que só eu comecei e ninguém
  *   respondeu ainda não está na caixa de entrada, só em "Enviadas".
  * - `sent`: fora do arquivo e com mensagem minha.
  * - `new`: fora do arquivo e nunca aberta (`last_read_message_id = 0`).

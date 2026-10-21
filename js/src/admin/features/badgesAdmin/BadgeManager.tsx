@@ -12,7 +12,7 @@ import { openGrantsModal } from './BadgeGrantsModal';
 import { KEY, deleteBadge, errorText, hasAdminColumns, loadBadges, restoreSystemBadges, saveBadge, type BadgeRow } from './api';
 
 /**
- * O admin de emblemas, como o /admin/badges do Discourse: todos os emblemas
+ * O admin de emblemas, em /admin/badges: todos os emblemas
  * (do sistema e personalizados) com medalha, tipo, concessões e o
  * liga/desliga; e as ações de criar, editar, conceder, ver concessões,
  * remover e restaurar os do sistema.

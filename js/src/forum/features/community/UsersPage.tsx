@@ -9,11 +9,11 @@ import { PERIODS, type PeriodKey } from './api';
 import { forumBool, t } from '../../utils/settings';
 
 /**
- * O diretório de usuários do Discourse (/u): quem participa e quanto, no
+ * O diretório de usuários (/u): quem participa e quanto, no
  * período escolhido.
  *
- * Os filtros ficam na URL (?period=weekly&order=postCount…) como no
- * Discourse, para dar para compartilhar a tabela. A URL é trocada com
+ * Os filtros ficam na URL (?period=weekly&order=postCount…),
+ * para dar para compartilhar a tabela. A URL é trocada com
  * `replaceState`, e não pelo roteador: mudar a rota recriaria a página e
  * jogaria fora as linhas já carregadas.
  */
@@ -62,7 +62,7 @@ export default class UsersPage extends CommunityPage {
   content(): Mithril.Children {
     return (
       <div className="CanelaUsers">
-        {/* O Discourse não tem título visível aqui: o período faz esse papel. */}
+        {/* Sem título visível aqui: o período faz esse papel. */}
         <h1 className="sr-only">{t('community.users.title')}</h1>
         <DirectoryControls state={this.directory} />
         <DirectoryTable state={this.directory} emptyText={t('community.users.empty')} />

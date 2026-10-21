@@ -65,8 +65,8 @@ export default function installBadges() {
     );
   });
 
-  // O nível na linha de estatísticas do perfil ("Nível de confiança regular"),
-  // como no Discourse; os emblemas de destaque só no popover — no perfil, a
+  // O nível na linha de estatísticas do perfil ("Nível de confiança regular");
+  // os emblemas de destaque só no popover — no perfil, a
   // aba Emblemas já está logo abaixo.
   extend(UserStats.prototype, 'items', function (this: UserStats, items: ItemList<Mithril.Children>) {
     const level = trustLevel(this.attrs.user);

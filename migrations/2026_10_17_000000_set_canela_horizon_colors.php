@@ -12,7 +12,7 @@
 use Illuminate\Database\Schema\Builder;
 
 /*
- * Leva as cores do fórum para a paleta do Horizon (o tema padrão do Discourse):
+ * Leva as cores do fórum para a paleta padrão do tema:
  * a primária vira o violeta #595bca, de onde o tema deriva fundo, seleção e
  * links. Só troca o que ainda está no padrão — do core ou da primeira versão do
  * Canela, que usava verde e lima. Uma cor escolhida pelo admin fica como está.

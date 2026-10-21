@@ -90,7 +90,7 @@ export default class BadgePage extends BadgesBasePage {
     const count = badge.grantCount() || 0;
     const type = badge.type() || 'bronze';
 
-    // O `show-badge` do Discourse: "Emblemas / Nome" como título, o cartão
+    // A página do emblema: "Emblemas / Nome" como título, o cartão
     // grande com o texto longo e, embaixo, quem ganhou em grade.
     return (
       <div className="CanelaBadgeShow-inner">

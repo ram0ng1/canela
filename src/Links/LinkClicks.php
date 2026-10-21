@@ -23,10 +23,10 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
 
 /**
- * Os cliques nos links das postagens (o `topic_link_clicks` do Discourse):
+ * Os cliques nos links das postagens:
  * gravar, contar por tópico e por autor.
  *
- * Os links não ganham tabela própria (o `topic_links` do Discourse): eles já
+ * Os links não ganham tabela própria: eles já
  * estão no XML de cada postagem (`<URL url="…">`), e o tema os lê de lá —
  * para conferir se o clique é num link que existe e para listar os links do
  * tópico, com cache.
@@ -37,7 +37,7 @@ final class LinkClicks
 
     public const ENABLED = 'canela.stats_links_enabled';
 
-    /** O Discourse conta um clique por link por pessoa (ou IP) por dia. */
+    /** Conta um clique por link por pessoa (ou IP) por dia. */
     public const DEDUPE_SECONDS = 86400;
 
     /** Teto de cliques por minuto de uma mesma pessoa ou IP: mais que isso é script. */
@@ -100,7 +100,7 @@ final class LinkClicks
         return $links;
     }
 
-    /** Só http(s) e para fora do fórum: os links internos o Discourse mostra de outro jeito. */
+    /** Só http(s) e para fora do fórum: os links internos ficam de fora. */
     public function isExternal(string $url): bool
     {
         $parts = parse_url($url);

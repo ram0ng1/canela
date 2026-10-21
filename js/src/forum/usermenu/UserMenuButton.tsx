@@ -1,13 +1,12 @@
 /*
  * O avatar do cabeçalho, que abre o menu do usuário (`.header-dropdown-toggle
- * .current-user` do Discourse). Ele herda o conteúdo do botão do menu da
+ * .current-user`). Ele herda o conteúdo do botão do menu da
  * sessão do core (`SessionDropdown.getButtonContent`), então o que outras
  * áreas põem ali — o emoji do status do perfil — continua aparecendo; só o
- * nome sai, como no Discourse.
+ * nome sai.
  *
- * A bolha, na ordem do `user-dropdown/notifications` do Discourse: o envelope
- * verde para mensagens não lidas (`.new-pms`); a bandeira vermelha para itens
- * de revisão ainda não vistos (`.new-reviewables`); senão o número de tudo o
+ * A bolha, nesta ordem: o envelope verde para mensagens não lidas; a
+ * bandeira vermelha para itens de revisão ainda não vistos; senão o número de tudo o
  * que espera no menu — as notificações não lidas (de qualquer aba, não só as
  * "novas") mais os itens pendentes da fila de revisão.
  */
@@ -30,7 +29,7 @@ const preload = () => void loadMenu().catch(() => {});
 
 export default class UserMenuButton extends Component {
   view() {
-    // Ao navegar, o menu fecha (o `routeDidChange` do Discourse). O cabeçalho
+    // Ao navegar, o menu fecha. O cabeçalho
     // é redesenhado a cada troca de rota, então basta conferir aqui.
     if (userMenu.open && userMenu.route !== m.route.get()) userMenu.close();
 

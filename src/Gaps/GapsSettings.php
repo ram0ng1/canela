@@ -44,7 +44,7 @@ final class GapsSettings
 
     public const CATEGORY_UNREAD = 'canela.sidebar_category_dots';
 
-    /** Padrões: tudo ligado, como o Discourse vem. */
+    /** Padrões: tudo ligado. */
     public const DEFAULTS = [
         self::POST_EDITED => true,
         self::TOPIC_LINKED => true,

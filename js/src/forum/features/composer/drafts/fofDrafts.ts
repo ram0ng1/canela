@@ -1,7 +1,7 @@
 /*
  * A ponte entre o tema e o fof/drafts: os rascunhos moram no modelo `drafts`
  * da extensão (API `/api/drafts`, lista em `app.drafts`, contagem em
- * `user.draftCount`). O tema só desenha à moda do Discourse — o "⌄" do botão
+ * `user.draftCount`). O tema só cuida do desenho — o "⌄" do botão
  * "Iniciar Discussão", a aba do perfil, salvar sozinho e "Descartar" ao fechar.
  *
  * Sem o fof-drafts habilitado, `draftsOn()` é falso e nada disso aparece.
@@ -260,7 +260,7 @@ export function ensureDiscussions(drafts: FofDraft[]): void {
   });
 }
 
-/** O ícone do Discourse para o tipo: ↩ resposta, ✉ mensagem, ✎ tópico. */
+/** O ícone do tipo: ↩ resposta, ✉ mensagem, ✎ tópico. */
 export function draftIcon(draft: FofDraft): string {
   switch (draft.type()) {
     case 'reply':
@@ -285,7 +285,7 @@ export function draftTitle(draft: FofDraft): string {
   return draft.title() || excerpt || t('composer.drafts.untitled');
 }
 
-/** Reabre o composer com o rascunho; numa resposta, vai antes para o tópico, como o Discourse. */
+/** Reabre o composer com o rascunho; numa resposta, vai antes para o tópico. */
 export function openDraft(draft: FofDraft): void {
   const state = fofState();
 

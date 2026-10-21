@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Ramon\Canela\Ai\Helper;
 
 /**
- * Os prompts do ajudante de IA do editor (o ✨ do Discourse): revisar,
+ * Os prompts do ajudante de IA do editor (o ✨): revisar,
  * traduzir, simplificar, explicar, gerar tabela, prompt personalizado,
  * sugerir títulos e sugerir categoria e etiquetas.
  *

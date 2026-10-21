@@ -1,5 +1,5 @@
 /*
- * Cards da IA (o discourse-ai): provedor e modelos, recursos, personas,
+ * Cards da IA: provedor e modelos, recursos, personas,
  * acesso e limites, e embeddings — tudo no grupo "IA".
  *
  * As chaves de API são guardadas como qualquer configuração, mas só o PHP as
@@ -16,7 +16,7 @@ import { AdminNotice, AdminSubGroup, SubDivider } from '../components/AdminCard'
 import AdminToggle from '../components/AdminToggle';
 import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
-import { AdminComponent, getBool, getStr, saveSetting, trans } from '../util';
+import { AdminComponent, getStr, saveSetting, trans } from '../util';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings.ai';
@@ -269,7 +269,7 @@ interface Persona {
 }
 
 /**
- * O editor de personas (os "agentes" do Discourse). Parte das padrões quando
+ * O editor de personas (os "agentes" da IA). Parte das padrões quando
  * a configuração está vazia; qualquer mudança grava a lista inteira, em JSON.
  * "Restaurar as padrões" apaga a configuração.
  */

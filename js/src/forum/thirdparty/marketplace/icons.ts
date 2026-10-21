@@ -1,8 +1,7 @@
 /*
  * Os ícones de loja do ramon/marketplace no Lucide.
  *
- * O mapa do tema (icons/iconMap.ts) é o do componente "Discourse Lucide
- * Icons", que não tem ícones de comércio: loja, carrinho, recibo e caixa
+ * O mapa do tema (icons/iconMap.ts) não tem ícones de comércio: loja, carrinho, recibo e caixa
  * ficariam no Font Awesome sólido, no meio dos ícones de traço. Aqui eles
  * entram no mapa e nos desenhos antes do primeiro desenho do fórum (este
  * módulo roda no initializer), com os nomes do Font Awesome que a extensão

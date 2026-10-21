@@ -1,16 +1,14 @@
 // =====================================================================
 // Recursos "extras": página de busca, seleção em massa, Melhores por
 // período, tamanho do texto, banner de anúncio, imprimir e histórico.
-// Medidas da página de busca tiradas do print do meta.discourse.org
-// (p4-g_search.png, escala 1:1) e de common/base/search.scss.
 // =====================================================================
 
 // ── Página de busca ──────────────────────────────────────────────────
-// Medidas do CSS do Meta (common/base/search.scss + Horizon): 16px de base,
+// Medidas: 16px de base,
 // a página com 10% de respiro dos lados (nada abaixo de 1024px), abas em
 // `nav-pills`, campo de 38px com canto de 8px, botão e "Filtros avançados"
 // em pílula, a faixa de ordenação entre bordas e os resultados com 2em entre
-// eles. Sem transições: o Horizon zera a dos botões e abas, e o painel de
+// eles. Sem transições: botões e abas sem animação, e o painel de
 // filtros abre na hora, sem animação.
 
 .CanelaSearchPage .Page-sidebar {
@@ -40,7 +38,7 @@
   flex-wrap: nowrap;
   gap: 0.5em;
   margin: 0 0 12px;
-  // Como a `horizontal-overflow-nav`: no estreito rola de lado, sem quebrar.
+  // No estreito rola de lado, sem quebrar.
   overflow-x: auto;
   scrollbar-width: none;
 
@@ -115,7 +113,7 @@
   font-size: 1em;
   box-shadow: none;
 
-  // O foco padrão do Discourse: borda e contorno de 2px por dentro.
+  // O foco padrão: borda e contorno de 2px por dentro.
   &:focus {
     border-color: var(--cn-accent);
     outline: 2px solid var(--cn-accent);
@@ -152,7 +150,7 @@
   transition: none;
 }
 
-// `.search-filters`: 16px acima; 16px embaixo quando o painel está fechado.
+// Os filtros: 16px acima; 16px embaixo quando o painel está fechado.
 .CanelaSearch-controls {
   display: flex;
   align-items: center;
@@ -188,7 +186,7 @@
   color: inherit;
 }
 
-// A faixa de ordenação (`.search-info`): borda em cima e 16px de respiro.
+// A faixa de ordenação: borda em cima e 16px de respiro.
 .CanelaSearch-divider {
   display: none;
 }
@@ -204,7 +202,7 @@
   border-top: 1px solid var(--cn-border);
 }
 
-// Com o painel aberto, a borda de cima sai (`:has(.--is-expanded)`).
+// Com o painel aberto, a borda de cima sai.
 .CanelaSearch:has(.CanelaSearchFilters) .CanelaSearch-sortRow {
   border-top: 0;
 }
@@ -251,7 +249,7 @@
   pointer-events: none;
 }
 
-// "50+ resultados para sidebar" (`.result-count`): font-up-2, seminegrito.
+// "50+ resultados para sidebar": font-up-2, seminegrito.
 .CanelaSearch .CanelaSearch-heading {
   margin: 0;
   padding: 16px 0 0;
@@ -273,7 +271,7 @@
   text-align: center;
 }
 
-// `.fps-result-entries`: 16px acima da lista.
+// A lista de resultados: 16px acima.
 .CanelaSearch-list {
   margin: 0;
   padding: 16px 0 0;
@@ -286,7 +284,7 @@
   margin: 0 0 2em;
 }
 
-// Um resultado (`.fps-result`): avatar de 48px, 1em até o texto, título em
+// Um resultado: avatar de 48px, 1em até o texto, título em
 // font-up-1, categoria/etiquetas pequenas e o trecho cinza; 2em entre eles.
 .CanelaSearchResult {
   position: relative;
@@ -367,7 +365,7 @@
   font-size: 0.8706em;
 }
 
-// `.search-category`: 0.25em acima, 0.5em entre categoria e etiquetas.
+// Categoria do resultado: 0.25em acima, 0.5em entre categoria e etiquetas.
 .CanelaSearchResult-meta {
   display: flex;
   flex-wrap: wrap;
@@ -410,7 +408,7 @@
   align-items: flex-start;
 }
 
-// Filtros avançados (`.search-advanced-filters`): borda, canto de 8px, 1.5em
+// Filtros avançados: borda, canto de 8px, 1.5em
 // de respiro e as opções em duas colunas (column-count) a partir de 640px.
 .CanelaSearchFilters {
   min-width: 0;
@@ -638,7 +636,7 @@
 }
 
 // ── Tamanho do texto ─────────────────────────────────────────────────
-// A fonte base do tema (16px no body, como o Discourse) e a das postagens escalam juntas; o que
+// A fonte base do tema (16px no body) e a das postagens escalam juntas; o que
 // é medido em em/rem acompanha sozinho.
 
 .canela-text-size(@scale, @percent) {

@@ -1,5 +1,5 @@
 /*
- * "Tamanho do texto" das preferências de interface do Discourse: Menor,
+ * "Tamanho do texto" das preferências de interface: Menor,
  * Normal, Maior e Máximo, em Configurações.
  *
  * É uma escolha do aparelho (o celular pode querer letra maior que o

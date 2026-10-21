@@ -1,5 +1,5 @@
 /*
- * As abas das preferências, como as do Discourse (Conta, Segurança, Perfil,
+ * As abas das preferências (Conta, Segurança, Perfil,
  * Notificações, Acompanhamento, Usuários, Interface, Menu de navegação,
  * Chat). Cada aba é um endereço próprio, `/u/:username/preferences/:tab`.
  *
@@ -25,7 +25,7 @@ export type PrefTab =
 export const TAB_ROUTE = 'user.preferences.tab';
 export const BASE_ROUTE = 'user.preferences';
 
-/** Ícones das abas, os mesmos do `user-navigation-secondary` do Discourse. */
+/** Ícones das abas, os mesmos da navegação secundária do perfil. */
 export const TAB_ICONS: Record<PrefTab, string> = {
   account: 'fas fa-circle-user',
   security: 'fas fa-lock',
@@ -59,7 +59,7 @@ const SECTION_TABS: Record<string, PrefTab> = {
   canelaRamonChat: 'chat',
 };
 
-/** Itens do `notificationsItems` que, no Discourse, são do "Acompanhamento". */
+/** Itens do `notificationsItems` que vão para o "Acompanhamento". */
 export const TRACKING_ITEMS = ['followAfterReply', 'followAfterCreate', 'notifyForAllPosts'];
 
 export function sectionTab(key: string): PrefTab {
@@ -73,7 +73,7 @@ export function rememberOther(value: boolean): void {
   hasOther = value;
 }
 
-/** As abas que este usuário tem, na ordem do Discourse. */
+/** As abas que este usuário tem, na ordem do tema. */
 export function visibleTabs(user: User): PrefTab[] {
   const tabs: PrefTab[] = ['account', 'security'];
 

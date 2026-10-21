@@ -32,7 +32,7 @@ function sortableColumn(label: string, sort: string, enabled: boolean, className
     return <span className={classList('CanelaListHeader-cell', className)}>{label}</span>;
   }
 
-  // Como no Discourse, a seta só aparece quando o leitor escolheu a ordem
+  // A seta só aparece quando o leitor escolheu a ordem
   // pela coluna (ou pela URL); a lista padrão não marca nenhuma.
   const active = !!app.search.state.params().sort && activeSort() === sort;
 

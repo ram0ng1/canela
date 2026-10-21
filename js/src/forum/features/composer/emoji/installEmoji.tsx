@@ -1,5 +1,5 @@
 /*
- * O botão de emoji da barra do editor abre o seletor do Discourse.
+ * O botão de emoji da barra do editor abre o seletor do tema.
  *
  * Com o flarum/emoji ligado, o botão dele (que só digita " :" e abre o
  * autocompletar) dá lugar ao do seletor, na mesma posição; o autocompletar
@@ -62,7 +62,7 @@ export default function installEmoji() {
       lookBehind: 20,
       header: () => t('composer.emoji.autocomplete_header'),
       suggest: (typed) => {
-        // Como no Discourse: só depois de duas letras, senão ":" num horário
+        // Só depois de duas letras, senão ":" num horário
         // ("10:30") ou num emoticon já abriria o menu.
         if (typed.length < 2) return [];
 

@@ -12,7 +12,7 @@ export interface SidebarCustomizeModalAttrs extends IInternalModalAttrs {
 }
 
 /**
- * "Editar a seção" do Discourse: uma lista com busca e caixas de seleção das
+ * "Editar a seção": uma lista com busca e caixas de seleção das
  * categorias (ou etiquetas) que aparecem na barra lateral.
  */
 export default class SidebarCustomizeModal extends Modal<SidebarCustomizeModalAttrs> {

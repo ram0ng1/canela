@@ -1,5 +1,5 @@
 /*
- * As chaves liga/desliga dos recursos do Discourse que faltavam (gaps).
+ * As chaves liga/desliga dos recursos que faltavam (gaps).
  *
  * Lidas na hora de usar, e não no initializer: lá o fórum ainda não carregou
  * as configurações. Os recursos com backend (extend/gaps.php) só aparecem

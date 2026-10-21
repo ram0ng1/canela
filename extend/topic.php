@@ -10,7 +10,7 @@
  */
 
 /*
- * Página do tópico: o "Marcar não lido" do rodapé (Discourse). O fórum
+ * Página do tópico: o "Marcar não lido" do rodapé. O fórum
  * anuncia `canelaMarkUnread` para o JS só mostrar o botão quando este
  * arquivo está carregado.
  */

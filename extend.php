@@ -38,7 +38,7 @@ $forumSettings = [
     'canela.lucide_icons' => ['canelaLucideIcons', true, 'boolval'],
 
     // Páginas de entrar e cadastrar (features/auth): o leiaute — card (cartão
-    // único, o padrão), discourse (sem cartão, duas colunas) ou split (tela
+    // único, o padrão), 'discourse' (sem cartão, duas colunas) ou split (tela
     // dividida, com o painel colorido).
     'canela.auth_layout' => ['canelaAuthLayout', 'card', null],
     // Os textos de cada página (vazios: os padrões do Flarum e do tema).
@@ -121,7 +121,7 @@ $forumSettings = [
     // ou 'avocado' (uma linha embaixo do nome: "↳ Em resposta a [avatar] Fulano").
     'canela.topic_reply_to_style' => ['canelaTopicReplyToStyle', 'discourse', null],
 
-    // Extensões de terceiros (visual do Discourse)
+    // Extensões de terceiros (no visual do tema)
     'canela.thirdparty_solved' => ['canelaThirdPartySolved', true, 'boolval'],
     'canela.thirdparty_reactions' => ['canelaThirdPartyReactions', true, 'boolval'],
     'canela.thirdparty_polls' => ['canelaThirdPartyPolls', true, 'boolval'],
@@ -135,7 +135,7 @@ $forumSettings = [
     // linkrobins/wiki no padrão do tema (thirdparty/wiki): índice, artigo,
     // edição e o "Wiki" da barra lateral.
     'canela.thirdparty_wiki' => ['canelaThirdPartyWiki', true, 'boolval'],
-    // ramon/chat no visual do chat do Discourse (thirdparty/ramonChat): a chave
+    // ramon/chat no visual do chat do tema (thirdparty/ramonChat): a chave
     // geral, as seções da barra lateral, a aba do menu e o botão do cartão.
     'canela.thirdparty_ramon_chat' => ['canelaThirdPartyRamonChat', true, 'boolval'],
     'canela.thirdparty_ramon_chat_sidebar' => ['canelaThirdPartyRamonChatSidebar', true, 'boolval'],
@@ -157,7 +157,7 @@ $forumSettings = [
     'canela.user_activity_votes' => ['canelaUserActivityVotes', true, 'boolval'],
     'canela.user_activity_solved' => ['canelaUserActivitySolved', true, 'boolval'],
 
-    // Recursos do Discourse que faltavam (js/src/forum/gaps)
+    // Recursos que faltavam (js/src/forum/gaps)
     'canela.post_shortcuts' => ['canelaPostShortcuts', true, 'boolval'],
     'canela.lightbox' => ['canelaLightbox', true, 'boolval'],
     'canela.code_buttons' => ['canelaCodeButtons', true, 'boolval'],
@@ -189,10 +189,10 @@ $forumSettings = [
 ];
 
 // As cores não têm configuração própria: o tema deriva a paleta inteira da cor
-// primária do Flarum (Aparência), como o Horizon do Discourse faz com a
-// "tertiary". Só a fonte vira variável do LESS — e o default dela mora aqui,
-// não no LESS: as variáveis de config entram antes das folhas das extensões, e
-// um default declarado na folha sobrescreveria o valor escolhido no admin.
+// primária do Flarum (Aparência). Só a fonte vira variável do LESS — e o
+// default dela mora aqui, não no LESS: as variáveis de config entram antes das
+// folhas das extensões, e um default declarado na folha sobrescreveria o valor
+// escolhido no admin.
 $settings = (new Extend\Settings())
     ->default(FontFamily::SETTING, FontFamily::INTER)
     ->registerLessConfigVar('config-canela-font', FontFamily::SETTING, FontFamily::class)

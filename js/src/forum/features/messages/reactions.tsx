@@ -1,14 +1,13 @@
 /*
- * Reações nas mensagens privadas, como o discourse-reactions nas mensagens do
- * Discourse — com o mesmo desenho das reações dos posts do tema
+ * Reações nas mensagens privadas, com o mesmo desenho das reações dos posts do tema
  * (`thirdparty/reactions.tsx`): o resumo à esquerda da barra (até três emojis
  * e o total; o clique mostra quem reagiu) e o botão de reagir com o seletor
  * no hover/clique, que mostra o emoji escolhido depois de reagir (clicar nele
  * desfaz).
  *
  * A lista é a do fof/reactions quando ele está ligado (os emojis desenhados
- * pelo componente dele, as classes do seletor dele); sem ele, a lista padrão
- * do Discourse em emoji Unicode. Sem a tabela das reações, nada aparece.
+ * pelo componente dele, as classes do seletor dele); sem ele, uma lista padrão
+ * em emoji Unicode. Sem a tabela das reações, nada aparece.
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
@@ -33,7 +32,7 @@ const MESSAGE = 'ext:flarum/messages/forum/components/Message';
 /** Quantos emojis o resumo mostra, como nos posts. */
 const SUMMARY_EMOJIS = 3;
 
-/** As reações padrão do discourse-reactions, quando o fof/reactions não está ligado. */
+/** As reações padrão, quando o fof/reactions não está ligado. */
 const UNICODE: Record<string, string> = {
   heart: '❤️',
   '+1': '👍',
@@ -75,7 +74,7 @@ function heartKey(cfg: Config, keys: string[]): string | null {
   return keys.find((key) => (app.store.getById('reactions', key) as any)?.identifier?.() === 'heart') || null;
 }
 
-/** O emoji de uma chave: o componente do fof/reactions ou o Unicode do Discourse. */
+/** O emoji de uma chave: o componente do fof/reactions ou o Unicode. */
 function emoji(cfg: Config, key: string): Mithril.Children {
   if (cfg.fof) {
     const ReactionComponent = extModule<any>('fof-reactions', 'common/components/ReactionComponent');
@@ -119,7 +118,7 @@ interface ReactorsModalAttrs extends IInternalModalAttrs {
   message: DialogMessage;
 }
 
-/** Quem reagiu (`.discourse-reactions-state-panel`), agrupado por reação. */
+/** Quem reagiu, agrupado por reação. */
 class ReactorsModal extends Modal<ReactorsModalAttrs> {
   groups: Array<{ reaction: string; users: Array<{ id: string; username: string; displayName: string; avatarUrl: string | null }> }> | null = null;
 
@@ -182,8 +181,7 @@ class ReactorsModal extends Modal<ReactorsModalAttrs> {
 }
 
 /**
- * O botão de reagir com o seletor (`.discourse-reactions-reaction-button` +
- * `.discourse-reactions-picker`), nas classes do fof/reactions para herdar o
+ * O botão de reagir com o seletor, nas classes do fof/reactions para herdar o
  * desenho dos posts. Já reagiu: o emoji escolhido, que desfaz ao clicar.
  */
 class ReactButton {
@@ -253,7 +251,7 @@ class ReactButton {
               {mine === heart ? <Icon name="fas fa-heart" className="Button-icon CanelaMessageReact-liked" /> : emoji(cfg, mine)}
             </Button>
           ) : (
-            // O coração, como nos posts e no Discourse: o clique reage com o
+            // O coração, como nos posts: o clique reage com o
             // ❤️; o hover (ou o toque longo) abre o seletor.
             <Button
               className="Button Button--link Reactions--ShowReactions CanelaMessageReact-heart"

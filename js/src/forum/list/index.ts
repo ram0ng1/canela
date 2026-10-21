@@ -1,5 +1,5 @@
 /*
- * A lista de tópicos do Discourse: ordenações novas, linha em colunas,
+ * A lista de tópicos: ordenações novas, linha em colunas,
  * cabeçalho, barra de navegação, os heróis da página inicial e a página de
  * categorias. Chamada uma vez no initializer do fórum.
  */

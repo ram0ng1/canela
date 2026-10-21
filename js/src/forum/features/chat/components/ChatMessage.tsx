@@ -1,5 +1,5 @@
 /*
- * Uma mensagem do chat, com a estrutura do chat-message.gjs do Discourse:
+ * Uma mensagem do chat, com esta estrutura:
  *
  * - o separador de dia (e o "último acesso") antes da primeira mensagem do dia;
  * - mensagens seguidas da mesma pessoa, com menos de 5 minutos entre elas, sem
@@ -143,7 +143,7 @@ export default class ChatMessage extends Component<ChatMessageAttrs> {
   }
 
   /**
-   * O que o Discourse faz no "decorateCookedMessage": a menção ao próprio
+   * Decora o conteúdo da mensagem: a menção ao próprio
    * leitor fica destacada, e os links abrem fora da conversa.
    */
   private decorate(): void {
@@ -439,7 +439,10 @@ export function reactionTitle(char: string, userIds: number[], count: number): s
   const others = userIds.filter((id) => id !== me).map((id) => chatUser(id)?.username() ?? '?');
   const reacted = userIds.includes(me);
   const more = count - userIds.length;
-  const strip = (html: string) => html.replace(/<[^>]+>/g, '');
+  // Texto puro para a dica: o DOMParser lê o HTML sem executar nada e o
+  // textContent fica só com o texto (um replace de tags deixaria remontar
+  // `<scr<script>ipt>`).
+  const strip = (html: string) => new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
 
   if (reacted && !others.length) return strip(ct('reactions.only_you', { emoji: char }));
   if (reacted && others.length === 1) return strip(ct('reactions.you_and_single_user', { emoji: char, username: others[0] }));

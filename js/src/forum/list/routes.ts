@@ -1,5 +1,5 @@
 /*
- * Os endereços do Discourse: /latest, /hot, /top, /new, /unread (a lista na
+ * Os endereços das listas: /latest, /hot, /top, /new, /unread (a lista na
  * ordenação correspondente) e /categories (a página de categorias). O
  * servidor responde as mesmas rotas (extend/listroutes.php); /c/<slug> é
  * redirecionado lá para /t/<slug>.
@@ -14,7 +14,7 @@ import setRouteWithForcedRefresh from 'flarum/common/utils/setRouteWithForcedRef
 import { isTagsEnabled } from '../utils/tags';
 import { HOT_SORT, UNREAD_SORT } from './sorts';
 
-/** Rota → ordenação. "Novos" do Discourse é a lista dos mais novos aqui. */
+/** Rota → ordenação. "Novos" é a lista dos mais novos. */
 export const SORT_ROUTES: Record<string, string> = {
   'canela.latest': 'latest',
   'canela.hot': HOT_SORT,
@@ -31,7 +31,7 @@ const PATHS: Record<string, `/${string}`> = {
   'canela.unread': '/unread',
 };
 
-/** A rota do Discourse para uma ordenação, se houver. */
+/** A rota de uma ordenação, se houver. */
 export function routeForSort(sort: string): string | null {
   return Object.keys(SORT_ROUTES).find((name) => SORT_ROUTES[name] === sort) || null;
 }

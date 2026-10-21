@@ -1,6 +1,6 @@
 /*
  * "Responder como discussão vinculada" — uma ação do menu "Tópico ▾" do
- * composer de resposta do Discourse. Troca a resposta por um tópico novo que leva o texto
+ * composer de resposta. Troca a resposta por um tópico novo que leva o texto
  * já escrito, um link de volta ("Continuação de [título](link)") e as mesmas
  * tags do tópico de origem.
  */
@@ -64,7 +64,7 @@ export async function replyAsLinkedTopic(discussion: Discussion): Promise<void> 
 /**
  * Se o menu "Tópico ▾" do composer de resposta oferece "Responder como tópico
  * vinculado". O menu em si é desenhado pelo cabeçalho do composer
- * (`composer/ComposerActionTitle`), como o `composer-actions` do Discourse.
+ * (`composer/ComposerActionTitle`).
  */
 export function canReplyAsLinkedTopic(): boolean {
   return composerOn('LinkedTopic') && !!app.forum.attribute<boolean>('canStartDiscussion');

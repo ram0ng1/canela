@@ -1,11 +1,11 @@
 /*
- * O controle de notificações do tópico no jeito do Discourse: um botão com o
+ * O controle de notificações do tópico: um botão com o
  * sino do nível atual e um menu em que cada nível tem título e descrição.
  *
  * Os níveis são os três do flarum/subscriptions (seguir, normal, ignorar),
- * com os nomes do Discourse: Acompanhando, Normal e Silenciado. O tema não usa
+ * com os nomes Acompanhando, Normal e Silenciado. O tema não usa
  * o SubscriptionMenu da extensão porque o botão dele é dividido (seguir com um
- * clique + seta), e no Discourse o clique sempre abre o menu.
+ * clique + seta), e aqui o clique sempre abre o menu.
  */
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import Dropdown from 'flarum/common/components/Dropdown';

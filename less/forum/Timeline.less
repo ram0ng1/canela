@@ -1,6 +1,5 @@
 // =====================================================================
-// A linha do tempo do Discourse (topic-timeline do Horizon) sobre o
-// PostStreamScrubber do core: o menu do scrubber fica sempre aberto na
+// A linha do tempo sobre o PostStreamScrubber do core: o menu do scrubber fica sempre aberto na
 // coluna da direita, com a data de criação em cima, o trilho de 1px na cor
 // de destaque, a alça de 8px com "1/11" e a data ao lado, e "4 h atrás"
 // embaixo. Abaixo, os botões redondos (responder, "…", notificações).
@@ -9,7 +8,7 @@
 // ao visual do core.
 // =====================================================================
 
-// O texto do core é "1 de 11 posts"; o Discourse escreve "1/11". Os números
+// O texto do core é "1 de 11 posts"; aqui fica "1/11". Os números
 // são os únicos com tamanho de fonte, o resto some com o font-size: 0.
 .canela-scrubber-count(@size; @separator) {
   font-size: 0;
@@ -25,7 +24,7 @@
   }
 }
 
-// Botão redondo com borda — os controles da linha do tempo do Discourse.
+// Botão redondo com borda — os controles da linha do tempo.
 // Vale também para o "Responder", que é o principal do Flarum: na linha do
 // tempo ele é só mais um círculo, e o destaque fica no rodapé do tópico.
 .canela-round-button() {
@@ -85,7 +84,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Desktop (a partir de 925px, como o Discourse): a coluna
+// Desktop (a partir de 925px): a coluna
 // ---------------------------------------------------------------------
 @media (min-width: 925px) {
   .CanelaTopic--timeline .DiscussionPage-nav {
@@ -101,14 +100,14 @@
     }
 
     // A linha do tempo primeiro, depois o atalho para as não lidas, e os
-    // botões numa fileira embaixo, como no Discourse.
+    // botões numa fileira embaixo.
     .item-scrubber {
       order: -2;
       flex: 0 0 100%;
     }
 
     // O 文A das preferências de idioma em cima de tudo, sozinho na linha
-    // (acima da data do primeiro post), como no Discourse.
+    // (acima da data do primeiro post).
     .item-canelaContentLanguage {
       order: -3;
       flex: 0 0 100%;
@@ -142,7 +141,7 @@
       min-width: 220px;
     }
 
-    // Os botões redondos ficam 16px abaixo de "4 h atrás" (.timeline-footer-controls).
+    // Os botões redondos ficam 16px abaixo de "4 h atrás".
     > ul > li:not(.item-scrubber):not(.item-canelaUnread) {
       margin-top: var(--cn-space-2);
     }
@@ -203,7 +202,7 @@
       border-left: 0;
     }
 
-    // A .timeline-padding do Discourse: a altura desliza (.15s ease-out),
+    // O espaço acima da alça: a altura desliza (.15s ease-out),
     // menos enquanto o leitor arrasta a alça.
     .PostStreamScrubber:not(.dragging) {
       .Scrubber-before,
@@ -218,7 +217,7 @@
       margin-left: -3.5px;
     }
 
-    // A alça do Horizon: 0.35em de largura, arredondada, na cor do trilho.
+    // A alça: 0.35em de largura, arredondada, na cor do trilho.
     .Scrubber-bar {
       width: 5.6px;
       margin-left: 0.5px;
@@ -288,8 +287,8 @@
   }
 }
 
-// As cores da linha do tempo do Horizon: no claro, trilho e alça no mesmo
-// tom lavado da cor de destaque (o --tertiary-400); no escuro, os dois na cor
+// As cores da linha do tempo: no claro, trilho e alça no mesmo
+// tom lavado da cor de destaque; no escuro, os dois na cor
 // cheia.
 [data-theme^=light] {
   --cn-timeline-handle: ~"color-mix(in srgb, var(--cn-accent) 26%, var(--cn-surface))";
@@ -302,9 +301,9 @@
 }
 
 // ---------------------------------------------------------------------
-// Celular: o #topic-progress do Discourse — uma aba "1 / 11" grudada no
+// Celular: uma aba "1 / 11" grudada no
 // pé da tela, à direita, com o fundo que se tinge conforme a leitura — que
-// abre a linha do tempo como folha (timeline-fullscreen): título, categoria
+// abre a linha do tempo como folha: título, categoria
 // e começo do primeiro post à esquerda, o trilho à direita.
 // ---------------------------------------------------------------------
 .CanelaTimelineSheet {
@@ -327,14 +326,13 @@
     }
   }
 
-  // Com o rodapé ligado, os controles do tópico estão lá embaixo, como no
-  // Discourse; no topo sobraria uma fileira de botões soltos.
+  // Com o rodapé ligado, os controles do tópico estão lá embaixo; no topo
+  // sobraria uma fileira de botões soltos.
   .CanelaTopic--timeline.CanelaTopic--footer .DiscussionPage-nav > ul > li:not(.item-scrubber) {
     display: none;
   }
 
-  // Com o editor aberto, a aba sobe e encosta nele (o .with-topic-progress
-  // do Discourse usa bottom: var(--composer-height)).
+  // Com o editor aberto, a aba sobe e encosta nele.
   .CanelaTopic--timeline .PostStreamScrubber > .Dropdown-toggle {
     position: fixed;
     right: 27px;
@@ -523,7 +521,7 @@
   }
 }
 
-// O visitante não tem botões na linha do tempo do Discourse: ele responde
+// O visitante não tem botões na linha do tempo: ele responde
 // pelo "Responder" do fim do tópico.
 @media (min-width: 925px) {
   .CanelaTopic--timeline.CanelaTopic--guest .DiscussionPage-nav .item-controls {

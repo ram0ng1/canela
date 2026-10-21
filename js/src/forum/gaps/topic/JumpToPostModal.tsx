@@ -1,9 +1,9 @@
 /*
- * "Pular para…" do Discourse (tecla #): o número da postagem. O core não tem
- * a janela; a linha do tempo só deixa arrastar. (A opção por data do
- * Discourse fica de fora: a API do Flarum não acha um post pela data.)
+ * "Pular para…" (tecla #): o número da postagem. O core não tem
+ * a janela; a linha do tempo só deixa arrastar. (Não há opção por
+ * data: a API do Flarum não acha um post pela data.)
  */
-import Modal, { type IInternalModalAttrs } from 'flarum/common/components/Modal';
+import type { IInternalModalAttrs } from 'flarum/common/components/Modal';
 import FormModal from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import Stream from 'flarum/common/utils/Stream';

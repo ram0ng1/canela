@@ -20,7 +20,7 @@ use Illuminate\Database\Query\Builder;
 use Ramon\Canela\Support\SchemaCache;
 
 /**
- * `filter[canelaBookmarked]`: o "marcados por mim" do Discourse — tópicos com
+ * `filter[canelaBookmarked]`: o "marcados por mim" — tópicos com
  * uma postagem que eu marquei (na busca de tópicos) ou as próprias postagens
  * marcadas (na de postagens).
  *

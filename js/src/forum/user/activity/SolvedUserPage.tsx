@@ -1,5 +1,5 @@
 /*
- * A aba "Resolvido" do perfil (como a do discourse-solved): as respostas da
+ * A aba "Resolvido" do perfil: as respostas da
  * pessoa escolhidas como melhor resposta, pelo filtro `solution` do próprio
  * fof/best-answer. Os itens são os `user-stream-item` das outras abas.
  */

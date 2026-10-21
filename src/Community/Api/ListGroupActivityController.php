@@ -27,7 +27,7 @@ use Ramon\Canela\Community\Community;
 
 /**
  * GET /api/canela-groups/{id}/activity?page= — as postagens recentes dos
- * membros de um grupo (a aba "Atividade" do Discourse).
+ * membros de um grupo (a aba "Atividade").
  *
  * Devolve só os ids, já filtrados pela visibilidade do ator: o fórum busca as
  * postagens em /api/posts?filter[id]=…, que serializa cada uma com tudo o que

@@ -1,6 +1,6 @@
 /*
  * O que o menu de busca precisa saber fora do desenho: como o termo digitado
- * (no formato do Discourse, com `#categoria` e `@usuário`) vira uma consulta
+ * (com `#categoria` e `@usuário`) vira uma consulta
  * do Flarum e para onde vai a busca de página inteira. As buscas recentes,
  * as dicas e os atalhos do assistente moram em assist.ts (chunk do painel).
  */
@@ -32,8 +32,8 @@ export function gambitKey(filterKey: string): string | null {
 }
 
 /**
- * "horizon #suporte @ana" -> "horizon tag:suporte autor:ana": o Flarum não
- * conhece os atalhos do Discourse, mas conhece os gambits (com as chaves no
+ * "tema #suporte @ana" -> "tema tag:suporte autor:ana": o Flarum não
+ * conhece esses atalhos, mas conhece os gambits (com as chaves no
  * idioma do fórum), que a busca do core e a página de busca já entendem.
  */
 export function toGambitQuery(term: string): string {

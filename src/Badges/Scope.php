@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Ramon\Canela\Badges;
 
 /**
- * O recorte de uma consulta de emblema: o `:backfill OR id IN (:post_ids)` /
- * `(:user_ids)` das consultas do Discourse.
+ * O recorte de uma consulta de emblema: a carga completa ou só certos
+ * usuários e postagens.
  *
  * Sem usuários nem postagens é a carga completa (todo o fórum). Com eles, a
  * consulta só olha o que o evento tocou — a curtida nova, o post editado.

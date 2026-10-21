@@ -53,7 +53,7 @@ export default function installLayout(): void {
 
     if (!discussion || !topicSettings.timeline()) return;
 
-    // O sino do Discourse no lugar do botão dividido do subscriptions.
+    // O sino no lugar do botão dividido do subscriptions.
     if (canSubscribe()) {
       if (items.has('subscription')) items.remove('subscription');
 
@@ -74,7 +74,7 @@ export default function installLayout(): void {
     }
   });
 
-  // O destaque do Discourse: só quando o endereço aponta um post
+  // O destaque só quando o endereço aponta um post
   // (/d/x/N), e não o "pulso" do core a cada tópico aberto.
   override('flarum/forum/components/PostStream', 'flashItem', function (this: any, original: ($item: any) => void, $item: any) {
     const near = m.route.param('near');

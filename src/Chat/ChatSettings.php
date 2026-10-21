@@ -32,7 +32,7 @@ final class ChatSettings
 
     public const DM_ENABLED = 'canela.chat_dm_enabled';
 
-    /** O `direct_message_enabled_groups` do Discourse. */
+    /** Grupos (ids separados por vírgula) que podem abrir mensagens diretas. */
     public const DM_GROUPS = 'canela.chat_dm_groups';
 
     /** Quem cria canais públicos, além dos administradores. */
@@ -57,7 +57,7 @@ final class ChatSettings
     /** O mesmo, para as mensagens diretas. */
     public const DM_RETENTION_DAYS = 'canela.chat_dm_retention_days';
 
-    /** O `chat_max_direct_message_users` do Discourse, contando quem cria. */
+    /** Máximo de pessoas numa mensagem direta, contando quem cria. */
     public const DM_MAX_USERS = 'canela.chat_dm_max_users';
 
     /** As seções "Canais" e "Mensagens diretas" na barra lateral. */

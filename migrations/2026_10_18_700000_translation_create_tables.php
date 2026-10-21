@@ -13,7 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * As tabelas da tradução automática (o `ai_translation` do Discourse):
+ * As tabelas da tradução automática:
  *
  * - `canela_ai_post_locales`: o idioma detectado de cada postagem;
  * - `canela_ai_post_translations`: a postagem traduzida, já em HTML, por idioma;

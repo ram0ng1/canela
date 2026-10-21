@@ -1,5 +1,5 @@
 /*
- * Recursos "extras" do Discourse: página de busca avançada, seleção em massa,
+ * Recursos "extras": página de busca avançada, seleção em massa,
  * "Melhores" por período, tamanho do texto, banner de anúncio, imprimir tópico
  * e histórico de edições.
  *

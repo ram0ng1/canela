@@ -1,11 +1,10 @@
 /*
- * O "⌄" à direita do botão "Iniciar Discussão" (o `topic-drafts-menu` do
- * Discourse): abre os rascunhos do fof/drafts, um por linha com o ícone do
+ * O "⌄" à direita do botão "Iniciar Discussão": abre os rascunhos do fof/drafts, um por linha com o ícone do
  * tipo e o título truncado ("RE: …" nas respostas). Clicar reabre o composer
- * com o rascunho. Mostra até quatro, como o Discourse, e "Ver todos" leva à
+ * com o rascunho. Mostra até quatro, e "Ver todos" leva à
  * aba Rascunhos do perfil.
  *
- * Como no Discourse, o menu abre À DIREITA do botão, fora da barra lateral e
+ * O menu abre À DIREITA do botão, fora da barra lateral e
  * por cima do conteúdo (topo alinhado ao do botão, 8px depois do "⌄", até
  * 540px de largura). A barra corta o que transborda, então a posição é fixa,
  * calculada a partir do botão. No celular, abre embaixo, da largura da barra.

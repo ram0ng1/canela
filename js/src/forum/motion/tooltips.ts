@@ -1,7 +1,7 @@
 /*
- * Dicas dos botões só de ícone. No Discourse todo botão de ícone tem um
- * `title` (os controles do post, os ícones do cabeçalho, o ✕ dos modais), e
- * o navegador mostra a dica ao parar o mouse. No Flarum esses botões só têm
+ * Dicas dos botões só de ícone. Todo botão de ícone deve ter um `title` (os
+ * controles do post, os ícones do cabeçalho, o ✕ dos modais), para o
+ * navegador mostrar a dica ao parar o mouse. No Flarum esses botões só têm
  * `aria-label`; quando não estão dentro de um `<Tooltip>` do core, o rótulo
  * vira também o `title`.
  */

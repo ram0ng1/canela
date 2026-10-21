@@ -18,7 +18,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 
 /**
- * As configurações da IA (o plugin discourse-ai do Discourse) num lugar só.
+ * As configurações da IA num lugar só.
  *
  * O extender, os controladores, os comandos e os campos da API precisam
  * concordar sobre o nome e o padrão de cada chave — uma chave digitada errado
@@ -84,7 +84,7 @@ final class AiSettings
     /** Gravada pela última migração: sem ela as tabelas ainda não existem. */
     public const SCHEMA = 'canela.ai_schema';
 
-    /** Tradução automática do conteúdo (o `ai_translation` do Discourse). */
+    /** Tradução automática do conteúdo. */
     public const TRANSLATION = 'canela.ai_translation_enabled';
 
     /** Idiomas para os quais se traduz, separados por vírgula; vazio = os instalados no fórum. */
@@ -110,8 +110,8 @@ final class AiSettings
 
     /**
      * Os padrões, para o extender registrar. O padrão dos grupos é o grupo
-     * Membros (3): todo usuário com o e-mail confirmado, como o
-     * `ai_bot_allowed_groups` do Discourse aberto à comunidade.
+     * Membros (3): todo usuário com o e-mail confirmado — o bot aberto à
+     * comunidade.
      *
      * @return array<string, mixed>
      */

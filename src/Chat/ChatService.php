@@ -33,8 +33,8 @@ use Ramon\Canela\Chat\Realtime\ChatBroadcaster;
 use Ramon\Canela\Chat\Upload\ChatUploads;
 
 /**
- * As ações do chat — os "services" do Discourse (CreateMessage, UpdateMessage,
- * TrashMessage, CreateDirectMessageChannel…) num lugar só.
+ * As ações do chat (criar, editar e apagar mensagens, abrir mensagens
+ * diretas…) num lugar só.
  *
  * Cada ação confere a permissão, grava numa transação e só depois avisa: as
  * notificações e o websocket nunca anunciam algo que acabou não sendo salvo.
@@ -60,8 +60,8 @@ final class ChatService
     // ─── Participação ───────────────────────────────────────────────────────
 
     /**
-     * Entra no canal (ou volta a ele). Quem entra começa com tudo lido, como no
-     * Discourse: o histórico inteiro não vira "não lido" de uma vez.
+     * Entra no canal (ou volta a ele). Quem entra começa com tudo lido: o
+     * histórico inteiro não vira "não lido" de uma vez.
      */
     public function follow(Channel $channel, User $actor): Membership
     {
@@ -220,8 +220,7 @@ final class ChatService
 
     /**
      * Os canais com "Adicionar usuários automaticamente" que o ator enxerga e
-     * nos quais nunca entrou. O Discourse faz isso de hora em hora para quem
-     * esteve ativo; aqui acontece quando a pessoa abre o fórum — sem agendador
+     * nos quais nunca entrou. Acontece quando a pessoa abre o fórum — sem agendador
      * e sem varrer todos os usuários de uma vez.
      */
     public function autoJoin(User $actor): void
@@ -290,7 +289,7 @@ final class ChatService
 
     /**
      * Envia uma mensagem. Responder a uma mensagem num canal com fios ligados
-     * abre (ou continua) o fio dela, como no Discourse.
+     * abre (ou continua) o fio dela.
      *
      * @param int[] $uploadIds
      */
@@ -299,7 +298,7 @@ final class ChatService
         $membership = $this->access->membership($channel, $actor);
         $this->access->assertCanPost($channel, $actor, $membership);
 
-        // Um teto de rajada, como os limites do Discourse: 10 mensagens em 10
+        // Um teto de rajada: 10 mensagens em 10
         // segundos já é mais rápido do que alguém digita. A moderação não tem.
         if (! $this->access->canModerate($actor) && Message::query()->where('user_id', $actor->id)->where('created_at', '>', Carbon::now()->subSeconds(10))->count() >= 10) {
             $this->fail('message', 'too_fast');
@@ -557,7 +556,7 @@ final class ChatService
     /**
      * Liga ou desliga a reação do ator. Reagir pede a mesma permissão de
      * escrever; o emoji tem de ser um emoji de verdade, e cada mensagem aceita
-     * no máximo 30 diferentes, como no Discourse.
+     * no máximo 30 diferentes.
      */
     public function react(Message $message, Channel $channel, User $actor, string $emoji, bool $add): void
     {
@@ -736,8 +735,8 @@ final class ChatService
             if (isset($attributes['status'])) {
                 $status = array_search((string) $attributes['status'], Channel::STATUS_NAMES, true);
 
-                // Um canal arquivado ou somente leitura não reabre (o texto do
-                // Discourse: "Canais arquivados não podem ser reabertos").
+                // Um canal arquivado ou somente leitura não reabre ("Canais
+                // arquivados não podem ser reabertos").
                 if ($status === false || ($status === Channel::STATUS_OPEN && in_array($channel->status, [Channel::STATUS_ARCHIVED, Channel::STATUS_READ_ONLY], true))) {
                     $this->fail('status', 'invalid_status');
                 }
@@ -800,8 +799,8 @@ final class ChatService
     }
 
     /**
-     * Apaga o canal e todo o histórico (mensagens, reações, fios, anexos), como
-     * o "Excluir canal" do Discourse. Os arquivos saem antes das linhas — o
+     * Apaga o canal e todo o histórico (mensagens, reações, fios, anexos): o
+     * "Excluir canal". Os arquivos saem antes das linhas — o
      * banco apaga as linhas em cascata, mas não sabe apagar arquivos.
      */
     public function deleteChannel(Channel $channel, User $actor): void
@@ -866,7 +865,7 @@ final class ChatService
         }
 
         foreach ($users as $user) {
-            // O Discourse também recusa quem não pode (ou não quer) usar o chat.
+            // Recusa quem não pode (ou não quer) usar o chat.
             if (! $this->access->canUse($user)) {
                 $this->fail('userIds', 'user_cannot_chat', ['username' => $user->display_name]);
             }
@@ -877,7 +876,7 @@ final class ChatService
         $isGroup = count($all) > 2 || $name !== '';
         $key = Channel::directKey($all);
 
-        // Um grupo com nome é sempre novo (o Discourse permite dois grupos com as
+        // Um grupo com nome é sempre novo (pode haver dois grupos com as
         // mesmas pessoas); sem nome, reaproveita a conversa existente.
         if (! ($isGroup && $name !== '')) {
             /** @var Channel|null $existing */
@@ -971,7 +970,7 @@ final class ChatService
     public function updateThread(Thread $thread, Channel $channel, User $actor, array $attributes): Thread
     {
         if (array_key_exists('title', $attributes)) {
-            // O título é de quem abriu o fio e da moderação, como no Discourse.
+            // O título é de quem abriu o fio e da moderação.
             if ($thread->original_message_user_id !== $actor->id && ! $this->access->canModerateChannel($channel, $actor)) {
                 throw new PermissionDeniedException();
             }

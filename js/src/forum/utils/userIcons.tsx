@@ -1,6 +1,6 @@
 /*
  * Ícones logo depois do nome de uma pessoa (o selo de verificado do
- * ramon/verified, por exemplo), como os "poster icons" do Discourse: na linha
+ * ramon/verified, por exemplo): na linha
  * do texto, do tamanho dele, depois do nome e antes do emoji de status.
  *
  * As telas do tema (cabeçalho do post, post embutido, "em resposta a",

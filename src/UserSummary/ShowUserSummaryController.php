@@ -29,8 +29,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Links\LinkClicks;
 
 /**
- * GET /api/canela-user-summary/{id} — as listas do Resumo do perfil do
- * Discourse (`user_summary`): com quem a pessoa mais conversa e onde.
+ * GET /api/canela-user-summary/{id} — as listas do Resumo do perfil: com quem
+ * a pessoa mais conversa e onde.
  *
  * - `mostRepliedTo`: a quem ela mais respondeu (as citações do flarum/mentions
  *   fazem o papel do `reply_to_user_id`);
@@ -46,8 +46,8 @@ use Ramon\Canela\Links\LinkClicks;
  * ele. Uma consulta que falhe esvazia só a própria lista: o perfil nunca
  * recebe um erro por causa do resumo.
  *
- * A resposta fica alguns minutos em cache por (pessoa, quem pergunta), como o
- * Discourse faz com o `user_summary` (lá, uma hora): o perfil pré-carrega o
+ * A resposta fica alguns minutos em cache por (pessoa, quem pergunta): o
+ * perfil pré-carrega o
  * resumo em toda visita, e são uma dúzia de agregações sobre as postagens.
  * Quem pergunta entra na chave, então ninguém recebe o que só outro veria; o
  * número de postagens e tópicos da pessoa também, para uma postagem nova dela
@@ -55,7 +55,7 @@ use Ramon\Canela\Links\LinkClicks;
  */
 final class ShowUserSummaryController implements RequestHandlerInterface
 {
-    /** Quantos itens por lista, como no Discourse. */
+    /** Quantos itens por lista. */
     private const LIMIT = 6;
 
     /** Segundos de cache da resposta. */

@@ -1,6 +1,5 @@
 /*
- * Os sinos dos níveis de notificação, como no Discourse (componente "Discourse
- * Lucide Icons"): acompanhando com ondas, monitorando com o ponto, normal o
+ * Os sinos dos níveis de notificação, desenhados com o Lucide: acompanhando com ondas, monitorando com o ponto, normal o
  * sino simples e silenciado cortado.
  *
  * No Lucide o `fas`/`far fa-bell` saem iguais, então o botão não mudava ao

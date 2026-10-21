@@ -27,7 +27,7 @@ use Ramon\Canela\Stats\Http\Visitor;
 use Ramon\Canela\Stats\StatsSettings;
 
 /**
- * POST /api/canela-link-click — o `/clicks/track` do Discourse. O fórum manda
+ * POST /api/canela-link-click — o registro de cliques. O fórum manda
  * por `navigator.sendBeacon` (corpo de formulário, com o csrfToken) quando
  * alguém clica num link externo de uma postagem, logado ou não.
  *

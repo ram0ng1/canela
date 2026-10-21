@@ -1,5 +1,5 @@
 /*
- * O seletor de emoji do Discourse: busca no topo, a fileira de categorias,
+ * O seletor de emoji: busca no topo, a fileira de categorias,
  * a grade rolável com um título por categoria (os "Usados recentemente"
  * primeiro) e, embaixo, o emoji sob o mouse com o atalho dele e a escolha do
  * tom de pele.
@@ -19,7 +19,7 @@ import { TONES, getRecent, getTone, loadEmojiData, matches, normalize, pushRecen
 import { t } from '../../../utils/settings';
 import { FIXED_ARROW_GAP, attachFixedArrow } from '../../../shell/dropdownArrow';
 
-/** Os ícones das categorias, na ordem do Discourse. */
+/** Os ícones das categorias, em ordem. */
 const GROUP_ICONS: Record<string, string> = {
   recent: 'far fa-clock',
   smileys: 'far fa-face-smile',
@@ -33,7 +33,7 @@ const GROUP_ICONS: Record<string, string> = {
   flags: 'far fa-flag',
 };
 
-/** Mais que isso numa busca vira ruído; o Discourse também corta. */
+/** Mais que isso numa busca vira ruído, então corta. */
 const SEARCH_LIMIT = 120;
 
 export interface EmojiPickerAttrs extends ComponentAttrs {
@@ -238,7 +238,7 @@ export default class EmojiPicker extends Component<EmojiPickerAttrs> {
     this.attrs.onselect(withTone(row, this.tone));
   }
 
-  /** Enter na busca insere o primeiro resultado, como no Discourse. */
+  /** Enter na busca insere o primeiro resultado. */
   private onSearchKey(e: KeyboardEvent): void {
     if (e.key === 'Escape') {
       e.preventDefault();

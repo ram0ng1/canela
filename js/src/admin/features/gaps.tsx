@@ -1,5 +1,5 @@
 /*
- * Cards dos recursos do Discourse que faltavam (js/src/forum/gaps): o
+ * Cards dos recursos que faltavam (js/src/forum/gaps): o
  * conteúdo das postagens (lightbox, código, títulos, tabelas, spoilers), a
  * leitura no tópico, o título editável, o compartilhar, as datas locais, o
  * "último acesso" e o "Descartar" da lista, o Início e os links extras da
@@ -61,11 +61,7 @@ const cards: CardDef[] = [
           'Ampliar imagens (lightbox)',
           'Clicar numa imagem da postagem abre a imagem grande sobre um fundo escuro, com setas entre as imagens da mesma postagem, zoom, "Imagem original" e "Baixar".'
         )}
-        {toggle(
-          'code_buttons',
-          'Botões nos blocos de código',
-          'Ao passar o mouse num bloco de código aparecem "copiar" e "tela cheia", como no Discourse.'
-        )}
+        {toggle('code_buttons', 'Botões nos blocos de código', 'Ao passar o mouse num bloco de código aparecem "copiar" e "tela cheia".')}
         {toggle(
           'heading_anchors',
           'Link nos títulos',
@@ -79,12 +75,10 @@ const cards: CardDef[] = [
         {toggle(
           'spoiler_blur',
           'Spoilers borrados',
-          'Os spoilers (||texto|| e >! no começo da linha) aparecem borrados até o clique, como no Discourse, em vez da tarja escura.'
+          'Os spoilers (||texto|| e >! no começo da linha) aparecem borrados até o clique, em vez da tarja escura.'
         )}
         {isExtensionEnabled('fof-formatting') && (
-          <AdminNotice>
-            {trans(`${KEY}.tables_notice`, 'Tabelas em markdown (| a | b |), como no Discourse: ligue o PipeTables no FoF Formatting.')}
-          </AdminNotice>
+          <AdminNotice>{trans(`${KEY}.tables_notice`, 'Tabelas em markdown (| a | b |): ligue o PipeTables no FoF Formatting.')}</AdminNotice>
         )}
       </>
     ),
@@ -131,7 +125,7 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.share_modal_label`, 'Janela "Compartilhar discussão"'),
     description: help(
       'share_modal',
-      'O botão Compartilhar abre a janela do Discourse com o link, o botão de copiar e os botões das redes. Desligado, ele só copia o link. No celular vale a folha de compartilhamento do sistema.'
+      'O botão Compartilhar abre uma janela com o link, o botão de copiar e os botões das redes. Desligado, ele só copia o link. No celular vale a folha de compartilhamento do sistema.'
     ),
     keywords: 'compartilhar share redes social networks x twitter facebook whatsapp telegram linkedin reddit email',
     master: 'canela.share_modal',
@@ -209,7 +203,7 @@ const cards: CardDef[] = [
     id: 'not-found',
     group: 'community',
     icon: 'far fa-compass',
-    title: () => trans(`${KEY}.not_found_page_label`, 'Página 404 do Discourse'),
+    title: () => trans(`${KEY}.not_found_page_label`, 'Página 404'),
     description: help(
       'not_found_page',
       '"Oops! Essa página não existe ou é privada.", com "Voltar para o início", a busca e as discussões populares e recentes, no lugar da página de erro simples.'
@@ -236,7 +230,7 @@ const cards: CardDef[] = [
         {toggle(
           'list_dismiss',
           'Botão "Descartar"',
-          'Nas listas Não lidos e Novos, o botão do Discourse que marca como lidas as discussões da lista (em cima, à direita, e no fim da lista).'
+          'Nas listas Não lidos e Novos, o botão que marca como lidas as discussões da lista (em cima, à direita, e no fim da lista).'
         )}
       </>
     ),
@@ -250,7 +244,7 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.sidebar_home_link_label`, 'Link "Início"'),
     description: help(
       'sidebar_home_link',
-      'O primeiro link da barra lateral, como no Discourse. Quando ele leva à lista de discussões, "Todas as Discussões" passa a abrir a lista de Recentes, para os dois não ficarem marcados juntos.'
+      'O primeiro link da barra lateral. Quando ele leva à lista de discussões, "Todas as Discussões" passa a abrir a lista de Recentes, para os dois não ficarem marcados juntos.'
     ),
     keywords: 'início home página inicial homepage destino barra lateral sidebar',
     master: 'canela.sidebar_home_link',
@@ -283,7 +277,7 @@ const cards: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.sidebar_help`,
-        'Como no Discourse, os links de FAQ, termos e privacidade entram no menu "Mais" quando têm endereço. "Revisar" aparece sozinho para a moderação, com a fila de sinalizações.'
+        'Os links de FAQ, termos e privacidade entram no menu "Mais" quando têm endereço. "Revisar" aparece sozinho para a moderação, com a fila de sinalizações.'
       ),
     keywords:
       'links faq perguntas diretrizes guidelines termos terms privacidade privacy seção section personalizada custom mais more revisar review',

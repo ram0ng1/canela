@@ -13,8 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * As conversas com o bot de IA (no Discourse, as mensagens pessoais com o
- * bot): uma por pergunta nova, de um usuário só.
+ * As conversas com o bot de IA: uma por pergunta nova, de um usuário só.
  *
  * - `persona` é a chave da persona escolhida (as personas moram numa
  *   configuração, não numa tabela): uma persona removida depois não apaga a

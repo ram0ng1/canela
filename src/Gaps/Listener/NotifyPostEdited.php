@@ -20,8 +20,8 @@ use Ramon\Canela\Gaps\GapsSettings;
 use Ramon\Canela\Gaps\Notification\PostEditedBlueprint;
 
 /**
- * Avisa o autor quando outra pessoa edita a postagem dele — o `edited` do
- * Discourse. A própria edição não avisa ninguém.
+ * Avisa o autor quando outra pessoa edita a postagem dele. A própria edição
+ * não avisa ninguém.
  */
 final class NotifyPostEdited
 {

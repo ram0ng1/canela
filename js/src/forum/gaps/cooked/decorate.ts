@@ -1,5 +1,5 @@
 /*
- * Os enfeites que o Discourse põe no conteúdo dos posts (o "cooked"), depois
+ * Os enfeites que o tema põe no conteúdo dos posts (o "cooked"), depois
  * que o HTML entra na página:
  *
  * - blocos de código com os botões "copiar" e "tela cheia" (codeblock-buttons);
@@ -87,7 +87,7 @@ function decorateCode(body: HTMLElement): void {
   });
 }
 
-/** O "nome" do título, como o markdown-it do Discourse: minúsculas, hífens, sem acento. */
+/** O "nome" do título: minúsculas, hífens, sem acento. */
 function slugify(text: string): string {
   return text
     .normalize('NFD')
@@ -149,7 +149,7 @@ function decorateTables(body: HTMLElement): void {
 
     table.dataset[DONE] = '1';
 
-    // Só as tabelas que não cabem ganham o botão, como no Discourse.
+    // Só as tabelas que não cabem ganham o botão.
     if (table.scrollWidth <= table.clientWidth + 2) return;
 
     const caption = document.createElement('caption');
@@ -180,7 +180,7 @@ function decorateSpoilers(body: HTMLElement): void {
   if (!gaps.spoilerBlur()) return;
 
   // O spoiler em linha do Litedown (||texto||) e o de bloco (>! texto), que
-  // vem como <details> sem resumo: os dois viram o borrão do Discourse.
+  // vem como <details> sem resumo: os dois viram o mesmo borrão.
   body.querySelectorAll<HTMLElement>('span.spoiler, details.spoiler').forEach((spoiler) => {
     if (spoiler.dataset[DONE]) return;
 
@@ -219,7 +219,7 @@ function decorateSpoilers(body: HTMLElement): void {
 }
 
 /**
- * As datas locais do Discourse ([date=2026-10-20 time=14:00 timezone=…]):
+ * As datas locais ([date=2026-10-20 time=14:00 timezone=…]):
  * o servidor manda a data no fuso de quem escreveu; aqui ela vira a mesma
  * hora no fuso de quem lê, com o ícone de globo e a hora original no título.
  */

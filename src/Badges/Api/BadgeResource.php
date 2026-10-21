@@ -35,8 +35,7 @@ use Ramon\Canela\Badges\SystemBadges;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
 /**
- * `/api/canela-badges`: a página /badges e o admin de emblemas (como o /admin/badges
- * do Discourse).
+ * `/api/canela-badges`: a página /badges e o admin de emblemas.
  *
  * Quem não é admin só vê emblemas ligados; na listagem, também só os
  * listáveis e os que este fórum consegue conceder — "Primeira curtida" sem o

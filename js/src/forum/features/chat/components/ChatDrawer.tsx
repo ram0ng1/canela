@@ -1,11 +1,11 @@
 /*
- * A gaveta do chat (chat-drawer.gjs do Discourse): presa ao canto de baixo à
+ * A gaveta do chat: presa ao canto de baixo à
  * direita, 400×530 por padrão, redimensionável pelo canto de cima à esquerda
  * (o tamanho fica guardado), recolhível até sobrar só a barra, e com a mesma
  * navegação da página cheia dentro dela.
  *
  * Não aparece na página cheia do chat nem no celular (lá o chat é sempre a
- * página cheia, como no Discourse).
+ * página cheia).
  */
 import app from 'flarum/forum/app';
 import Component from 'flarum/common/Component';
@@ -56,7 +56,7 @@ export default class ChatDrawer extends Component {
     );
   }
 
-  /** Esc fecha a gaveta — o atalho "drawer_close" do Discourse. */
+  /** Esc fecha a gaveta. */
   private onKeyDown(e: KeyboardEvent): void {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
     if ((e.target as HTMLElement).closest('.Dropdown.open, .chat-composer-autocomplete')) return;

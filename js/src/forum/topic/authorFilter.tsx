@@ -1,5 +1,5 @@
 /*
- * "N postagens no tópico" do cartão de usuário do Discourse: o tópico passa a
+ * "N postagens no tópico" do cartão de usuário: o tópico passa a
  * mostrar só os posts daquela pessoa, com a faixa "Mostrando N postagens de
  * @fulano · Ver tudo" no topo.
  *

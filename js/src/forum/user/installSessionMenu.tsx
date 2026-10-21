@@ -1,5 +1,5 @@
 /*
- * O menu da sessão do Discourse abre com quem está logado: avatar, nome e
+ * O menu da sessão abre com quem está logado: avatar, nome e
  * @usuário, que levam ao perfil. No Flarum o menu começa direto em "Perfil";
  * aqui ele ganha esse cabeçalho, e o resto dos itens (de outras extensões
  * também) segue igual.

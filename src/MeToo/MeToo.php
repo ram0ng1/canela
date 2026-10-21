@@ -21,7 +21,7 @@ use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
 
 /**
- * O "Me too" do Discourse (o "shared issue" do discourse-solved): no primeiro
+ * O "Me too": no primeiro
  * post de um tópico de suporte, quem tem o mesmo problema diz "Eu também", a
  * contagem aparece no botão e a pessoa passa a acompanhar o tópico para saber
  * da solução.
@@ -30,8 +30,8 @@ use Illuminate\Database\ConnectionInterface;
  * - aparece em tópicos públicos (não em mensagens), não ocultos, nas tags
  *   escolhidas no admin, e some quando o tópico tem solução (fof/best-answer),
  *   a menos que o admin peça para manter;
- * - só marca quem está logado, não é o autor, e com o tópico aberto (o
- *   "trancado" do Flarum é o "closed" do Discourse).
+ * - só marca quem está logado, não é o autor, e com o tópico aberto (não
+ *   trancado).
  */
 final class MeToo
 {
@@ -182,7 +182,7 @@ final class MeToo
         }
 
         // Um tópico numa tag filha também está na tag pai: escolher a pai
-        // cobre as filhas, como uma categoria e as subcategorias no Discourse.
+        // cobre as filhas, como uma categoria e as subcategorias.
         if ($discussion->relationLoaded('tags')) {
             return $discussion->getRelation('tags')->contains(static fn ($tag): bool => in_array((int) $tag->id, $ids, true));
         }

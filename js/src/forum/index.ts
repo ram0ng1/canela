@@ -85,19 +85,19 @@ app.initializers.add('ramon-canela', () => {
   installMessages();
   installSystemUser();
   installUserMenu();
-  // A fila de revisão do Discourse na página /flags (flarum/flags e approval).
+  // A fila de revisão na página /flags (flarum/flags e approval).
   installReview();
 
-  // Recursos e comportamentos do Discourse que faltavam (gaps/).
+  // Recursos e comportamentos que faltavam (gaps/).
   installGaps();
 
-  // Animações, toasts, dicas e carregamento do Discourse (motion/).
+  // Animações, toasts, dicas e carregamento (motion/).
   installMotion();
 
-  // Extensões de terceiros (FoF) no visual do Discourse (thirdparty/).
+  // Extensões de terceiros (FoF) no visual do tema (thirdparty/).
   installThirdParty();
 
-  // O menu de busca do Discourse no cabeçalho e no banner (search/).
+  // O menu de busca no cabeçalho e no banner (search/).
   installSearchMenu();
 
   // Entrar e cadastrar em página própria (/login, /signup).

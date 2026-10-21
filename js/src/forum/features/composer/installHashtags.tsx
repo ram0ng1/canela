@@ -1,5 +1,5 @@
 /*
- * #categoria e #etiqueta, como no Discourse.
+ * #categoria e #etiqueta.
  *
  * No editor: digitar `#` sugere as tags (com o símbolo colorido da categoria)
  * e insere um link markdown `[#nome](endereço da tag)`. Com o flarum/mentions
@@ -7,7 +7,7 @@
  * menção de tag —, e o tema não abre um segundo menu no mesmo gatilho.
  *
  * Nos posts: os links para uma tag cujo texto começa com `#` (os do tema) e as
- * menções de tag do flarum/mentions viram a pílula do hashtag do Discourse,
+ * menções de tag do flarum/mentions viram a pílula de hashtag,
  * com o símbolo da categoria ou o ícone de etiqueta.
  */
 import app from 'flarum/forum/app';
@@ -46,7 +46,7 @@ function suggestTags(typed: string): CanelaTag[] {
   const contains = (tag: CanelaTag) => normalize(tag.name()).includes(query);
 
   // Categorias antes das etiquetas, e quem começa pelo digitado antes de
-  // quem só o contém — a ordem da sugestão do Discourse.
+  // quem só o contém.
   const ranked = [...sortTags(visible.filter(starts)), ...sortTags(visible.filter((tag) => !starts(tag) && contains(tag)))];
 
   return ranked.slice(0, SUGGESTION_LIMIT);
@@ -139,7 +139,7 @@ export function decorateHashtags(root: HTMLElement): void {
     link.dataset.canelaHashtag = '1';
     link.classList.add('CanelaHashtag', tag.position() !== null ? 'CanelaHashtag--category' : 'CanelaHashtag--tag');
 
-    // O nome sem o "#": no Discourse o símbolo é que faz esse papel.
+    // O nome sem o "#": o símbolo é que faz esse papel.
     const label = document.createElement('span');
     label.className = 'CanelaHashtag-name';
     label.textContent = tag.name();

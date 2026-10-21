@@ -1,7 +1,6 @@
 /*
- * A aba "Mensagens automáticas": o usuário do sistema (o `system` do
- * Discourse) e um card por mensagem automática (as `system_messages` do
- * Discourse), com o liga/desliga no cabeçalho e o assunto e o texto
+ * A aba "Mensagens automáticas": o usuário do sistema (`system`) e
+ * um card por mensagem automática, com o liga/desliga no cabeçalho e o assunto e o texto
  * editáveis. Vazios, valem os textos padrão, no idioma de quem recebe.
  */
 import app from 'flarum/admin/app';
@@ -214,7 +213,7 @@ const MESSAGES: MessageDef[] = [
     type: 'user_added_to_group_as_member',
     icon: 'fas fa-user-group',
     title: 'Adicionado a um grupo',
-    help: 'Quando a pessoa entra em outro grupo (fora Admin e Moderadores). Desligada por padrão, como no Discourse.',
+    help: 'Quando a pessoa entra em outro grupo (fora Admin e Moderadores). Desligada por padrão.',
     subject: 'Você entrou no grupo %{group_name}',
     body: 'Você foi adicionado(a) como membro do grupo %{group_name}.',
     variables: ['group_name', 'group_path'],
@@ -303,10 +302,7 @@ const cards: CardDef[] = [
     icon: 'fas fa-robot',
     title: () => trans(`${KEY}.title`, 'Usuário do sistema'),
     description: () =>
-      trans(
-        `${KEY}.help`,
-        'Como o "system" do Discourse: assina as notificações automáticas e as mensagens automáticas. Nunca entra: não tem login, senha nem sessão.'
-      ),
+      trans(`${KEY}.help`, 'Assina as notificações automáticas e as mensagens automáticas. Nunca entra: não tem login, senha nem sessão.'),
     keywords: 'usuário do sistema system user bot remetente notificações login',
     body: () => (
       <>
@@ -335,7 +331,7 @@ const cards: CardDef[] = [
     description: () =>
       trans(
         `${MSG}.custom.help`,
-        'Mensagens suas, além das do Discourse: escolha quando cada uma sai (conta ativada, dias depois, grupo, nível, emblema, primeira postagem, aniversário de conta, conta verificada). Cada uma sai uma vez só por pessoa.'
+        'Mensagens suas, além das do sistema: escolha quando cada uma sai (conta ativada, dias depois, grupo, nível, emblema, primeira postagem, aniversário de conta, conta verificada). Cada uma sai uma vez só por pessoa.'
       ),
     keywords: 'mensagem personalizada custom automática gatilho trigger aniversário anniversary verificada emblema grupo nível dias',
     extensions: ['flarum-messages'],

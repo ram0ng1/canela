@@ -1,5 +1,5 @@
 /*
- * A seção "Chat" nas Configurações — as preferências de chat do Discourse:
+ * A seção "Chat" nas Configurações — as preferências de chat:
  * ativar o chat, o som das mensagens novas, o indicador do cabeçalho, a tecla
  * de enviar, as reações de um clique e "Ignorar menções em todo o canal".
  *

@@ -29,13 +29,13 @@ use Ramon\Canela\Ai\TopicSummary;
  * Os resumos de IA de um tópico: o completo ("Resumir", no mapa do tópico) e
  * o curto (gist), da lista.
  *
- * O resumo é guardado e mostrado a todos que veem o tópico, como no
- * Discourse. Por isso só entram os posts que qualquer leitor do tópico vê:
+ * O resumo é guardado e mostrado a todos que veem o tópico. Por isso só
+ * entram os posts que qualquer leitor do tópico vê:
  * nem os ocultos, nem os que esperam aprovação — mesmo quando quem pediu é
  * um moderador que os enxerga.
  *
  * Num tópico longo vão os primeiros posts (o assunto) e os últimos (onde a
- * conversa chegou), como o `pick_selection` do Discourse, num teto de texto.
+ * conversa chegou), num teto de texto.
  */
 final class TopicSummarizer
 {

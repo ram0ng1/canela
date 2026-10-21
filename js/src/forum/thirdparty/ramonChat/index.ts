@@ -1,6 +1,6 @@
 /*
- * ramon/chat no visual e na navegação do chat próprio do tema (features/chat,
- * o plugin de chat do Discourse) — que dá lugar a ele quando a extensão está
+ * ramon/chat no visual e na navegação do chat próprio do tema (features/chat)
+ * — que dá lugar a ele quando a extensão está
  * ligada; ver o `$yieldsTo` do extend.php.
  *
  * - sidebar: as seções "Canais" e "Mensagens diretas" na barra lateral.
@@ -10,7 +10,7 @@
  *   conversa.
  * - drawer: a lista da gaveta (com as abas) e a gaveta redimensionável.
  * - actions/composer: o "⋮" das ações da mensagem, o "+" e o emoji do editor.
- * - views: o `<i>` cru dos ícones vira Lucide e a hora no formato do Discourse.
+ * - views: o `<i>` cru dos ícones vira Lucide e a hora no formato curto.
  * - A aba "Chat" do menu do usuário e o botão "Chat" do cartão/perfil moram
  *   no código deles (usermenu/UserMenu.tsx, topic/components/UserCardPopover,
  *   user/installProfile), lendo `thirdParty.ramonChat*`.
@@ -142,7 +142,7 @@ export default function installRamonChat(): void {
 
     // O CSS esconde a ChatSidebar da página só quando a barra do tema está
     // aberta e com os canais; fechada (ou desligada no admin), ela volta como
-    // a coluna de canais do Discourse sem barra lateral.
+    // a coluna de canais sem barra lateral.
     if (sidebarHasChannels()) addClass(vnode, 'ChatPage--canelaSidebar');
   });
 

@@ -18,8 +18,8 @@ namespace Ramon\Canela\Ai\Translation;
  * alfabeto latino, pelas palavras mais comuns de cada língua.
  *
  * Responde só quando tem certeza (palavras bastantes e uma língua bem à frente
- * da segunda); na dúvida devolve null, e a IA decide em lote — o Discourse
- * também usa um detector local antes de gastar com o modelo.
+ * da segunda); na dúvida devolve null, e a IA decide em lote — um detector
+ * local antes de gastar com o modelo.
  */
 final class LanguageDetector
 {

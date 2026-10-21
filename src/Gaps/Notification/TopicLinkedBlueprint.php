@@ -20,7 +20,7 @@ use Flarum\Post\Post;
 use Flarum\User\User;
 
 /**
- * "Fulano vinculou seu tópico" — o `linked` do Discourse: uma postagem de
+ * "Fulano vinculou seu tópico": uma postagem de
  * outra pessoa traz um link para um tópico seu. O assunto é a postagem com o
  * link (é para lá que a notificação leva); o tópico vinculado vai nos dados.
  */

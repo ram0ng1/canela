@@ -23,7 +23,7 @@ use Ramon\Chat\Channel;
 use Ramon\Chat\Event\ChannelWasDeleted;
 
 /**
- * Apagar uma categoria apaga os canais dela, como no Discourse. O ramon/chat
+ * Apagar uma categoria apaga os canais dela. O ramon/chat
  * deixava o canal órfão (com um `tag_id` que não existe mais), e a regra de
  * visibilidade dele, que segue a tag, deixava de valer.
  *

@@ -14,7 +14,7 @@ use Illuminate\Database\Schema\Builder;
 
 /*
  * As visualizações da mensagem (a coluna "Visualizações" da lista de
- * mensagens do Discourse, que é a mesma lista de tópicos). Na própria
+ * mensagens). Na própria
  * conversa, como o `canela_view_count` dos tópicos: a lista mostra o número
  * sem somar nada a cada página.
  */

@@ -1,6 +1,6 @@
 /*
  * Histórico de edições: o "Editado" do cabeçalho da postagem (PostEdited do
- * core) vira o lápis com o número de revisões do Discourse, que abre o modal
+ * core) vira o lápis com o número de revisões, que abre o modal
  * comparando as versões.
  *
  * Postagens editadas antes de o histórico existir (ou com o recurso

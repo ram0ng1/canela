@@ -1,7 +1,7 @@
 /*
- * fof/links na barra lateral, como as seções personalizadas do Discourse.
+ * fof/links na barra lateral, como as seções personalizadas.
  *
- * O Horizon não tem links no cabeçalho: tudo o que o admin acrescenta mora
+ * O tema não tem links no cabeçalho: tudo o que o admin acrescenta mora
  * na barra. Então:
  * - os links soltos (e os filhos deles) entram na seção de links que o tema
  *   já tem (`canelaCustom`, a dos "Rótulo | endereço | ícone" do admin) — uma

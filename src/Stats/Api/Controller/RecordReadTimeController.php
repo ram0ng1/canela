@@ -21,7 +21,7 @@ use Ramon\Canela\Stats\StatsSettings;
 use Ramon\Canela\Stats\VisitRecorder;
 
 /**
- * POST /api/canela-read-time — o "timings" do Discourse, simplificado: a aba
+ * POST /api/canela-read-time — o registro do tempo de leitura: a aba
  * do tópico manda, de tempos em tempos, quantos segundos a pessoa passou lendo
  * e quais postagens passaram pela tela.
  *

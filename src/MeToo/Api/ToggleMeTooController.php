@@ -30,8 +30,8 @@ use Ramon\Canela\MeToo\Event\Toggled;
 use Ramon\Canela\MeToo\MeToo;
 
 /**
- * POST /api/canela-me-too `{discussionId}`: o `POST /solution/shared_issue`
- * do Discourse. Alterna o "Eu também" de quem chama e devolve a contagem nova,
+ * POST /api/canela-me-too `{discussionId}`: alterna o "Eu também" de quem
+ * chama e devolve a contagem nova,
  * se marcou, e a inscrição no tópico (para o botão de notificações do rodapé
  * mudar junto).
  *

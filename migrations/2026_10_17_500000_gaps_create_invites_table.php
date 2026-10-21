@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Links de convite do Discourse: quem convida gera um link com validade e um
+ * Links de convite: quem convida gera um link com validade e um
  * número máximo de usos; cada cadastro feito por ele conta um uso.
  *
  * O código é o que vai no link (único, imprevisível). Apagar quem convidou

@@ -25,8 +25,8 @@ use Illuminate\Database\Eloquent\Builder;
  *   os critérios inteiros. A busca de texto do core continua rodando — ela
  *   aceita o tópico pelo título OU pelas postagens —, e aqui se exige que cada
  *   palavra apareça no título, o que deixa só os acertos de título.
- * - "Mais curtidos" (`sort=-canelaLikes`): curtidas da postagem de abertura, a
- *   mesma régua do Discourse para tópicos. Veja SortsByLikes.
+ * - "Mais curtidos" (`sort=-canelaLikes`): curtidas da postagem de abertura.
+ *   Veja SortsByLikes.
  */
 final class DiscussionSearchMutator
 {

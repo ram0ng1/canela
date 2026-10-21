@@ -15,8 +15,7 @@ namespace Ramon\Canela\Ai\Tools;
 
 /**
  * O resultado de uma ferramenta: o texto que volta para o modelo e o resumo
- * que a resposta mostra ("Pesquisou por …", com os links), como os detalhes
- * de ferramenta do Discourse.
+ * que a resposta mostra ("Pesquisou por …", com os links).
  */
 final class ToolOutput
 {

@@ -1,7 +1,7 @@
 /*
  * No chat, o avatar e o nome do autor, as menções @fulano e as linhas de
  * membros abrem o cartão de usuário do tema (topic/components/UserCardPopover),
- * o mesmo dos posts, ancorado no que foi clicado — como no chat do Discourse.
+ * o mesmo dos posts, ancorado no que foi clicado.
  * Ctrl/Cmd+clique e o botão do meio continuam abrindo o perfil numa aba nova.
  *
  * Um ouvinte só, na captura: o nome é um Link do Mithril, que navegaria antes,

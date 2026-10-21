@@ -1,5 +1,5 @@
 /*
- * Peças pequenas do chat, com as classes do Discourse: o avatar do usuário,
+ * Peças pequenas do chat: o avatar do usuário,
  * o ícone e o título do canal, o indicador de não lidas e a barra de
  * navegação (c-navbar) com os botões da gaveta.
  */
@@ -16,7 +16,7 @@ import chat from '../ChatStore';
 import { channelTitle, chatUser, ct, displayName, emoji, isSelfDm, otherParticipants } from '../utils';
 import type { ChatChannel } from '../types';
 
-/** Avatar com o cartão de usuário no clique (o "data-user-card" do Discourse). */
+/** Avatar com o cartão de usuário no clique. */
 export function ChatUserAvatar(userId: number | null | undefined, options: { interactive?: boolean; size?: string } = {}): Mithril.Children {
   const user = chatUser(userId);
 

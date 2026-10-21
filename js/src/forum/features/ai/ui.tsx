@@ -1,5 +1,5 @@
 /*
- * Peças pequenas que várias telas da IA usam, com os nomes das do Discourse:
+ * Peças pequenas que várias telas da IA usam:
  * os três pontinhos que ondulam (AiIndicatorWave), o esqueleto de blocos que
  * aparecem e piscam enquanto o resumo é gerado (AiBlinkingAnimation) e os
  * detalhes do que o bot consultou ("Pesquisou por…").
@@ -24,8 +24,8 @@ export function indicatorWave(): Mithril.Children {
 const BLOCKS = 20;
 
 /**
- * Os blocos cinza do esqueleto. As larguras e a ordem são as do CSS do
- * Discourse; o ritmo (um bloco a cada 250 ms, depois o piscar em sequência)
+ * Os blocos cinza do esqueleto. As larguras e a ordem ficam no CSS;
+ * o ritmo (um bloco a cada 250 ms, depois o piscar em sequência)
  * fica todo no CSS, pelo índice de cada bloco.
  */
 export function blinkingAnimation(): Mithril.Children {
@@ -46,8 +46,8 @@ export interface ToolActivity {
 }
 
 /**
- * O que o bot consultou, num `<details>` fechado acima da resposta — o
- * `.ai-details` do Discourse: "Pesquisou por "x" — 5 resultados", que abre
+ * O que o bot consultou, num `<details>` fechado acima da resposta:
+ * "Pesquisou por "x" — 5 resultados", que abre
  * com os links; "Leu o tópico X".
  */
 export function toolDetails(activities: ToolActivity[]): Mithril.Children {

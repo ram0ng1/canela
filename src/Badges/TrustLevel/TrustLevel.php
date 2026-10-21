@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Ramon\Canela\Badges\TrustLevel;
 
 /**
- * Os níveis de confiança do Discourse. O 4 (Líder) nunca é automático: só a
- * equipe concede, como lá.
+ * Os níveis de confiança. O 4 (Líder) nunca é automático: só a
+ * equipe concede.
  */
 final class TrustLevel
 {

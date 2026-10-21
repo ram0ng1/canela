@@ -1,6 +1,6 @@
 /*
  * A seção "Chat" das Configurações (a aba Chat das preferências do tema), como
- * a do Discourse e a do chat próprio do tema (features/chat/preferences.tsx),
+ * a do chat próprio do tema (features/chat/preferences.tsx),
  * gravando as preferências que o ramon/chat registra (`ramon-chat.enabled`,
  * `allowChannelWideMentions`, `sound`, `emailNotifications`, `openInDrawer`,
  * `sendWithCtrlEnter`) e as do tema (indicador do cabeçalho, reações de um
@@ -119,7 +119,7 @@ class RamonChatPreferences extends Component<PrefsAttrs> {
 
           this.toggle('ramon-chat.emailNotifications', prefs['ramon-chat.emailNotifications'] !== false, rt('preferences.email_mentions')),
 
-          // "Ignorar" no texto, como no Discourse; a preferência do ramon/chat é a positiva.
+          // "Ignorar" no texto; a preferência do ramon/chat é a positiva.
           this.toggle(
             'ramon-chat.allowChannelWideMentions',
             prefs['ramon-chat.allowChannelWideMentions'] === false,

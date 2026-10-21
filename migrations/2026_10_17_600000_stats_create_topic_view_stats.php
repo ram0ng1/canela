@@ -13,8 +13,8 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Visualizações por dia de cada tópico — a `topic_view_stats` do Discourse,
- * que desenha o gráfico "Visualizações recentes" do mapa do tópico.
+ * Visualizações por dia de cada tópico, que desenham o gráfico "Visualizações
+ * recentes" do mapa do tópico.
  *
  * Uma linha por (tópico, dia), com anônimos e logados separados. O índice
  * único é o que deixa somar com um INSERT … ON DUPLICATE KEY UPDATE; o

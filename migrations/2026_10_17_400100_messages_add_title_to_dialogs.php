@@ -13,8 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * O título da mensagem: no Discourse toda mensagem pessoal é um tópico, com
- * título, e o composer pede um. O flarum/messages não tem — o nome da conversa
+ * O título da mensagem: o composer pede um. O flarum/messages não tem — o nome da conversa
  * é "Conversando com X" —, então o tema guarda o título na própria conversa.
  * Vazio, continua valendo o nome do flarum/messages.
  */

@@ -1,17 +1,15 @@
 // =====================================================================
-// Chat — o plugin de chat do Discourse, com os valores do CSS compilado do
-// meta.discourse.org (css-chat.css, css-chat_desktop.css,
-// css-chat_mobile.css). As classes são as do Discourse (chat-message,
-// c-navbar, chat-drawer…), para cada regra daqui corresponder a uma de lá.
+// Chat — as classes seguem a nomenclatura do chat do tema (chat-message,
+// c-navbar, chat-drawer…).
 //
-// As cores do Discourse viram os tokens do tema: --primary-* → --cn-primary-*,
-// --tertiary → --cn-accent, e os tons "tertiary-very-low/low/medium" saem da
+// As cores usam os tokens do tema (--cn-primary-*, --cn-accent), e os tons
+// muito baixo/baixo/médio saem da
 // cor de destaque misturada à superfície, no claro e no escuro.
 // =====================================================================
 
 // Os mixins ficam fora das guardas: cada bloco `& when` abaixo é um escopo
 // próprio, e todos usam estes dois.
-// Rolagem fina de todas as áreas roláveis do chat (o mixin chat-scrollbar).
+// Rolagem fina de todas as áreas roláveis do chat.
 .cn-chat-scrollbar() {
   scrollbar-width: thin;
   scrollbar-color: var(--cn-primary-low) transparent;
@@ -343,7 +341,7 @@
   }
 }
 
-// A tachinha do Discourse é inclinada.
+// A tachinha é inclinada.
 .c-navbar__pinned-messages-btn .icon,
 .chat-message-info__pinned .icon,
 .chat-pinned-bar__label .icon,
@@ -573,7 +571,7 @@
     opacity: 0.65;
   }
 
-  // Fechar a MD: a linha some encolhendo, como o "-fade-out" do Discourse.
+  // Fechar a MD: a linha some encolhendo.
   &.-fade-out {
     height: 0 !important;
     overflow: hidden;
@@ -988,7 +986,7 @@
   }
 
   // A mensagem pedida (um link, "em resposta a", uma fixada) acende e apaga
-  // devagar, como o "chat-quote-message-background-fade-highlight".
+  // devagar.
   &.-highlighted {
     animation: chat-highlight 2.5s ease-in forwards;
   }
@@ -1199,7 +1197,7 @@
     vertical-align: middle;
   }
 
-  // As menções (a "pílula" do Discourse) e a do próprio leitor em destaque.
+  // As menções (a "pílula") e a do próprio leitor em destaque.
   .mention,
   .UserMention {
     display: inline-block;
@@ -3736,7 +3734,7 @@ html.has-full-page-chat {
   }
 }
 
-// Até 64rem, o fio aberto toma o lugar do canal (chat_desktop.css).
+// Até 64rem, o fio aberto toma o lugar do canal.
 @media (max-width: 1023px) {
   .main-chat-outlet.has-side-panel-expanded {
     grid-template-columns: 1fr;
@@ -3757,7 +3755,7 @@ html.has-full-page-chat {
 }
 
 // ---------------------------------------------------------------------
-// Celular (css-chat_mobile.css)
+// Celular
 // ---------------------------------------------------------------------
 @media @phone {
   [data-theme^=light],
@@ -3784,7 +3782,7 @@ html.has-full-page-chat {
   }
 
   .chat-message-container {
-    // Segurar a mensagem dá o "aperto" do Discourse antes de abrir as ações.
+    // Segurar a mensagem dá um "aperto" antes de abrir as ações.
     transition: transform 400ms;
 
     &:not(.-user-info-hidden) .chat-message {

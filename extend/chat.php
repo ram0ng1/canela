@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 /*
- * O chat do Discourse: canais públicos (avulsos ou de uma tag), mensagens
+ * O chat: canais públicos (avulsos ou de uma tag), mensagens
  * diretas 1:1 e em grupo, fios, reações, menções, fixadas, imagens, "está
  * digitando" e entrega em tempo real pelo flarum/realtime (com polling quando
  * ele não está disponível).
@@ -63,7 +63,7 @@ return (static function (): array {
         (new Extend\ApiResource(ForumResource::class))
             ->fields(Api\ForumChatAttributes::class),
 
-        // As preferências de chat do Discourse (Configurações → Chat).
+        // As preferências de chat (Configurações → Chat).
         (new Extend\User())
             ->registerPreference(ChatAccess::PREF_ENABLED, 'boolval', true)
             ->registerPreference(ChatNotifier::PREF_IGNORE_WIDE, 'boolval', false)
@@ -105,7 +105,7 @@ return (static function (): array {
             ->post('/chat/uploads', 'canela.chat.uploads', Api\UploadController::class)
             ->get('/chat/search', 'canela.chat.search', Api\SearchController::class),
 
-        // As páginas do fórum: a página cheia e as sub-rotas do Discourse
+        // As páginas do fórum: a página cheia e as sub-rotas
         // (/chat/c/:slug/:id, /chat/c/:slug/:id/t/:thread, /chat/browse…).
         (new Extend\Frontend('forum'))
             ->route('/chat', 'canela.chat', $page)

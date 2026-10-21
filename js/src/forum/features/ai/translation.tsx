@@ -1,5 +1,5 @@
 /*
- * Tradução automática do conteúdo (o `ai_translation` do Discourse AI).
+ * Tradução automática do conteúdo.
  *
  * O servidor manda, junto com cada postagem e tópico, a tradução para o idioma
  * de quem lê (quando já existe) ou a marca `canelaTranslatable` (falta
@@ -9,8 +9,8 @@
  * A tradução entra pelo próprio modelo (`contentHtml()` e `title()`), então
  * aparece em todo lugar que mostra o post ou o título; o 文A à esquerda da
  * data alterna aquela postagem (na primeira, também o título do tópico), e o
- * 文A do topo da linha do tempo abre as "Preferências de idioma do conteúdo"
- * do Discourse: os idiomas que a pessoa lê no original e a tradução
+ * 文A do topo da linha do tempo abre as "Preferências de idioma do conteúdo":
+ * os idiomas que a pessoa lê no original e a tradução
  * automática (na conta, ou neste navegador para visitantes). Enquanto uma postagem
  * está sendo traduzida, um ícone girando fica no lugar do 文A. Editar o
  * título sempre parte do título original.
@@ -476,7 +476,7 @@ export default function installTranslation(): void {
     if (info()?.titles) enqueue('d', this.attrs.discussion);
   });
 
-  // O 文A do topo da linha do tempo, como no Discourse: abre as
+  // O 文A do topo da linha do tempo: abre as
   // "Preferências de idioma do conteúdo" (idioma da interface, os que a
   // pessoa entende e a tradução automática). Cada postagem continua com o
   // 文A dela, que alterna só aquela.

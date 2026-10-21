@@ -1,8 +1,7 @@
 /*
- * A pré-visualização ao lado do editor, como no Discourse: no computador, o
+ * A pré-visualização ao lado do editor: no computador, o
  * texto aparece formatado à direita enquanto se escreve. O botão « no canto
- * do composer (junto de tela cheia e minimizar, como o `toggle-preview` do
- * Discourse) a esconde ou mostra, e a escolha fica no navegador.
+ * do composer (junto de tela cheia e minimizar) a esconde ou mostra, e a escolha fica no navegador.
  *
  * A prévia é o ComposerPostPreview do core (o mesmo formatador do servidor,
  * em JS), então menções, emoji e markdown saem iguais ao post publicado.
@@ -26,7 +25,7 @@ export function preferred(): boolean {
   try {
     const value = localStorage.getItem(STORAGE_KEY);
 
-    // No modo Markdown a prévia abre por padrão, como no Discourse.
+    // No modo Markdown a prévia abre por padrão.
     return value === null ? true : value === '1';
   } catch {
     return memoryPreference;
@@ -47,13 +46,13 @@ export function setPreferred(value: boolean): void {
  * O composer comporta as duas colunas agora: computador, aberto ou em tela
  * cheia. `app.screen()` diz "desktop-hd" a partir de 1200px — comparar só com
  * "desktop" deixava a prévia de fora justo nas telas largas. A altura não
- * conta: o Discourse divide mesmo no composer mais baixo (255px).
+ * conta: divide mesmo no composer mais baixo (255px).
  */
 export function splitPossible(): boolean {
   const composer = app.composer;
   const screen = app.screen();
 
-  // Só no modo Markdown: no "A" o Discourse não tem a coluna da prévia.
+  // Só no modo Markdown: no "A" não há a coluna da prévia.
   if (!composerOn('Preview') || richMode() || (screen !== 'desktop' && screen !== 'desktop-hd') || !composer.isVisible()) return false;
 
   return composer.position === 'normal' || composer.position === 'fullScreen';
@@ -118,9 +117,9 @@ export default function installPreview() {
 }
 
 /**
- * O botão « do Discourse (`toggle-preview`): fica no canto do composer, antes
+ * O botão « da prévia: fica no canto do composer, antes
  * de tela cheia e minimizar. A seta gira (pelo CSS) quando a prévia está
- * escondida, como lá.
+ * escondida.
  */
 export function previewToggle(): Mithril.Children {
   const visible = preferred();

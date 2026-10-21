@@ -1,12 +1,12 @@
 /*
- * A página de busca do Discourse (`/search?q=`): abas (Tópicos, Postagens,
+ * A página de busca (`/search?q=`): abas (Tópicos, Postagens,
  * Etiquetas e categorias, Usuários), campo grande com "Pesquisar", "Filtros
  * avançados", "Ordenar por", "N resultados para X" e os resultados com
  * título, etiquetas e o trecho com as palavras destacadas.
  *
  * O estado mora todo na URL (`q`, `type`, `sort`): cada pesquisa navega para
  * a nova URL, o resolvedor do core recria a página, e voltar no navegador
- * volta à busca anterior — como no Discourse. Só o painel de filtros aberto
+ * volta à busca anterior. Só o painel de filtros aberto
  * é lembrado fora dela, para não fechar a cada pesquisa.
  */
 import app from 'flarum/forum/app';

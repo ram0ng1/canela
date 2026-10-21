@@ -1,5 +1,5 @@
 /*
- * O ícone do chat no cabeçalho (chat/header/icon.gjs do Discourse), com o
+ * O ícone do chat no cabeçalho, com o
  * indicador da preferência "Mostrar indicador de atividade no cabeçalho":
  *
  * - Todas as novas mensagens: o número verde (menções e MDs) ou, sem ele, o

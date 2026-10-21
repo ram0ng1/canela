@@ -1,7 +1,7 @@
 /*
  * As visualizações por dia do tópico (GET /api/discussions/{id}/canela-views),
- * guardadas por tópico enquanto a página está aberta — o `mapCache` do
- * Discourse: abrir e fechar o menu não refaz a requisição.
+ * guardadas por tópico enquanto a página está aberta — um cache em
+ * memória: abrir e fechar o menu não refaz a requisição.
  */
 import app from 'flarum/forum/app';
 import type Discussion from 'flarum/common/models/Discussion';
@@ -19,7 +19,7 @@ export interface ViewStatsResponse {
   estimated?: boolean;
 }
 
-/** Os 30 dias do Discourse (`from = 30.days.ago`). */
+/** A janela do gráfico, em dias. */
 export const VIEW_STATS_DAYS = 30;
 
 const cache = new Map<string, ViewStatsResponse>();
@@ -29,7 +29,7 @@ export function cachedViewStats(discussion: Discussion): ViewStatsResponse | und
 }
 
 /**
- * Como o `fetchViews` do mapa do Discourse: sem nenhum dia gravado (o tópico é
+ * Sem nenhum dia gravado (o tópico é
  * de antes da contagem diária, ou a tabela ainda não existe), entra um dia só
  * — hoje — com o total do tópico.
  */
@@ -77,15 +77,14 @@ function utcDay(time: number): number {
  * A janela inteira do gráfico: os últimos 30 dias (ou desde a criação do
  * tópico, se ele for mais novo), com zero nos dias sem registro.
  *
- * O Discourse grava as visualizações desde sempre, então lá os 30 dias vêm
- * cheios. Aqui a contagem por dia começa quando o recurso é ligado: um tópico
+ * A contagem por dia começa quando o recurso é ligado: um tópico
  * antigo, com milhares de visualizações, chegava com dois ou três dias e
  * mostrava só os números (ou um gráfico de três pontos), em vez do gráfico do
  * mês.
  */
 export function fullWindow(stats: ViewStat[], createdAt: Date | null | undefined): ViewStat[] {
   const today = utcDay(Date.now());
-  // "30.days.ago" até hoje, os dois inclusive: 31 dias, como o eixo de lá.
+  // De 30 dias atrás até hoje, os dois inclusive: 31 dias no eixo.
   const windowStart = today - VIEW_STATS_DAYS * ONE_DAY;
   const created = createdAt ? utcDay(createdAt.getTime()) : windowStart;
   const start = Math.min(today, Math.max(windowStart, created));

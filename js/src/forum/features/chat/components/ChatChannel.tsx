@@ -1,5 +1,5 @@
 /*
- * A conversa (chat-channel.gjs e chat-thread.gjs do Discourse): a faixa das
+ * A conversa (canal ou fio): a faixa das
  * fixadas, a lista de mensagens que rola de baixo para cima, o "Pular para o
  * fim", o cartão de "Participar" de quem só está olhando e o composer.
  *

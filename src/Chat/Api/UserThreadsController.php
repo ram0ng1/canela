@@ -25,7 +25,7 @@ use Ramon\Canela\Chat\Model\ThreadMembership;
 use Ramon\Canela\Chat\UnreadCounter;
 
 /**
- * `GET /api/chat/threads`: "Meus tópicos" do Discourse — os fios que o ator
+ * `GET /api/chat/threads`: "Meus tópicos" — os fios que o ator
  * acompanha, em todos os canais que ele ainda enxerga, do mais movimentado
  * recentemente para o mais antigo.
  */

@@ -2,7 +2,7 @@
  * Utilidades de movimento compartilhadas pelos módulos de `motion/`.
  */
 
-/** Quem pede menos movimento recebe tudo na hora (o Discourse zera as durações). */
+/** Quem pede menos movimento recebe tudo na hora (as durações vão a zero). */
 export function prefersReducedMotion(): boolean {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 }

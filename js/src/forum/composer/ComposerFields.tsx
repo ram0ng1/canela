@@ -1,7 +1,7 @@
 /*
- * A linha "tag primária | tags secundárias" do composer do Discourse
- * (`.title-and-category`): à esquerda o `category-chooser`, à direita o
- * `mini-tag-chooser`, dois select-kits na própria linha, no lugar do modal
+ * A linha "tag primária | tags secundárias" do composer: à esquerda o
+ * seletor de categoria, à direita o de etiquetas, dois seletores na própria
+ * linha, no lugar do modal
  * do flarum/tags.
  *
  * As regras são as do TagDiscussionModal (ver `tagRules.ts`): só as tags que
@@ -60,7 +60,7 @@ function matches(tag: CanelaTag, filter: string): boolean {
   return tag.name().toLowerCase().includes(needle) || (!!parent && parent.name().toLowerCase().includes(needle));
 }
 
-/** "(símbolo) Nome", o badge do Discourse, sem link. */
+/** "(símbolo) Nome", o badge da tag, sem link. */
 function badge(tag: CanelaTag): Mithril.Children {
   const symbol: any = categorySymbol(tag);
   const parent = parentTag(tag);

@@ -30,13 +30,11 @@ use Ramon\Canela\Stats\TopicViewStats;
  * Flarum recusa (400) qualquer parâmetro só de letras minúsculas fora dos do
  * JSON:API (`include`, `fields`, `filter`, `page`, `sort`).
  *
- * A resposta tem o formato da `/t/{id}/view-stats.json` do Discourse
- * (`{topic_id, stats: [{viewed_at, views}]}`), e o período padrão é o dele:
- * os últimos 30 dias até hoje.
+ * A resposta tem o formato `{topic_id, stats: [{viewed_at, views}]}`, e o
+ * período padrão é o dos últimos 30 dias até hoje.
  *
  * O `{id}` passa pela busca do próprio recurso de discussões, que aplica a
- * visibilidade de quem pede: um tópico que a pessoa não pode ver responde 404,
- * como o `can_see_topic?` do Discourse.
+ * visibilidade de quem pede: um tópico que a pessoa não pode ver responde 404.
  */
 final class ShowTopicViewStats
 {
@@ -73,7 +71,7 @@ final class ShowTopicViewStats
             ->response(static fn (Context $context, array $result): JsonResponse => new JsonResponse($result));
     }
 
-    /** Entre 1 e 365 dias; qualquer coisa fora disso vira o padrão do Discourse. */
+    /** Entre 1 e 365 dias; qualquer coisa fora disso vira o padrão (30). */
     private static function days(mixed $value): int
     {
         if (! is_numeric($value)) {

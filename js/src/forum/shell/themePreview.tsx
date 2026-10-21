@@ -12,7 +12,7 @@ import ThemeMode from 'flarum/common/components/ThemeMode';
 import classList from 'flarum/common/utils/classList';
 import type Mithril from 'mithril';
 
-/** Cores das categorias de mentira: as do Discourse, só para dar vida à miniatura. */
+/** Cores das categorias de mentira, só para dar vida à miniatura. */
 const CATEGORY_COLORS = ['#0088cc', '#e45735', '#f1592a', '#3ab54a'];
 
 function preview(): Mithril.Children {

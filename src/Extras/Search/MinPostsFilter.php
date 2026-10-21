@@ -20,10 +20,10 @@ use Flarum\Search\ValidateFilterTrait;
 
 /**
  * `filter[canelaMinPosts]=N`: tópicos com pelo menos N postagens, o "mínimo de
- * postagens" dos filtros avançados do Discourse.
+ * postagens" dos filtros avançados.
  *
  * Conta pelo `comment_count`, a coluna que o core já mantém: a postagem de
- * abertura entra na conta, como no Discourse (lá `posts_count` também a inclui).
+ * abertura entra na conta.
  *
  * @implements FilterInterface<DatabaseSearchState>
  */

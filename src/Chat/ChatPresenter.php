@@ -31,7 +31,7 @@ use Ramon\Canela\Chat\Upload\ChatUploads;
  * Monta o JSON das respostas do chat: canais, mensagens, fios e os usuários
  * citados por eles.
  *
- * O chat tem a própria API (os formatos do Discourse, com cursor e contagens
+ * O chat tem a própria API (com cursor e contagens
  * por usuário), mas os usuários saem como objetos do JSON:API (`type: users`):
  * o fórum os põe no store e usa o Avatar, o nome e o link do perfil do core.
  *
@@ -43,7 +43,7 @@ use Ramon\Canela\Chat\Upload\ChatUploads;
  */
 final class ChatPresenter
 {
-    /** Quantos rostos o indicador do fio mostra, como o Discourse. */
+    /** Quantos rostos o indicador do fio mostra. */
     private const THREAD_PARTICIPANTS = 3;
 
     /** @var array<int, true> */
@@ -225,7 +225,7 @@ final class ChatPresenter
     }
 
     /**
-     * Nome, cor e ícone das tags dos canais (a "categoria" do Discourse).
+     * Nome, cor e ícone das tags dos canais (a "categoria").
      *
      * @param int[] $ids
      * @return array<int, array<string, mixed>>

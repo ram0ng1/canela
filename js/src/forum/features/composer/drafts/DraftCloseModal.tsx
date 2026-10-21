@@ -1,5 +1,5 @@
 /*
- * "O que deseja fazer com a sua postagem?" — a pergunta do Discourse ao
+ * "O que deseja fazer com a sua postagem?" — a pergunta ao
  * fechar um composer com texto: descartar, guardar para depois ou continuar
  * escrevendo. Com rascunho no servidor, fechar não precisa mais significar
  * perder o texto, que era o que o confirm() do core perguntava.

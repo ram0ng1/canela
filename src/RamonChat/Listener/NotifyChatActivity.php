@@ -32,7 +32,7 @@ use Ramon\Chat\MessageMention;
 use Ramon\Chat\ThreadUser;
 
 /**
- * Os alertas do chat no sino, como no Discourse: "mencionou você" e "escreveu
+ * Os alertas do chat no sino: "mencionou você" e "escreveu
  * em #canal" (para quem acompanha o canal no nível "Para todas as atividades",
  * ou o fio). O ramon/chat só manda a menção por e-mail.
  *

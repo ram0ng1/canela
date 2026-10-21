@@ -27,7 +27,7 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.search_title`, 'Página de busca'),
     description: help(
       'search_page_enabled',
-      'A página /search do Discourse: abas de discussões, postagens, tags e usuários, filtros avançados (autor, tag primária, tags, só no título, curtidos, status, datas, mínimo de postagens) e ordenação. O modal de busca ganha o link "Busca avançada".'
+      'A página /search: abas de discussões, postagens, tags e usuários, filtros avançados (autor, tag primária, tags, só no título, curtidos, status, datas, mínimo de postagens) e ordenação. O modal de busca ganha o link "Busca avançada".'
     ),
     keywords: 'busca pesquisa search página page avançada advanced filtros filters gambits ordenar sort resultados results',
     master: 'canela.search_page_enabled',
@@ -77,7 +77,7 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.text_size_title`, 'Tamanho do texto'),
     description: help(
       'text_size_enabled',
-      'Em Configurações, cada pessoa escolhe Menor, Normal, Maior ou Máximo. A escolha vale para o aparelho (fica no navegador), como no Discourse.'
+      'Em Configurações, cada pessoa escolhe Menor, Normal, Maior ou Máximo. A escolha vale para o aparelho (fica no navegador).'
     ),
     keywords: 'tamanho texto fonte letra text size font acessibilidade accessibility zoom maior menor',
     master: 'canela.text_size_enabled',

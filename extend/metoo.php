@@ -10,7 +10,7 @@
  */
 
 /*
- * "Me too" do Discourse (o "shared issue" do discourse-solved): o botão
+ * "Me too": o botão
  * "Eu também (N)" com a mão levantada abaixo do primeiro post. As regras
  * moram em Ramon\Canela\MeToo\MeToo; o card fica no grupo "Tópico" do admin.
  */

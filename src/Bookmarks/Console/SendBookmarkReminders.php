@@ -26,7 +26,7 @@ use Ramon\Canela\Bookmarks\Notification\BookmarkReminderBlueprint;
  * Envia os lembretes de marcador vencidos (`php flarum canela:bookmarks:remind`).
  *
  * Roda sozinho pelo agendador do Flarum (`php flarum schedule:run` no cron),
- * a cada cinco minutos — o mesmo intervalo do job do Discourse.
+ * a cada cinco minutos.
  */
 final class SendBookmarkReminders extends Command
 {

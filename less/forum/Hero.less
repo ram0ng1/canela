@@ -1,5 +1,5 @@
 // =====================================================================
-// Topo da página inicial: o banner de boas-vindas do Horizon e o hero grande
+// Topo da página inicial: o banner de boas-vindas e o hero grande
 // da categoria. Os dois ficam fora do cartão, transparentes sobre o fundo
 // tingido, com um degradê radial decorativo.
 // =====================================================================
@@ -9,7 +9,7 @@
   margin: 0;
   text-align: left;
   color: var(--cn-primary);
-  // Em rem, como a lista: o body do tema é 15px e o Discourse mede em 16px.
+  // Em rem, como a lista: o body do tema é 15px e aqui se mede em 16px.
   font-size: 1rem;
   // Sem fundo próprio: as manchas de cor do fundo da página (Core.less) já
   // passam por trás, e um fundo aqui desenharia um retângulo de bordas duras.
@@ -85,7 +85,7 @@
     justify-content: flex-start;
     gap: 10px;
     width: 100%;
-    // `.welcome-banner .search-input`: borda do campo e --d-border-radius.
+    // O campo da busca do banner: borda e raio do campo.
     height: 42px;
     padding: 0 16px;
     border: 1px solid var(--cn-primary-300);
@@ -140,7 +140,7 @@
   }
 }
 
-// O Discourse esconde o banner abaixo de 640px (`viewport.until(sm)`).
+// O banner some abaixo de 640px.
 @media (max-width: 639px) {
   .CanelaWelcome.Hero {
     display: none;
@@ -150,8 +150,8 @@
 // ---------------------------------------------------------------------
 // Hero da categoria (print p4-i)
 // ---------------------------------------------------------------------
-// `.block-category-banner__content`: 24px em cima e embaixo, 8px entre o
-// título e a descrição, 24px até o cartão da lista. No Meta o texto começa
+// 24px em cima e embaixo, 8px entre o título e a descrição, 24px até o
+// cartão da lista. O texto começa
 // na borda do cartão, então o hero desfaz o padding lateral do .Page-hero.
 .CanelaCategoryHero.Hero {
   padding: 24px 0;
@@ -169,8 +169,8 @@
   }
 }
 
-// O Meta usa a fonte Kaio a 50.4px/700 (line-height 1.4); com a Inter, o
-// peso 800 e o tracking negativo dão a mesma mancha escura.
+// Com a Inter, o peso 800 e o tracking negativo dão uma mancha escura
+// de título de destaque (50.4px, line-height 1.4).
 .CanelaCategoryHero.Hero .CanelaCategoryHero-title {
   font-size: clamp(~"2.25rem, 4vw, 3.15rem");
   font-weight: 800;
@@ -212,8 +212,8 @@
   list-style: none;
 }
 
-// `.category-card__layout`: cartão branco de raio grande, 12px de padding e
-// a sombra tingida do Horizon.
+// Cartão branco de raio grande, 12px de padding e
+// a sombra tingida.
 .CanelaSubcategoryCard {
   display: flex;
   align-items: center;
@@ -229,7 +229,7 @@
   text-decoration: none;
   box-shadow: 0 2px 6px 0 ~"oklch(from var(--cn-accent) l c h / 0.24)";
 
-  // No Meta o cartão não muda no hover (sem anel); só o foco do teclado
+  // O cartão não muda no hover (sem anel); só o foco do teclado
   // ganha a borda fina na cor de destaque.
   &:hover,
   &:focus-visible {
@@ -248,7 +248,7 @@
   box-shadow: 0 2px 6px 0 ~"oklch(from var(--cn-accent) l c h / 0.05)";
 }
 
-// `.category-card__logo`: 48px, raio 12px, a cor da categoria a 15%; o
+// O logo da categoria: 48px, raio 12px, a cor da categoria a 15%; o
 // quadradinho tem 15px e raio 3px.
 .CanelaSubcategoryCard-tile {
   display: inline-flex;

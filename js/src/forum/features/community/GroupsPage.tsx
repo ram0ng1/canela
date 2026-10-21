@@ -9,7 +9,7 @@ import { communityGroups, groupsEnabled, groupSlug, groupUrl, memberCount } from
 import { t } from '../../utils/settings';
 
 /**
- * A lista de grupos do Discourse (/g): um cartão por grupo, com o símbolo, o
+ * A lista de grupos (/g): um cartão por grupo, com o símbolo, o
  * nome e quantos membros tem.
  *
  * Os grupos já vêm no payload do fórum — só os que o ator pode ver —, então a
@@ -60,7 +60,7 @@ export default class GroupsPage extends CommunityPage {
   }
 
   /**
-   * O `group-box` do Discourse: o flair redondo, o nome grande com o
+   * O cartão do grupo: o flair redondo, o nome grande com o
    * @endereço embaixo, os membros no canto e, no pé, a situação de entrada —
    * no Flarum só a administração põe gente nos grupos, então todos são
    * "Fechado".

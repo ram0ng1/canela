@@ -1,15 +1,13 @@
 // =====================================================================
-// Movimento do Discourse: os @keyframes do núcleo (discourse.scss), a
-// barra de carregamento do topo, o spinner, o skeleton, as dicas
-// (fk-d-tooltip), os toasts (fk-d-toast), o fechamento dos menus
-// (fk-d-menu -closing), o "link copiado", as reticências de "digitando", o
-// aviso de tópicos novos e o link de pular para o conteúdo.
+// Movimento: os @keyframes do núcleo, a barra de carregamento do topo, o
+// spinner, o skeleton, as dicas, os toasts, o fechamento dos menus, o "link
+// copiado", as reticências de "digitando", o aviso de tópicos novos e o link
+// de pular para o conteúdo.
 //
 // Vem por último no forum.less: algumas regras ajustam as das outras áreas
 // (spinner, dicas, toasts) e precisam vencer na ordem.
 //
-// Tempos e curvas são os do Discourse; quem pede menos movimento recebe as
-// animações com duração zero (o mixin `d-animation`).
+// Quem pede menos movimento recebe as animações com duração zero.
 // =====================================================================
 
 // ---------------------------------------------------------------------
@@ -63,7 +61,7 @@
   }
 }
 
-// O `float-down` do Discourse, para o aviso de tópicos novos.
+// O `float-down`, para o aviso de tópicos novos.
 @keyframes cn-motion-float-down {
   0% {
     opacity: 0;
@@ -76,8 +74,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Barra de carregamento do topo (`.loading-indicator-container`): 3px no
-// alto da tela, trilho `--primary-low` e barra `--tertiary`. Cresce até 80%
+// Barra de carregamento do topo: 3px no
+// alto da tela, trilho `--cn-primary-low` e barra `--cn-accent`. Cresce até 80%
 // no tempo médio (`--loading-duration`, posto pelo JS), segue até 90% em
 // 10s, completa em 0,4s e some em 0,4s depois de 0,4s.
 // ---------------------------------------------------------------------
@@ -133,7 +131,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Spinner (`.spinner`): anel de 30px com borda de 4px em `--primary-low-mid`,
+// Spinner (`.spinner`): anel de 30px com borda de 4px em `--cn-primary-low-mid`,
 // aberto à direita, girando uma volta por segundo. Nos botões e nos
 // switches o anel pequeno segue a cor do texto.
 // ---------------------------------------------------------------------
@@ -166,7 +164,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Skeleton (`.placeholder-animation`): o brilho que atravessa da esquerda
+// Skeleton: o brilho que atravessa da esquerda
 // para a direita em 4s. Vale para o post que ainda carrega (LoadingPost do
 // core) e para quem usar `.CanelaSkeleton`.
 // ---------------------------------------------------------------------
@@ -225,12 +223,12 @@
 }
 
 // ---------------------------------------------------------------------
-// Dicas (`.fk-d-tooltip__content`): o cartão branco de raio 8, borda e
-// `--shadow-dropdown`, 0,5rem de respiro, até 350px, a 10px do gatilho e a
-// seta arredondada (`tippy-rounded-arrow`) com contorno. Aparece em 0,15s
+// Dicas: o cartão branco de raio 8, borda e
+// sombra de dropdown, 0,5rem de respiro, até 350px, a 10px do gatilho e a
+// seta arredondada com contorno. Aparece em 0,15s
 // (ease-in) e some na hora.
 // ---------------------------------------------------------------------
-// A seta do Discourse, em duas camadas: o contorno e, 1px por dentro, o
+// A seta, em duas camadas: o contorno e, 1px por dentro, o
 // preenchimento na cor do cartão.
 @cn-arrow-stroke: ~'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 6%27%3E%3Cpath d=%27M0 6s1.796-.013 4.67-3.615C5.851.9 6.93.006 8 0c1.07-.006 2.148.887 3.343 2.385C14.233 6.005 16 6 16 6H0z%27/%3E%3C/svg%3E")';
 @cn-arrow-fill: ~'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 6%27%3E%3Cpath d=%27m0 7s2 0 5-4c1-1 2-2 3-2 1 0 2 1 3 2 3 4 5 4 5 4h-16z%27/%3E%3C/svg%3E")';
@@ -241,7 +239,7 @@
   line-height: 1.4;
   transition: opacity 0.15s ease-in;
 
-  // Some na hora (o fk-d-tooltip não anima ao fechar).
+  // Some na hora (a dica não anima ao fechar).
   &:not(.in) {
     transition: none;
   }
@@ -327,8 +325,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Toasts (`.fk-d-toast` + `.fk-d-default-toast`): 0,5rem de respiro, o
-// ícone numa coluna de 32px × 2,3em, o texto em `--primary-high` (o título
+// Toasts: 0,5rem de respiro, o
+// ícone numa coluna de 32px × 2,3em, o texto em `--cn-primary-high` (o título
 // em negrito) e o ✕ transparente à direita. Entram subindo 2vh em 0,3s
 // (Components.less) e saem esmaecendo em 0,5s.
 // ---------------------------------------------------------------------
@@ -400,7 +398,7 @@
     }
   }
 
-  // O ✕ (`btn-transparent` com `xmark`): sem fundo, numa coluna de 32px.
+  // O ✕ (transparente, com `xmark`): sem fundo, numa coluna de 32px.
   .Alert-dismiss.Button {
     width: ~"calc(40px - 0.5rem)";
     height: ~"calc(1em + (2 * 0.65em))";
@@ -451,7 +449,7 @@
 
 // As notificações em tempo real do flarum-realtime: um cartão de toast com
 // a linha de notificação do menu do usuário dentro, na mesma coluna dos
-// avisos do sistema (`.fk-d-toasts`: alto à direita, 5px da borda, 5px entre
+// avisos do sistema (alto à direita, 5px da borda, 5px entre
 // eles), logo abaixo deles (`--cn-toasts-offset`, motion/toasts.tsx). Sem o
 // fundo de "não lida" — no toast toda notificação é nova.
 .NotificationToasts {
@@ -609,7 +607,7 @@
 
 // ---------------------------------------------------------------------
 // Fechamento dos menus: o fantasma (motion/menus.ts) sobe esmaecendo em
-// 125ms (`dissolve-up`), ou desce se o menu abria para cima.
+// 125ms (`cn-dissolve-up`), ou desce se o menu abria para cima.
 // ---------------------------------------------------------------------
 .CanelaMenuGhost {
   z-index: var(--zindex-dropdown, 1030);
@@ -622,7 +620,7 @@
 }
 
 // ---------------------------------------------------------------------
-// "Link copiado!" (`post-action-feedback`): o certo verde se desenha no
+// "Link copiado!": o certo verde se desenha no
 // canto do botão (20px, traço 4, 1s) e o aviso aparece 1,5rem acima.
 // ---------------------------------------------------------------------
 .CanelaFeedback {
@@ -691,7 +689,7 @@
 
 // ---------------------------------------------------------------------
 // "Fulano está digitando..." com as reticências que ondulam
-// (`.presence-users .wave .dot`, 1,8s, defasadas de 0,2s).
+// (1,8s, defasadas de 0,2s).
 // ---------------------------------------------------------------------
 .CanelaWave {
   display: inline-flex;
@@ -725,8 +723,7 @@
 }
 
 // ---------------------------------------------------------------------
-// "Há N tópicos novos" na lista (o `.show-more.has-topics` do Discourse):
-// o aviso azul-claro (`alert-info clickable`) centrado sobre a lista, que
+// "Há N tópicos novos" na lista: o aviso azul-claro centrado sobre a lista, que
 // desce em 250ms.
 // ---------------------------------------------------------------------
 .DiscussionList-update.Button {
@@ -773,7 +770,7 @@
 }
 
 // ---------------------------------------------------------------------
-// "Responder" (o único `fade-out` da barra do post): 70% de opacidade que
+// "Responder" (o único botão que esmaece na barra do post): 70% de opacidade que
 // acende ao passar sobre o post, em 0,7s.
 //
 // O esmaecido é feito na cor, não na `opacity`: animar a opacidade põe o
@@ -809,7 +806,7 @@
 }
 
 // ---------------------------------------------------------------------
-// "Ir para o conteúdo" (`.skip-link`): escondido 75px acima da tela, desce
+// "Ir para o conteúdo": escondido 75px acima da tela, desce
 // em 0,15s ao receber o foco e sobe em 0,3s ao perder.
 // ---------------------------------------------------------------------
 a.sr-only-focusable-custom {
@@ -843,7 +840,7 @@ a.sr-only-focusable-custom {
 
 // ---------------------------------------------------------------------
 // Menos movimento: o que sobrou de animação contínua (spinner, barra e
-// skeleton continuam, como no Discourse — são estado, não enfeite).
+// skeleton continuam — são estado, não enfeite).
 // ---------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   .CanelaMenuGhost > .Dropdown-menu {

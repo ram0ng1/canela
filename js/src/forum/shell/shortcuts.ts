@@ -1,8 +1,8 @@
 /*
- * Atalhos de teclado do Discourse que fazem sentido no Flarum.
+ * Atalhos de teclado do fórum.
  *
- * Sequências de duas teclas ("g h") esperam a segunda por um instante, como no
- * Discourse. Nada dispara enquanto se digita num campo ou com um modal aberto.
+ * Sequências de duas teclas ("g h") esperam a segunda por um instante. Nada
+ * dispara enquanto se digita num campo ou com um modal aberto.
  */
 import app from 'flarum/forum/app';
 import IndexSidebar from 'flarum/forum/components/IndexSidebar';
@@ -80,7 +80,7 @@ function openSearch() {
   button?.click();
 }
 
-/** j/k: anda pelos tópicos da lista destacando o atual, como o Discourse. */
+/** j/k: anda pelos tópicos da lista destacando o atual. */
 function moveSelection(step: number) {
   const items = Array.from(document.querySelectorAll<HTMLElement>('.DiscussionList-discussions > li'));
 

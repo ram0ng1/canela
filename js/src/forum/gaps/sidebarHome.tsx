@@ -1,5 +1,5 @@
 /*
- * A seção do topo da barra lateral do Discourse logado: "⌂ Início",
+ * A seção do topo da barra lateral para quem está logado: "⌂ Início",
  * "Tópicos •", "Minhas postagens", "Minhas mensagens (N)" e "Mais".
  *
  * - "Início" leva à página inicial escolhida no admin (a lista, as
@@ -130,14 +130,14 @@ export default function installSidebarHome(): void {
         );
       }
     } else if (isExtensionEnabled('flarum-messages') && items.has('messages')) {
-      // Sem o item do tema, o do flarum/messages fica com o nome do Discourse.
+      // Sem o item do tema, o do flarum/messages fica com o nome do tema.
       const vnode = items.get('messages') as any;
 
       if (vnode && vnode.attrs) items.setContent('messages', m(vnode.tag, vnode.attrs, t('gaps.sidebar.my_messages')));
     }
   });
 
-  // "Meus rascunhos" na barra lateral, como o Discourse, logo abaixo de Tópicos
+  // "Meus rascunhos" na barra lateral, logo abaixo de Tópicos
   // (100): sempre à mão com o fof/drafts, e com a contagem quando há algum.
   extend(CanelaSidebar.prototype, 'communityItems', function (items: ItemList<Mithril.Children>) {
     const user = app.session.user;

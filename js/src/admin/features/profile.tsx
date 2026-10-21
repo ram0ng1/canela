@@ -1,5 +1,5 @@
 /*
- * Cards do perfil estendido: os campos do Discourse (bio, local, site,
+ * Cards do perfil estendido: os campos extras (bio, local, site,
  * título, status, capa, aniversário), cada um ligado e desligado aqui.
  */
 import { trans, getBool, extensionOn } from '../util';
@@ -24,7 +24,7 @@ const PROFILE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_main`, 'Perfil estendido'),
     description: help(
       'profile_enabled',
-      'Os campos do Discourse: cada pessoa conta quem é, onde está e o que anda fazendo. Desligado, os campos somem do fórum e da API, mas o que já foi preenchido fica guardado.'
+      'Os campos extras: cada pessoa conta quem é, onde está e o que anda fazendo. Desligado, os campos somem do fórum e da API, mas o que já foi preenchido fica guardado.'
     ),
     keywords: 'perfil profile bio sobre about local location site website aniversário birthday campos fields',
     master: 'canela.profile_enabled',
@@ -95,7 +95,7 @@ const PROFILE_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_cover`, 'Capa e fundo do cartão'),
     description: help(
       'profile_cover',
-      'Uma capa larga no topo do perfil e um fundo para o cartão de usuário, como no Discourse. Sem imagem, a capa usa a cor do usuário.'
+      'Uma capa larga no topo do perfil e um fundo para o cartão de usuário. Sem imagem, a capa usa a cor do usuário.'
     ),
     keywords: 'capa cover imagem image fundo background cartão card upload envio url',
     master: 'canela.profile_cover',

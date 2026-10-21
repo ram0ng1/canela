@@ -1,5 +1,5 @@
 /*
- * As mensagens pessoais do Discourse sobre o flarum/messages:
+ * As mensagens pessoais sobre o flarum/messages:
  *
  * - a aba "Mensagens" do perfil com as caixas (UserMessagesPage);
  * - a conversa como tópico de mensagem (topic.tsx);
@@ -47,7 +47,7 @@ function installProfileTab(): void {
       >
         {t('messages.page.nav')}
       </LinkButton>,
-      // Depois de Atividade/Notificações e antes de Emblemas, como no Discourse.
+      // Depois de Atividade/Notificações e antes de Emblemas.
       30
     );
   });
@@ -58,7 +58,7 @@ function installSidebar(): void {
     if (!messagesOn() || !app.session.user) return;
 
     // O "Mensagens" que o flarum/messages põe na navegação repetiria o
-    // "Minhas mensagens" do Discourse.
+    // "Minhas mensagens" do tema.
     if (items.has('messages')) items.remove('messages');
 
     const count = totalUnread();

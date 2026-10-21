@@ -19,7 +19,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\User\User;
 
 /**
- * "Mencionado(a) no chat" — o `chat_mention` do Discourse.
+ * "Mencionado(a) no chat".
  *
  * O assunto é quem mencionou, e não a mensagem: o NotificationResource do core
  * só serializa assuntos que têm um recurso do JSON:API, e o chat tem a própria

@@ -1,5 +1,5 @@
 /*
- * A aba "Rascunhos" do perfil (`/u/:username/drafts`), como a do Discourse,
+ * A aba "Rascunhos" do perfil (`/u/:username/drafts`),
  * com os rascunhos do fof/drafts: só a própria pessoa a vê. Cada rascunho
  * mostra o tipo (tópico novo, resposta, mensagem), o título, o começo do
  * texto e há quanto tempo foi mexido, com "Continuar" e "Excluir".

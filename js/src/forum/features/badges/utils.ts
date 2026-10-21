@@ -15,7 +15,7 @@ export const trustLevelsEnabled = () => forumBool('canelaTrustLevelsEnabled', tr
 /** Os níveis 0–4, na ordem; o índice é o nível. */
 export const TRUST_LEVEL_NAMES = ['newuser', 'basic', 'member', 'regular', 'leader'] as const;
 
-/** Os agrupamentos da página /badges, na ordem do Discourse. */
+/** Os agrupamentos da página /badges, na ordem. */
 export const GROUPINGS = ['getting_started', 'community', 'posting', 'trust_level', 'other'] as const;
 
 const TYPE_ORDER: Record<string, number> = { gold: 0, silver: 1, bronze: 2 };
@@ -39,7 +39,7 @@ export function badgeUrl(badge: Badge, username?: string): string {
 }
 
 /**
- * Os emblemas de alguém sem repetição, na ordem de destaque do Discourse:
+ * Os emblemas de alguém sem repetição, na ordem de destaque:
  * ouro, prata, bronze e, dentro de cada tipo, o mais recente primeiro. Cada um
  * leva quantas vezes foi ganho e a concessão mais recente.
  */

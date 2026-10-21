@@ -1,5 +1,5 @@
 /*
- * As peças do tópico de mensagem do Discourse que o flarum/messages não tem:
+ * As peças do tópico de mensagem que o flarum/messages não tem:
  *
  * - o mapa da mensagem: "N visualizações" e a linha de participantes em
  *   pílulas (o grupo, as pessoas — a minha com ✕ para sair — e o "+" para
@@ -134,7 +134,7 @@ const EVENT_ICONS: Record<string, string> = {
 };
 
 /**
- * A small action do Discourse (`.small-action`): o ícone na coluna do
+ * O post de ação pequena (`.small-action`): o ícone na coluna do
  * avatar, o avatar de quem fez e "Convidou @fulano há 2 dias".
  */
 export function DialogEventView(event: DialogEvent): Mithril.Children {
@@ -231,7 +231,7 @@ export class InviteModal extends FormModal<InviteModalAttrs> {
         url: `${app.forum.attribute('apiUrl')}/dialogs/${dialog.id()}/canela-invite`,
         body: { userIds: this.users().map((user: User) => Number(user.id())), groupId: this.group() || undefined },
         // O erro (grupo que não recebe mensagens, limite de destinatários)
-        // aparece dentro do modal, como no Discourse, e não atrás dele.
+        // aparece dentro do modal, e não atrás dele.
         errorHandler: this.onerror.bind(this),
       })
       // Recarrega a conversa: o grupo entra no mapa e o post de ação
@@ -310,7 +310,7 @@ interface Level {
   icon: string;
 }
 
-/** Os níveis do Discourse para mensagens (`watching_pm` … `muted_pm`). */
+/** Os níveis de acompanhamento das mensagens (acompanhando … silenciado). */
 const LEVELS: Level[] = [
   {
     value: 3,

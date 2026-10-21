@@ -1,12 +1,11 @@
 /*
- * fof/best-answer no jeito do discourse-solved.
+ * fof/best-answer no jeito do Canela.
  *
  * - Na barra do post, o "✓ Solução" verde no post aceito; nos outros, quem
- *   pode escolher vê o quadradinho de marcar (o `far-square-check` do
- *   Discourse). O item da extensão no "…" e o rótulo no cabeçalho do post
+ *   pode escolher vê o quadradinho de marcar. O item da extensão no "…" e o rótulo no cabeçalho do post
  *   saem: seriam o mesmo controle duas vezes.
- * - A resposta aceita sobe para logo abaixo do conteúdo do 1º post, no
- *   acordeão do Discourse (cabeçalho verde "SOLUÇÃO", autor e o texto cortado
+ * - A resposta aceita sobe para logo abaixo do conteúdo do 1º post, num
+ *   acordeão (cabeçalho verde "SOLUÇÃO", autor e o texto cortado
  *   em seis linhas, com a seta para abrir e a de ir até o post).
  * - Na lista, o ícone do selo vira o quadrado com o certo, em verde (CSS).
  *
@@ -89,8 +88,7 @@ function acceptedBy(discussion: Discussion): string {
 }
 
 export default function installBestAnswer(): void {
-  // "0 melhor resposta" no topo do perfil: o Discourse não mostra contagem
-  // zerada. No beforeMount, para rodar depois do item do próprio fof.
+  // "0 melhor resposta" no topo do perfil: contagem zerada não aparece. No beforeMount, para rodar depois do item do próprio fof.
   app.beforeMount(() => {
     extend(UserCard.prototype, 'infoItems', function (this: any, items: any) {
       const count = Number(this.attrs.user?.attribute?.('bestAnswerCount')) || 0;
@@ -164,7 +162,7 @@ export default function installBestAnswer(): void {
     items.remove('bestAnswer');
   });
 
-  // O Discourse não marca o cabeçalho do post aceito; o selo verde da barra basta.
+  // O cabeçalho do post aceito não ganha marca; o selo verde da barra basta.
   extend(CommentPost.prototype, 'headerItems', function (items: ItemList<Mithril.Children>) {
     if (!thirdParty.solved()) return;
 
@@ -172,7 +170,7 @@ export default function installBestAnswer(): void {
   });
 
   // A prévia da extensão no rodapé dá lugar ao acordeão dentro do conteúdo,
-  // acima da barra de ações, onde o Discourse o põe.
+  // acima da barra de ações.
   extend(CommentPost.prototype, 'footerItems', function (items: ItemList<Mithril.Children>) {
     if (!thirdParty.solved()) return;
 
@@ -224,7 +222,7 @@ export default function installBestAnswer(): void {
     );
   });
 
-  // O selo da lista: o quadrado com o certo (`square-check`) do Discourse.
+  // O selo da lista: o quadrado com o certo (`square-check`).
   const Badge = extModule<any>('fof-best-answer', 'forum/components/BestAnswerBadge');
 
   if (Badge) {
@@ -239,7 +237,7 @@ interface SolutionAccordionAttrs {
   post: Post;
 }
 
-/** Linhas visíveis antes de abrir (`--max-lines-displayed` do Discourse). */
+/** Linhas visíveis antes de abrir. */
 const MAX_LINES = 6;
 
 interface SolutionState {

@@ -1,5 +1,5 @@
 /*
- * Um post embutido dentro de outro, como os "embedded posts" do Discourse: as
+ * Um post embutido dentro de outro: as
  * respostas que se abrem abaixo de um post, ou o post respondido que se abre
  * acima dele. O conteúdo é o HTML já renderizado pelo servidor; quando o post
  * veio só como relação (sem o HTML), quem embute busca antes de mostrar.

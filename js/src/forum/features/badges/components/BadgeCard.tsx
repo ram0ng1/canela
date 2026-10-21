@@ -25,7 +25,7 @@ export interface BadgeCardAttrs extends ComponentAttrs {
 }
 
 /**
- * Um emblema em cartão, como o `badge-card` do Discourse: o ícone grande na
+ * Um emblema em cartão: o ícone grande na
  * cor do tipo (ouro, prata, bronze) à esquerda e, ao lado, o nome, a
  * descrição e, conforme o lugar, quantas pessoas o ganharam ou quando a
  * pessoa do perfil o ganhou. O cartão inteiro é o link.

@@ -87,7 +87,7 @@ export function loadedDiscussions(): Discussion[] {
   return app.discussions.getPages().flatMap((page) => page.items);
 }
 
-/** Quem modera algo nesta lista — o "staff" do Discourse. */
+/** Quem modera algo nesta lista — a equipe ("staff"). */
 export function canModerate(discussion: Discussion): boolean {
   const model = discussion as Discussion & Record<string, any>;
 

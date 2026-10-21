@@ -16,7 +16,7 @@ namespace Ramon\Canela\Gaps\Formatter;
 use s9e\TextFormatter\Configurator;
 
 /**
- * As datas locais do Discourse (discourse-local-dates):
+ * As datas locais:
  *
  *     [date=2026-10-20 time=14:00 timezone="America/Sao_Paulo"]
  *
@@ -40,7 +40,7 @@ final class LocalDates
             '<span class="canela-local-date" data-date="{REGEXP1}" data-time="{REGEXP2}" data-timezone="{REGEXP3}">{REGEXP1}<xsl:if test="@time"> {REGEXP2}</xsl:if><xsl:if test="@timezone"> ({REGEXP3})</xsl:if></span>'
         );
 
-        // Como no Discourse, a tag não tem fechamento: [date=…] e pronto.
+        // A tag não tem fechamento: [date=…] e pronto.
         $config->tags['DATE']->rules->autoClose();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * IA do Discourse (o plugin discourse-ai): bot de conversas, "Perguntar à IA"
+ * IA no fórum: bot de conversas, "Perguntar à IA"
  * na busca, resumo do tópico e resumos curtos na lista, ajudante ✨ no editor
  * e tópicos relacionados.
  *
@@ -38,7 +38,7 @@ function installRelated(): void {
     const children = (vnode as any)?.children;
 
     // Com os sugeridos ligados, os relacionados viram a aba "Relacionado(a)"
-    // deles (topic/components/SuggestedTopics), como no Discourse.
+    // deles (topic/components/SuggestedTopics).
     if (!aiFeature('related') || topicSettings.suggested() || !Array.isArray(children)) return;
 
     const discussion = this.attrs.discussion;

@@ -10,7 +10,7 @@
  */
 
 /*
- * IA do Discourse (o plugin discourse-ai): bot de conversas com busca no
+ * IA: bot de conversas com busca no
  * fórum, "Perguntar à IA" na busca, resumo do tópico e resumos curtos na
  * lista, ajudante de IA no editor e tópicos relacionados por embeddings.
  *

@@ -1,5 +1,5 @@
 // =====================================================================
-// Recursos do editor do Discourse (o composer em si é de forum/Composer.less):
+// Recursos do editor (o composer em si é de forum/Composer.less):
 // seletor de emoji, autocompletar de :emoji e #tag, hashtags nos posts,
 // tópicos semelhantes, menu "responder como tópico vinculado", rascunhos e
 // a pré-visualização lado a lado.
@@ -78,7 +78,7 @@
   }
 }
 
-// A fileira de categorias do Discourse: só ícones, a ativa sublinhada.
+// A fileira de categorias: só ícones, a ativa sublinhada.
 .CanelaEmojiPicker-groups {
   display: flex;
   justify-content: space-between;
@@ -207,7 +207,7 @@
   font-size: var(--cn-font-down-1);
 }
 
-// O tom de pele: as bolinhas de cor do Discourse. Cores fixas, de propósito:
+// O tom de pele: bolinhas de cor. Cores fixas, de propósito:
 // são os tons do Unicode, não da paleta do fórum.
 .CanelaEmojiPicker-tones {
   display: flex;
@@ -366,7 +366,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Hashtags nos posts (e na prévia): a pílula do Discourse
+// Hashtags nos posts (e na prévia): uma pílula
 // ---------------------------------------------------------------------
 .CanelaHashtag,
 .Post-body a.CanelaHashtag,
@@ -417,8 +417,8 @@
   overflow: hidden;
 }
 
-// O cabeçalho do `.composer-popup`: o ✕ em cima à direita e o título em h3,
-// tudo sobre o fundo do composer (`--composer-popup-background: secondary`).
+// O cabeçalho do balão: o ✕ em cima à direita e o título em h3,
+// tudo sobre o fundo do composer (secondary).
 .CanelaSimilarTopics-header {
   display: flex;
   align-items: flex-start;
@@ -501,7 +501,7 @@
   white-space: nowrap;
 }
 
-// Como o `.composer-popup` do Discourse: um balão DENTRO do composer, no
+// Um balão DENTRO do composer, no
 // canto de baixo à direita, por cima do texto (60% da largura; sobre a
 // prévia quando ela está aberta). O `.Composer` é o bloco de referência.
 @media @tablet-up {
@@ -655,7 +655,7 @@
   font-size: var(--cn-font-down-1);
 }
 
-// O menu do "⌄" (o `topic-drafts-menu` do Discourse): uma linha por
+// O menu do "⌄": uma linha por
 // rascunho, ícone do tipo e o título cortado com reticências.
 // A posição (fixa, à direita do botão; embaixo no celular) é calculada no
 // DraftsMenu: a barra lateral cortaria um menu absoluto.
@@ -737,7 +737,7 @@
   }
 }
 
-// `.d-editor-preview-wrapper`: 8px 16px, o fundo do próprio composer.
+// A prévia: 8px 16px, o fundo do próprio composer.
 .CanelaComposerPreview-scroll {
   position: absolute;
   inset: 0;

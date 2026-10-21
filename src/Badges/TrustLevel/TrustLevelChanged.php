@@ -18,7 +18,7 @@ use Flarum\User\User;
 /**
  * O nível de confiança de alguém mudou numa promoção (ou rebaixamento) de
  * verdade, e não na carga inicial dos níveis. As mensagens automáticas de
- * nível 1 e 2 (como as do Discourse) saem daqui.
+ * nível 1 e 2 saem daqui.
  */
 final class TrustLevelChanged
 {

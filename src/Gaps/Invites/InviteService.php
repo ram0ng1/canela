@@ -25,7 +25,7 @@ use Ramon\Canela\Gaps\Notification\InviteAcceptedBlueprint;
 use Ramon\Canela\Support\SchemaCache;
 
 /**
- * Os convites do Discourse: gerar, listar, apagar e resgatar.
+ * Os convites: gerar, listar, apagar e resgatar.
  *
  * O resgate acontece quando um cadastro chega com o código (o campo
  * `canelaInviteCode` do usuário): conta um uso, guarda quem convidou e avisa

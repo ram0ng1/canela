@@ -1,9 +1,9 @@
 /*
  * A consulta da página de busca, nos dois sentidos:
  *
- *   "horizon autor:ana tag:suporte é:trancada"  <->  { text, author, category, … }
+ *   "canela autor:ana tag:suporte é:trancada"  <->  { text, author, category, … }
  *
- * Como no Discourse, os filtros avançados não ficam num estado à parte: eles
+ * Os filtros avançados não ficam num estado à parte: eles
  * ESCREVEM gambits na própria consulta, que vai para a URL. Assim a busca pode
  * ser compartilhada por link, o campo mostra exatamente o que está sendo
  * pesquisado, e quem digita os gambits à mão vê os controles se ajustarem.
@@ -191,7 +191,7 @@ export function serializeQuery(query: SearchQuery): string {
   return parts.join(' ').replace(/\s+/g, ' ').trim();
 }
 
-/** Há algo para pesquisar? Só filtros também vale, como no Discourse. */
+/** Há algo para pesquisar? Só filtros também vale. */
 export function hasCriteria(query: SearchQuery): boolean {
   return !!query.text || Object.keys(queryFilters(query)).length > 0;
 }

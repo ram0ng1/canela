@@ -1,5 +1,5 @@
 /*
- * O `user-stream-item` do Discourse: avatar de 48px, o título do tópico como
+ * O item de atividade do perfil: avatar de 48px, o título do tópico como
  * link, categoria e data embaixo e o começo do texto. Usado pelas abas de
  * postagens do perfil (Postagens, Curtidas, Menções, Votos, Resolvido) e pela
  * aba Reações, que acrescenta a linha da reação (`extra`).
@@ -17,7 +17,7 @@ import type Mithril from 'mithril';
 import { discussionBadges } from '../utils/tags';
 import { fullDate, mediumAge } from '../utils/dates';
 
-/** O tamanho do trecho (o `excerpt` do Discourse). */
+/** O tamanho do trecho (o resumo do post). */
 const STREAM_EXCERPT = 300;
 
 export interface StreamItemOptions {

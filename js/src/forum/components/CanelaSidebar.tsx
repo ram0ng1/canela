@@ -32,7 +32,7 @@ import {
 const TAG_NAV_KEYS = /^(tags|separator|moreTags|tag\d+)$/;
 
 /**
- * A barra lateral do Discourse: botão "Iniciar Discussão", a seção da comunidade
+ * A barra lateral: botão "Iniciar Discussão", a seção da comunidade
  * (Tópicos, Minhas postagens, Mais…), as categorias e as etiquetas, e um
  * rodapé com o tema claro/escuro e os atalhos de teclado.
  *
@@ -53,7 +53,7 @@ export default class CanelaSidebar extends IndexSidebar {
   sectionItems(): ItemList<Mithril.Children> {
     const items = new ItemList<Mithril.Children>();
 
-    // Como no Discourse, o botão só aparece para quem está logado (o visitante
+    // O botão só aparece para quem está logado (o visitante
     // tem o "Entrar" do cabeçalho). O admin pode escondê-lo de vez.
     if (app.session.user && forumBool('canelaSidebarNewTopic', true)) items.add('newTopic', this.newTopicButton(), 100);
 
@@ -90,7 +90,7 @@ export default class CanelaSidebar extends IndexSidebar {
     return items;
   }
 
-  /** O lápis de personalizar a seção, como no Discourse. */
+  /** O lápis de personalizar a seção. */
   /** Personalizar a barra lateral é só para quem está logado: visitante não vê o lápis. */
   editAttrs(section: SidebarSectionName) {
     if (!app.session.user) return {};
@@ -116,7 +116,7 @@ export default class CanelaSidebar extends IndexSidebar {
     const tag = currentTag() as (CanelaTag & { canStartDiscussion?: () => boolean }) | null;
     const canStart = !app.session.user || (tag?.canStartDiscussion ? tag.canStartDiscussion() : !!app.forum.attribute('canStartDiscussion'));
 
-    // Com rascunhos (fof/drafts), o botão vira o dividido do Discourse:
+    // Com rascunhos (fof/drafts), o botão vira um botão dividido:
     // "✎ Novo tópico" e o "⌄" com a lista de rascunhos.
     const split = showDraftsMenu();
 
@@ -360,13 +360,13 @@ export default class CanelaSidebar extends IndexSidebar {
   footerItems(): ItemList<Mithril.Children> {
     const items = new ItemList<Mithril.Children>();
 
-    // A paleta à esquerda e o modo de cor, como no rodapé do Discourse.
+    // A paleta à esquerda e o modo de cor, no rodapé.
     if (app.allowUserColorScheme) {
       items.add('palette', <FooterPaletteSelector />, 110);
       items.add('theme', <FooterColorMode />, 100);
     }
 
-    // O "+" do rodapé, como o Discourse, só para quem está logado.
+    // O "+" do rodapé, só para quem está logado.
     if (app.session.user)
       items.add(
         'newTopic',

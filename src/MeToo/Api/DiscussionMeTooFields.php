@@ -21,8 +21,8 @@ use Ramon\Canela\MeToo\MeToo;
 
 /**
  * `canelaMeToo` no tópico: `{count, mine, can}`, ou null quando o botão não
- * aparece. Só na página do tópico (`showing`), como o `topic_view` do
- * Discourse: na lista seria uma consulta por linha para algo que ela não
+ * aparece. Só na página do tópico (`showing`): na lista seria uma consulta
+ * por linha para algo que ela não
  * mostra. Uma falha vira null: o botão some, o tópico abre normalmente.
  */
 final class DiscussionMeTooFields

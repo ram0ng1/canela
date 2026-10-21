@@ -1,16 +1,16 @@
 /*
- * A barra de formatação do composer do Discourse (`.d-editor-button-bar`):
+ * A barra de formatação do composer:
  *
  *   [M↓|A]  N  I  Tт  🔗  "  <>  ⬆  ☰  1.  ⇆  ☺  ⊕   ›
  *
- * - O alternador Markdown/"A" (o `composer-toggle-switch`): Markdown abre o
+ * - O alternador Markdown/"A": Markdown abre o
  *   composer na largura toda com a prévia ao lado; "A" o deixa estreito, sem
  *   a prévia (veja `richMode`).
  * - Negrito e título como letras ("N", "Tт"), aspas de fechamento.
  * - O ⬆ é o upload do fof/upload (que o põe no rodapé), trazido para depois
  *   do código; arrastar e colar imagens continua sendo dele.
- * - ⇆ alterna a direção do texto (`toggle-direction`).
- * - O ⊕ (`options`) junta o que o Discourse não mostra na barra: tachado,
+ * - ⇆ alterna a direção do texto.
+ * - O ⊕ junta o que não aparece direto na barra: tachado,
  *   spoiler, imagem por endereço, menção e a enquete do fof/polls.
  * - "›" aparece quando a barra não cabe e a rola.
  *
@@ -18,7 +18,6 @@
  * a barra por `override`, e um `extend` registrado antes seria descartado.
  * Vale para qualquer TextEditor com composer (o de mensagens também).
  */
-import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import Component from 'flarum/common/Component';
 import TextEditor from 'flarum/common/components/TextEditor';
@@ -45,7 +44,7 @@ const MODE_KEY = 'canela.composerEditor';
 let memoryMode: 'rich' | 'markdown' = 'rich';
 
 /**
- * Os dois modos do alternador "M↓ | A" do Discourse, lembrados no navegador:
+ * Os dois modos do alternador "M↓ | A", lembrados no navegador:
  * - "A" (padrão): o composer estreito, da largura do tópico, sem a prévia ao
  *   lado e só com tela cheia/minimizar/fechar no canto. O Flarum não tem
  *   editor rico; o texto continua sendo escrito no mesmo campo.
@@ -274,6 +273,17 @@ function fromVnode(vnode: any, fallbackLabel = ''): MoreAction | null {
 }
 
 export default function installToolbar() {
+  // A dica dos botões da barra vai para o <body>: a barra rola na horizontal
+  // (overflow), e a dica presa dentro dela saía cortada, por baixo da barra.
+  const tooltipToBody = (vnode: any) => {
+    // Só o vnode do Tooltip (o que tem `text`): sem dica, o botão volta sozinho.
+    if (vnode?.attrs && 'text' in vnode.attrs && vnode.attrs.container === undefined) vnode.attrs.container = 'body';
+  };
+
+  extend('flarum/common/components/TextEditorButton' as any, 'view', tooltipToBody);
+  // Os botões do Markdown (negrito, itálico, listas…) são de outra classe.
+  extend('ext:flarum/markdown/common/components/MarkdownButton' as any, 'view', tooltipToBody);
+
   const ORDER: Record<string, number> = {
     bold: 1000,
     italic: 990,
@@ -307,7 +317,7 @@ export default function installToolbar() {
       this.canelaUploads.forEach(({ key }: { key: string }) => items.remove(key));
     });
 
-    // 2) Botões do markdown: ordem do Discourse, letras, extras para o ⊕.
+    // 2) Botões do markdown: ordem do tema, letras, extras para o ⊕.
     extend(TextEditor.prototype as any, 'markdownToolbarItems', function (this: any, items: ItemList<any>) {
       if (!editorComposer(this)) return;
 

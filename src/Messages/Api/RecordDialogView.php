@@ -26,7 +26,7 @@ use Ramon\Canela\Stats\ViewRule;
 
 /**
  * `POST /api/dialogs/{id}/canela-view`: conta uma visualização da mensagem
- * quando a conversa é aberta — a coluna "Visualizações" do Discourse.
+ * quando a conversa é aberta — a coluna "Visualizações".
  *
  * Como as visualizações dos tópicos (recurso stats, ViewRule): uma por pessoa
  * por dia, travada por uma janela de horas (`canela.stats_view_window_hours`,
@@ -56,7 +56,7 @@ final class RecordDialogView
                 $hours = (int) resolve(SettingsRepositoryInterface::class)->get('canela.stats_view_window_hours', self::DEFAULT_WINDOW_HOURS);
                 $hours = max(1, min(720, $hours ?: self::DEFAULT_WINDOW_HOURS));
 
-                // A chave do Discourse (com a data): um dia novo conta de novo,
+                // A chave da trava (com a data): um dia novo conta de novo,
                 // como nos tópicos (ViewRule), e não só depois das N horas.
                 $key = ViewRule::cacheKey('dialog', (int) $dialog->id, Carbon::now(), (string) $context->getActor()->id);
                 $counted = resolve(Cache::class)->add($key, 1, $hours * 3600);

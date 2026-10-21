@@ -3,8 +3,8 @@
  * (js/src/forum/thirdparty/ramonChat/features): quem implementa um recurso
  * registra aqui a sua função, e a barra a usa quando ela existe.
  *
- * - `newMessage`: o "+" das "Mensagens diretas" (a "Nova mensagem" do
- *   Discourse). Sem gancho, a seção não mostra o "+".
+ * - `newMessage`: o "+" das "Mensagens diretas" (a "Nova mensagem"). Sem
+ *   gancho, a seção não mostra o "+".
  * - `sortChannels`: a ordem dos canais e das MDs (por exemplo, os com estrela
  *   primeiro). Sem gancho, vale a ordem do ramon/chat.
  * - `channelSuffix`: algo a mais no fim da linha do canal (a estrela, por

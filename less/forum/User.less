@@ -1,6 +1,5 @@
 // =====================================================================
-// Perfil do usuário como o do Discourse (meta.discourse.org/u/…), com as
-// medidas tiradas do CSS do Meta (user.scss + new-user.scss + Horizon):
+// Perfil do usuário, com estas medidas:
 //
 //   ┌───────────── capa (300px; 200px no celular) ──────────────────────┐
 //   ( avatar 144 )  username (2em, 700)                       [Mensagem]
@@ -13,12 +12,11 @@
 //   ───────────────────── Tudo · Tópicos · Curtidas ───────── (13.9px)
 //   conteúdo da aba (margem de 2em)
 //
-// Fora do Resumo o cabeçalho encolhe (`--collapsed`, o `.collapsed-info` do
-// Discourse): avatar de 45px e os dois nomes, sem capa, bio nem números.
+// Fora do Resumo o cabeçalho encolhe (`--collapsed`): avatar de 45px e os dois nomes, sem capa, bio nem números.
 // O hero já está dentro do cartão (.Page-hero--inline, feito pela casca).
 // =====================================================================
 
-// O Discourse trabalha com 16px de base, e as medidas em em abaixo contam
+// O perfil trabalha com 16px de base, e as medidas em em abaixo contam
 // com isso (o corpo do Flarum é 15px).
 .CanelaUserPage .Page-container {
   font-size: 16px;
@@ -95,7 +93,7 @@
 
 // A capa: a imagem do perfil estendido (--canela-cover) ou, sem ela, a cor
 // do usuário (a cor dominante do avatar, --usercard-bg) em degradê com a cor
-// de destaque. Retangular, de ponta a ponta, como a `.user-profile-image`.
+// de destaque. Retangular, de ponta a ponta.
 .CanelaUserHero-cover {
   height: 300px;
   margin: 0;
@@ -161,8 +159,8 @@
   margin: 0;
 }
 
-// Sem foto, o core deixa o "+" do editor sempre à vista (opacidade .7); no
-// Discourse o avatar padrão aparece limpo e o editor só surge no hover.
+// Sem foto, o core deixa o "+" do editor sempre à vista (opacidade .7); aqui
+// o avatar padrão aparece limpo e o editor só surge no hover.
 .CanelaUserHero .AvatarEditor:not(:hover):not(.open) .AvatarEditor--noAvatar {
   opacity: 0;
 }
@@ -191,7 +189,7 @@
   }
 }
 
-// O `.primary-textual`: nomes, título, local e bio, com 8px embaixo.
+// O bloco de texto: nomes, título, local e bio, com 8px embaixo.
 .CanelaUserHero .UserCard-content {
   flex: 0 1 auto;
   min-width: 0;
@@ -285,7 +283,7 @@
   }
 }
 
-// Local, site e aniversário numa linha (`.user-profile__location-and-website`).
+// Local, site e aniversário numa linha.
 .CanelaUserHero .UserCard-info {
   display: flex;
   flex-wrap: wrap;
@@ -489,7 +487,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Abas (`.user-navigation`): a linha principal e, em "Atividade", a segunda
+// Abas: a linha principal e, em "Atividade", a segunda
 // ---------------------------------------------------------------------
 .CanelaUserNav {
   width: auto;
@@ -540,8 +538,7 @@
     line-height: 1;
     white-space: nowrap;
     text-decoration: none;
-    // Horizon zera a transição dos botões e abas (--d-button-transition:
-    // none); só o ícone muda de cor em 0.2s, como no `.nav-pills`.
+    // Sem transição nos botões e abas; só o ícone muda de cor em 0.2s.
     transition: none;
 
     .Button-icon {
@@ -558,7 +555,7 @@
       line-height: normal;
     }
 
-    // O Discourse não mostra as contagens nas abas.
+    // Sem as contagens nas abas.
     .Button-badge {
       display: none;
     }
@@ -616,7 +613,7 @@
   border-top: 0;
 }
 
-// O `horizontal-overflow-nav`: abaixo do desktop, quando as abas não cabem, a
+// Abaixo do desktop, quando as abas não cabem, a
 // última some num degradê em vez de ser cortada seca na borda (ou embaixo do
 // botão "Nova mensagem").
 @media (max-width: 1023px) {
@@ -714,7 +711,7 @@
 // Conteúdo das abas
 // ---------------------------------------------------------------------
 
-// Postagens, Curtidas, Menções: o `user-stream-item` do Discourse — avatar
+// Postagens, Curtidas, Menções: avatar
 // de 48px, título do tópico como link, categoria e data embaixo e o trecho
 // recuado 56px, uma postagem por bloco com a borda entre eles.
 .CanelaUserPage .PostList-discussions {
@@ -778,7 +775,7 @@
     }
   }
 
-  // `.relative-date`: --font-down-2 e a altura de linha pequena.
+  // A data relativa: --cn-font-down-2 e a altura de linha pequena.
   &-date {
     display: inline-flex;
     align-items: center;
@@ -855,13 +852,13 @@
 }
 
 // ---------------------------------------------------------------------
-// Resumo (`.user-summary-page`)
+// Resumo
 // ---------------------------------------------------------------------
 .CanelaUserSummary {
   display: block;
 }
 
-// "ESTATÍSTICAS", "MELHORES TÓPICOS"…: o h3 do Discourse em caixa alta.
+// "ESTATÍSTICAS", "MELHORES TÓPICOS"…: um h3 em caixa alta.
 .CanelaUserSummary-heading {
   margin: 0 0 10px;
   font-size: 1.17em;
@@ -955,7 +952,7 @@
   }
 }
 
-// `.summary-user-list`: linhas de 45px com o avatar de 40px, o nome de
+// A lista de usuários: linhas de 45px com o avatar de 40px, o nome de
 // usuário em negrito, o nome em cinza e a contagem embaixo.
 .CanelaSummaryUsers {
   max-width: 95%;
@@ -1025,7 +1022,7 @@
   }
 }
 
-// `.top-categories-section`: a tabela sem bordas, com as contagens centradas.
+// As categorias principais: a tabela sem bordas, com as contagens centradas.
 .CanelaSummaryCategories {
   max-width: 95%;
   border-collapse: collapse;
@@ -1082,7 +1079,7 @@
 
 // ---------------------------------------------------------------------
 // Celular (< 768px): capa de 200px, avatar centrado sobre ela e tudo
-// centralizado, como o perfil do Discourse no celular
+// centralizado
 // ---------------------------------------------------------------------
 @media @phone {
   .CanelaUserHero.UserCard > .darkenBackground > .container {

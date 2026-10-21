@@ -40,7 +40,7 @@ export function copyLink(url: string): void {
 }
 
 /**
- * No celular, a folha de compartilhamento do sistema (como o Discourse faz);
+ * No celular, a folha de compartilhamento do sistema;
  * no computador, copiar o link.
  */
 export function shareLink(url: string, title: string): void {

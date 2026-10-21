@@ -1,8 +1,8 @@
 // Emblemas e níveis de confiança: medalhas, cartões, a página /badges, a
 // página de um emblema, a aba do perfil, o cartão do usuário e o resumo.
 //
-// As cores ouro, prata e bronze são as do Discourse (`$gold`, `$silver`,
-// `$bronze`) e não saem da paleta do fórum: são o significado do emblema. O
+// As cores ouro, prata e bronze são fixas e não saem da paleta do fórum:
+// são o significado do emblema. O
 // tom do ícone é um pouco mais escuro no claro e mais vivo no escuro, para o
 // contraste com o fundo tingido da medalha.
 
@@ -74,9 +74,9 @@
 }
 
 // ── Cartão (grade de /badges, aba do perfil, resumo) ────────────────────────
-// O `badge-card` do Discourse: borda fina, canto de 8px, 1.5em de respiro, o
-// ícone de 3.5em na cor do tipo e o nome em negrito. Sem transição nem efeito
-// de hover — o Horizon não tem nenhum nos cartões de emblema.
+// O cartão do emblema: borda fina, canto de 8px, 1.5em de respiro, o ícone
+// de 3.5em na cor do tipo e o nome em negrito. Sem transição nem efeito de
+// hover.
 
 .CanelaBadges-grid {
   display: grid;
@@ -132,8 +132,8 @@
     justify-content: center;
     width: 3.5em;
     height: 3.5em;
-    // O glifo cheio do Font Awesome pesa mais que o traço do Lucide do
-    // Discourse: um pouco menor, para ocupar o mesmo espaço à vista.
+    // O glifo cheio do Font Awesome pesa mais que o traço do Lucide: um
+    // pouco menor, para ocupar o mesmo espaço à vista.
     font-size: 1em;
     line-height: 1;
 
@@ -189,7 +189,7 @@
     font-size: 0.8706em;
   }
 
-  // Emblema que a pessoa logada já tem: a marca no canto (`.check-display`).
+  // Emblema que a pessoa logada já tem: a marca no canto.
   &-owned {
     position: absolute;
     top: 5px;
@@ -272,7 +272,7 @@
 
 // ── Páginas ─────────────────────────────────────────────────────────────────
 
-// O Discourse trabalha com 16px de base (o corpo do Flarum é 15px).
+// A página trabalha com 16px de base (o corpo do Flarum é 15px).
 .CanelaBadgesPage .Page-container {
   font-size: 16px;
   line-height: 1.4;
@@ -321,7 +321,7 @@
   }
 }
 
-// /badges/:id/:slug — o `show-badge`
+// /badges/:id/:slug — a página do emblema
 .CanelaBadgeShow {
   &-title a {
     color: var(--cn-link);
@@ -344,8 +344,8 @@
   }
 }
 
-// Quem ganhou: o `.badges-granted` (grade de 18em, 3em × 2em de vão) com o
-// `user-info medium` — avatar de 48px, nome em negrito e a data.
+// Quem ganhou: uma grade de 18em, 3em × 2em de vão, com o
+// bloco de usuário médio — avatar de 48px, nome em negrito e a data.
 .CanelaBadgeRecipients {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18em, 1fr));

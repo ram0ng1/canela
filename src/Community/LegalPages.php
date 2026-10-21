@@ -19,7 +19,7 @@ use Throwable;
 
 /**
  * As abas "Termos de Serviço" e "Política de Privacidade" do Sobre (as rotas
- * /tos e /privacy do Discourse), e as outras políticas do fof/terms.
+ * /tos e /privacy), e as outras políticas do fof/terms.
  *
  * As políticas do fof/terms vêm primeiro — são as que o cadastro pede para
  * aceitar, e o link precisa ser o mesmo. Elas têm só nome e endereço, então o

@@ -1,9 +1,8 @@
 // =====================================================================
-// Barra de navegação da lista (o `.list-controls` do Horizon): dropdowns de
-// categoria/etiqueta, abas sublinhadas, botões redondos e "Novo tópico".
-// Medidas do CSS computado do meta.discourse.org: 16px de padding em cima,
-// controles de 38px e 12px até o cabeçalho da lista. No Meta a barra rola
-// junto com a página; grudar no topo (como no Horizon puro) é opção.
+// Barra de navegação da lista: dropdowns de categoria/etiqueta, abas
+// sublinhadas, botões redondos e "Novo tópico". Medidas: 16px de padding em
+// cima, controles de 38px e 12px até o cabeçalho da lista. A barra rola
+// junto com a página; grudar no topo é opção.
 // =====================================================================
 
 @canela-nav-height: 38px;
@@ -24,9 +23,9 @@
   padding: var(--canela-card-pad) var(--canela-card-pad) 12px;
   background: var(--cn-surface);
   border-radius: var(--cn-radius-large) var(--cn-radius-large) 0 0;
-  // Sem a sombra do `.list-controls` do Horizon sob a barra: o usuário
+  // Sem sombra sob a barra: o usuário
   // prefere a barra limpa, separada só pelo cabeçalho das colunas.
-  // Em rem, como a lista: o body do tema é 15px e o Discourse mede em 16px.
+  // Em rem, como a lista: o body do tema é 15px e aqui se mede em 16px.
   font-size: 1rem;
 
   &--sticky {
@@ -53,8 +52,7 @@
 
 // ---------------------------------------------------------------------
 // Dropdowns "categorias ›" / "subcategorias ›" / "etiquetas ›": o
-// `category-drop`/`tag-drop` do Discourse sobre o SelectKit do composer.
-// Medidas do select-kit aberto no meta.discourse.org.
+// seletor de categoria/etiqueta sobre o SelectKit do composer.
 // ---------------------------------------------------------------------
 .CanelaNav-dropdowns {
   display: flex;
@@ -65,7 +63,7 @@
 .CanelaNav .CanelaNav-drop {
   flex: none;
 
-  // `.list-controls .combo-box .combo-box-header`: 38px, padding 8px, borda
+  // O botão do seletor: 38px, padding 8px, borda
   // primary-300, raio 8, peso 500; a seta `angle-right` vira `angle-down`.
   .CanelaSelectKit-header {
     gap: 0;
@@ -84,7 +82,7 @@
     white-space: nowrap;
     transition: none;
 
-    // Como no Meta: o hover só troca o fundo (primary-100); o foco do
+    // O hover só troca o fundo (primary-100); o foco do
     // teclado acende a borda, sem anel em volta.
     &:hover {
       background: var(--cn-primary-100);
@@ -97,7 +95,7 @@
     }
   }
 
-  // Aberto: fundo primary-100 (`:hover` do uc-modernize), borda igual.
+  // Aberto: fundo primary-100 (o mesmo do hover), borda igual.
   &.is-expanded > .CanelaSelectKit-header {
     background: var(--cn-primary-100);
     outline: 0;
@@ -127,7 +125,7 @@
   }
 
   // O corpo: 3px abaixo do botão, `width: max-content` até 600px, borda
-  // primary-low, raio 8 e `--shadow-dropdown`.
+  // primary-low, raio 8 e sombra de dropdown.
   .CanelaSelectKit-body {
     top: ~"calc(100% + 3px)";
     width: max-content;
@@ -156,7 +154,7 @@
   }
 
   // A lista: 40vh no máximo, sem linha sob a busca, e a barra de rolagem
-  // cinza de 10px com raio 5 do select-kit.
+  // cinza de 10px com raio 5.
   .CanelaSelectKit-collection {
     max-height: 40vh;
     border-top: 0;
@@ -183,8 +181,8 @@
     border-bottom: 0;
   }
 
-  // `.select-kit-row`: 8px, texto primary-high; destaque e escolhido com o
-  // lilás de --d-hover/--d-selected (a cor de destaque a 15%).
+  // A linha: 8px, texto primary-high; destaque e escolhido com o
+  // lilás de hover/selecionado (a cor de destaque a 15%).
   .CanelaSelectKit-row {
     padding: 8px;
     color: var(--cn-primary-high);
@@ -260,7 +258,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-// "× 264": --font-down-1, primary-medium, 0.5em do nome.
+// "× 264": --cn-font-down-1, primary-medium, 0.5em do nome.
 .CanelaNav-dropCount {
   margin-left: 0.17em;
   font-size: var(--cn-font-down-1);
@@ -278,7 +276,7 @@
   color: var(--cn-hover-accent-text);
   font-weight: 700;
 }
-// `.filter-for-more`
+// O item de filtrar para ver mais
 .CanelaNav-dropMore {
   box-sizing: border-box;
   width: 100%;
@@ -316,8 +314,7 @@
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
-  // `.nav-pills > li > a { transition: var(--d-button-transition) }`, que é
-  // `none` no Meta; só o ícone tem `color .2s`.
+  // Sem transição nas abas; só o ícone tem `color .2s`.
   transition: none;
 
   .icon,
@@ -336,8 +333,8 @@
     background: transparent;
   }
 
-  // A cor de destaque em texto: no escuro, o tom claro dela (o tertiary
-  // do esquema escuro do Meta, #a99af0 para o #7b5fe2), senão o vermelho/
+  // A cor de destaque em texto: no escuro, o tom claro dela (#a99af0 para
+  // o #7b5fe2), senão o vermelho/
   // azul cru sobre o cinza-escuro não chega ao contraste mínimo.
   &:hover,
   &:focus-visible {
@@ -435,7 +432,7 @@
 // ---------------------------------------------------------------------
 @media @phone {
   // O core deixa 15px acima do conteúdo no celular; a barra é o topo do
-  // cartão (no Meta, a 0px dele).
+  // cartão (a 0px dele).
   .Canela .Page-content:has(.CanelaNav) {
     margin-top: 0;
   }
@@ -472,7 +469,7 @@
       color: var(--cn-primary);
     }
 
-    // `.list-control-toggle-link-trigger .d-icon`: --font-down-2, 0.5em de folga.
+    // A seta: --cn-font-down-2, 0.5em de folga.
     .Button-caret {
       margin-left: 0.5em;
       font-size: var(--cn-font-down-2);

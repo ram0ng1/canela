@@ -20,7 +20,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\User\User;
 
 /**
- * "Fulano reagiu à sua mensagem" (`reaction` do discourse-reactions): o aviso
+ * "Fulano reagiu à sua mensagem": o aviso
  * para o autor da mensagem privada, com a reação escolhida nos dados.
  */
 final class MessageReactedBlueprint implements BlueprintInterface, AlertableInterface

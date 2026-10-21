@@ -9,7 +9,7 @@ import { GROUPINGS, LIST_FIELDS, badgesEnabled, loadOwnedBadgeIds } from '../uti
 import { t } from '../../../utils/settings';
 
 /**
- * A página /badges do Discourse: os emblemas em grade, separados por
+ * A página /badges: os emblemas em grade, separados por
  * agrupamento (Primeiros passos, Comunidade, Postando, Nível de confiança),
  * cada um com quantas vezes foi concedido. Os que a pessoa logada já tem
  * ganham a marca de conquistado.

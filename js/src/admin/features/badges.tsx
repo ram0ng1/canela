@@ -99,7 +99,7 @@ const BADGE_CARDS: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.badges_enabled_help`,
-        'Os emblemas automáticos do Discourse (Primeira curtida, Resposta interessante, Aniversário…), a página /badges, a aba Emblemas do perfil e a notificação "Ganhou …". Desligados, nada disso aparece e a API responde 404.'
+        'Os emblemas automáticos (Primeira curtida, Resposta interessante, Aniversário…), a página /badges, a aba Emblemas do perfil e a notificação "Ganhou …". Desligados, nada disso aparece e a API responde 404.'
       ),
     keywords: 'emblemas badges conquistas medalhas curtidas likes conceder grant',
     master: 'canela.badges_enabled',
@@ -117,7 +117,7 @@ const BADGE_CARDS: CardDef[] = [
           label={trans(`${KEY}.badges_max_likes_per_day_label`, 'Curtidas por dia dos emblemas "Por amor"')}
           help={trans(
             `${KEY}.badges_max_likes_per_day_help`,
-            'O Flarum não limita curtidas; os emblemas Por amor, Amor maior e Apaixonado(a) contam os dias em que a pessoa deu pelo menos este número de curtidas (o padrão do Discourse é 50).'
+            'O Flarum não limita curtidas; os emblemas Por amor, Amor maior e Apaixonado(a) contam os dias em que a pessoa deu pelo menos este número de curtidas (o padrão é 50).'
           )}
           min={1}
           max={1000}
@@ -163,7 +163,7 @@ const BADGE_CARDS: CardDef[] = [
             {measured
               ? trans(
                   `${KEY}.source_stats`,
-                  'Leitura medida pelas estatísticas do tema: dias visitados, tempo de leitura, discussões vistas e postagens lidas são os de verdade, como no Discourse.'
+                  'Leitura medida pelas estatísticas do tema: dias visitados, tempo de leitura, discussões vistas e postagens lidas são os de verdade.'
                 )
               : trans(
                   `${KEY}.source_core`,

@@ -1,7 +1,7 @@
 /*
  * Card do "Me too" no grupo "Tópico": o liga/desliga, em quais categorias e
- * etiquetas o botão aparece (no Discourse, só nas categorias de suporte; aqui
- * o padrão é todas), se some com a melhor resposta e se quem marca passa a
+ * etiquetas o botão aparece (o padrão
+ * é todas), se some com a melhor resposta e se quem marca passa a
  * seguir o tópico. As chaves são `canela.metoo_*`, de extend/metoo.php.
  */
 import app from 'flarum/admin/app';
@@ -77,8 +77,8 @@ function loadTags(): void {
 
 /**
  * A lista de tags com caixas de seleção. Nenhuma marcada = todas: assim um
- * fórum novo ganha o botão em todo tópico, e quem quer o comportamento do
- * Meta (só Suporte, Bug…) marca as dele.
+ * fórum novo ganha o botão em todo tópico, e quem quer o botão só em
+ * algumas (Suporte, Bug…) marca as dele.
  */
 class AdminTagPicker extends AdminComponent {
   oninit(vnode: Mithril.Vnode<any, this>) {
@@ -106,7 +106,7 @@ class AdminTagPicker extends AdminComponent {
         <p className="helpText">
           {trans(
             `${KEY}.tags_help`,
-            'Marque as tags de suporte (no Meta do Discourse: Support, Bug…). Nenhuma marcada vale para todas as discussões. Marcar uma tag pai inclui as filhas.'
+            'Marque as tags de suporte (ex.: Suporte, Bug…). Nenhuma marcada vale para todas as discussões. Marcar uma tag pai inclui as filhas.'
           )}
         </p>
 
@@ -159,7 +159,7 @@ const cards: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.enabled_help`,
-        'A pílula "✋ Eu também" abaixo do primeiro post, como no Meta do Discourse: quem tem o mesmo problema clica, a contagem aparece entre parênteses e a pessoa passa a acompanhar a discussão. O autor e as discussões trancadas veem o botão só para leitura; visitantes são levados ao login. Desligado, o botão some e a API responde 404; as marcações ficam guardadas.'
+        'A pílula "✋ Eu também" abaixo do primeiro post: quem tem o mesmo problema clica, a contagem aparece entre parênteses e a pessoa passa a acompanhar a discussão. O autor e as discussões trancadas veem o botão só para leitura; visitantes são levados ao login. Desligado, o botão some e a API responde 404; as marcações ficam guardadas.'
       ),
     keywords: 'me too eu também mão hand problema compartilhado shared issue suporte support bug votar voto',
     master: 'canela.metoo_enabled',
@@ -169,13 +169,13 @@ const cards: CardDef[] = [
         {toggle(
           'hide_solved',
           'Esconder quando a discussão tiver solução',
-          'Com a melhor resposta escolhida (FoF Best Answer), o botão some, e volta se a solução for retirada, o padrão do Discourse. Desligado, continua na discussão resolvida (o "várias soluções" do plugin).',
+          'Com a melhor resposta escolhida (FoF Best Answer), o botão some, e volta se a solução for retirada. Desligado, continua na discussão resolvida (o "várias soluções" do plugin).',
           'fof-best-answer'
         )}
         {toggle(
           'follow',
           'Quem marca passa a seguir a discussão',
-          'Ao clicar em "Eu também", a pessoa passa a seguir a discussão (extensão Inscrições) para saber da solução, como o "Acompanhando" do Discourse. Quem já segue continua igual; desmarcar não deixa de seguir.',
+          'Ao clicar em "Eu também", a pessoa passa a seguir a discussão (extensão Inscrições) para saber da solução. Quem já segue continua igual; desmarcar não deixa de seguir.',
           'flarum-subscriptions'
         )}
         {!isExtensionEnabled('fof-best-answer') && (

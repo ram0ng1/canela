@@ -17,8 +17,7 @@ use Illuminate\Database\Schema\Blueprint;
  * do bot, em Markdown (desenhado no navegador pelo mesmo formatador dos posts).
  *
  * - `tools` guarda o que o bot consultou (as buscas no fórum e os tópicos
- *   lidos), para a resposta mostrar "Pesquisou por…" com os links, como o
- *   Discourse.
+ *   lidos), para a resposta mostrar "Pesquisou por…" com os links.
  * - Os tokens ficam por mensagem para o admin saber quanto cada conversa
  *   custou; o limite diário mora em canela_ai_usage.
  */

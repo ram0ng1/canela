@@ -19,7 +19,7 @@ use Ramon\Canela\Chat\Model\Message;
 use Ramon\Canela\Chat\Model\Thread;
 
 /**
- * Apagar uma tag apaga os canais dela, como apagar a categoria no Discourse:
+ * Apagar uma tag apaga os canais dela:
  * um canal "da tag" sem a tag não teria mais quem pudesse vê-lo (a segurança
  * dele era a dela).
  */

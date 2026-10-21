@@ -1,5 +1,5 @@
 /*
- * O usuário do sistema no fórum (o `system` do Discourse). Sem foto própria,
+ * O usuário do sistema no fórum. Sem foto própria,
  * ele usa o ícone do fórum, o mesmo que as notificações sem remetente já
  * mostravam. O resto (sem login, sem receber mensagens, fora da lista de
  * usuários, a conversa sem resposta) é do servidor (src/System) e de

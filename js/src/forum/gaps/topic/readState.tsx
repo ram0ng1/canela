@@ -1,5 +1,5 @@
 /*
- * O que o Discourse mostra sobre a leitura dentro do tópico:
+ * O que o tema mostra sobre a leitura dentro do tópico:
  *
  * - o pontinho azul de "postagem não lida" no canto do cabeçalho do post
  *   (.read-state), que some devagar quando o post é lido;

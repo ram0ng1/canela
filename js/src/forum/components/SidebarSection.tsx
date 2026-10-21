@@ -27,7 +27,7 @@ function readCollapsed(name: string): boolean {
 
 /**
  * Seção da barra lateral, com o cabeçalho em versalete e a seta que a recolhe —
- * as "Categorias" e "Etiquetas" do Discourse.
+ * como as "Categorias" e as "Etiquetas".
  */
 export default class SidebarSection extends Component<SidebarSectionAttrs> {
   collapsed = false;

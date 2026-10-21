@@ -1,11 +1,11 @@
 /*
- * O que faltava na barra lateral do Discourse:
+ * O que faltava na barra lateral:
  *
  * - "Revisar" na seção da comunidade, para a moderação, com o número de
  *   sinalizações pendentes (a fila do flarum/flags);
  * - "FAQ", "Termos de serviço" e "Privacidade" no menu "Mais", quando o
  *   admin informa os endereços;
- * - uma seção personalizada de links (as custom sections do Discourse),
+ * - uma seção personalizada de links,
  *   escrita pelo admin, uma linha por link: "Rótulo | endereço | ícone".
  */
 import app from 'flarum/forum/app';
@@ -91,7 +91,7 @@ export default function installSidebarGaps(): void {
     const tos = forumString('canelaSidebarTosUrl');
     const privacy = forumString('canelaSidebarPrivacyUrl');
 
-    // Logo depois de "Sobre" (75), como no menu do Discourse.
+    // Logo depois de "Sobre" (75).
     if (faq) items.add('canelaFaq', link(faq, 'fas fa-circle-question', t('gaps.sidebar.faq')), 74.5);
     if (tos) items.add('canelaTos', link(tos, 'fas fa-file-contract', t('gaps.sidebar.tos')), 20);
     if (privacy) items.add('canelaPrivacy', link(privacy, 'fas fa-user-shield', t('gaps.sidebar.privacy')), 19);
@@ -106,7 +106,7 @@ export default function installSidebarGaps(): void {
 
     links.forEach((entry, index) => list.add(`custom${index}`, link(entry.href, entry.icon, entry.label), 100 - index));
 
-    // Entre a comunidade (90) e as categorias (80), como as seções do Discourse.
+    // Entre a comunidade (90) e as categorias (80).
     items.add(
       'canelaCustom',
       <SidebarSection name="custom" title={forumString('canelaSidebarCustomTitle') || t('gaps.sidebar.custom_title')}>

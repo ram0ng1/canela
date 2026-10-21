@@ -6,8 +6,8 @@
  *
  * Durante o streaming o texto muda a cada pedaço; a renderização espera o
  * próximo quadro de animação, para dez pedaços num quadro custarem uma.
- * `streaming` põe o "●" piscando no fim do último parágrafo, como o
- * `.streamable-content.streaming` do Discourse.
+ * `streaming` põe o "●" piscando no fim do último parágrafo
+ * (`.streamable-content.streaming`).
  */
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import classList from 'flarum/common/utils/classList';

@@ -1,5 +1,5 @@
 /*
- * Os resultados da página de busca, como no Discourse: avatar à esquerda,
+ * Os resultados da página de busca: avatar à esquerda,
  * título grande, categoria e etiquetas, e "data - trecho" com as palavras
  * pesquisadas em negrito.
  */
@@ -17,7 +17,7 @@ import { shortDate } from '../../../utils/dates';
 import { categoryBadge, discussionBadges, labelBadge, type CanelaTag } from '../../../utils/tags';
 import { isCategory } from './query';
 
-/** Tamanho do trecho, em caracteres — o do Discourse (`blurb`). */
+/** Tamanho do trecho, em caracteres (o resumo, `blurb`). */
 const BLURB_LENGTH = 220;
 
 function avatarLink(user: User | null | false | undefined): Mithril.Children {

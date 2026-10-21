@@ -1,5 +1,5 @@
 /*
- * "Há N novas respostas" — a barra do Discourse quando chegam posts pelo
+ * "Há N novas respostas" — a barra que aparece quando chegam posts pelo
  * realtime enquanto o leitor está no meio do tópico. No fim do tópico o
  * flarum/realtime já acrescenta o post direto no stream, e a barra não
  * aparece; no meio, ele só atualiza a contagem, e é aí que ela avisa.

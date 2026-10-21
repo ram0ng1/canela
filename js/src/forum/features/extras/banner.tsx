@@ -1,5 +1,5 @@
 /*
- * Banner de anúncio global — o "tópico-banner" do Discourse: uma faixa acima
+ * Banner de anúncio global — o "tópico-banner": uma faixa acima
  * do conteúdo, em todas as páginas, com um botão de fechar.
  *
  * Fechar vale para o anúncio, não para sempre: o id dispensado fica no

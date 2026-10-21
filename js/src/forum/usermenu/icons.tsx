@@ -1,6 +1,6 @@
 /*
- * Os ícones das abas e do rodapé do menu do usuário. O Meta (Horizon) os
- * desenha com o Lucide — traço de 2px, pontas redondas —, que o Font Awesome
+ * Os ícones das abas e do rodapé do menu do usuário, desenhados com o
+ * Lucide — traço de 2px, pontas redondas —, que o Font Awesome
  * do Flarum não tem com o mesmo traço. A classe base `.CanelaIcon` (da casca,
  * Header.less) dá o traço; o tamanho vem do UserMenu.less.
  */
@@ -16,16 +16,16 @@ function svg(name: string, children: Mithril.Children): Mithril.Children {
   );
 }
 
-// Nome da aba → desenho do Lucide (icons/glyphs.ts, os mesmos do sprite do Meta).
+// Nome da aba → desenho do Lucide (icons/glyphs.ts).
 const PATHS: Record<string, string> = {
   bell: 'bell',
   reply: 'reply',
   heart: 'heart',
   mail: 'mail',
   bookmark: 'bookmark',
-  // O "d-chat" do Discourse.
+  // O balão do chat.
   chat: 'message-square-text',
-  // O "discourse-other-tab" do Discourse: uma grade 2×2.
+  // A aba "outras": uma grade 2×2.
   other: 'grid-2x2',
   flag: 'flag',
   user: 'user',

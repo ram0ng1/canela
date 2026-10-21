@@ -1,5 +1,5 @@
 /*
- * As listas de canais (channels-list-public / -direct do Discourse) e as abas
+ * As listas de canais (públicos e diretos) e as abas
  * do rodapé da gaveta (c-footer: Canais, MDs, Meus tópicos, Pesquisar).
  */
 import app from 'flarum/forum/app';
@@ -181,7 +181,7 @@ export class ChannelRow extends Component<ChannelRowAttrs> {
     );
   }
 
-  /** O "x" da MD: some da lista com a animação do Discourse e sai da conversa. */
+  /** O "x" da MD: some da lista com uma animação e sai da conversa. */
   private async leave(): Promise<void> {
     const channel = this.attrs.channel;
 

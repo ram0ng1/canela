@@ -1,5 +1,5 @@
 // =====================================================================
-// Componentes gerais com a cara do Horizon (Discourse): botões, campos,
+// Componentes gerais com a cara do tema: botões, campos,
 // selects, switches, dropdowns, modais, alertas, tooltips, insígnias,
 // paginação, placeholder e indicador de carregamento.
 //
@@ -25,7 +25,7 @@
   --overlay-bg: rgba(0, 0, 0, 0.6);
   --shadow-color: rgba(0, 0, 0, 0.12);
 
-  // Alertas: fundo claro tingido e texto do tema, como os avisos do Discourse.
+  // Alertas: fundo claro tingido e texto do tema.
   --alert-bg: var(--cn-accent-low);
   --alert-color: var(--cn-primary);
   --alert-error-bg: ~"color-mix(in srgb, var(--cn-danger) 14%, var(--cn-surface))";
@@ -43,10 +43,10 @@
 .Button {
   border-radius: var(--cn-button-radius);
   font-weight: 400;
-  // `--d-button-transition: none` no Discourse: hover e foco trocam na hora.
+  // Sem transição: hover e foco trocam na hora.
   transition: none;
 
-  // O core afunda o botão com uma sombra interna; o Horizon só troca o fundo.
+  // O core afunda o botão com uma sombra interna; aqui só troca o fundo.
   &:active,
   &.active,
   .open > &.Dropdown-toggle {
@@ -55,7 +55,7 @@
 }
 
 // Padrão: cinza claro com o ícone na cor de destaque. Hover e foco só trocam
-// o fundo, como os .btn do Discourse (sem anel).
+// o fundo (sem anel).
 .Button:where(:not(.Button--primary, .Button--link, .Button--text, .Button--flat, .Button--danger, .Button--ua-reset)) > .Button-icon {
   color: var(--cn-accent);
 }
@@ -81,7 +81,7 @@
     color: var(--cn-accent-text);
   }
 
-  // --d-button-primary-bg-color--hover: var(--tertiary-hover).
+  // Hover do primário: a cor de destaque escurecida.
   &:hover,
   &:focus-visible {
     background: var(--cn-accent-hover);
@@ -152,8 +152,8 @@
   }
 }
 
-// O foco do teclado nunca desenha o anel do navegador num botão (o
-// `.btn:focus-visible { outline: none }` do Discourse): ele aparece como o
+// O foco do teclado nunca desenha o anel do navegador num botão: ele
+// aparece como o
 // hover — o fundo ou a cor mudam.
 .Button:focus-visible {
   outline: none;
@@ -202,7 +202,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Campos (o `input[type=text]` do Discourse): padding .5em .65em, 16px,
+// Campos (`input[type=text]`): padding .5em .65em, 16px,
 // borda de 1px e, no foco, a borda e um contorno de 2px por dentro na cor de
 // destaque — sem brilho em volta.
 // ---------------------------------------------------------------------
@@ -282,7 +282,7 @@ textarea.FormControl {
   color: var(--cn-primary-medium);
 }
 
-// Rótulo flutuante (`.input-group` do login do Discourse): o rótulo mora
+// Rótulo flutuante (login): o rótulo mora
 // dentro do campo e sobe para a borda ao focar ou quando há texto. O JS
 // (composer/installModals) põe o rótulo depois do campo e o placeholder " ".
 .CanelaFloat {
@@ -335,7 +335,7 @@ textarea.FormControl {
 }
 
 // ---------------------------------------------------------------------
-// Checkbox e switch (d-toggle-switch: 45 × 24, bolinha de 18px)
+// Checkbox e switch (45 × 24, bolinha de 18px)
 // ---------------------------------------------------------------------
 .Checkbox--switch {
   --left-pad: 56px;
@@ -407,8 +407,8 @@ textarea.FormControl {
 }
 
 // ---------------------------------------------------------------------
-// Dropdowns e menus (`.fk-d-menu` + `.dropdown-menu`): cartão branco de
-// raio 8, borda e a sombra `--shadow-dropdown`; itens de 8px × 4px com o
+// Dropdowns e menus: cartão branco de
+// raio 8, borda e sombra; itens de 8px × 4px com o
 // ícone a 8px do texto. Abre descendo (`float-down`, 250ms).
 // ---------------------------------------------------------------------
 @keyframes cn-float-down {
@@ -494,7 +494,7 @@ textarea.FormControl {
     }
   }
 
-  // Abre como o `.fk-d-menu.-animated`, descendo.
+  // Abre descendo.
   .Dropdown.open > .Dropdown-menu {
     animation: cn-float-down 250ms ease forwards;
   }
@@ -523,8 +523,7 @@ textarea.FormControl {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.45);
 }
 
-// Celular: a folha que sobe de baixo, com cantos arredondados no topo
-// (o `fk-d-menu-modal` do Discourse).
+// Celular: a folha que sobe de baixo, com cantos arredondados no topo.
 @media @phone {
   .Dropdown .Dropdown-menu {
     border-radius: 16px 16px 0 0;
@@ -547,8 +546,8 @@ textarea.FormControl {
 }
 
 // ---------------------------------------------------------------------
-// Modais (`.d-modal`): o cartão de raio 8 no meio da tela, a sombra
-// `--shadow-modal`, o cabeçalho com o título (font-up-3, negrito) à esquerda
+// Modais: o cartão de raio 8 no meio da tela, a sombra
+// do modal, o cabeçalho com o título (font-up-3, negrito) à esquerda
 // e o ✕ à direita sobre um traço, o corpo de 16px × 24px e o rodapé com os
 // botões. Entra crescendo de 70% (250ms) sobre o fundo preto a 60% (300ms);
 // no celular, sobe de baixo como uma folha.
@@ -648,7 +647,7 @@ textarea.FormControl {
 }
 
 @media @tablet-up {
-  // Centrado na tela (o `.d-modal` é um flex): `margin: auto` numa coluna
+  // Centrado na tela (o contêiner é um flex): `margin: auto` numa coluna
   // flexível centra quando cabe e rola a partir do topo quando não cabe.
   .ModalManager {
     display: flex;
@@ -662,7 +661,7 @@ textarea.FormControl {
     margin: auto;
     border-radius: var(--cn-radius);
     box-shadow: var(--cn-modal-shadow);
-    // `modal-enter-desktop`/`modal-exit-desktop`. O core troca as classes
+    // Entrada e saída animadas. O core troca as classes
     // `in`/`out` e espera o fim da transição para seguir.
     opacity: 0;
     transform: scale(0.7);
@@ -777,7 +776,7 @@ textarea.FormControl {
   }
 }
 
-// Celular: a folha que sobe de baixo (`modal-enter-mobile`, 250ms), até 85%
+// Celular: a folha que sobe de baixo (250ms), até 85%
 // da altura, com o título e o ✕ na primeira linha — e não a tela cheia com o
 // cabeçalho azul do core.
 @media @phone {
@@ -876,8 +875,8 @@ textarea.FormControl {
 }
 
 // ---------------------------------------------------------------------
-// Entrar / Cadastrar-se / Esqueci a senha: a página de login do Discourse
-// num cartão — o título grande ("Boas-vindas outra vez", 36px, negrito), os
+// Entrar / Cadastrar-se / Esqueci a senha: a página de login num cartão —
+// o título grande ("Boas-vindas outra vez", 36px, negrito), os
 // campos de 46px com rótulo flutuante, o primário largo em pílula e, embaixo
 // de um traço, "Não tem uma conta?" e "Cadastrar-se".
 // ---------------------------------------------------------------------
@@ -995,7 +994,7 @@ textarea.FormControl {
   }
 }
 
-// "Redefinição de senha": um `.d-modal` comum — o texto em negrito cinza, o
+// "Redefinição de senha": um modal comum — o texto em negrito cinza, o
 // campo largo e "Redefinir senha" (sem largura total) no rodapé, sobre um
 // traço que vai de borda a borda.
 .ForgotPasswordModal {
@@ -1043,7 +1042,7 @@ textarea.FormControl {
 }
 
 
-// Sinalizar (`.flag-modal-body`): cada motivo com o rádio à esquerda, o nome
+// Sinalizar: cada motivo com o rádio à esquerda, o nome
 // em negrito e a descrição embaixo; "Sinalizar postagem" no rodapé, à
 // esquerda, sobre um traço de borda a borda.
 .FlagPostModal {
@@ -1141,7 +1140,7 @@ textarea.FormControl {
     }
   }
 
-  // Com login social, as duas colunas do Discourse: o formulário à esquerda
+  // Com login social, duas colunas: o formulário à esquerda
   // e os botões à direita, separados por um traço.
   .LogInModal:has(.LogInButtons:not(:empty)),
   .SignUpModal:has(.LogInButtons:not(:empty)) {
@@ -1196,9 +1195,9 @@ textarea.FormControl {
 }
 
 // ---------------------------------------------------------------------
-// Alertas. Na página, o `.alert` do Discourse: faixa de cor clara, sem raio.
-// Os avisos que aparecem e somem (o AlertManager) são os toasts
-// (`.fk-d-toast`): cartão branco com borda e sombra no alto à direita,
+// Alertas. Na página: faixa de cor clara, sem raio.
+// Os avisos que aparecem e somem (o AlertManager) são os toasts:
+// cartão branco com borda e sombra no alto à direita,
 // entrando de 2vh abaixo em 300ms.
 // ---------------------------------------------------------------------
 @keyframes cn-toast-opening {
@@ -1214,7 +1213,7 @@ textarea.FormControl {
 }
 
 .AlertManager {
-  // `z("max")` do `.fk-d-toasts`: acima de modais e do editor.
+  // Acima de modais e do editor.
   z-index: 9999;
   top: ~"calc(var(--cn-header-height, 52px) + 0.33rem)";
   right: 5px;
@@ -1271,8 +1270,8 @@ textarea.FormControl {
 }
 
 // ---------------------------------------------------------------------
-// Tooltips (`.fk-d-tooltip__content`): cartão branco de raio 8, borda,
-// `--shadow-dropdown`, 8px de respiro; aparece em 150ms (ease-in).
+// Tooltips: cartão branco de raio 8, borda,
+// sombra de dropdown, 8px de respiro; aparece em 150ms (ease-in).
 // ---------------------------------------------------------------------
 [data-theme^=light],
 [data-theme^=dark] {

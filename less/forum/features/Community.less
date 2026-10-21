@@ -1,6 +1,6 @@
 // =====================================================================
 // Páginas de comunidade: Sobre (/about), Usuários (/u) e Grupos (/g).
-// Medidas do Discourse (about.scss, directory.scss, groups.scss): títulos
+// Medidas: títulos
 // h1 em 2em/700, tabelas com cabeçalho cinza pequeno e linhas separadas
 // pela borda do conteúdo.
 // =====================================================================
@@ -16,7 +16,7 @@
   width: 100%;
 }
 
-// O Discourse trabalha com 16px de base (o corpo do Flarum é 15px), e as
+// As páginas trabalham com 16px de base (o corpo do Flarum é 15px), e as
 // medidas em em abaixo contam com isso.
 .CanelaCommunityPage .Page-container {
   font-size: 16px;
@@ -49,7 +49,7 @@
   margin-top: var(--cn-space-1);
   border-collapse: collapse;
 
-  // `.directory-table__cell`: 12px × 8px, a borda da tabela embaixo.
+  // As células: 12px × 8px, a borda da tabela embaixo.
   th,
   td {
     padding: 12px 8px;
@@ -58,7 +58,7 @@
     vertical-align: middle;
   }
 
-  // `.directory-table__column-header`: cinza, 8px, texto normal.
+  // O cabeçalho das colunas: cinza, 8px, texto normal.
   thead th {
     padding: 8px;
     color: var(--cn-primary-medium);
@@ -73,7 +73,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Bloco de usuário (o `user-info` do Discourse): avatar de 48px, 1em de vão,
+// Bloco de usuário: avatar de 48px, 1em de vão,
 // usuário em negrito e o nome ao lado, o título cinza embaixo
 // ---------------------------------------------------------------------
 .CanelaUserTile {
@@ -135,7 +135,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Sobre (about.scss): abas, nome do fórum em font-up-1, a faixa de números
+// Sobre: abas, nome do fórum em font-up-1, a faixa de números
 // entre linhas e as duas colunas (650px / 200px, 2em de vão)
 // ---------------------------------------------------------------------
 // Sem largura própria: a área Sobre ocupa o cartão do conteúdo, que segue a
@@ -157,7 +157,7 @@
       margin: 0;
       padding: 0;
       list-style: none;
-      // Quatro abas não cabem no celular: rolam de lado, como as do Discourse.
+      // Quatro abas não cabem no celular: rolam de lado.
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -307,7 +307,7 @@
     list-style: none;
   }
 
-  // `.about__activities-item`: ícone de 1em na cor do texto, 1em até o texto.
+  // Cada atividade: ícone de 1em na cor do texto, 1em até o texto.
   &-activityItem {
     display: flex;
     align-items: center;
@@ -360,9 +360,9 @@
 }
 
 // ---------------------------------------------------------------------
-// Diretório (directory.scss): o período como título à esquerda; o total e o
+// Diretório: o período como título à esquerda; o total e o
 // filtro por nome à direita; a tabela com números grandes e cinza. Sem
-// destaque de linha no hover e sem transição — o Discourse não tem.
+// destaque de linha no hover e sem transição.
 // ---------------------------------------------------------------------
 .CanelaDirectory-controls {
   display: flex;
@@ -445,7 +445,7 @@
     z-index: 2;
   }
 
-  // A linha de quem está vendo (`.me`): o realce amarelo do Discourse.
+  // A linha de quem está vendo: um realce amarelo.
   tbody tr.is-me td {
     background: ~"color-mix(in srgb, var(--cn-highlight) 35%, var(--cn-surface))";
   }
@@ -492,7 +492,7 @@
   font-size: 0.75em;
 }
 
-// Os números grandes e cinza do Discourse, só quando a tabela tem espaço.
+// Os números grandes e cinza, só quando a tabela tem espaço.
 .CanelaDirectory-value {
   color: var(--cn-primary-medium);
   white-space: nowrap;
@@ -506,7 +506,7 @@
 }
 
 // Na página do grupo os valores ficam do tamanho do texto, na cor dele, e o
-// período sai (o Discourse só tem o filtro por nome ali).
+// período sai (ali só fica o filtro por nome).
 .CanelaGroup .CanelaDirectory-value {
   color: var(--cn-primary);
 }
@@ -516,7 +516,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Grupos (groups.scss): `group-box` em grade de 16em, flair redondo de 40px
+// Grupos: caixas em grade de 16em, flair redondo de 40px
 // ---------------------------------------------------------------------
 .CanelaGroupFlair {
   --flair-size: 40px;
@@ -571,7 +571,7 @@
   min-width: 0;
 }
 
-// Sem transição: a borda escurece na hora, como no Discourse.
+// Sem transição: a borda escurece na hora.
 .CanelaGroupCard {
   display: flex;
   flex: 1;
@@ -662,7 +662,7 @@
   }
 }
 
-// O `group-details-container`: caixa com borda, flair de 50px e o nome.
+// O cabeçalho do grupo: caixa com borda, flair de 50px e o nome.
 .CanelaGroup {
   &-header {
     display: flex;
@@ -698,7 +698,7 @@
     color: var(--cn-primary);
   }
 
-  // Abas como o `.group-nav` (nav-pills): o sublinhado de 2px na ativa; só o
+  // Abas sublinhadas: o sublinhado de 2px na ativa; só o
   // ícone tem transição (cor, 0.2s).
   &-tabs {
     margin-bottom: 1em;
@@ -770,7 +770,7 @@
   }
 }
 
-// O "stream" de atividade do Discourse (`user-stream-item`): avatar de 48px,
+// O "stream" de atividade: avatar de 48px,
 // título do tópico como link, autor e data embaixo e o trecho recuado 56px.
 .CanelaStream {
   margin: 0;

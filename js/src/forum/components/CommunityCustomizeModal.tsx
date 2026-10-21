@@ -19,8 +19,7 @@ export interface CommunityCustomizeModalAttrs extends IInternalModalAttrs {
 
 /**
  * Quais itens da seção principal da barra lateral ficam à vista; os
- * desmarcados vão para dentro do "Mais", como o "personalizar seção" do
- * Discourse.
+ * desmarcados vão para dentro do "Mais".
  */
 export default class CommunityCustomizeModal extends Modal<CommunityCustomizeModalAttrs> {
   hidden = new Set<string>();

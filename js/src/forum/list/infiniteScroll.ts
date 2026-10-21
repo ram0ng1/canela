@@ -1,5 +1,5 @@
 /*
- * Rolagem infinita da lista, como o Discourse: a próxima página carrega
+ * Rolagem infinita da lista: a próxima página carrega
  * sozinha quando o fim da lista chega perto da tela. O botão "Carregar mais"
  * do core continua lá — é o que aparece sem IntersectionObserver e o que o
  * teclado alcança.

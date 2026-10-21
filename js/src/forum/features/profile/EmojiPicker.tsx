@@ -1,6 +1,6 @@
 /*
  * Seletor de emoji simples para o status: o botão mostra o emoji atual e abre
- * uma grade com os mais usados em status (os sugeridos pelo Discourse e
+ * uma grade com os mais usados em status (sugestões comuns e
  * alguns do dia a dia). Quem quiser outro digita ou cola no campo da grade.
  *
  * Nada de biblioteca de emojis: a grade cobre o caso comum, e o servidor

@@ -10,7 +10,7 @@
  */
 
 /*
- * Recursos "extras" do Discourse: página de busca com filtros avançados,
+ * Recursos "extras": página de busca com filtros avançados,
  * seleção em massa, "Melhores" por período, tamanho do texto, banner de
  * anúncio, imprimir tópico e histórico de edições.
  *

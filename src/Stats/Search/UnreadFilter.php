@@ -10,7 +10,7 @@ use Flarum\Search\SearchState;
 use Ramon\Canela\Stats\TopicCounter;
 
 /**
- * `filter[canelaUnread]=1` — a aba "Não lidos" do Discourse: os tópicos já
+ * `filter[canelaUnread]=1` — a aba "Não lidos": os tópicos já
  * abertos com respostas novas, pela mesma regra de "Não lidos (N)".
  *
  * @implements FilterInterface<DatabaseSearchState>

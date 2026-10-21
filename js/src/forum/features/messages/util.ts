@@ -39,7 +39,7 @@ export type DialogMessage = Model & {
 
 export type Box = 'inbox' | 'sent' | 'new' | 'unread' | 'archive' | 'group';
 
-/** As abas na ordem do Discourse (`user-private-messages/user.gjs`). */
+/** As abas, na ordem. */
 export const BOXES: Box[] = ['inbox', 'sent', 'new', 'unread', 'archive'];
 
 /** O flarum/messages está ligado e o visual de mensagens do tema também. */
@@ -79,7 +79,7 @@ export function messageGroupModel(): Group | null {
   return group ? app.store.getById<Group>('groups', String(group.id)) || null : null;
 }
 
-/** O nome do grupo no chip ("moderators" no Discourse; aqui o plural do grupo). */
+/** O nome do grupo no chip (o plural do grupo). */
 export function groupLabel(group: Group): string {
   return group.namePlural() || group.nameSingular();
 }
@@ -176,8 +176,7 @@ export function dialogViews(dialog: Dialog): number | null {
 
 /**
  * Os grupos da equipe (administradores e moderadores) dos outros
- * participantes: o chip "👥 moderators" sob o título, como os
- * `participant_groups` de uma mensagem do Discourse. No flarum/messages a
+ * participantes: o chip "👥 moderators" sob o título. No flarum/messages a
  * conversa é entre pessoas, então o chip diz de que equipe é quem está nela.
  */
 export function staffGroups(dialog: Dialog): Group[] {

@@ -1,5 +1,5 @@
 /*
- * Editor (composer) do Discourse dentro do Flarum: seletor de emoji, tópicos
+ * Editor (composer) do tema: seletor de emoji, tópicos
  * semelhantes, #categoria/#etiqueta, rascunhos (com o fof/drafts), responder como
  * tópico vinculado e a pré-visualização lado a lado. Cada um pode ser
  * desligado no card "Editor" do admin (`canela.composer_*`).

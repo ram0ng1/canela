@@ -28,8 +28,7 @@ use Psr\Log\LoggerInterface;
 use Ramon\Canela\System\SystemUser;
 
 /**
- * Manda uma mensagem automática do usuário do sistema, como o
- * `SystemMessage.create_from_system_user` do Discourse: uma mensagem privada
+ * Manda uma mensagem automática do usuário do sistema: uma mensagem privada
  * do flarum/messages, na conversa entre o sistema e a pessoa (a mesma
  * conversa para todas as mensagens, como um "Mensagens do sistema").
  *
@@ -187,7 +186,7 @@ final class MessageSender
     }
 
     /**
-     * As variáveis que toda mensagem tem, com os nomes do Discourse.
+     * As variáveis que toda mensagem tem.
      *
      * @return array<string, string>
      */

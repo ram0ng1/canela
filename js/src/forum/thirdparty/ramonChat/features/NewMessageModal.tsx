@@ -1,5 +1,5 @@
 /*
- * (6) "Nova mensagem" do Discourse para o ramon/chat: a busca de pessoas, as
+ * (6) "Nova mensagem" para o ramon/chat: a busca de pessoas, as
  * escolhidas em pílulas, o contador "2/20 participantes", o nome do chat em
  * grupo (opcional, com duas pessoas ou mais) e "Anotar algo" (a MD consigo
  * mesmo). Uma pessoa abre a MD com ela; várias, o chat em grupo — tudo pelo

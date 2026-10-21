@@ -8,7 +8,7 @@
  *
  * Os links de perfil (`app.route.user`: avatar, nome nos posts, menu da
  * sessão) abrem na aba escolhida no admin (`canela.user_default_tab`): a
- * atividade, como no Flarum (padrão), ou o Resumo, como no Discourse.
+ * atividade, como no Flarum (padrão), ou o Resumo.
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
@@ -38,7 +38,7 @@ export default function installSummary() {
       ? app.route('user.summary', { username: user.slug() })
       : userUrl(user);
 
-  // As postagens ganham o endereço próprio do Discourse (`/u/:username/activity`):
+  // As postagens ganham um endereço próprio (`/u/:username/activity`):
   // o `/u/:username` do core vira a porta de entrada e abre no Resumo.
   app.routes['user.activity'] = {
     path: '/u/:username/activity',

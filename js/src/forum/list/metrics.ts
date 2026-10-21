@@ -1,12 +1,12 @@
 /*
  * Números da linha da lista: visualizações (quando alguma extensão as conta),
- * as faixas de "calor" das contagens e o "frio" da atividade, como o heatmap
- * e o coldmap do Discourse.
+ * as faixas de "calor" das contagens e o "frio" da atividade, um mapa de
+ * calor e um de frio.
  */
 import type Discussion from 'flarum/common/models/Discussion';
 import type DiscussionListState from 'flarum/forum/states/DiscussionListState';
 
-import { viewsHeat as discourseViewsHeat } from '../utils/views';
+import { viewsHeat as viewsHeatOf } from '../utils/views';
 
 /**
  * O core não conta visualizações. Extensões que contam publicam o número no
@@ -42,8 +42,8 @@ function band(value: number, low: number, med: number, high: number): Heat {
 }
 
 /**
- * Faixas das respostas. O Discourse mede o calor pela razão curtidas/posts,
- * que o Flarum não tem sem extensão; o volume de respostas é o sinal mais
+ * Faixas das respostas. Medir o calor pela razão curtidas/posts pediria
+ * dados que o Flarum não tem sem extensão; o volume de respostas é o sinal mais
  * próximo de "conversa animada" que todo fórum tem.
  */
 export function repliesHeat(count: number): Heat {
@@ -52,17 +52,17 @@ export function repliesHeat(count: number): Heat {
 
 /**
  * As faixas das visualizações vêm do admin (topic_views_heat_low/medium/high,
- * 1000/2000/3500 no Discourse) — a regra mora em utils/views, que as
+ * 1000/2000/3500 por padrão) — a regra mora em utils/views, que as
  * mensagens privadas também usam.
  */
 export function viewsHeat(count: number): Heat {
-  return discourseViewsHeat(count);
+  return viewsHeatOf(count);
 }
 
 const DAY = 24 * 60 * 60 * 1000;
 
 /**
- * O coldmap do Discourse: quanto mais tempo entre a criação e a última
+ * O mapa de frio: quanto mais tempo entre a criação e a última
  * resposta, mais "frio" o tópico — uma conversa antiga ressuscitada aparece
  * em tom diferente de uma que acabou de começar.
  */

@@ -13,7 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * Campos do perfil estendido (os do Discourse) direto na tabela `users`: são
+ * Campos do perfil estendido direto na tabela `users`: são
  * um por usuário, lidos sempre junto com ele — uma tabela à parte custaria um
  * join em cada post serializado só para mostrar o emoji do status.
  *

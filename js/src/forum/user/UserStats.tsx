@@ -1,5 +1,5 @@
 /*
- * A linha de estatísticas do perfil do Discourse: "Ingressou 23 fev, 2021",
+ * A linha de estatísticas do perfil: "Ingressou 23 fev, 2021",
  * "Última postagem 17 set", "Visto(a) 14 horas"… — rótulo cinza, valor escuro,
  * entre bordas finas.
  *
@@ -115,7 +115,7 @@ export default class UserStats<Attrs extends UserStatsAttrs = UserStatsAttrs> ex
       items.add('discussions', this.stat(t('user.stats.topics'), formatNumber(discussions)), 60);
     }
 
-    // "Grupos team, plugin_authors…": os nomes separados por vírgula, como
+    // "Grupos Moderadores, Admins…": os nomes separados por vírgula, como
     // links para a página do grupo quando ela existe.
     const groups = ((user.groups() || []) as (Group | undefined)[]).filter((group): group is Group => !!group);
     if (groups.length) {

@@ -1,8 +1,8 @@
 {{--
-  A página 404 do Discourse (page-not-found): cabeçalho com o logo, a lupa
+  A página 404 do tema: cabeçalho com o logo, a lupa
   triste com "Oops! Essa página não existe ou é privada." e "Voltar para o
   início", a caixa "Que tal tentar pesquisar?" e as colunas de tópicos
-  populares e recentes. Medidas do css-common.css do meta.discourse.org.
+  populares e recentes.
 --}}
 @php
   $t = fn (string $key) => $translator->trans('ramon-canela.views.not_found.'.$key);

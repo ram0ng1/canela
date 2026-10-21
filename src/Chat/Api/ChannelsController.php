@@ -24,7 +24,7 @@ use Ramon\Canela\Support\NullOrder;
  * `/api/chat/channels`
  *
  * - GET: "Navegar por todos os canais" — os canais públicos que o ator
- *   enxerga, com os filtros do Discourse (`status`: all, open, closed,
+ *   enxerga, com os filtros de status (`status`: all, open, closed,
  *   archived) e a busca por nome (`q`).
  * - POST: cria um canal público (administradores e os grupos do admin).
  */

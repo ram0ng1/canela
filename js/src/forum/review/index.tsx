@@ -1,6 +1,6 @@
 /*
- * "Revisar": a página /flags do flarum/flags vira a fila de revisão do
- * Discourse (/review), dentro do cartão do tema.
+ * "Revisar": a página /flags do flarum/flags vira a fila de revisão, dentro
+ * do cartão do tema.
  *
  * Pelo nome do módulo, como o modal de sinalizar: o tema não importa nada do
  * flarum/flags, que pode estar desligado. O `oninit` original também é

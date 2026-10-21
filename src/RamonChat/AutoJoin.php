@@ -21,7 +21,7 @@ use Ramon\Chat\ChannelUser;
 use Ramon\Chat\Service\MembershipManager;
 
 /**
- * O "Adicionar usuários automaticamente" do Discourse que o ramon/chat só faz
+ * O "Adicionar usuários automaticamente" que o ramon/chat só faz
  * em dois momentos (o canal criado, o cadastro): quem ganhou acesso depois —
  * entrou num grupo, a categoria abriu — nunca entrava no canal.
  *

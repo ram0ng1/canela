@@ -61,8 +61,8 @@ function withCount(label: Mithril.Children, count: number, kind: string): Mithri
 
 function installViewsSort(): void {
   // Ordenação de verdade (`?sort=views`), para a URL e o pré-carregamento do
-  // servidor funcionarem; a aba dela não fica na fileira principal, que é a
-  // do Discourse, e sim no menu "mais", ao lado de "Mais antigos".
+  // servidor funcionarem; a aba dela não fica na fileira principal, que tem só as
+  // de sempre, e sim no menu "mais", ao lado de "Mais antigos".
   extend(DiscussionListState.prototype, 'sortMap', function (map: SortMap) {
     if (viewsEnabled()) map[VIEWS_SORT] = { sort: '-viewCount', label: t('stats.views_sort') };
   });
@@ -116,7 +116,7 @@ function installSidebarDot(): void {
     const children = Array.isArray(vnode.children) ? vnode.children : vnode.children == null ? [] : [vnode.children];
     const label = t('stats.sidebar_dot', { new: fresh, unread });
 
-    // O Discourse marca "Tópicos" com um ponto (e não um número) por padrão:
+    // "Tópicos" ganha um ponto (e não um número) por padrão:
     // avisa que há novidade sem competir com o texto da barra.
     items.setContent(
       'topics',

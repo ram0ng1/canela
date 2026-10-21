@@ -20,7 +20,7 @@ use Flarum\Post\Post;
 use Flarum\User\User;
 
 /**
- * "Fulano editou sua postagem" — o `edited` do Discourse: alguém da moderação
+ * "Fulano editou sua postagem": alguém da moderação
  * (ou outra pessoa com permissão) mudou o texto de uma postagem sua. Edições
  * seguidas da mesma pessoa caem na mesma notificação (o blueprint é igual).
  */

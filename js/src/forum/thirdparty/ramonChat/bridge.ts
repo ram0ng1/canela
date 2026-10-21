@@ -109,7 +109,7 @@ export function channelUrl(id: number | string): string {
 }
 
 /**
- * Abre um canal como o Discourse: na gaveta, para quem a usa e não está na
+ * Abre um canal: na gaveta, para quem a usa e não está na
  * página cheia; senão, na página do chat. No celular a barra lateral está
  * dentro do painel do hambúrguer — a navegação o fecha (o `Page` do core).
  */
@@ -136,7 +136,7 @@ export function openRoute(name: string): void {
 /**
  * Abre (ou cria) a conversa direta com estas pessoas — o mesmo fluxo do
  * `startDirectMessage` do ramon/chat, que só aceita uma pessoa: aqui cabem
- * várias (a MD em grupo do Discourse). O POST devolve o canal serializado.
+ * várias (a MD em grupo). O POST devolve o canal serializado.
  */
 export async function startDirect(userIds: number[]): Promise<boolean> {
   const state = chatState();
@@ -210,7 +210,7 @@ export async function leaveDirect(channel: RamonChannel): Promise<boolean> {
   (channel as any).pushAttributes?.({ isFollowing: false, unreadCount: 0, unreadMentionsCount: 0 });
 
   if (state) {
-    // Depois da animação de saída da linha (o "-fade-out" do Discourse).
+    // Depois da animação de saída da linha.
     setTimeout(() => {
       state.channels = state.channels.filter((c) => c.id() !== channel.id());
       if (state.activeChannelId === Number(channel.id())) state.setActiveChannel(null);

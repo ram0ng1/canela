@@ -13,8 +13,8 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Quem disse "Eu também" em cada tópico, como o `discourse_solved_shared_issues`
- * do Discourse: uma linha por pessoa por tópico. A chave primária é o próprio
+ * Quem disse "Eu também" em cada tópico: uma linha por pessoa por tópico. A
+ * chave primária é o próprio
  * par (tópico, pessoa): é ela que impede o voto duplo e serve a contagem; o
  * índice invertido atende "o que esta pessoa marcou". Apagar o tópico ou a
  * conta leva as linhas junto, como o `dependent: :delete_all` do plugin.

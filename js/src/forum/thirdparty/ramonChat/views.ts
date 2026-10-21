@@ -5,10 +5,10 @@
  *
  * - Ícones: o ramon/chat desenha boa parte dos ícones como `<i class="fas
  *   fa-x">` cru, por fora do componente `Icon` — que é por onde o tema troca
- *   o Font Awesome pelo Lucide do Meta. Aqui esses `<i>` viram `Icon`, e o
+ *   o Font Awesome pelo Lucide. Aqui esses `<i>` viram `Icon`, e o
  *   chat inteiro fica com o mesmo traço do resto do fórum.
  * - Hora da mensagem: "há 3 minutos" vira "14:35" (de outro dia, "13 out
- *   14:35"), como o chat do Discourse, com a data completa no title.
+ *   14:35"), com a data completa no title.
  * - Editor: o textarea cresce com o texto até o max-height do CSS e só então
  *   rola; enquanto cabe, sem barra de rolagem (o Windows desenha a barra
  *   clássica, com setas, num `overflow: auto` mesmo quando sobra um pixel).
@@ -79,7 +79,7 @@ function startOfDay(date: Date): number {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 }
 
-/** "14:35" hoje; "13 out 14:35" em outro dia — o `chat-time` do Discourse. */
+/** "14:35" hoje; "13 out 14:35" em outro dia. */
 export function messageTime(date: Date): string {
   const time = formatWith(date, { hour: '2-digit', minute: '2-digit' });
 

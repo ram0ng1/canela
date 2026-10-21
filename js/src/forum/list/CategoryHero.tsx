@@ -1,5 +1,5 @@
 /*
- * O topo da página de uma categoria no Horizon: o nome enorme, a descrição e
+ * O topo da página de uma categoria: o nome enorme, a descrição e
  * as subcategorias em cartões brancos com o símbolo colorido num quadrado.
  */
 import Hero, { type IHeroAttrs } from 'flarum/forum/components/Hero';

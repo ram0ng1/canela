@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Quem entrou por qual convite — o "Convidado por" do Discourse. Um usuário
+ * Quem entrou por qual convite — o "Convidado por". Um usuário
  * entra por um convite só (a chave primária é o usuário).
  */
 return Migration::createTable(

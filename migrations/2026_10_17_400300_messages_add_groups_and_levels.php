@@ -13,14 +13,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * Mensagens de grupo e níveis de notificação, como no Discourse:
+ * Mensagens de grupo e níveis de notificação:
  *
  * - `dialogs.canela_group_id`: a mensagem é da caixa de um grupo (a equipe:
  *   quem escreve a um moderador ou administrador fala com a equipe toda).
  * - `dialog_user.canela_via_group`: a pessoa está na conversa por ser do
  *   grupo — ela aparece na caixa do grupo, e não na pessoal.
  * - `dialog_user.canela_notification_level`: Observando (3), Acompanhando (2),
- *   Normal (1) ou Silenciado (0); vazio é o padrão do Discourse para quem
+ *   Normal (1) ou Silenciado (0); vazio é o padrão para quem
  *   participa de uma mensagem (Observando).
  */
 return [

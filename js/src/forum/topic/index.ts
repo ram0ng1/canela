@@ -1,5 +1,5 @@
 /*
- * A página do tópico no jeito do Discourse: título com os badges dentro do
+ * A página do tópico: título com os badges dentro do
  * cartão, posts com a barra de ações embaixo, a linha do tempo na coluna da
  * direita, o mapa do tópico depois do primeiro post, e no fim os botões do
  * tópico e os tópicos sugeridos.

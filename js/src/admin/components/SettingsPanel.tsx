@@ -33,8 +33,7 @@ export const GROUPS: GroupDef[] = [
     key: 'navigation',
     icon: 'fas fa-table-columns',
     label: () => trans(`${SHELL}.group_navigation`, 'Cabeçalho e barra lateral'),
-    description: () =>
-      trans(`${SHELL}.group_navigation_desc`, 'A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral do Discourse.'),
+    description: () => trans(`${SHELL}.group_navigation_desc`, 'A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral.'),
   },
   {
     key: 'auth',
@@ -58,7 +57,7 @@ export const GROUPS: GroupDef[] = [
     key: 'composer',
     icon: 'fas fa-pen-to-square',
     label: () => trans(`${KEY}.group_composer`, 'Editor e busca'),
-    description: () => trans(`${SHELL}.group_composer_desc`, 'O editor do Discourse, os rascunhos, as hashtags e a busca avançada.'),
+    description: () => trans(`${SHELL}.group_composer_desc`, 'O editor, os rascunhos, as hashtags e a busca avançada.'),
   },
   {
     key: 'people',
@@ -99,7 +98,7 @@ export const GROUPS: GroupDef[] = [
     icon: 'fas fa-puzzle-piece',
     label: () => trans(`${SHELL}.group_integrations`, 'Integrações'),
     description: () =>
-      trans(`${SHELL}.group_integrations_desc`, 'O visual do Discourse para extensões de terceiros. Cada uma só vale com a extensão ligada.'),
+      trans(`${SHELL}.group_integrations_desc`, 'O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.'),
   },
   {
     key: 'ai',

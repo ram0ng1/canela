@@ -10,7 +10,7 @@
  */
 
 /*
- * Editor (composer) do Discourse: seletor de emoji, tópicos semelhantes,
+ * Editor (composer): seletor de emoji, tópicos semelhantes,
  * #categoria/#etiqueta, rascunhos, "responder como tópico vinculado" e a
  * pré-visualização lado a lado.
  *
@@ -27,8 +27,8 @@ use Flarum\Extend;
 $composerSettings = (static function (): Extend\Settings {
     $settings = new Extend\Settings();
 
-    // chave => atributo no fórum. Todas ligadas por padrão: o tema reproduz o
-    // Discourse, e quem não quiser uma delas desliga no card do admin.
+    // chave => atributo no fórum. Todas ligadas por padrão, e quem não quiser
+    // uma delas desliga no card do admin.
     foreach ([
         'canela.composer_enabled' => 'canelaComposerEnabled',
         'canela.composer_emoji' => 'canelaComposerEmoji',

@@ -1,15 +1,14 @@
 // =====================================================================
-// Mensagens pessoais do Discourse sobre o flarum/messages: a aba do perfil
+// Mensagens pessoais sobre o flarum/messages: a aba do perfil
 // com as caixas, a lista no formato da lista de tópicos, a conversa como
-// tópico de mensagem (`archetype-private_message`) e os campos do composer
-// de mensagem. Medidas do CSS compilado do meta.discourse.org.
+// tópico de mensagem e os campos do composer de mensagem.
 // =====================================================================
 
-// O `--tertiary-very-low` das mensagens (o fundo das minhas postagens).
+// O fundo das minhas postagens: a cor de destaque bem clara.
 [data-theme^=light],
 [data-theme^=dark] {
   --cn-pm-own-bg: ~"color-mix(in srgb, var(--cn-accent) 9%, var(--cn-surface))";
-  --cn-pm-padding: 20px;          // --pm-padding: var(--space-5)
+  --cn-pm-padding: 20px;
 }
 
 [data-theme^=dark] {
@@ -17,7 +16,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Perfil → Mensagens: a linha das caixas (`.user-navigation-secondary`)
+// Perfil → Mensagens: a linha das caixas
 // ---------------------------------------------------------------------
 .CanelaMessagesNav {
   position: relative;
@@ -29,7 +28,7 @@
   font-size: var(--cn-font-down-1);
 }
 
-// As abas (`.messages-nav`, nav-pills): o desenho das abas do perfil.
+// As abas: o desenho das abas do perfil.
 .CanelaMessagesNav-pillsWrap.CanelaUserNav {
   display: flex;
   flex: 1 1 auto;
@@ -51,7 +50,7 @@
   }
 }
 
-// `.category-breadcrumb` e `.navigation-controls`: margem de --nav-space / 2.
+// Migalhas e controles de navegação: margem de meio espaço de navegação.
 .CanelaMessagesNav-inbox,
 .CanelaMessagesNav-controls {
   display: flex;
@@ -72,7 +71,7 @@
   }
 }
 
-// O `messages-dropdown-trigger` (btn-default) com o select-kit de 0.5em 1em.
+// O botão do seletor (botão padrão) com respiro de 0.5em 1em.
 .CanelaMessagesNav-trigger.Button {
   display: inline-flex;
   align-items: center;
@@ -80,7 +79,7 @@
   max-width: ~"clamp(100px, 20vw, 200px)";
   height: 100%;
   padding: 0.5em 1em;
-  // No Horizon o seletor é uma pílula branca de borda fina.
+  // O seletor é uma pílula branca de borda fina.
   border: 1px solid var(--cn-primary-300);
   border-radius: var(--cn-radius-pill);
   background: var(--cn-surface);
@@ -105,7 +104,7 @@
   text-overflow: ellipsis;
 }
 
-// A bolinha de não lidas (`d-icon-d-unread`).
+// A bolinha de não lidas.
 .CanelaMessagesNav-unreadDot {
   margin: 0 0.375rem;
   font-size: var(--cn-font-down-4, 0.5745em);
@@ -182,7 +181,7 @@
   }
 }
 
-// `.new-user-wrapper .empty-state { margin: 1em 0 }`; título --font-up-1 em negrito.
+// Estado vazio com 1em de margem; título --cn-font-up-1 em negrito.
 .CanelaMessagesEmpty.empty-state {
   margin: 1em 0;
   color: var(--cn-primary);
@@ -282,7 +281,7 @@
   }
 }
 
-// O Discourse não marca o começo da conversa (só os intervalos longos), nem
+// Não marcamos o começo da conversa (só os intervalos longos), nem
 // mostra o "ninguém está digitando" — só quem está.
 .CanelaDialog .MessageStream-log > .MessageStream-item:first-child > .PostStream-timeGap,
 .CanelaDialog .TypingUsersContainer:not(.TypingUsersContainer-active) {
@@ -295,8 +294,8 @@
 }
 
 // A postagem de mensagem: o corpo numa caixa de borda fina e canto de 8px
-// (`.regular.contents`), que começa 20px antes do texto e passa por baixo do
-// avatar; as minhas, tingidas (`.current-user-post`). O nome e a data ficam
+// que começa 20px antes do texto e passa por baixo do
+// avatar; as minhas, tingidas. O nome e a data ficam
 // acima da caixa, ao lado do avatar.
 .CanelaTopic .CanelaMessagePost.Post {
   margin: 0 0 16px;
@@ -313,7 +312,7 @@
     z-index: 1;
   }
 
-  // A foto cobre a borda da caixa (`.topic-avatar .avatar { background: secondary }`);
+  // A foto cobre a borda da caixa (o avatar com fundo secondary);
   // o avatar de letra já tem a cor dele.
   .Post-side img.Post-avatar {
     background: var(--cn-surface);
@@ -365,7 +364,7 @@
     padding-right: 24px;
   }
 
-  // `.post-menu-area { margin: 8px 0 12px; padding-right: 12px }`.
+  // A área de ações: margem de 8px 0 12px e 12px de respiro à direita.
   .Post-actions {
     margin: 8px 0 12px;
     padding-right: 12px;
@@ -423,7 +422,7 @@
     gap: 8px;
   }
 
-  // `.participants .user` (btn-default): avatar "tiny", nome e o ✕.
+  // Cada participante (botão padrão): avatar "tiny", nome e o ✕.
   .user {
     display: flex;
     align-items: center;
@@ -488,7 +487,7 @@
   }
 }
 
-// O rodapé (`topic-footer-buttons` de uma mensagem).
+// O rodapé de uma mensagem.
 .CanelaDialogFooter {
   padding-top: 0;
 
@@ -543,7 +542,7 @@
   }
 }
 
-// O `.user-selector`: a metade esquerda da linha (o SelectKit do composer, com
+// O seletor de usuários: a metade esquerda da linha (o SelectKit do composer, com
 // o "+" à direita); a direita fica vazia, só com o traço no meio.
 .CanelaMessageFields-rest {
   min-height: 44px;
@@ -580,14 +579,14 @@
   }
 }
 
-// As pílulas (`.selected-choice`) com o avatar "tiny".
+// As pílulas com o avatar "tiny".
 .CanelaRecipients-chip.CanelaSelectKit-chip .Avatar {
   .Avatar--size(18px);
   flex: none;
   margin-left: -4px;
 }
 
-// A linha (`email-group-user-chooser-row`): avatar, nome de usuário e nome.
+// A linha: avatar, nome de usuário e nome.
 .CanelaRecipients-row {
   display: flex;
   align-items: center;
@@ -628,7 +627,7 @@
   white-space: nowrap;
 }
 
-// O título (`#reply-title`), igual ao do tópico novo.
+// O título, igual ao do tópico novo.
 .CanelaComposer .ComposerBody-header input.CanelaMessageTitle-input {
   &,
   &:focus {
@@ -711,7 +710,7 @@
   }
 }
 
-// A linha do tempo (`.timeline-container`), grudada sob o cabeçalho.
+// A linha do tempo, grudada sob o cabeçalho.
 .CanelaDialogTimeline {
   position: sticky;
   top: var(--cn-topic-sticky-top, calc(var(--cn-header-height) + 24px));
@@ -817,7 +816,7 @@
   }
 }
 
-// O rodapé do Horizon: botões redondos de ícone e pílulas de borda.
+// O rodapé: botões redondos de ícone e pílulas de borda.
 .CanelaDialogFooter {
   .CanelaTopicFooter-actions {
     flex-wrap: wrap;
@@ -864,7 +863,7 @@
   }
 }
 
-// O escudo da equipe ao lado do nome (`.poster-icon`).
+// O escudo da equipe ao lado do nome.
 .CanelaStaffShield {
   display: inline-flex;
   align-items: center;
@@ -873,7 +872,7 @@
   font-size: 0.85em;
 }
 
-// Os posts de ação pequena (`.small-action`): ícone na coluna do avatar,
+// Os posts de ação pequena: ícone na coluna do avatar,
 // avatar pequeno e o texto em cinza.
 .CanelaDialogEvents {
   display: flex;
@@ -940,7 +939,7 @@
   font-weight: 600;
 }
 
-// O chip do grupo sob o título (`participant-group`) — na lista e no tópico.
+// O chip do grupo sob o título — na lista e no tópico.
 .CanelaParticipantGroup {
   display: inline-flex;
   align-items: center;

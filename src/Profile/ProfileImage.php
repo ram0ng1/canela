@@ -6,7 +6,7 @@ namespace Ramon\Canela\Profile;
 
 /**
  * As duas imagens do perfil: a capa (faixa larga no topo do perfil) e o fundo
- * do cartão de usuário (o popover dos posts), como no Discourse.
+ * do cartão de usuário (o popover dos posts).
  *
  * Um enum para que a coluna, o atributo da API, a rota e o tamanho máximo de
  * cada imagem nunca se desencontrem.

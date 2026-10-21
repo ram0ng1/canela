@@ -2,8 +2,8 @@
 // barra lateral e o menu "Visualizações recentes" do mapa do tópico. A coluna
 // Visualizações em si mora na lista (List.less).
 
-// "Novos (3)": o número no mesmo tom da aba, só um pouco mais leve, como no
-// Discourse — a aba ativa pinta os dois de uma vez.
+// "Novos (3)": o número no mesmo tom da aba, só um pouco mais leve — a aba
+// ativa pinta os dois de uma vez.
 .CanelaStatsCount {
   font-variant-numeric: tabular-nums;
   font-weight: inherit;
@@ -26,7 +26,7 @@
 }
 
 // O calor das visualizações fora da lista (tópicos sugeridos): as classes
-// `heatmap-*` do Discourse, com as mesmas cores da coluna da lista.
+// `heatmap-*`, com as mesmas cores da coluna da lista.
 .heatmap-low {
   color: var(--cn-heat-low) !important;
 }
@@ -38,9 +38,8 @@
   font-weight: 500;
 }
 
-// "Visualizações recentes" (.topic-map__views-content do Discourse). As cores
-// do gráfico são as `--chart-*-color` do .topic-map de lá: linha e pontos no
-// tom médio da cor de destaque (tertiary-medium), previsão em cinza
+// "Visualizações recentes". As cores do gráfico: linha e pontos no
+// tom médio da cor de destaque, previsão em cinza
 // (primary-low-mid); grade e textos nos tons padrão do Chart.js.
 .CanelaTopicMap-menu--views {
   --cn-chart-line: var(--cn-accent);
@@ -66,8 +65,8 @@
   }
 }
 
-// No escuro, o tom médio puxado para o fundo some na grade: o Discourse
-// escurece o tertiary só 20% ali, então a mistura leva mais destaque.
+// No escuro, o tom médio puxado para o fundo some na grade: a cor de destaque
+// escurece só 20% ali, então a mistura leva mais destaque.
 [data-theme^='dark'] .CanelaTopicMap-menu--views {
   --cn-chart-point: ~"color-mix(in srgb, var(--cn-accent) 80%, var(--cn-surface))";
 }
@@ -157,7 +156,7 @@
   color: var(--cn-primary-high);
 }
 
-// Até dois dias: os números lado a lado (.topic-views do Discourse).
+// Até dois dias: os números lado a lado.
 .CanelaTopicViews {
   display: flex;
   justify-content: space-evenly;

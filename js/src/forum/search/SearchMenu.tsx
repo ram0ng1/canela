@@ -1,5 +1,5 @@
 /*
- * O menu de busca do Discourse (`.search-menu`): o próprio campo do cabeçalho
+ * O menu de busca (`.search-menu`): o próprio campo do cabeçalho
  * é o campo da busca, e o painel (`.search-menu-panel`) abre colado embaixo
  * dele, sem modal e sem escurecer a página.
  *
@@ -15,8 +15,7 @@
  * No celular o cabeçalho mostra só a lupa; tocada, o campo cobre o cabeçalho
  * e o painel ocupa a tela abaixo dele.
  *
- * A estrutura e os nomes de classe seguem os componentes `search-menu/*` do
- * Discourse; o CSS (less/forum/Search.less) vale só dentro de
+ * Os nomes de classe são genéricos (`search-menu`, `search-menu-panel`…); o CSS (less/forum/Search.less) vale só dentro de
  * `.CanelaSearchMenu`, para não colidir com as classes genéricas.
  */
 import app from 'flarum/forum/app';
@@ -64,7 +63,7 @@ export default class SearchMenu extends Component<SearchMenuAttrs> {
   oninit(vnode: Mithril.Vnode<SearchMenuAttrs, this>) {
     super.oninit(vnode);
 
-    // O primeiro menu usa o id do Discourse (`search-term`); o do banner, outro.
+    // O primeiro menu usa o id `search-term`; o do banner, outro.
     this.inputId = instances++ === 0 ? 'search-term' : `search-term-${instances}`;
 
     // Depois de uma busca na lista (`/?q=`), o campo continua mostrando o termo.
@@ -129,7 +128,7 @@ export default class SearchMenu extends Component<SearchMenuAttrs> {
   // ---------------------------------------------------------------------
 
   placeholder(): string {
-    // Com a IA, o campo do Meta diz "Pesquisar ou perguntar à IA".
+    // Com a IA, o campo diz "Pesquisar ou perguntar à IA".
     return aiAvailable() ? t('ai.search.placeholder') : t('search_menu.title');
   }
 
@@ -226,7 +225,7 @@ export default class SearchMenu extends Component<SearchMenuAttrs> {
   close(blur = true): void {
     this.open = false;
 
-    // Como no Discourse: sem o foco, focar de novo reabre o painel.
+    // Sem o foco, focar de novo reabre o painel.
     if (blur) this.input()?.blur();
 
     m.redraw();

@@ -1,5 +1,5 @@
 /*
- * Recursos e comportamentos do Discourse que faltavam no tema (gaps):
+ * Recursos e comportamentos que faltavam no tema (gaps):
  * lightbox, botões dos blocos de código, âncoras dos títulos, tabelas
  * expansíveis, spoilers borrados, cartão nas menções, atalhos dos posts,
  * leitura (pontinho e "último acesso"), "Voltar" na linha do tempo, título

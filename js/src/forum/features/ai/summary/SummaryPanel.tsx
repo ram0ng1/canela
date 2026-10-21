@@ -1,5 +1,5 @@
 /*
- * O painel "Resumo da discussão" do Discourse (o ai-summary-modal): flutua à
+ * O painel "Resumo da discussão": flutua à
  * direita, logo abaixo do cabeçalho, entra deslizando e não escurece a página
  * — dá para ler o tópico com ele aberto.
  *
@@ -36,7 +36,7 @@ interface SummaryData {
   canRegenerate: boolean;
 }
 
-/** O `SmoothStreamer` do discourse-ai: um caractere a cada 15 ms… */
+/** A digitação suave: um caractere a cada 15 ms… */
 const TYPING_DELAY = 15;
 /** …e, quando o resumo pronto chega inteiro, o texto em 12 passos. */
 const COMPLETION_CATCH_UP_STEPS = 12;
@@ -109,7 +109,7 @@ class SummaryState {
   }
 
   /**
-   * O texto aparece letra a letra, como no Discourse: os pedaços do modelo
+   * O texto aparece letra a letra: os pedaços do modelo
    * chegam aos trancos (às vezes uma frase inteira de uma vez), e o resumo já
    * pronto chegava inteiro, sem animação nenhuma.
    */

@@ -10,8 +10,8 @@ import { t } from '../../utils/settings';
 import { boxHref, isArchived, type Dialog } from './util';
 
 /**
- * "Arquivar" / "Mover para caixa de entrada" (`toggleArchiveMessage`). Como
- * no Discourse, arquivar leva de volta para a caixa de entrada — a mensagem
+ * "Arquivar" / "Mover para caixa de entrada" (`toggleArchive`):
+ * arquivar leva de volta para a caixa de entrada — a mensagem
  * saiu dela —, e mover para a caixa fica na mesma página.
  */
 export function toggleArchive(dialog: Dialog): Promise<void> {

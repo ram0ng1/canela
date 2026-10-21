@@ -22,7 +22,7 @@ use Ramon\Canela\Stats\TopicCounter;
  * "(N)" das abas acompanhar o que a pessoa acabou de ler.
  *
  * Com `?tag=slug`, conta só o que está na tag e nas filhas dela: na página de
- * uma categoria, as abas mostram os números dela, como no Discourse.
+ * uma categoria, as abas mostram os números dela.
  */
 final class ShowTopicCountsController implements RequestHandlerInterface
 {

@@ -1,5 +1,5 @@
 /*
- * O modal "Histórico" do Discourse: uma revisão por vez, com ‹ › para andar
+ * O modal "Histórico": uma revisão por vez, com ‹ › para andar
  * entre elas, quem editou e quando, e a comparação com a versão anterior —
  * no texto corrido (inline) ou lado a lado.
  *
@@ -72,7 +72,7 @@ export default class HistoryModal<A extends IInternalModalAttrs = HistoryModalAt
       .then((list) => {
         this.versions = list.versions;
         this.contentHidden = list.contentHidden;
-        // Abre na edição mais recente, como o Discourse.
+        // Abre na edição mais recente.
         this.index = Math.max(0, this.versions.length - 1);
       })
       .catch(() => {

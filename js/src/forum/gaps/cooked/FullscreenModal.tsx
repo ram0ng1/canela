@@ -1,5 +1,5 @@
 /*
- * "Exibir código em tela cheia" e "Expandir tabela" do Discourse: a mesma
+ * "Exibir código em tela cheia" e "Expandir tabela": a mesma
  * janela grande, com uma cópia do bloco do post.
  *
  * O HTML vem do próprio post já desenhado (o servidor já o limpou), então

@@ -19,7 +19,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\User\User;
 
 /**
- * "Fulano aceitou seu convite" — o `invitee_accepted` do Discourse. O
+ * "Fulano aceitou seu convite". O
  * assunto e o remetente são a pessoa que entrou: é o perfil dela que abre.
  */
 final class InviteAcceptedBlueprint implements BlueprintInterface, AlertableInterface

@@ -31,7 +31,7 @@ use Ramon\Canela\Ai\UsageLimiter;
  * `GET` e `POST /api/canela/ai/summaries/{id}`: o resumo de IA de um tópico.
  *
  * - GET devolve o resumo guardado (ou null) — qualquer um que veja o tópico,
- *   visitante incluído, lê um resumo pronto, como no Discourse.
+ *   visitante incluído, lê um resumo pronto.
  * - POST gera (ou atualiza) o resumo em streaming. Um resumo em dia volta na
  *   hora, sem chamar o modelo; um desatualizado só é refeito com
  *   `regenerate` — abrir o painel não gasta nada se já há resumo.

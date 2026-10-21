@@ -1,5 +1,5 @@
 /*
- * "Mostrar indicador de atividade no cabeçalho" (preferência do Discourse)
+ * "Mostrar indicador de atividade no cabeçalho" (preferência do leitor)
  * aplicado ao botão do cabeçalho do ramon/chat. Só a lógica: o botão decide
  * o número pelos dois métodos abaixo (`count = menções || não lidas`, e a
  * classe `new` quando há menções), e o visual dele é do tema (RamonChat.less).

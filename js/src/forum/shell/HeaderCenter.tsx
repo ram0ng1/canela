@@ -1,7 +1,7 @@
 /*
- * O meio do cabeçalho. Como no Discourse, ao rolar um tópico para além do
+ * O meio do cabeçalho. Ao rolar um tópico para além do
  * título, a busca dá lugar ao título do tópico com a categoria e as
- * etiquetas embaixo (`.header-title.topic` do Discourse); clicar no título
+ * etiquetas embaixo; clicar no título
  * volta ao topo. Fora disso, é a busca.
  */
 import app from 'flarum/forum/app';

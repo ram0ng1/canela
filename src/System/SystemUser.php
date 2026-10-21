@@ -19,7 +19,7 @@ use Flarum\User\User;
 use Illuminate\Support\Str;
 
 /**
- * O usuário do sistema, como o `system` do Discourse: quem assina as
+ * O usuário do sistema: quem assina as
  * notificações automáticas e as mensagens do sistema. Aparece como um
  * usuário comum (perfil, avatar, bio), mas nunca entra: sem login por senha
  * (SystemPasswordChecker), sem sessão nem token (RevokeSystemSession) e sem
@@ -114,8 +114,8 @@ final class SystemUser
 
         $schema = $user->getConnection()->getSchemaBuilder();
 
-        // A bio do perfil do tema ("Não é uma pessoa de verdade…", como a do
-        // Discourse) e o nível de confiança mais alto, travado: a conta não
+        // A bio do perfil do tema ("Não é uma pessoa de verdade…") e o nível
+        // de confiança mais alto, travado: a conta não
         // deve ser promovida nem rebaixada pelas regras dos níveis.
         if ($bio !== '' && $schema->hasColumn('users', 'canela_bio')) {
             $user->setAttribute('canela_bio', $bio);

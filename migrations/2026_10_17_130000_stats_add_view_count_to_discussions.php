@@ -13,7 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * Contador de visualizações do tópico, como o `views` do Discourse.
+ * Contador de visualizações do tópico.
  *
  * Fica na própria tabela de discussões (e não somado de canela_topic_views a
  * cada listagem) porque a lista mostra e ordena por ele: uma coluna com índice

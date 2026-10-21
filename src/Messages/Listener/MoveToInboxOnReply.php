@@ -20,8 +20,7 @@ use Ramon\Canela\Messages\MessagesSchema;
 
 /**
  * Uma resposta numa mensagem arquivada a traz de volta para a caixa de
- * entrada de todo mundo, como o `UserArchivedMessage.move_to_inbox!` do
- * Discourse: o arquivo guarda conversas encerradas, não esconde as que
+ * entrada de todo mundo: o arquivo guarda conversas encerradas, não esconde as que
  * voltaram a andar.
  */
 final class MoveToInboxOnReply

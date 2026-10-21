@@ -1,6 +1,5 @@
 /*
- * Avatar e nome do autor abrem o cartão de usuário no clique, como no
- * Discourse, no lugar do cartão do core que aparece ao passar o mouse.
+ * Avatar e nome do autor abrem o cartão de usuário no clique, no lugar do cartão do core que aparece ao passar o mouse.
  */
 import { override } from 'flarum/common/extend';
 import CommentPost from 'flarum/forum/components/CommentPost';

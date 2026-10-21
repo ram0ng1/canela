@@ -1,5 +1,5 @@
 /*
- * Card dos recursos do chat do Discourse que o tema põe por cima do ramon/chat
+ * Card dos recursos de chat que o tema põe por cima do ramon/chat
  * (extend/ramonchat.php + js/src/forum/thirdparty/ramonChat/features): uma
  * chave por recurso, todas `canela.ramonchat_*`, e o limite de participantes
  * das MDs. Sem o ramon/chat o card fica trancado; sem o recurso `ramonchat`
@@ -36,7 +36,7 @@ const cards: CardDef[] = [
     description: () =>
       trans(
         `${KEY}.description`,
-        'O que o chat do Discourse tem e o ramon/chat não: avisos no sino, reações de um clique, "Nova mensagem", favoritos, link da mensagem, "está digitando" sem websocket e mais: sem mudar a extensão.'
+        'O que o ramon/chat não tem: avisos no sino, reações de um clique, "Nova mensagem", favoritos, link da mensagem, "está digitando" sem websocket e mais: sem mudar a extensão.'
       ),
     keywords:
       'chat ramon recursos extras sino notificações reações favoritos estrela nova mensagem grupo link restaurar digitando atalho preferências denúncias revisar flags moderação',
@@ -58,7 +58,7 @@ const cards: CardDef[] = [
         'Indicador do cabeçalho configurável',
         'O leitor escolhe o que o botão do chat conta: todas as novas, MDs e menções, só menções ou nada.'
       ),
-      toggle('drawer_shortcut', 'Atalho "-" para a gaveta', 'Abre e fecha a gaveta do chat, como no Discourse.'),
+      toggle('drawer_shortcut', 'Atalho "-" para a gaveta', 'Abre e fecha a gaveta do chat.'),
       toggle(
         'bell',
         'Avisos no sino',

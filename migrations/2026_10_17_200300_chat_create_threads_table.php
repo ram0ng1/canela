@@ -14,7 +14,7 @@ use Illuminate\Database\Schema\Blueprint;
 
 /*
  * Fios (threads): a conversa paralela que nasce da resposta a uma mensagem,
- * nos canais com fios ligados (`chat_threads` do Discourse).
+ * nos canais com fios ligados.
  *
  * A mensagem original é única por fio, e o fio some com ela. `replies_count` e
  * `last_message_id` alimentam o indicador "3 respostas" debaixo da original

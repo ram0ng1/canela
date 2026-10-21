@@ -1,6 +1,6 @@
 /*
- * Com até dois dias de dados o Discourse não desenha o gráfico: mostra os
- * números de cada dia lado a lado (topic-views), com a data embaixo. O dia de
+ * Com até dois dias de dados não há gráfico: aparecem os
+ * números de cada dia lado a lado, com a data embaixo. O dia de
  * hoje nunca mostra zero — alguém está vendo o tópico agora.
  */
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -13,7 +13,7 @@ export interface TopicViewsAttrs extends ComponentAttrs {
 }
 
 /**
- * O `adjustAggregatedData` do Discourse: soma os dias UTC que caem na mesma
+ * Agregação: soma os dias UTC que caem na mesma
  * data local (só acontece em fusos muito distantes de UTC).
  */
 function aggregate(stats: ViewStat[]): { date: Date; views: number }[] {

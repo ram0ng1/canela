@@ -1,14 +1,11 @@
 // =====================================================================
-// Lista de tópicos no formato do Discourse: colunas Tópico | Postadores |
+// Lista de tópicos: colunas Tópico | Postadores |
 // Respostas | Visualizações | Atividade, linhas separadas por borda, e no
-// celular avatar à esquerda com a contagem no canto.
-//
-// Medidas tiradas do CSS computado do meta.discourse.org (1440, 900 e 400px):
-// `.topic-list`, `.topic-list-item`, `.link-top-line`, `.link-bottom-line`,
-// `.badge-category__wrapper`, `td.posters`, `td.num`, `td.activity`.
+// celular avatar à esquerda com a contagem no canto. Medidas conferidas a
+// 1440, 900 e 400px.
 // =====================================================================
 
-// Larguras das colunas (o td inteiro do Discourse, com o padding) —
+// Larguras das colunas (o td inteiro, com o padding) —
 // compartilhadas pelo cabeçalho e pelas linhas, que usam as mesmas classes
 // CanelaCell--*. A atividade desconta os 12px do padding da linha.
 @canela-col-posters: 154px;   // 146px + 4px de cada lado
@@ -20,7 +17,7 @@
 // o botão de 28px fica a 4px da borda e a 9px do texto da atividade.
 @canela-col-controls: 36px;
 
-// A lista mede em em a partir de 1rem (16px), como o Discourse: o body do
+// A lista mede em em a partir de 1rem (16px): o body do
 // tema é 15px, e sem isso todas as fontes da lista sairiam 1px menores. 1rem
 // acompanha o "tamanho do texto" do leitor, que escala o html.
 .CanelaList,
@@ -30,7 +27,7 @@
 
 // ---------------------------------------------------------------------
 // Badges de categoria e etiqueta (usados também na barra lateral, no tópico
-// e na página de categorias) — `.badge-category__wrapper` do Discourse
+// e na página de categorias)
 // ---------------------------------------------------------------------
 .CanelaCategorySymbol {
   display: inline-flex;
@@ -46,7 +43,7 @@
     font-size: 0.85em;
   }
 
-  // --category-badge-size: 0.75em; --category-badge-border-radius: 2px
+  // Quadradinho de 0.75em com raio de 2px.
   &--square::before {
     content: '';
     width: 0.75em;
@@ -111,7 +108,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Cabeçalho de colunas (`.topic-list-header`): 13.9px, padding 12px 4px,
+// Cabeçalho de colunas: 13.9px, padding 12px 4px,
 // sem borda embaixo.
 // ---------------------------------------------------------------------
 .CanelaListHeader {
@@ -146,7 +143,7 @@
   cursor: pointer;
   user-select: none;
 
-  // `.sortable:hover { background-color: var(--d-hover) }`
+  // Coluna ordenável: fundo de hover no mouse.
   &:hover,
   &:focus-visible {
     background: var(--cn-hover);
@@ -169,7 +166,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Linha (`.topic-list-item`)
+// Linha
 // ---------------------------------------------------------------------
 .CanelaList .DiscussionList-discussions {
   margin: 0;
@@ -249,7 +246,7 @@
   }
 }
 
-// A linha do tópico de onde o leitor voltou (`background-fade-highlight`).
+// A linha do tópico de onde o leitor voltou (destaque que esmaece).
 // Termina no fundo que a linha teria sem o destaque (`--cn-row-bg`): numa não
 // lida, o tom de não lida — antes ia até transparente e trocava de repente,
 // e a linha piscava como lida antes de aparecer como não lida.
@@ -304,7 +301,7 @@
   padding: 20px 4px 20px 0;
 }
 
-// `.link-top-line`: --font-up-1 (18.4px), line-height 1.2, peso 400.
+// Linha do título: --cn-font-up-1 (18.4px), line-height 1.2, peso 400.
 .CanelaTopic-titleLine.DiscussionListItem-title {
   margin: 0;
   font-size: var(--cn-font-up-1);
@@ -340,7 +337,7 @@
     text-decoration: none;
   }
 
-  // Visitado: --title-color--read (primary-medium).
+  // Visitado: primary-medium.
   .read & {
     color: var(--cn-primary-medium);
   }
@@ -447,7 +444,7 @@
   }
 }
 
-// `.link-bottom-line`: --font-down-1, margin-top 4px, gap 0 8px, line-height 1.4.
+// Linha de baixo: --cn-font-down-1, margin-top 4px, gap 0 8px, line-height 1.4.
 .CanelaTopic-meta {
   display: flex;
   flex-wrap: wrap;
@@ -480,7 +477,7 @@
   }
 }
 
-// `.topic-excerpt`: 16px, line-height 1.4, primary-high, margin-top 4px.
+// O excerto: 16px, line-height 1.4, primary-high, margin-top 4px.
 .CanelaTopic-excerpt {
   margin-top: 4px;
   padding-right: 4px;
@@ -497,7 +494,7 @@
     color: inherit;
   }
 }
-// "ler mais" do Discourse: na mesma cor do excerto no desktop.
+// "ler mais": na mesma cor do excerto no desktop.
 .CanelaTopic-excerptMore {
   color: inherit;
   text-decoration: none;
@@ -511,7 +508,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Colunas (`td.num`, 13.9px, primary-very-high)
+// Colunas numéricas (13.9px, primary-very-high)
 // ---------------------------------------------------------------------
 .CanelaCell {
   flex: 0 0 auto;
@@ -563,8 +560,7 @@
     box-shadow: 0 0 0 3px var(--cn-ring);
   }
 }
-// O autor que também postou por último ganha o brilho do Discourse
-// (`.posters a:first-child .avatar.latest:not(.single)`).
+// O autor que também postou por último ganha um brilho.
 .CanelaPosters-avatar--glow .Avatar {
   position: relative;
   left: -2px;
@@ -592,7 +588,7 @@
   }
 }
 
-// Calor das contagens (.heatmap-* do Discourse).
+// Calor das contagens.
 .CanelaCell--heat-low {
   color: var(--cn-heat-low);
 }
@@ -602,13 +598,12 @@
 .CanelaCell--heat-high {
   color: var(--cn-heat-high);
 }
-// Só o alto engorda (`.topic-list .heatmap-high { font-weight: 500 }` do
-// Horizon); o leve e o moderado mudam só a cor.
+// Só o alto engorda (peso 500); o leve e o moderado mudam só a cor.
 .CanelaCell--views.CanelaCell--heat-high {
   font-weight: 500;
 }
 
-// O "frio" da atividade (coldmap) não tem cor na lista de tópicos do Meta —
+// O "frio" da atividade (coldmap) não tem cor na lista de tópicos —
 // só na lista de categorias. As classes ficam, sem estilo, para quem quiser.
 
 // Carregar mais / lista vazia. Com a rolagem infinita, o botão só aparece
@@ -624,7 +619,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Tablet (Discourse entre sm e lg, com barra lateral): título de 16px,
+// Tablet (com barra lateral): título de 16px,
 // badges de 12.1px, só o avatar do último postador e sem visualizações.
 // ---------------------------------------------------------------------
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -644,7 +639,7 @@
     font-size: var(--cn-font-down-1);
   }
 
-  // `@mixin hide-posters`: coluna de 2em com só o `a.latest`, centrado.
+  // Coluna de 2em com só o último postador, centrado.
   .CanelaCell--posters {
     width: 40px;
   }
@@ -665,7 +660,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Celular (print mob-a e CSS de `.mobile-view .topic-list`): avatar de 48px,
+// Celular (print mob-a): avatar de 48px,
 // título a 78% da largura, contagem de 21px no canto; embaixo, o excerto e
 // a linha de badges com a atividade à direita.
 // ---------------------------------------------------------------------
@@ -675,7 +670,7 @@
   }
 
   // O core estica a lista 15px para cada lado no celular; dentro do cartão
-  // ela vai de borda a borda do padding, como a tabela do Discourse.
+  // ela vai de borda a borda do padding, como uma tabela.
   .CanelaList.DiscussionList {
     margin: 0;
   }
@@ -704,7 +699,7 @@
   }
 
   // O bloco do tópico ocupa até a borda; a contagem e a data ficam por cima
-  // dele, nos cantos, como o `.pull-right` e o `.num.activity` do Discourse.
+  // dele, nos cantos.
   .CanelaTopic.DiscussionListItem-main {
     grid-column: ~"2 / -1";
     grid-row: ~"1 / span 2";

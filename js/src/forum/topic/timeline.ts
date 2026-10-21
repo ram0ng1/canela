@@ -1,5 +1,5 @@
 /*
- * A linha do tempo do Discourse é o PostStreamScrubber do core com outra
+ * A linha do tempo é o PostStreamScrubber do core com outra
  * roupa: a lógica (arrastar a alça, clicar no trilho, área não lida) é a
  * mesma, e só os rótulos mudam — a data de criação em cima, há quanto tempo
  * foi o último post embaixo e, ao lado da alça, a data do post em que o
@@ -20,7 +20,7 @@ const MINUTE = 60 * 1000;
 const AGE_LIMIT = 30 * 24 * 60 * MINUTE;
 
 /**
- * O timelineDate do Discourse: "16 jul" no ano corrente, "ago 2014" nos
+ * A data da linha do tempo: "16 jul" no ano corrente, "ago 2014" nos
  * anteriores (sem o dia).
  */
 export function timelineDate(date: Date, now = new Date()): string {
@@ -51,7 +51,7 @@ export default function installTimeline(): void {
     const diff = Date.now() - last.getTime();
 
     // "agora" dispensa o "atrás", e datas antigas aparecem como data; o resto
-    // vira "4 h atrás", como no Discourse.
+    // vira "4 h atrás".
     if (diff < MINUTE) return shortAge(last);
     if (diff >= AGE_LIMIT) return timelineDate(last);
 
@@ -59,7 +59,7 @@ export default function installTimeline(): void {
   });
 
   // O core escreve ao lado da alça o mês do ÚLTIMO post visível ("outubro
-  // 2026"); o Discourse, a data do post do topo da tela. Recalcula depois do
+  // 2026"); aqui vale a data do post do topo da tela. Recalcula depois do
   // core, pelo item em que o índice está.
   extend('flarum/forum/components/PostStream', 'updateScrubber', function (this: any) {
     if (!this.stream) return;
@@ -159,7 +159,7 @@ export default function installTimeline(): void {
     this.element?.style?.setProperty('--cn-progress', count ? String(index / count) : '0');
 
     // Com o post-alvo no topo, o índice fica em 19,9998 por um subpixel e o
-    // core (que arredonda para baixo) escreve "19"; o Discourse mostra "20".
+    // core (que arredonda para baixo) escreve "19"; o certo é "20".
     const raw = this.stream?.index || 1;
 
     if (raw % 1 > 0.98 && Math.ceil(raw) <= count) {
@@ -167,7 +167,7 @@ export default function installTimeline(): void {
     }
   });
 
-  // A aba "1 / 15" do Discourse (.with-topic-progress) fica acima do editor
+  // A aba "1 / 15" fica acima do editor
   // aberto: bottom = --composer-height. O core já mede o editor para o
   // padding do conteúdo; a mesma medida vai para uma variável do tema.
   extend('flarum/forum/components/Composer', 'updateBodyPadding', function (this: any) {
@@ -178,7 +178,7 @@ export default function installTimeline(): void {
     document.documentElement.style.setProperty('--cn-composer-height', `${height}px`);
   });
 
-  // O trilho do Discourse anima a altura com transição de CSS (.15s ease-out)
+  // O trilho anima a altura com transição de CSS (.15s ease-out)
   // em toda mudança, inclusive ao rolar; o core anima com jQuery só nos
   // saltos. Sem o jQuery, a transição do LESS cuida de tudo.
   override(

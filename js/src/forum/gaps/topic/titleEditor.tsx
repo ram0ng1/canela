@@ -1,5 +1,5 @@
 /*
- * Editar o título no próprio cabeçalho do tópico, como o Discourse: o lápis
+ * Editar o título no próprio cabeçalho do tópico: o lápis
  * ao lado do título (para quem pode renomear) troca o título por um campo,
  * com o botão das categorias/etiquetas ao lado e "✓"/"✕" para salvar ou
  * desistir. Enter salva, Esc desiste.
@@ -151,7 +151,7 @@ export default function installTitleEditor(): void {
       items.setContent('title', editorView(discussion));
 
       // Enquanto se edita, a linha de categoria e etiquetas dá lugar ao botão
-      // delas, como no Discourse.
+      // delas.
       if (items.has('canelaBadges')) items.remove('canelaBadges');
 
       return;

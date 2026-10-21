@@ -1,9 +1,8 @@
 // ---------------------------------------------------------------------
-// fof/reactions no jeito do discourse-reactions
-// (css-discourse-reactions.css do Meta)
+// fof/reactions no visual do tema
 // ---------------------------------------------------------------------
 
-// O resumo à esquerda (`.discourse-reactions-counter`): até três emojis de
+// O resumo à esquerda: até três emojis de
 // 1em, colados (gap .15em), e o total em cinza claro.
 .CanelaReactions {
   &.Button.CanelaPostAction,
@@ -146,7 +145,7 @@
   }
 }
 
-// O seletor (`.discourse-reactions-picker`): cartão com a sombra do Discourse,
+// O seletor: cartão com a sombra do tema,
 // raio de 8px e os emojis em grade, crescendo 1,5× no hover.
 .Reactions .CommentPost--Reactions {
   left: 50% !important;
@@ -214,7 +213,7 @@
   }
 }
 
-// Quem reagiu (ReactionsModal): os grupos como as abas do Discourse.
+// Quem reagiu (ReactionsModal): os grupos como abas.
 .ReactionsModal {
   &-groupHeader {
     padding: var(--cn-space-2) var(--cn-space-3);
@@ -237,8 +236,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Curtida + reações num botão só (`.discourse-reactions-actions`): o
-// coração da barra e, acima dele, o seletor (`.discourse-reactions-picker`).
+// Curtida + reações num botão só: o coração da barra e, acima dele, o
+// seletor.
 // ---------------------------------------------------------------------
 .CanelaReact {
   position: relative;
@@ -252,7 +251,7 @@
 }
 
 // Já reagiu com um emoji: ele no lugar do coração; o hover é o cinza de
-// "desfazer" (`has-reacted.can-toggle-reaction`).
+// "desfazer".
 .CanelaReact-button--emoji.Button {
   width: 38.78px;
   padding: 8px 0;
@@ -279,7 +278,7 @@
   }
 }
 
-// O cinza de "desfazer" também no coração já curtido, como no Meta.
+// O cinza de "desfazer" também no coração já curtido.
 .CanelaReact.has-reacted .CanelaLike-toggle.Button:not([disabled]):hover {
   background: var(--cn-primary-low);
   color: var(--cn-primary-low-mid);
@@ -291,7 +290,7 @@
   left: 50%;
   z-index: 399;
   width: max-content;
-  // Centrado no coração, ~14px acima dele (medido no Meta). O padding é a
+  // Centrado no coração, ~14px acima dele. O padding é a
   // ponte invisível entre o botão e o cartão: o mouse atravessa sem fechar.
   padding: 15px 0 10px;
   visibility: hidden;
@@ -315,7 +314,7 @@
   margin: 0.25em;
   border-radius: 8px;
   background: var(--cn-secondary);
-  // A sombra do cartão no Meta: 0 2px 6px na cor do tema, a 24%.
+  // A sombra do cartão: 0 2px 6px na cor do tema, a 24%.
   box-shadow: ~"0 2px 6px oklch(from var(--cn-accent) l c h / 0.24)";
   font-size: 16px;
   line-height: 1;
@@ -339,7 +338,7 @@
   cursor: pointer;
   transition: transform 0.15s;
 
-  // 1,2em da fonte do cartão (18px), como `.pickable-reaction .emoji`.
+  // 1,2em da fonte do cartão (18px).
   .emoji,
   .icon {
     width: 1.2em;

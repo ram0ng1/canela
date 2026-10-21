@@ -1,6 +1,6 @@
 /*
  * As Informações do canal (ChannelInfoModal do ramon/chat) e o formulário do
- * canal (ChannelFormModal) com o que o chat do Discourse tem a mais:
+ * canal (ChannelFormModal) com o que o chat do tema tem a mais:
  *
  * - (7) o nome do chat em grupo, que qualquer participante muda (pelo
  *   endpoint do tema: o ramon/chat só deixa o moderador do chat);
@@ -8,7 +8,7 @@
  * - (20) o lembrete de retenção ("As mensagens deste canal são mantidas por
  *   N dias"), com as configurações do próprio ramon/chat;
  * - (21) excluir o canal pede o nome dele digitado, em vez do "OK" do
- *   `confirm()` — como o `channel-delete` do Discourse.
+ *   `confirm()`.
  *
  * Os dois modais vêm em chunks do ramon/chat: os extends usam o nome do módulo.
  */

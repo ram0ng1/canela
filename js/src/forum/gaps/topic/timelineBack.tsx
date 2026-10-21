@@ -1,5 +1,5 @@
 /*
- * O "Voltar" da linha do tempo do Discourse (.timeline-last-read): quando o
+ * O "Voltar" da linha do tempo: quando o
  * leitor sobe para longe do ponto até onde já leu — um salto para o início,
  * um link para um post antigo —, aparece no trilho, na altura desse ponto,
  * o botão que o leva de volta para a última postagem não lida.
@@ -91,7 +91,7 @@ export default function installTimelineBack(): void {
     const current = stream?.index || 0;
     const lastRead = lastReadIndex(stream);
 
-    // As mesmas condições do Discourse: longe o bastante (mais de 3 posts),
+    // As condições: longe o bastante (mais de 3 posts),
     // acima do ponto lido, e o ponto não é o fim do tópico.
     const show =
       gaps.timelineBack() &&
@@ -105,7 +105,7 @@ export default function installTimelineBack(): void {
     const percent = Math.min(100, Math.max(0, ((lastRead - 1) / total) * 100));
     let visible = show;
 
-    // Como o showButton do Discourse: só quando a alça não está em cima do
+    // Só quando a alça não está em cima do
     // ponto lido (senão o botão cobriria o "11/27" ao lado dela).
     const scrollbar = element.parentElement as HTMLElement | null;
     const handle = scrollbar?.querySelector<HTMLElement>('.Scrubber-handle');

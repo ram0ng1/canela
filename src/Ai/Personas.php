@@ -16,11 +16,11 @@ namespace Ramon\Canela\Ai;
 use Flarum\Locale\TranslatorInterface;
 
 /**
- * As personas do bot (os "agentes" do Discourse): nome, descrição, prompt de
+ * As personas do bot (os "agentes"): nome, descrição, prompt de
  * sistema e as ferramentas que cada uma pode usar.
  *
  * Moram numa configuração (`canela.ai_personas`, JSON) editada no admin; vazia,
- * valem as padrões — as do Discourse que fazem sentido num fórum Flarum:
+ * valem as padrões:
  * Ajudante do fórum, Pesquisador do Fórum, Criativa e Pesquisador da Web (esta
  * desligada: cada busca na web é cobrada à parte pelo provedor).
  *

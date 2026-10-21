@@ -1,5 +1,5 @@
 /*
- * A aba "Resumo" do perfil do Discourse: os números em linha ("1,9k dias
+ * A aba "Resumo" do perfil: os números em linha ("1,9k dias
  * acessados"), e em duas colunas as melhores respostas e os melhores tópicos
  * da pessoa — cada item com a data e as curtidas em cima e o título embaixo.
  *
@@ -8,7 +8,7 @@
  * a contagem vem do `meta.page.total` da busca de posts curtidos), tópicos e
  * postagens criados.
  *
- * "Melhores" segue o Discourse — mais curtidas primeiro — dentro de uma
+ * "Melhores" quer dizer mais curtidas primeiro, dentro de uma
  * amostra recente (as últimas postagens, os tópicos mais respondidos): a API
  * do Flarum não ordena por curtidas.
  */
@@ -30,7 +30,7 @@ import { isExtensionEnabled, t } from '../utils/settings';
 import { formatReadTime, userActivity } from '../features/stats/activity';
 import { formatViews } from '../utils/views';
 
-/** Quantos itens em cada coluna, como no Discourse. */
+/** Quantos itens em cada coluna. */
 const LIST_LIMIT = 6;
 /** Amostras de onde saem os "melhores". */
 const REPLY_SAMPLE = 50;
@@ -237,7 +237,7 @@ export default class UserSummaryPage<Attrs extends IUserPageAttrs = IUserPageAtt
     const extra = this.extra;
 
     if (extra) {
-      // Os pares de seções sempre lado a lado, como no Discourse: uma seção sem
+      // Os pares de seções sempre lado a lado: uma seção sem
       // dados mostra o título e "nada ainda", em vez de sumir e deixar a outra
       // sozinha numa linha.
       items.add(
@@ -392,7 +392,7 @@ export default class UserSummaryPage<Attrs extends IUserPageAttrs = IUserPageAtt
     const items = new ItemList<Mithril.Children>();
     const user = this.user!;
 
-    // Com o recurso de estatísticas, os números do Discourse na mesma ordem:
+    // Com o recurso de estatísticas, os números nesta ordem:
     // dias acessados, tempo de leitura, tópicos visualizados, postagens lidas,
     // curtidas dadas e recebidas, tópicos e postagens criados, soluções.
     const activity = userActivity(user);
@@ -411,7 +411,7 @@ export default class UserSummaryPage<Attrs extends IUserPageAttrs = IUserPageAtt
       items.add('timeRead', this.statText(formatReadTime(activity.timeRead), t('user.summary.time_read')), 98);
     }
 
-    // "Tempo de leitura recente" (60 dias), só quando há algum, como no Discourse.
+    // "Tempo de leitura recente" (60 dias), só quando há algum.
     if (activity && activity.recentTimeRead) {
       items.add('recentTimeRead', this.statText(formatReadTime(activity.recentTimeRead), t('user.summary.recent_time_read')), 97);
     }

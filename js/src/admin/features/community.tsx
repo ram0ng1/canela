@@ -141,7 +141,7 @@ class GuidelinesPagePicker extends AdminComponent {
         <p className="helpText">
           {trans(
             `${KEY}.guidelines_page_help`,
-            'Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema, inspirado nas diretrizes do Discourse.'
+            'Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema.'
           )}
         </p>
         {!page && (
@@ -173,7 +173,7 @@ const COMMUNITY_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_about`, 'Página Sobre'),
     description: help(
       'about_enabled',
-      'A página do Discourse com a descrição do fórum, um texto seu, o contato, a equipe e os números do site. Ganha um link no menu "Mais" da barra lateral.'
+      'A página com a descrição do fórum, um texto seu, o contato, a equipe e os números do site. Ganha um link no menu "Mais" da barra lateral.'
     ),
     keywords: 'sobre about equipe staff administradores admins moderadores moderators estatísticas stats contato contact e-mail email texto text',
     master: 'canela.about_enabled',
@@ -219,7 +219,7 @@ const COMMUNITY_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.guidelines_enabled_label`, 'Página Diretrizes (/guidelines)'),
     description: help(
       'guidelines_enabled',
-      'As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página, como no Discourse. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).'
+      'As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).'
     ),
     keywords: 'diretrizes guidelines faq regras rules convivência',
     master: 'canela.guidelines_enabled',
@@ -288,7 +288,7 @@ const COMMUNITY_CARDS: CardDef[] = [
     title: () => trans(`${KEY}.section_directory`, 'Diretório de usuários'),
     description: help(
       'directory_enabled',
-      'A tabela do Discourse com curtidas recebidas e dadas, discussões, respostas e último acesso de cada pessoa, por período, ordenável por coluna.'
+      'A tabela com curtidas recebidas e dadas, discussões, respostas e último acesso de cada pessoa, por período, ordenável por coluna.'
     ),
     keywords: 'usuários users diretório directory membros members curtidas likes ranking período period visitantes guests /u',
     master: 'canela.directory_enabled',

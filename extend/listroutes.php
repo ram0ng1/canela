@@ -10,7 +10,7 @@
  */
 
 /*
- * Os endereços do Discourse para a lista de tópicos:
+ * Os endereços curtos da lista de tópicos:
  *
  * - /latest, /hot, /top, /new e /unread abrem a lista (o JS escolhe a
  *   ordenação pela rota; o documento pré-carregado é o da lista padrão);

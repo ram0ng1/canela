@@ -17,8 +17,8 @@ use Carbon\Carbon;
 use Illuminate\Database\ConnectionInterface;
 
 /**
- * Os emblemas automáticos do núcleo do Discourse que dá para detectar no
- * Flarum, com o tipo, o agrupamento e o ícone do `db/fixtures/006_badges.rb`.
+ * Os emblemas automáticos que dá para detectar no Flarum, com o tipo, o
+ * agrupamento e o ícone de cada um.
  *
  * Ficaram de fora os que dependem de algo que o Flarum não registra:
  * compartilhamentos e cliques em links (Primeiro compartilhamento, Link
@@ -126,7 +126,7 @@ final class SystemBadges
                 'created_at' => Carbon::now(),
             ];
 
-            // A regra automática é quem concede os do sistema, como no Discourse.
+            // A regra automática é quem concede os do sistema.
             if ($hasManualGrant) {
                 $row['manual_grant'] = false;
             }

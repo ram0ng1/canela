@@ -19,7 +19,7 @@ use Illuminate\Database\ConnectionInterface;
 
 /**
  * As chaves dos emblemas e dos níveis de confiança num lugar só, com os
- * padrões do Discourse (`config/site_settings.yml`, área `trust_levels`).
+ * padrões.
  */
 final class BadgeSettings
 {
@@ -33,7 +33,7 @@ final class BadgeSettings
     /** Seção "Emblemas" na aba Resumo do perfil. */
     public const SUMMARY = 'canela.badges_summary';
 
-    /** O `max_likes_per_day` do Discourse, que os emblemas "Por amor" usam: o Flarum não limita curtidas. */
+    /** Curtidas por dia, que os emblemas "Por amor" usam: o Flarum não limita curtidas. */
     public const MAX_LIKES_PER_DAY = 'canela.badges_max_likes_per_day';
 
     /**
@@ -53,7 +53,7 @@ final class BadgeSettings
     public const REMOVED_SYSTEM = 'canela.badges_removed_system';
 
     /**
-     * Requisitos dos níveis, chave => padrão do Discourse.
+     * Requisitos dos níveis, chave => padrão.
      *
      * @var array<string, int>
      */

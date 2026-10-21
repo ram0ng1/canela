@@ -21,7 +21,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Ramon\Canela\Topic\MarkUnread;
 
 /**
- * "Marcar não lido" do rodapé do tópico (Discourse): `canelaMarkUnread` é
+ * "Marcar não lido" do rodapé do tópico: `canelaMarkUnread` é
  * o número do último post que passa a contar como lido.
  *
  * O `lastReadPostNumber` do core só anda para a frente (UserState::read

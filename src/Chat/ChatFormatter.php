@@ -26,7 +26,7 @@ use Ramon\Canela\Chat\Model\Message;
  * algum callback de outra extensão falhar com um contexto que não é um Post, a
  * mensagem sai como texto puro em vez de não sair.
  *
- * Menções: no chat se digita `@usuario`, como no Discourse. O flarum/mentions só
+ * Menções: no chat se digita `@usuario`. O flarum/mentions só
  * reconhece esse formato com uma opção dele ligada, então, antes de formatar,
  * cada `@usuario` que existe vira o formato completo (`@"Nome"#id`). O texto
  * guardado continua o digitado — é o que a edição mostra.
@@ -142,8 +142,8 @@ final class ChatFormatter
     }
 
     /**
-     * `@here` e `@all` não são usuários: o formatador os deixa como texto, e o
-     * Discourse os destaca como menção. Só nos nós de texto, nunca dentro de
+     * `@here` e `@all` não são usuários: o formatador os deixa como texto, e
+     * aqui eles são destacados como menção. Só nos nós de texto, nunca dentro de
      * atributos ou de blocos de código.
      */
     private function highlightGroupMentions(string $html): string

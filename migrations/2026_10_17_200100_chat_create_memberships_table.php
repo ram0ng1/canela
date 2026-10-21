@@ -13,7 +13,7 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Quem participa de cada canal (`user_chat_channel_memberships` do Discourse).
+ * Quem participa de cada canal.
  *
  * - `following`: entrou no canal. Sair de um canal público só desliga isto, e
  *   a linha guarda até onde a pessoa leu para quando ela voltar.

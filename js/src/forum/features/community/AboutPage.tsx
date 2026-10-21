@@ -12,7 +12,7 @@ import { fetchAbout, pushUsers, type AboutPayload, type StatPeriod } from './api
 import { forumBool, t } from '../../utils/settings';
 import { fullDate } from '../../utils/dates';
 
-/** As linhas da tabela de estatísticas, na ordem do Discourse, com o ícone de cada uma. */
+/** As linhas da tabela de estatísticas, em ordem, com o ícone de cada uma. */
 const STAT_ROWS: [key: string, icon: string][] = [
   ['topics', 'far fa-comments'],
   ['posts', 'far fa-comment'],
@@ -24,7 +24,7 @@ const STAT_ROWS: [key: string, icon: string][] = [
 const STAT_PERIODS: StatPeriod[] = ['day', 'week', 'month', 'all'];
 
 /**
- * A página "Sobre" do Discourse (/about): o fórum, o que o admin escreveu
+ * A página "Sobre" (/about): o fórum, o que o admin escreveu
  * sobre ele, como falar com a equipe, quem é a equipe e os números do site.
  */
 export default class AboutPage extends CommunityPage {
@@ -177,7 +177,7 @@ export default class AboutPage extends CommunityPage {
     }
 
     if (data.createdAt) {
-      // "Criado há 11 anos", relativo como no Discourse; a data exata no title.
+      // "Criado há 11 anos", relativo; a data exata no title.
       const created = new Date(data.createdAt);
       items.add(
         'created',
@@ -265,7 +265,7 @@ export default class AboutPage extends CommunityPage {
     );
   }
 
-  /** "Atividade do site": a coluna de números da semana do Discourse. */
+  /** "Atividade do site": a coluna de números da semana. */
   activity(stats: NonNullable<AboutPayload['stats']>): Mithril.Children {
     const rows = STAT_ROWS.filter(([key]) => stats[key]);
 
@@ -274,7 +274,7 @@ export default class AboutPage extends CommunityPage {
         <h2 className="CanelaAbout-sectionTitle">{t('community.about.activity_title')}</h2>
         <ul className="CanelaAbout-activityList">
           {rows.map(([key, icon]) => {
-            // A coluna mostra a semana, como o Discourse; a tabela abaixo tem
+            // A coluna mostra a semana; a tabela abaixo tem
             // os outros períodos.
             const count = stats[key].week ?? 0;
 

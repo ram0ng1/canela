@@ -1,5 +1,5 @@
 /*
- * Os botões do fim do tópico, como o #topic-footer-buttons do Discourse:
+ * Os botões do fim do tópico:
  * pílulas com borda, ícone e texto — Compartilhar, Favorito, Sinalizar,
  * Marcar não lido — e "Responder" em destaque; o "…" com o que sobra dos
  * controles do tópico (renomear, apagar, imprimir…). Na linha de baixo, o
@@ -108,7 +108,7 @@ export default class TopicFooter extends Component<TopicFooterAttrs> {
     );
   }
 
-  /** Favorito = o marcador do primeiro post (o "bookmark" de tópico do Discourse). */
+  /** Favorito = o marcador do primeiro post (o "bookmark" do tópico). */
   bookmarkButton(discussion: Discussion) {
     if (!bookmarksEnabled()) return null;
 
@@ -146,7 +146,7 @@ export default class TopicFooter extends Component<TopicFooterAttrs> {
 
   /**
    * "Marcar não lido": a leitura volta para antes do último post lido e a
-   * pessoa volta para a lista, como no Discourse. Precisa do campo do tema
+   * pessoa volta para a lista. Precisa do campo do tema
    * (extend/topic.php): o core só deixa a leitura andar para a frente.
    */
   unreadButton(discussion: Discussion) {

@@ -14,11 +14,11 @@ export interface UserTileAttrs extends ComponentAttrs {
 }
 
 /**
- * Avatar, nome, @usuário e "título" — o bloco de usuário das listas do
- * Discourse (equipe do "Sobre", diretório, membros de grupo).
+ * Avatar, nome, @usuário e "título" — o bloco de usuário das listas
+ * (equipe do "Sobre", diretório, membros de grupo).
  *
  * O Flarum não tem título de usuário; o lugar fica com o nome do primeiro
- * grupo, que é o que o Discourse mostra quando o título vem de um grupo.
+ * grupo, como quando o título vem de um grupo.
  */
 export default class UserTile extends Component<UserTileAttrs> {
   view(): Mithril.Children {
@@ -34,7 +34,7 @@ export default class UserTile extends Component<UserTileAttrs> {
           <Avatar user={user} />
         </Link>
         <div className="CanelaUserTile-info">
-          {/* A name-line do Discourse: o usuário em negrito e o nome ao lado. */}
+          {/* A linha do nome: o usuário em negrito e o nome ao lado. */}
           <Link href={url} className="CanelaUserTile-name">
             <span className="CanelaUserTile-username">{username}</span>
             {displayName !== username && <span className="CanelaUserTile-displayName">{displayName}</span>}

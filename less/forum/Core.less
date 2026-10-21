@@ -4,7 +4,7 @@
 
 body {
   font-family: var(--cn-font);
-  // 16px e 1,4 de entrelinha, como o body do Discourse.
+  // 16px e 1,4 de entrelinha.
   font-size: 16px;
   line-height: 1.4;
   color: var(--cn-primary);
@@ -16,9 +16,9 @@ body {
 // O fundo da página, escolhido no admin (src/Backgrounds): classes no <html>
 // (`CanelaBg--*`, do PreBootShell e do js/src/forum/shell/backgrounds.ts).
 //
-// - tinted / gradient: o do meta.discourse.org, a cor quase branca puxada
-//   para o destaque, com um degradê que desce do topo e termina 260px antes
-//   do pé da janela (.meta-bg + .meta-bg-gradient); o tinted ainda tem as
+// - tinted / gradient: a cor quase branca puxada para o destaque, com um
+//   degradê que desce do topo e termina 260px antes do pé da janela; o
+//   tinted ainda tem as
 //   peças desfocadas (.CanelaBackdrop, abaixo);
 // - solid: a mesma cor, lisa;
 // - plain: a superfície, sem tinta;
@@ -51,8 +51,8 @@ html.CanelaBg--image body::before {
   background: var(--cn-bg-image) center / cover no-repeat;
 }
 
-// As peças coloridas e desfocadas que flutuam atrás do conteúdo no Meta
-// (.meta-bg-icons): mesmas posições, giros, escalas, desfoque e opacidade.
+// As peças coloridas e desfocadas que flutuam atrás do conteúdo: posições,
+// giros, escalas, desfoque e opacidade.
 // Ficam atrás de tudo e nunca recebem clique.
 .CanelaBackdrop {
   position: fixed;
@@ -107,7 +107,7 @@ html.CanelaBg--image body::before {
     background: var(--cn-selected);
   }
 
-  // Como o Discourse: contorno fino por DENTRO do elemento; botões não têm
+  // Contorno fino por DENTRO do elemento; botões não têm
   // contorno — o foco deles é o fundo de hover (Components.less).
   :focus-visible {
     outline: 2px solid var(--cn-accent);
@@ -136,7 +136,7 @@ kbd {
   box-sizing: border-box;
 }
 
-// Barras de rolagem finas, na cor da seleção, como no Horizon.
+// Barras de rolagem finas, na cor da seleção.
 .Canela, .CanelaSidebar {
   scrollbar-width: thin;
   scrollbar-color: var(--cn-selected) transparent;

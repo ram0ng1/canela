@@ -23,7 +23,7 @@ use Ramon\Canela\Gaps\GapsSettings;
 use Ramon\Canela\Support\NullOrder;
 
 /**
- * Os dados da página 404 do Discourse ("Oops! Essa página não existe ou é
+ * Os dados da página 404 ("Oops! Essa página não existe ou é
  * privada."): logo, cor, os tópicos populares e os recentes.
  *
  * A página de erro é desenhada sem a requisição (o ViewFormatter do core

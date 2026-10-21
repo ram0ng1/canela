@@ -9,7 +9,7 @@
  *
  * A área de fato visível é a `visualViewport` (altura e deslocamento): ela vai
  * para `--cn-vv-height` e `--cn-vv-top` no <html>, e o CSS do celular prende o
- * composer nela. É o mesmo que o Discourse faz (`--composer-vh`). No Android,
+ * composer nela. No Android,
  * onde a janela já encolhe, os valores coincidem com os de sempre.
  */
 import { extend } from 'flarum/common/extend';

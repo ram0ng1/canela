@@ -2,7 +2,7 @@
  * As telas de lista do chat interno do tema (features/chat), refeitas sobre o
  * estado do ramon/chat: a barra de cima (c-navbar), as listas de canais e de
  * MDs (chat-channel-row), o "x" que fecha a MD e as abas de baixo (c-footer:
- * Canais, MDs, Meus tópicos, Pesquisar). As classes são as do Discourse, as
+ * Canais, MDs, Meus tópicos, Pesquisar). As classes são as
  * mesmas do features/chat — o Chat.less também compila com o ramon/chat —,
  * então as telas saem idênticas às do chat do tema.
  *
@@ -296,7 +296,7 @@ export class ChannelRow extends Component<ChannelRowAttrs> {
     );
   }
 
-  /** O "x" da MD: some da lista com a animação do Discourse e sai da conversa. */
+  /** O "x" da MD: some da lista com uma animação e sai da conversa. */
   private leave(): void {
     this.leaving = true;
 
@@ -323,7 +323,7 @@ export interface ChannelsListAttrs extends ComponentAttrs {
   onbrowse?: () => void;
 }
 
-/** As listas de canais e de MDs (channels-list do Discourse). */
+/** As listas de canais e de MDs. */
 export class ChannelsList extends Component<ChannelsListAttrs> {
   view(): Mithril.Children {
     const { which, inDrawer } = this.attrs;

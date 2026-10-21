@@ -4,11 +4,11 @@
  * tema e das extensões —, filtradas pela aba aberta (ver tabs.ts).
  *
  * Duas seções são redesenhadas, sem mudar como gravam:
- * - "Conta" vira os campos do Discourse: nome de usuário, foto (o
+ * - "Conta" vira uma lista de campos: nome de usuário, foto (o
  *   AvatarEditor do core) e e-mail com o estado; os botões são os do
  *   `accountItems` do core. "Alterar senha" passa para a aba Segurança.
  * - As opções de seguir tópicos do flarum/subscriptions saem de
- *   "Notificações" para "Acompanhamento", onde o Discourse as põe.
+ *   "Notificações" para "Acompanhamento".
  */
 import app from 'flarum/forum/app';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -34,7 +34,7 @@ interface AccountAttrs extends ComponentAttrs {
   items: ItemList<Mithril.Children>;
 }
 
-/** Os campos da aba Conta, no formato `control-group` do Discourse. */
+/** Os campos da aba Conta, um grupo de controle por campo. */
 class AccountSection extends Component<AccountAttrs> {
   editor: any = null;
   resending = false;
@@ -119,7 +119,7 @@ class AccountSection extends Component<AccountAttrs> {
   }
 }
 
-/** "Menu de navegação": o que a barra lateral mostra, como no Discourse. */
+/** "Menu de navegação": o que a barra lateral mostra. */
 function navMenuSection(): Mithril.Children {
   const row = (section: SidebarSectionName) => {
     const picks = getSidebarPicks(section);

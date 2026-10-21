@@ -1,6 +1,5 @@
 // =====================================================================
-// Cabeçalho do Discourse (.d-header), medido no meta.discourse.org:
-// hambúrguer + logo | busca de até 550px | botões e ícones.
+// Cabeçalho: hambúrguer + logo | busca de até 550px | botões e ícones.
 // =====================================================================
 
 @media @tablet-up {
@@ -14,13 +13,13 @@
     box-sizing: border-box;
     background: var(--cn-surface);
     border-bottom: 0;
-    // A linha de baixo do Discourse é um anel de 1px por fora, e não uma
+    // A linha de baixo é um anel de 1px por fora, e não uma
     // borda: o cabeçalho continua com 52px.
     box-shadow: 0 0 0 1px var(--cn-primary-low) !important;
     z-index: var(--zindex-header);
     transition: background 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-    // A grade do .d-header: a primeira coluna acompanha a barra lateral (menos
+    // A grade do cabeçalho: a primeira coluna acompanha a barra lateral (menos
     // 11px), a busca fica na coluna do cartão e os controles na última.
     > .container {
       display: grid;
@@ -46,7 +45,7 @@
     }
   }
 
-  // O botão "voltar" do core não existe no Discourse: a barra lateral e o
+  // O botão "voltar" do core não existe no tema: a barra lateral e o
   // histórico do navegador cumprem o papel.
   .Canela .Header-navigation {
     display: none;
@@ -59,7 +58,7 @@
   }
 
   // Logo: o do fórum, ou o título em negrito quando não há imagem. Divide a
-  // célula com o hambúrguer, 3,7em à direita dele, como o .home-logo-wrapper.
+  // célula com o hambúrguer, 3,7em à direita dele.
   .Canela .Header-title {
     grid-area: logo;
     justify-self: start;
@@ -68,7 +67,7 @@
     font-size: ~"clamp(1rem, 2.5vw, 1.2853rem)";
     font-weight: 700;
     line-height: 1.2;
-    // O logo aparece com um fade de 0,5s ao carregar (.d-header .title).
+    // O logo aparece com um fade de 0,5s ao carregar.
     animation: canela-fade-in 0.5s;
 
     a {
@@ -143,7 +142,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Hambúrguer (.header-sidebar-toggle): 2,55em, cinza claro, sem fundo; no
+// Hambúrguer: 2,55em, cinza claro, sem fundo; no
 // hover só o traço escurece.
 // ---------------------------------------------------------------------
 .CanelaHeader-toggle.Button {
@@ -171,7 +170,7 @@
   }
 }
 
-// Ícones desenhados (Lucide, a família que o Discourse usa).
+// Ícones desenhados (Lucide).
 .CanelaIcon {
   display: block;
   flex-shrink: 0;
@@ -183,7 +182,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Busca (.search-input--header): pílula de 38px, lupa à esquerda e o atalho
+// Busca: pílula de 38px, lupa à esquerda e o atalho
 // da busca avançada à direita.
 // ---------------------------------------------------------------------
 .CanelaHeader-search {
@@ -210,7 +209,7 @@
     line-height: 1.4;
     box-shadow: none !important;
     text-align: left;
-    // A busca do Discourse troca a borda no foco sem animação.
+    // A busca troca a borda no foco sem animação.
     transition: none;
 
     .CanelaIcon {
@@ -265,7 +264,7 @@
     align-items: center;
   }
 
-  // Ícones (.d-header-icons .icon): 2,55em, glifo cinza claro, sem fundo.
+  // Ícones: 2,55em, glifo cinza claro, sem fundo.
   > li > .Button,
   > li > .Dropdown > .Dropdown-toggle {
     display: inline-flex;
@@ -293,7 +292,7 @@
     }
   }
 
-  // Idioma: a pílula de borda cinza do Discourse ("PT ⌄"), 8px antes dos
+  // Idioma: a pílula de borda cinza ("PT ⌄"), 8px antes dos
   // ícones.
   > li.item-locale {
     margin-right: 8px;
@@ -382,7 +381,7 @@
   }
 }
 
-// Sessão: só o avatar de 32px, sem o nome, como o Discourse.
+// Sessão: só o avatar de 32px, sem o nome.
 .Canela .Header-secondary .SessionDropdown .Dropdown-toggle {
   padding: 0 !important;
 
@@ -432,8 +431,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Título do tópico no cabeçalho ao rolar (`.header-title.topic` do
-// Discourse): ocupa do fim do logo até os ícones da direita.
+// Título do tópico no cabeçalho ao rolar: ocupa do fim do logo até os
+// ícones da direita.
 // ---------------------------------------------------------------------
 @media @tablet-up {
   .CanelaHeader--topic .CanelaHeader-center {
@@ -552,7 +551,7 @@
 
 // ---------------------------------------------------------------------
 // "Cabeçalho colorido" do Flarum (Administração → Aparência): o cabeçalho
-// ganha a cor primária, como o `header_background` do Discourse. O texto e
+// ganha a cor primária. O texto e
 // os ícones viram a cor de contraste da primária; a busca continua clara
 // para ser legível; os botões primários do visitante se invertem.
 // ---------------------------------------------------------------------
@@ -635,7 +634,7 @@
 }
 
 // ernestdefoe/wardrobe: no Canela a escolha de tema mora no rodapé da barra
-// lateral (FooterPaletteSelector, como o "Meta Branded" do Meta), não no cabeçalho.
+// lateral (FooterPaletteSelector), não no cabeçalho.
 .WardrobeSwitcher-dropdown {
   display: none !important;
 }

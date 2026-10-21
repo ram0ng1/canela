@@ -1,7 +1,7 @@
 /*
- * Entrar, Cadastrar-se e Esqueci a senha com a cara das páginas de login do
- * meta.discourse.org: o título grande ("Boas-vindas outra vez", "Criar sua
- * conta"), campos com o rótulo flutuante (`.input-group` do Discourse: o
+ * Entrar, Cadastrar-se e Esqueci a senha com a cara de páginas de login: o
+ * título grande ("Boas-vindas outra vez", "Criar sua
+ * conta"), campos com o rótulo flutuante (o
  * rótulo mora dentro do campo e sobe para a borda ao focar ou preencher) e o
  * "Esqueci minha senha" logo abaixo da senha.
  *
@@ -59,7 +59,7 @@ export default function installModals() {
   override(SIGNUP as any, 'title', () => t('modals.signup_title'));
 
   extend(LOGIN as any, 'fields', function (this: any, items: ItemList<Mithril.Children>) {
-    // "E-mail/nome do(a) usuário(a)", o rótulo do Discourse.
+    // O rótulo "E-mail/nome do(a) usuário(a)".
     const identification: any = items.has('identification') ? items.get('identification') : null;
     const input = (Array.isArray(identification?.children) ? identification.children : []).find((child: any) => child?.tag === 'input');
 
@@ -68,7 +68,7 @@ export default function installModals() {
     floatLabel(items, 'identification');
     floatLabel(items, 'password');
 
-    // "Esqueci minha senha" debaixo da senha, como no Discourse (o link do
+    // "Esqueci minha senha" debaixo da senha (o link do
     // rodapé do core some pelo CSS).
     items.add(
       'canelaForgot',
@@ -100,13 +100,13 @@ export default function installModals() {
     ['username', 'email', 'password'].forEach((key) => floatLabel(items, key));
   });
 
-  // "Redefinição de senha" é um modal comum do Discourse (não a página de
+  // "Redefinição de senha" é um modal comum (não a página de
   // login): título no cabeçalho, o texto em negrito, o campo com placeholder e
   // "Redefinir senha" no rodapé, apagado até haver um e-mail.
   override(FORGOT as any, 'title', () => t('modals.forgot_title'));
 
-  // Sinalizar (`flag-modal` do Discourse): "Obrigado por ajudar a manter a
-  // nossa comunidade civilizada!", os nomes dos motivos do Discourse ("Fora do
+  // Sinalizar: "Obrigado por ajudar a manter a
+  // nossa comunidade civilizada!", os nomes dos motivos ("Fora do
   // tópico", "Algo mais") e "Sinalizar postagem" no rodapé.
   const FLAG = 'ext:flarum/flags/forum/components/FlagPostModal';
   const FLAG_LABELS: Record<string, string> = { 'off-topic': 'modals.flag_off_topic', other: 'modals.flag_other' };

@@ -1,6 +1,6 @@
 /*
  * Cards das extensões de terceiros: as mensagens privadas (flarum/messages,
- * extend/messages.php) e o visual do Discourse para as extensões da FoF
+ * extend/messages.php) e o visual do tema para as extensões da FoF
  * (js/src/forum/thirdparty). Cada uma só vale com a extensão ligada: sem ela
  * o card fica trancado, com "Precisa da extensão X". As chaves são as
  * `canela.thirdparty_*` do extend.php e a `canela.messages_enabled` do
@@ -29,10 +29,10 @@ const cards: CardDef[] = [
     id: 'messages',
     group: 'messages',
     icon: 'far fa-envelope',
-    title: () => trans(`${KEY}.messages_label`, 'Mensagens privadas do Discourse'),
+    title: () => trans(`${KEY}.messages_label`, 'Mensagens privadas'),
     description: help(
       'messages',
-      'Sobre o flarum/messages: as caixas do perfil (Últimos, Enviadas, Novo, Não lidos, Arquivo), o arquivo por pessoa, o título da mensagem, as reações e o "sair da mensagem", como no Discourse.'
+      'Sobre o flarum/messages: as caixas do perfil (Últimos, Enviadas, Novo, Não lidos, Arquivo), o arquivo por pessoa, o título da mensagem, as reações e o "sair da mensagem".'
     ),
     keywords: 'mensagens messages privadas private pm md caixa inbox arquivo archive enviadas sent conversa dialog',
     master: 'canela.messages_enabled',
@@ -42,12 +42,12 @@ const cards: CardDef[] = [
     id: 'thirdparty-ramon-chat',
     group: 'messages',
     icon: 'far fa-message',
-    title: () => trans(`${KEY}.ramon_chat_label`, 'Chat (ramon/chat) no visual do Discourse'),
+    title: () => trans(`${KEY}.ramon_chat_label`, 'Chat (ramon/chat) no visual do tema'),
     description: help(
       'ramon_chat',
-      'O chat da extensão ramon/chat com a cara do chat do Discourse: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
+      'O chat da extensão ramon/chat com a cara do chat do tema: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
     ),
-    keywords: 'chat ramon canais channels mensagens diretas direct messages gaveta drawer fios threads discourse',
+    keywords: 'chat ramon canais channels mensagens diretas direct messages gaveta drawer fios threads',
     master: 'canela.thirdparty_ramon_chat',
     extensions: ['ramon-chat'],
     body: () => [
@@ -76,7 +76,7 @@ const cards: CardDef[] = [
     group: 'integrations',
     icon: 'far fa-square-check',
     title: () => trans(`${KEY}.solved_label`, 'Solução aceita'),
-    description: help('solved', 'O "✓ Solução" na barra da postagem e a resposta aceita logo abaixo do primeiro post, como o discourse-solved.'),
+    description: help('solved', 'O "✓ Solução" na barra da postagem e a resposta aceita logo abaixo do primeiro post.'),
     keywords: 'solução solved melhor resposta best answer aceita accepted fof',
     master: 'canela.thirdparty_solved',
     extensions: ['fof-best-answer'],
@@ -86,7 +86,7 @@ const cards: CardDef[] = [
     group: 'integrations',
     icon: 'far fa-face-smile',
     title: () => trans(`${KEY}.reactions_label`, 'Reações'),
-    description: help('reactions', 'O resumo dos emoji na barra da postagem, como o discourse-reactions.'),
+    description: help('reactions', 'O resumo dos emoji na barra da postagem.'),
     keywords: 'reações reactions emoji curtir like fof',
     master: 'canela.thirdparty_reactions',
     extensions: ['fof-reactions'],
@@ -96,7 +96,7 @@ const cards: CardDef[] = [
     group: 'integrations',
     icon: 'fas fa-square-poll-horizontal',
     title: () => trans(`${KEY}.polls_label`, 'Enquetes'),
-    description: help('polls', 'As enquetes com a grade do poll do Discourse: as barras de resultado e a contagem grande de votos ao lado.'),
+    description: help('polls', 'As enquetes em grade: as barras de resultado e a contagem grande de votos ao lado.'),
     keywords: 'enquetes polls votação votos votes fof',
     master: 'canela.thirdparty_polls',
     extensions: ['fof-polls'],
@@ -106,10 +106,7 @@ const cards: CardDef[] = [
     group: 'integrations',
     icon: 'fas fa-link',
     title: () => trans(`${KEY}.links_sidebar_label`, 'Links na barra lateral'),
-    description: help(
-      'links_sidebar',
-      'Os links do FoF Links saem do cabeçalho e vão para uma seção da barra lateral, como os links personalizados do Discourse.'
-    ),
+    description: help('links_sidebar', 'Os links do FoF Links saem do cabeçalho e vão para uma seção da barra lateral.'),
     keywords: 'links fof barra lateral sidebar cabeçalho header navegação',
     master: 'canela.thirdparty_links_sidebar',
     dependsOn: 'canela.sidebar_enabled',
@@ -120,7 +117,7 @@ const cards: CardDef[] = [
     group: 'integrations',
     icon: 'fas fa-cloud-arrow-up',
     title: () => trans(`${KEY}.upload_progress_label`, 'Progresso do envio'),
-    description: help('upload_progress', 'A barra "Enviando…" no editor enquanto um arquivo do FoF Upload sobe, como no Discourse.'),
+    description: help('upload_progress', 'A barra "Enviando…" no editor enquanto um arquivo do FoF Upload sobe.'),
     keywords: 'upload envio enviar arquivo file progresso progress barra fof',
     master: 'canela.thirdparty_upload_progress',
     extensions: ['fof-upload'],
@@ -130,10 +127,7 @@ const cards: CardDef[] = [
     group: 'integrations',
     icon: 'far fa-image',
     title: () => trans(`${KEY}.thumbnails_label`, 'Miniaturas na lista'),
-    description: help(
-      'thumbnails',
-      'A miniatura do FoF Discussion Thumbnail ao lado do título na lista de discussões, no lugar onde o Discourse mostra a dele.'
-    ),
+    description: help('thumbnails', 'A miniatura do FoF Discussion Thumbnail ao lado do título na lista de discussões.'),
     keywords: 'miniatura thumbnail imagem image lista list tópico fof',
     master: 'canela.thirdparty_thumbnails',
     extensions: ['fof-discussion-thumbnail'],
@@ -180,7 +174,7 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.verified_label`, 'Selo de verificado'),
     description: help(
       'verified',
-      'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como os ícones de usuário do Discourse: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
+      'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
     ),
     keywords: 'verificado verified selo badge tick check identidade ramon',
     master: 'canela.thirdparty_verified',
@@ -193,7 +187,7 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.wiki_label`, 'Wiki no padrão do tema'),
     description: help(
       'wiki',
-      'A wiki da linkrobins/wiki com a cara do Discourse: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever e o link "Wiki" na seção da comunidade da barra lateral.'
+      'A wiki da linkrobins/wiki com a cara do tema: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever e o link "Wiki" na seção da comunidade da barra lateral.'
     ),
     keywords: 'wiki artigos articles documentação docs base de conhecimento knowledge linkrobins',
     master: 'canela.thirdparty_wiki',

@@ -1,6 +1,5 @@
 /*
- * As abas do topo das páginas Sobre e Diretrizes, como no Discourse (Sobre,
- * Diretrizes, Termos de Serviço, Política de Privacidade). Cada aba só existe
+ * As abas do topo das páginas Sobre e Diretrizes (Sobre, Diretrizes, Termos de Serviço, Política de Privacidade). Cada aba só existe
  * quando há conteúdo: as Diretrizes com o recurso ligado, Termos e
  * Privacidade com um endereço (do fof/terms ou do admin do tema). As outras
  * políticas do fof/terms entram depois, com o próprio nome. Entre Diretrizes

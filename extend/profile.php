@@ -10,7 +10,7 @@
  */
 
 /*
- * Perfil estendido, como o do Discourse: bio, local, site, título, status
+ * Perfil estendido: bio, local, site, título, status
  * (emoji + frase + validade), capa e fundo do cartão (envio ou URL) e
  * aniversário. Cada campo liga e desliga no admin; a chave-mestra desliga
  * todos de uma vez.

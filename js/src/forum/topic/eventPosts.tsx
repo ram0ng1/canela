@@ -1,6 +1,6 @@
 /*
- * Posts de evento (trancou, fixou, renomeou, convidou…) como a "small action"
- * do Discourse: numa linha só, o ícone pequeno num círculo, o avatar de quem
+ * Posts de evento (trancou, fixou, renomeou, convidou…) como uma "ação
+ * pequena": numa linha só, o ícone pequeno num círculo, o avatar de quem
  * fez e o texto em cinza com o nome em negrito. O toggle `topic_event_posts`
  * do admin os oculta.
  */

@@ -32,8 +32,8 @@ use Ramon\Canela\Ai\Personas;
  * `POST /api/canela/ai/conversations/reply`: manda uma pergunta ao bot e
  * recebe a resposta em streaming (NDJSON).
  *
- * Sem `conversationId`, abre uma conversa nova — a "Nova pergunta" do
- * Discourse e o "Perguntar à IA" da busca. A persona só vale na conversa
+ * Sem `conversationId`, abre uma conversa nova — a "Nova pergunta" e o
+ * "Perguntar à IA" da busca. A persona só vale na conversa
  * nova; uma conversa continua com a persona com que começou.
  */
 final class ReplyController implements RequestHandlerInterface

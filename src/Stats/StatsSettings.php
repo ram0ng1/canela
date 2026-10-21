@@ -41,10 +41,10 @@ final class StatsSettings
 
     public const DEFAULT_HEAT_HIGH = 3500;
 
-    /** O Discourse conta de novo a mesma pessoa depois de 8 horas (topic_view_duration_hours). */
+    /** A mesma pessoa conta de novo depois de 8 horas. */
     public const DEFAULT_VIEW_WINDOW_HOURS = ViewRule::DEFAULT_DURATION_HOURS;
 
-    /** "Novo" no Discourse é o tópico criado nos últimos 2 dias que a pessoa não abriu. */
+    /** "Novo" é o tópico criado nos últimos 2 dias que a pessoa não abriu. */
     public const DEFAULT_NEW_DAYS = 2;
 
     public function __construct(

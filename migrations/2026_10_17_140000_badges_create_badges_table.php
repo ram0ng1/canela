@@ -13,15 +13,15 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Os emblemas, como o `badges` do Discourse.
+ * Os emblemas.
  *
  * O `slug` é a identidade de um emblema do sistema: é por ele que o código
  * sabe qual regra concede "Primeira curtida", e por ele que a tradução do nome
  * é encontrada. O nome e as descrições gravados aqui são só o texto de reserva
  * (pt-BR), para quando o idioma do visitante não tiver tradução.
  *
- * `type` guarda gold|silver|bronze por extenso, e não o número do Discourse
- * (1, 2, 3): é o que a API e o CSS usam, e ninguém precisa decorar a ordem.
+ * `type` guarda gold|silver|bronze por extenso, e não um número (1, 2, 3): é
+ * o que a API e o CSS usam, e ninguém precisa decorar a ordem.
  */
 return Migration::createTable(
     'canela_badges',

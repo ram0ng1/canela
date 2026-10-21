@@ -1,12 +1,11 @@
 /*
- * O sino de notificações da categoria do Discourse (category-notifications-
- * tracking), na barra de navegação ao lado de "Iniciar Discussão", usando o
+ * O sino de notificações da categoria, na barra de navegação ao lado de "Iniciar Discussão", usando o
  * fof/follow-tags por baixo — a extensão guarda o nível, manda as
  * notificações e esconde os tópicos; o tema só troca a casca.
  *
  * O follow-tags põe o botão dele no IndexSidebar, que o tema esconde nas
  * páginas de lista (a navegação foi para a barra global); daí o sino aqui.
- * Os níveis dele viram os do Discourse: lurk = Acompanhando, follow =
+ * Os níveis dele viram estes: lurk = Acompanhando, follow =
  * Acompanhando a primeira postagem, nada = Normal, ignore = Silenciado e
  * hide = Silenciado e fora da lista de Recentes.
  */
@@ -108,7 +107,7 @@ export default function installCategoryNotifications(): void {
 
     if (!tag) return;
 
-    // Logo à esquerda do "Iniciar Discussão" (50), como no Discourse.
+    // Logo à esquerda do "Iniciar Discussão" (50).
     items.add('canelaCategoryNotifications', bell(tag), 55);
   });
 

@@ -10,7 +10,7 @@
  */
 
 /*
- * Marcadores (bookmarks) do Discourse: marcar posts e o tópico inteiro, com
+ * Marcadores (bookmarks): marcar posts e o tópico inteiro, com
  * nome e lembrete, e a página "Marcadores" no perfil.
  *
  * Tudo fica registrado mesmo com o recurso desligado no admin — as rotas da

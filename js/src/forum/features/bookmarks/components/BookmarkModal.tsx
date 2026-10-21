@@ -1,5 +1,5 @@
 /*
- * "Editar marcador", o modal do Discourse (bookmark-reminder-modal): um nome
+ * "Editar marcador", o modal: um nome
  * opcional, o "Lembre-me" com os atalhos de horário (mais tarde hoje, amanhã,
  * próxima semana, próximo mês, personalizado ou nenhum) e, no rodapé, Salvar,
  * Cancelar e Excluir.

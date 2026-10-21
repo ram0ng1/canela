@@ -1,5 +1,5 @@
 /*
- * A página cheia do chat (`/chat…`, full-page-chat do Discourse).
+ * A página cheia do chat (`/chat…`).
  *
  * - No computador, com a barra lateral do tema, a lista de canais mora nela
  *   (seções "Canais" e "Mensagens diretas") e a página mostra só a conversa;
@@ -71,7 +71,7 @@ export default class ChatPage extends Page<IPageAttrs> {
     app.setTitle(ct('title_capitalized'));
     app.setTitleCount(0);
 
-    // Sem rota de canal no computador, abre a última conversa, como o Discourse.
+    // Sem rota de canal no computador, abre a última conversa.
     const route = parseRoute();
 
     if (route.name === 'channels' && app.screen() !== 'phone' && String(app.current.get('routeName')) === 'canela.chat') {

@@ -1,5 +1,5 @@
 /*
- * Links de convite do Discourse (invite-panel / generated-invite-link):
+ * Links de convite:
  *
  * - "Convidar" na janela de compartilhar (e no menu "Mais" da barra
  *   lateral) abre a janela que gera um link com validade e número de usos,

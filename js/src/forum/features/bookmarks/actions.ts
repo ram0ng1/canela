@@ -131,8 +131,8 @@ export function clearPost(post: Post): void {
 }
 
 /**
- * O primeiro post do tópico, que é o que "Marcar discussão" marca (como no
- * Discourse). Tenta o store antes de ir à API: na página do tópico ele quase
+ * O primeiro post do tópico, que é o que "Marcar discussão" marca.
+ * Tenta o store antes de ir à API: na página do tópico ele quase
  * sempre já está carregado.
  */
 export async function firstPostOf(discussion: Discussion): Promise<Post | null> {

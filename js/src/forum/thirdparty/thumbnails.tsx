@@ -2,9 +2,8 @@
  * fof/discussion-thumbnail na lista do tema.
  *
  * A extensão troca o avatar do autor pela miniatura, mas a lista do tema
- * nem desenha esse avatar (o Discourse mostra os postadores numa coluna).
- * Então a miniatura vira um item próprio, antes do título, como no
- * componente de miniaturas do Horizon; no celular ela ocupa o lugar do
+ * nem desenha esse avatar (os postadores ficam numa coluna).
+ * Então a miniatura vira um item próprio, antes do título; no celular ela ocupa o lugar do
  * avatar de 48px.
  */
 import app from 'flarum/forum/app';

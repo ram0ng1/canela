@@ -16,12 +16,11 @@ namespace Ramon\Canela\Stats;
 use Carbon\CarbonInterface;
 
 /**
- * A regra de visualização do Discourse (TopicViewItem.add), num lugar só para
- * os tópicos e as mensagens privadas contarem igual.
+ * A regra de visualização, num lugar só para os tópicos e as mensagens
+ * privadas contarem igual.
  *
- * O Discourse grava no Redis a chave `view:<tópico>:<dia>:<user|ip>` com
- * validade de `topic_view_duration_hours` (8 h) e só conta quando a chave
- * ainda não existe. Daí as duas travas juntas:
+ * Pense numa chave `view:<tópico>:<dia>:<user|ip>` com validade de 8 h: só
+ * conta quando a chave ainda não existe. Daí as duas travas juntas:
  *
  * - **o dia**: a chave leva a data, então um dia novo sempre conta de novo —
  *   mesmo que a última visualização tenha sido às 23h59;
@@ -30,11 +29,11 @@ use Carbon\CarbonInterface;
  *
  * Guardando a hora da última visualização contada, as duas travas viram uma
  * comparação: a trava está de pé só se a última contagem foi HOJE e há menos
- * de N horas — exatamente quando a chave do Redis ainda existiria.
+ * de N horas — exatamente quando a chave ainda existiria.
  */
 final class ViewRule
 {
-    /** `topic_view_duration_hours` do Discourse. */
+    /** Horas até a mesma pessoa contar de novo. */
     public const DEFAULT_DURATION_HOURS = 8;
 
     public static function countsAgain(?CarbonInterface $lastCountedAt, CarbonInterface $now, int $durationHours): bool
@@ -51,7 +50,7 @@ final class ViewRule
     }
 
     /**
-     * A chave do Discourse, para quem guarda a trava no cache (as mensagens
+     * A chave da trava, para quem a guarda no cache (as mensagens
      * fazem assim): com a data dentro, a validade de N horas reproduz as duas
      * travas sem precisar ler nada antes — basta um `Cache::add($key, 1, N h)`.
      */

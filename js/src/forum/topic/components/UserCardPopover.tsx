@@ -1,5 +1,5 @@
 /*
- * O cartão de usuário do Discourse: abre no clique do avatar ou do nome do
+ * O cartão de usuário: abre no clique do avatar ou do nome do
  * autor, junto dele, com avatar grande, nomes, grupos, bio, "visto há…",
  * "membro desde" e os botões "Ver perfil"/"Mensagem". Fecha ao clicar fora,
  * com Esc ou ao navegar.
@@ -80,7 +80,7 @@ function ensureRoot() {
 export function openUserCard(user: User, anchor: HTMLElement): void {
   ensureRoot();
 
-  // Um segundo clique no mesmo avatar fecha, como no Discourse.
+  // Um segundo clique no mesmo avatar fecha.
   if (state && state.user === user && state.anchor === anchor) {
     closeUserCard();
     return;
@@ -103,7 +103,7 @@ export function openUserCard(user: User, anchor: HTMLElement): void {
   m.redraw();
 }
 
-/** O tempo de leitura (segundos) no formato curto do Discourse: "35 d", "13 h", "8 min". */
+/** O tempo de leitura (segundos) no formato curto: "35 d", "13 h", "8 min". */
 function readTime(seconds: number): string {
   const minutes = Math.round(seconds / 60);
 
@@ -127,7 +127,7 @@ interface CanelaUserCardAttrs extends ComponentAttrs {
 
 class CanelaUserCard extends Component<CanelaUserCardAttrs> {
   /**
-   * O cartão do Discourse (.user-card, 39em): o avatar de 8em subindo 3.3em
+   * O cartão (39em): o avatar de 8em subindo 3.3em
    * acima do cartão, com o flair no canto; @nome enorme e, embaixo, o nome e
    * o título; à direita "Mensagem" e "N postagens no tópico"; depois a bio
    * (2 linhas), local e site, os metadados e os emblemas. O fundo é a imagem
@@ -153,7 +153,7 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
     const message = controls.has('sendMessage') ? (controls.get('sendMessage') as any) : null;
     if (message) controls.remove('sendMessage');
     // O "Chat" do ramon/chat (abrir a MD com a pessoa) vira o botão ao lado da
-    // "Mensagem", como o "Chat" do cartão do Discourse.
+    // "Mensagem".
     const chat = thirdParty.ramonChatUserButton() && controls.has('chatDirect') ? (controls.get('chatDirect') as any) : null;
     if (chat) controls.remove('chatDirect');
     const otherControls = controls.toArray().filter((item: any) => item && item.tag !== Separator);
@@ -174,7 +174,7 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
       ),
       joined && this.meta('joined', t('topic.user_card.joined'), shortDate(joined), fullDate(joined)),
       // "Lido 3 meses (1 d recentemente)": o tempo dos últimos 60 dias entre
-      // parênteses, como o `.metadata .time-read` do Discourse.
+      // parênteses.
       typeof timeRead === 'number' &&
         timeRead > 0 &&
         this.meta(
@@ -279,7 +279,7 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
     );
   }
 
-  /** "Rótulo valor" dos metadados do Discourse (.metadata .desc). */
+  /** "Rótulo valor" dos metadados do cartão. */
   meta(key: string, label: string, value: string, title?: string, accent = false) {
     return (
       <span className={`CanelaUserCard-meta CanelaUserCard-meta--${key}`} title={title}>
@@ -324,7 +324,7 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
     const viewportWidth = document.documentElement.clientWidth;
     const viewportHeight = window.innerHeight;
 
-    // Como no Meta: o avatar grande do cartão (que sobe 3.3em acima dele,
+    // O avatar grande do cartão (que sobe 3.3em acima dele,
     // pela margem do CSS) fica à direita do avatar clicado, quase na mesma
     // altura dele.
     let left = rect.right + GAP;

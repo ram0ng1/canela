@@ -1,13 +1,12 @@
 /*
- * Os caminhos até o bot, como no Discourse:
+ * Os caminhos até o bot:
  *
- * - o ícone do robô no cabeçalho (`ai_bot_add_to_header`), que dentro das
+ * - o ícone do robô no cabeçalho, que dentro das
  *   conversas vira o "sair do bot de IA" e volta para onde a pessoa estava;
- * - o link "Bot de IA" na seção da comunidade da barra lateral
- *   (`ai_bot_add_to_community_section`);
+ * - o link "Bot de IA" na seção da comunidade da barra lateral;
  * - e, na página de conversas, a barra lateral inteira troca de conteúdo:
  *   "Nova pergunta" e as conversas agrupadas em Hoje, Últimos sete dias,
- *   Últimos 30 dias e os meses — o painel AI_CONVERSATIONS_PANEL.
+ *   Últimos 30 dias e os meses.
  */
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
@@ -189,7 +188,7 @@ interface ConversationGroup {
   items: AiConversation[];
 }
 
-/** Hoje · Últimos sete dias · Últimos 30 dias · e um grupo por mês, como na barra do Discourse. */
+/** Hoje · Últimos sete dias · Últimos 30 dias · e um grupo por mês. */
 function groupByDate(list: AiConversation[]): ConversationGroup[] {
   const groups: ConversationGroup[] = [];
   const now = new Date();

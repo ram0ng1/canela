@@ -2,7 +2,7 @@
  * O painel aberto do menu de busca (`search-menu/results.gjs`), num chunk: o
  * campo (SearchMenu) é desenhado desde a primeira pintura e isto desce no
  * ocioso do boot, no hover/foco do campo ou, no máximo, quando o painel abre.
- * Cada abertura cria o painel de novo: a dica aleatória muda, como no Discourse.
+ * Cada abertura cria o painel de novo: a dica aleatória muda.
  */
 import app from 'flarum/forum/app';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -111,7 +111,7 @@ export default class SearchPanel extends Component<SearchPanelAttrs> {
     );
   }
 
-  /** "Perguntar à IA: termo" (o plugin discourse-ai), no topo do painel. */
+  /** "Perguntar à IA: termo", no topo do painel. */
   askAi(term: string): Mithril.Children {
     return (
       <ul className="search-menu-assistant CanelaSearchMenu-ai">
@@ -172,7 +172,7 @@ export default class SearchPanel extends Component<SearchPanelAttrs> {
       subject = (
         <span className="search-item-tag">
           {tagSymbol(opts.tag, '', 'fas fa-tag')}
-          <span className="discourse-tag">{opts.tag.name()}</span>
+          <span className="CanelaSearch-tagName">{opts.tag.name()}</span>
         </span>
       );
     } else if (opts.user) {
@@ -236,14 +236,14 @@ export default class SearchPanel extends Component<SearchPanelAttrs> {
     return <ul className="search-menu-assistant">{items}</ul>;
   }
 
-  /** "pai:filha", como o Discourse escreve a subcategoria. */
+  /** "pai:filha", a forma escrita da subcategoria. */
   tagSlug(tag: CanelaTag): string {
     const parent = tag.isChild() ? (tag.parent() as CanelaTag | null) : null;
 
     return parent ? `${parent.slug()}:${tag.slug()}` : tag.slug();
   }
 
-  /** A página de categoria (ou etiqueta) é o contexto da busca, como no Discourse. */
+  /** A página de categoria (ou etiqueta) é o contexto da busca. */
   contextItem(): Mithril.Children {
     const tag = currentTag();
 
@@ -360,7 +360,7 @@ export default class SearchPanel extends Component<SearchPanelAttrs> {
           <ul className="list" aria-label={`${label} tag`}>
             {results.tags.map((tag) => (
               <li className="item">
-                {this.resultLink(tagUrl(tag), [tagSymbol(tag, '', 'fas fa-tag'), <span className="discourse-tag">{tag.name()}</span>])}
+                {this.resultLink(tagUrl(tag), [tagSymbol(tag, '', 'fas fa-tag'), <span className="CanelaSearch-tagName">{tag.name()}</span>])}
               </li>
             ))}
           </ul>

@@ -10,8 +10,8 @@
  */
 
 /*
- * As abas das preferências (`/u/{username}/preferences/{tab}`), como as do
- * Discourse. Só a rota do documento: o conteúdo é o SettingsPage do core,
+ * As abas das preferências (`/u/{username}/preferences/{tab}`). Só a rota do
+ * documento: o conteúdo é o SettingsPage do core,
  * dividido em abas no JS. `/u/{username}/preferences` sem aba já é atendida
  * pela rota do perfil do core (`/u/{username}[/{filter}]`).
  */

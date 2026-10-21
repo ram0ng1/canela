@@ -18,7 +18,7 @@ export function communityGroups(): Group[] {
     .all<Group>('groups')
     .filter((group) => group.id() !== Group.GUEST_ID && group.id() !== Group.MEMBER_ID)
     .sort((a, b) => {
-      // Administradores e moderadores primeiro, como na lista do Discourse;
+      // Administradores e moderadores primeiro;
       // depois a ordem do admin (posição) e o nome.
       const rank = (group: Group) => (group.id() === Group.ADMINISTRATOR_ID ? 0 : group.id() === '4' ? 1 : 2);
       const position = (group: Group) => group.attribute<number | null>('position') ?? Number.MAX_SAFE_INTEGER;
@@ -27,7 +27,7 @@ export function communityGroups(): Group[] {
     });
 }
 
-/** "Moderadores" → "moderadores": o nome sem acento, como o Discourse usa no endereço. */
+/** "Moderadores" → "moderadores": o nome sem acento, como vai no endereço. */
 function nameSlug(name: string | undefined): string {
   return slug((name || '').normalize('NFD').replace(/[̀-ͯ]/g, ''));
 }

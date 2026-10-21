@@ -19,7 +19,7 @@ use Flarum\User\User;
 use Ramon\Canela\Ai\Llm\ToolDefinition;
 
 /**
- * Lê um tópico do fórum (`read_topic`), a ferramenta "Ler" do Discourse.
+ * Lê um tópico do fórum (`read_topic`), a ferramenta "Ler".
  *
  * Só o que o ator vê: o tópico pela visibilidade do core (o que não se vê
  * vira "não encontrado"), e os posts também filtrados por ele — um post

@@ -12,8 +12,7 @@ declare(strict_types=1);
  */
 
 /*
- * O usuário do sistema e as mensagens automáticas, como o `system` e as
- * `system_messages` do Discourse (src/System).
+ * O usuário do sistema e as mensagens automáticas (src/System).
  */
 
 use Flarum\Api\Context;

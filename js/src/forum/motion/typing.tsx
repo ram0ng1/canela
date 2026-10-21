@@ -1,6 +1,6 @@
 /*
  * "Fulano está digitando…" do flarum-realtime com as reticências que ondulam
- * do `discourse-presence` (`.presence-users .wave .dot`, 1,8s): os três
+ * (`.presence-users .wave .dot`, 1,8s): os três
  * pontos sobem um depois do outro, no lugar do ícone "…" pulsando.
  */
 import { extend } from 'flarum/common/extend';

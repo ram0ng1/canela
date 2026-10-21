@@ -26,7 +26,7 @@ type Draft = Required<Pick<BadgeAttributes, 'name' | 'icon' | 'type' | 'grouping
 };
 
 /**
- * Criar ou editar um emblema — o formulário do /admin/badges do Discourse.
+ * Criar ou editar um emblema — o formulário do /admin/badges.
  *
  * Num emblema do sistema, o slug (que liga à regra automática) e as opções
  * da regra (concessão múltipla e manual) não se editam; o resto sim. Só os

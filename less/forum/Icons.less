@@ -1,10 +1,8 @@
 // ---------------------------------------------------------------------
 // Ícones Lucide (camada de ícones do tema: js/src/forum/icons).
 //
-// As medidas são as do `.svg-icon` do Discourse (css-common.css do Meta):
-// 1em × 1em, `vertical-align: -0.125em`, `line-height: 1`, sem encolher e
-// com o traço podendo sair da caixa. O traço é o "medium" (2) do componente
-// "Discourse Lucide Icons", o padrão no Meta.
+// As medidas: 1em × 1em, `vertical-align: -0.125em`, `line-height: 1`, sem
+// encolher e com o traço podendo sair da caixa. O traço é o "medium" (2).
 //
 // O <svg> herda as classes do <i> do Font Awesome (`fas fa-x`), então o CSS
 // do Font Awesome também o alcança (`display: inline-block`, `fa-fw`): o
@@ -31,22 +29,21 @@ svg.CanelaLucide {
   }
 }
 
-// O coração de quem já curtiu: o Meta deixa esse (o `d-liked`) no coração
-// cheio. O Lucide não tem a variante cheia; preencher o traço dá o mesmo
+// O coração de quem já curtiu fica cheio. O Lucide não tem a variante cheia; preencher o traço dá o mesmo
 // desenho. A contagem de curtidas também mostra o coração cheio.
 .CanelaLike--liked svg.CanelaLucide.lucide-heart,
 .CanelaLikeCount svg.CanelaLucide.lucide-heart {
   fill: currentColor;
 }
 
-// Marcador ativo: o `fas fa-bookmark` (sólido) vira o marcador cheio, como o
-// `.bookmarked` do Discourse — no post, no rodapé ("Favoritado") e nas listas.
+// Marcador ativo: o `fas fa-bookmark` (sólido) vira o marcador cheio — no
+// post, no rodapé ("Favoritado") e nas listas.
 svg.CanelaLucide.fas.fa-bookmark,
 .CanelaBookmarkButton--active svg.CanelaLucide.lucide-bookmark {
   fill: currentColor;
 }
 
-// O alfinete solto ("desafixado") do Discourse aparece de cabeça para baixo.
+// O alfinete solto ("desafixado") aparece de cabeça para baixo.
 svg.CanelaLucide.lucide-pin.unpinned {
   transform: rotate(180deg);
 }

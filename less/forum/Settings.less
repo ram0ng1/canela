@@ -1,6 +1,6 @@
 // =====================================================================
-// Preferências (abas do perfil) como as do Discourse: cada aba é um
-// formulário corrido, sem cartões — o `form-vertical` de 500px, rótulo em
+// Preferências (abas do perfil): cada aba é um
+// formulário corrido, sem cartões — 500px de largura, rótulo em
 // negrito em cima, ajuda em cinza embaixo e 2em entre um grupo e outro.
 // As abas em si são a segunda linha da navegação do perfil (User.less).
 // =====================================================================
@@ -35,7 +35,7 @@
     background: none;
   }
 
-  // O `control-label` do Discourse: o tamanho do texto, só em negrito.
+  // O rótulo: o tamanho do texto, só em negrito.
   .FieldSet-label {
     margin: 0 0 0.25em;
     padding: 0;
@@ -77,7 +77,7 @@
     color: var(--cn-primary-medium);
   }
 
-  // Switch com o rótulo à direita e a ajuda embaixo, como no Discourse.
+  // Switch com o rótulo à direita e a ajuda embaixo.
   .Checkbox--switch {
     margin: 0;
     line-height: 1.5;
@@ -88,7 +88,7 @@
     }
   }
 
-  // Campos com a largura do formulário do Discourse.
+  // Campos com a largura do formulário.
   .FormControl,
   .Select {
     max-width: 500px;
@@ -121,7 +121,7 @@
 }
 
 // O formulário do perfil (e os outros que têm botão próprio) termina com o
-// botão primário à esquerda, como o `save-controls` do Discourse.
+// botão primário à esquerda.
 .CanelaPrefs .Settings-canelaProfile .Button--primary {
   align-self: flex-start;
 }
@@ -133,7 +133,7 @@
 }
 
 // ---------------------------------------------------------------------
-// Grupos da aba Conta (`control-group`): rótulo, controles e ajuda
+// Grupos da aba Conta: rótulo, controles e ajuda
 // ---------------------------------------------------------------------
 .CanelaPrefs-account {
   display: flex;
@@ -188,7 +188,7 @@
   list-style: none;
 }
 
-// A foto: 90px, como o `pref-avatar`; o clique ainda abre o menu do core.
+// A foto: 90px; o clique ainda abre o menu do core.
 .CanelaPrefs-avatar .CanelaPrefs-controls {
   gap: var(--cn-space-3);
 }

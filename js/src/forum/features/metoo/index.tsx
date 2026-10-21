@@ -1,5 +1,5 @@
 /*
- * "Me too" do Discourse (o "shared issue" do discourse-solved): abaixo do
+ * "Me too" (problema compartilhado): abaixo do
  * primeiro post, a pílula "✋ Eu também", com a contagem entre parênteses
  * quando alguém já marcou ("Eu também (3)"). Quem marca passa a seguir o
  * tópico (o servidor cuida disso) e o ícone ganha a cor de destaque.
@@ -133,7 +133,7 @@ async function toggle(discussion: Discussion, state: MeTooState): Promise<void> 
 
     const attributes: Record<string, unknown> = { canelaMeToo: { ...state, count: result.count, mine: result.mine } };
 
-    // O rodapé do tópico mostra "Seguindo" na hora, como o sino do Discourse.
+    // O rodapé do tópico mostra "Seguindo" na hora.
     if (result.subscription !== null && result.subscription !== undefined) attributes.subscription = result.subscription;
 
     discussion.pushAttributes(attributes);

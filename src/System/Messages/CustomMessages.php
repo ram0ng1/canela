@@ -18,7 +18,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Support\Str;
 
 /**
- * As mensagens automáticas que o admin cria (além das do Discourse): um
+ * As mensagens automáticas que o admin cria (além das padrão): um
  * título, um gatilho e o assunto e o texto, guardados em JSON em
  * `canela.sysmsg_custom`. Cada uma sai uma vez só por pessoa.
  *

@@ -21,7 +21,7 @@ use Ramon\Canela\Gaps\UnreadTags;
 
 /**
  * `canelaHasUnread` na tag: o ponto de novidades da categoria na barra
- * lateral. A tag mãe acende junto com a filha, como no Discourse.
+ * lateral. A tag mãe acende junto com a filha.
  */
 final class TagResourceFields
 {

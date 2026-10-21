@@ -20,13 +20,13 @@ use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
 
 /**
- * A equipe como caixa de mensagens de grupo, como o "moderators" do
- * Discourse: quem escreve a um moderador ou administrador fala com a equipe
+ * A equipe como caixa de mensagens de grupo: quem escreve a um moderador ou
+ * administrador fala com a equipe
  * toda, e a conversa aparece na caixa do grupo de todos os membros dela.
  *
  * O grupo da caixa é o dos Moderadores; sem moderadores, o dos
- * Administradores. Os administradores sempre entram junto (no Discourse eles
- * também veem as mensagens da equipe).
+ * Administradores. Os administradores sempre entram junto (eles também veem
+ * as mensagens da equipe).
  */
 final class StaffGroups
 {
@@ -100,7 +100,7 @@ final class StaffGroups
     /**
      * Torna a conversa da caixa do grupo: tipo próprio (o flarum/messages só
      * reaproveita conversas `direct`, então mensagens novas à equipe abrem
-     * conversas novas, como os tópicos do Discourse), o grupo marcado e cada
+     * conversas novas, como tópicos), o grupo marcado e cada
      * membro da equipe como participante "pelo grupo".
      *
      * @param int[] $personal quem continua com a conversa na caixa pessoal (quem escreveu)

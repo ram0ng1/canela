@@ -13,9 +13,9 @@ use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 /*
- * Quem acompanha cada fio e até onde leu (`user_chat_thread_memberships`).
+ * Quem acompanha cada fio e até onde leu.
  *
- * `notification_level` segue o Discourse: 0 silenciado, 1 normal, 2
+ * `notification_level`: 0 silenciado, 1 normal, 2
  * monitorando (conta não lidas), 3 acompanhando (notifica toda resposta).
  */
 return Migration::createTable(

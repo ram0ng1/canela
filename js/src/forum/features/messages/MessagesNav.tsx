@@ -1,13 +1,10 @@
 /*
- * A segunda linha da aba "Mensagens" do perfil (`.user-navigation-secondary`
- * de `templates/user/messages.gjs`): o seletor de caixa ("Caixa de entrada ▾",
+ * A segunda linha da aba "Mensagens" do perfil: o seletor de caixa ("Caixa de entrada ▾",
  * com a bolinha de não lidas), as abas da caixa (Últimos, Enviadas, Novo,
  * Não lidos, Arquivo) e, à direita, "✉ Nova mensagem".
  *
- * O Discourse lista no seletor a caixa pessoal e as dos grupos de que a pessoa
- * participa. O flarum/messages não tem caixa de grupo (toda conversa é entre
- * duas pessoas), então o seletor tem só a pessoal — como o Discourse de quem
- * não está em nenhum grupo com mensagens.
+ * O flarum/messages não tem caixa de grupo (toda conversa é entre duas
+ * pessoas), então o seletor tem só a caixa pessoal.
  */
 import app from 'flarum/forum/app';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
@@ -39,7 +36,7 @@ export interface MessagesNavAttrs extends ComponentAttrs {
   onsent?: () => void;
 }
 
-/** Os ícones do Discourse (`envelope`, `reply`, `circle-exclamation`, `circle-plus`, `box-archive`). */
+/** Os ícones das caixas (`envelope`, `reply`, `circle-exclamation`, `circle-plus`, `box-archive`). */
 const ICONS: Record<Box, string> = {
   inbox: 'far fa-envelope',
   sent: 'fas fa-reply',

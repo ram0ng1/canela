@@ -25,7 +25,7 @@ use Flarum\Database\AbstractModel;
  */
 class Reaction extends AbstractModel
 {
-    /** O `MAX_REACTIONS_PER_MESSAGE` do Discourse: emojis diferentes por mensagem. */
+    /** Emojis diferentes por mensagem. */
     public const MAX_PER_MESSAGE = 30;
 
     protected $table = 'canela_chat_reactions';

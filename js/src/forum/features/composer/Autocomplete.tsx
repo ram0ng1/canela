@@ -1,5 +1,5 @@
 /*
- * Um menu de sugestões preso ao cursor do editor, como os do Discourse para
+ * Um menu de sugestões preso ao cursor do editor, como os de
  * `:emoji` e `#categoria`.
  *
  * Segue o desenho do autocompletar do flarum/mentions (um contêiner logo

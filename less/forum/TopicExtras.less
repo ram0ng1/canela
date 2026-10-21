@@ -5,7 +5,7 @@
 // =====================================================================
 
 // ---------------------------------------------------------------------
-// Mapa do tópico (topic-map do Discourse): faixa entre linhas, sem caixa.
+// Mapa do tópico: faixa entre linhas, sem caixa.
 // Abaixo do primeiro post ele começa na coluna do texto (57px); no fim do
 // tópico, na borda do stream.
 // ---------------------------------------------------------------------
@@ -109,7 +109,7 @@ button.CanelaTopicMap-stat {
   }
 }
 
-// Os avatares de quem mais participou (--users-summary): 2em, sem flair.
+// Os avatares de quem mais participou: 2em, sem flair.
 .CanelaTopicMap-users {
   display: flex;
   flex: 1 2 0;
@@ -130,7 +130,7 @@ button.CanelaTopicMap-stat {
   }
 }
 
-// Os menus dos números (fk-d-menu), com o float-down do Discourse.
+// Os menus dos números, com o float-down.
 .CanelaTopicMap-menu {
   position: absolute;
   top: calc(100% + 4px);
@@ -285,12 +285,12 @@ button.CanelaTopicMap-stat {
   gap: var(--cn-space-2);
 }
 
-// O #topic-footer-buttons do visitante: só o "Responder", alinhado à direita.
+// Os botões do rodapé do tópico para o visitante: só o "Responder", alinhado à direita.
 .CanelaTopicFooter--guest .CanelaTopicFooter-main {
   justify-content: flex-end;
 }
 
-// As pílulas do Discourse (btn-default do Horizon): borda primary-300,
+// As pílulas (botão padrão do tema): borda primary-300,
 // fundo do cartão, ícone + texto em 16px; o "Responder" é o primário.
 .CanelaTopicFooter-button.Button,
 .CanelaTopicFooter-reply.Button,
@@ -383,7 +383,7 @@ button.CanelaTopicMap-stat {
   color: var(--cn-primary-high);
 }
 
-// O menu de notificações (o notifications-tracking do Discourse): ícone na
+// O menu de notificações: ícone na
 // cor de destaque ao lado do título, a descrição pequena em cinza e o nível
 // atual com o fundo destacado, sem o ✓.
 .CanelaNotifications-menu {
@@ -454,7 +454,7 @@ button.CanelaTopicMap-stat {
 }
 
 @media @phone {
-  // Como o Discourse no celular: as pílulas viram só o ícone; o "Responder"
+  // No celular as pílulas viram só o ícone; o "Responder"
   // continua com o texto.
   .CanelaTopicFooter-button .Button-label {
     .canela-topic-sr-only();
@@ -472,7 +472,7 @@ button.CanelaTopicMap-stat {
 }
 
 // ---------------------------------------------------------------------
-// Tópicos sugeridos (more-topics do Discourse): a tabela da lista, com o
+// Tópicos sugeridos: a tabela da lista, com o
 // título em 16px * 1.17 e linhas de 20px de respiro.
 // ---------------------------------------------------------------------
 .CanelaSuggested {
@@ -553,7 +553,7 @@ button.CanelaTopicMap-stat {
     padding-left: 12px;
   }
 
-  // O sublinhado do nav-pills do Horizon aparece só no hover.
+  // O sublinhado das abas aparece só no hover.
   &:hover,
   &:focus-visible {
     color: var(--cn-accent);
@@ -709,7 +709,7 @@ button.CanelaTopicMap-stat {
 }
 
 // ---------------------------------------------------------------------
-// Cartão de usuário (o .user-card do Discourse): 39em de largura, raio
+// Cartão de usuário: 39em de largura, raio
 // grande, o avatar de 8em subindo 3.3em acima do cartão, o conteúdo num véu
 // de 85% da cor do cartão sobre a imagem de fundo do perfil.
 // ---------------------------------------------------------------------
@@ -722,7 +722,7 @@ button.CanelaTopicMap-stat {
   margin-top: 3.3em;
   box-sizing: border-box;
   border-radius: 16px;
-  // A borda do .fk-d-menu__inner-content (content-border-color): sem ela, no
+  // A borda do conteúdo do menu: sem ela, no
   // escuro o cartão some contra o post de mesma cor.
   border: 1px solid var(--cn-border);
   background: var(--cn-surface) center center;
@@ -739,8 +739,7 @@ button.CanelaTopicMap-stat {
   background-image: var(--canela-user-card-bg);
 }
 
-// O float-down dos menus do Discourse (fk-d-menu.-animated), que o cartão
-// de usuário também usa.
+// O float-down dos menus, que o cartão de usuário também usa.
 @keyframes canelaFloatDown {
   0% {
     opacity: 0;
@@ -997,7 +996,7 @@ button.CanelaTopicMap-stat {
 }
 
 @media @phone {
-  // No celular o cartão é uma caixa centralizada, como o do Discourse.
+  // No celular o cartão é uma caixa centralizada.
   .CanelaUserCard {
     position: fixed;
     left: 50% !important;
@@ -1042,7 +1041,7 @@ button.CanelaTopicMap-stat {
 }
 
 // ---------------------------------------------------------------------
-// Quem curtiu / quem reagiu (o popover do discourse-reactions): cartão
+// Quem curtiu / quem reagiu (popover): cartão
 // branco, raio 8, sombra, seta para a contagem; avatar de 32px, o nome e o
 // coração (ou o emoji) à direita; rola depois de ~8 pessoas.
 // ---------------------------------------------------------------------

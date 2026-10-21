@@ -13,14 +13,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
 /*
- * Nível de confiança do Discourse (0 a 4) na própria tabela de usuários.
+ * Nível de confiança (0 a 4) na própria tabela de usuários.
  *
  * - `canela_trust_level`: o nível atual. Coluna, e não calculado na hora,
  *   porque os emblemas de nível e a promoção dependem do valor anterior.
  * - `canela_trust_level_locked`: o admin fixou o nível; o sistema não
- *   promove nem rebaixa (o `manual_locked_trust_level` do Discourse).
- * - `canela_trust_level_at`: quando o nível mudou pela última vez. O Discourse
- *   não rebaixa um Regular nos primeiros 100 dias depois da promoção (período
+ *   promove nem rebaixa.
+ * - `canela_trust_level_at`: quando o nível mudou pela última vez. Um Regular
+ *   não é rebaixado nos primeiros 100 dias depois da promoção (período
  *   de carência), e isso só se sabe guardando a data.
  */
 return [

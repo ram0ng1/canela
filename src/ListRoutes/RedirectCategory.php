@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Links do Discourse para categorias (/c/suporte/6, /c/suporte/instalacao/31,
+ * Links no formato /c/ para categorias (/c/suporte/6, /c/suporte/instalacao/31,
  * /c/suporte/6/l/top) levados à página da tag no Flarum (/t/instalacao).
  *
  * O slug é o último pedaço que não é número nem parte do sufixo de lista

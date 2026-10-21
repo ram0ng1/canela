@@ -1,6 +1,5 @@
 /*
- * /login e /signup: as páginas cheias de entrar e de cadastro do Discourse
- * (`.login-fullpage`/`.signup-fullpage`) — o logo do fórum, o título grande,
+ * /login e /signup: as páginas cheias de entrar e de cadastro — o logo do fórum, o título grande,
  * o formulário, "Esqueci minha senha", os botões sociais (fof/oauth) e o link
  * para a outra página.
  *
@@ -82,7 +81,7 @@ function pageClass(mode: AuthMode, Base: any): any {
     }
 
     // Entre os botões sociais e o formulário, o "ou" (some pelo CSS quando
-    // não há login social, e no leiaute do Discourse, que tem o traço).
+    // não há login social, e no leiaute sem cartão, que tem o traço).
     body() {
       const content = super.body();
       const subtitle = mode === 'forgot' ? '' : authText(TEXT_ATTRS[mode].subtitle);

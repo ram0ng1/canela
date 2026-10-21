@@ -10,7 +10,7 @@
  */
 
 /*
- * As mensagens do Discourse sobre o flarum/messages: as caixas do perfil
+ * As mensagens sobre o flarum/messages: as caixas do perfil
  * (Últimos, Enviadas, Novo, Não lidos, Arquivo), o arquivo por pessoa, o
  * título da mensagem e o "sair da mensagem".
  *
@@ -93,7 +93,7 @@ return [
                             ];
                         }),
                     // As reações nas mensagens: se valem (a tabela existe), se
-                    // a lista é a do fof/reactions e, sem ele, a do Discourse.
+                    // a lista é a do fof/reactions e, sem ele, a padrão.
                     Schema\Arr::make('canelaMessageReactions')
                         ->visible(static fn ($forum, Context $context): bool => ! $context->getActor()->isGuest())
                         ->get(static function (): array {

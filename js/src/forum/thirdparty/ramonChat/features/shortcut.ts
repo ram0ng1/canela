@@ -1,5 +1,5 @@
 /*
- * (4) O atalho "-" do Discourse: abre e fecha a gaveta do chat. O ramon/chat
+ * (4) O atalho "-": abre e fecha a gaveta do chat. O ramon/chat
  * só tem Alt+C. Fora dos campos de texto, fora da página cheia do chat e
  * fora do celular (lá a gaveta é a tela inteira).
  */

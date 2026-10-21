@@ -1,10 +1,10 @@
 /*
- * A página de categorias no estilo do Discourse: a barra de navegação no
+ * A página de categorias: a barra de navegação no
  * topo, as categorias em caixas (ou em tabela, conforme o admin) e, abaixo,
  * as etiquetas com a contagem de tópicos.
  *
- * Com os endereços do Discourse ligados, /categories é essa página e /tags
- * vira a página de etiquetas do Discourse ("Etiquetas", "Ordenar por
+ * Com os endereços próprios das listas ligados, /categories é essa página e
+ * /tags vira a página de etiquetas ("Etiquetas", "Ordenar por
  * contagem/nome" e a lista). Sem eles, /tags faz as duas vezes.
  *
  * O TagsPage é do flarum/tags; ele é buscado no registro de módulos só se a
@@ -208,7 +208,7 @@ function tagsView(labels: CanelaTag[], title = t('categories.tags_title')): Mith
   );
 }
 
-/** A ordenação da página de etiquetas; dura a sessão, como no Discourse. */
+/** A ordenação da página de etiquetas; dura a sessão. */
 let tagSort: 'count' | 'name' = 'count';
 
 function sortLink(key: 'count' | 'name', label: string): Mithril.Children {
@@ -227,7 +227,7 @@ function sortLink(key: 'count' | 'name', label: string): Mithril.Children {
   );
 }
 
-/** A página /tags do Discourse (`.tags-index`). */
+/** A página /tags. */
 function tagsPageView(labels: CanelaTag[]): Mithril.Children {
   const sorted = tagSort === 'name' ? labels.slice().sort((a, b) => a.name().localeCompare(b.name(), undefined, { sensitivity: 'base' })) : labels;
 
@@ -263,7 +263,7 @@ export default function installCategoriesPage(): void {
   extend(TagsPage.prototype, 'contentItems', function (this: any, items: ItemList<Mithril.Children>) {
     const tagsPage = onTagsPage();
 
-    // A página de etiquetas do Discourse não tem a barra de navegação.
+    // A página de etiquetas não tem a barra de navegação.
     if (!tagsPage) items.add('canelaNav', <ListNavigation />, 200);
 
     if (this.loading) {

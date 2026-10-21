@@ -1,16 +1,12 @@
 /*
  * O mapa Font Awesome → Lucide do tema.
  *
- * O meta.discourse.org não usa os ícones sólidos do Font Awesome: ele roda o
- * componente de tema oficial "Discourse Lucide Icons"
- * (github.com/discourse/discourse-lucide-icons), que troca cada ícone do
- * Discourse pelo equivalente de traço do Lucide via `api.replaceIcon`. O
- * META_MAP abaixo é a tabela desse componente, copiada como está: é ela que
- * decide quais ícones o Meta desenha com o Lucide e quais continuam no Font
- * Awesome. Ficaram de fora só os nomes internos do Discourse (`d-*`,
- * `discourse-*`, `notification.*`…), que não existem no Flarum.
+ * Em vez dos ícones sólidos do Font Awesome, a interface usa o equivalente
+ * de traço do Lucide. O META_MAP abaixo é a tabela que liga cada nome do Font
+ * Awesome ao desenho do Lucide: é ela que decide quais ícones viram Lucide e
+ * quais continuam no Font Awesome.
  *
- * Os nomes do Discourse são os do Font Awesome 6 (`magnifying-glass`, não
+ * As chaves são os nomes do Font Awesome 6 (`magnifying-glass`, não
  * `search`; `far-bell` para o regular). O Flarum e as extensões ainda usam
  * muitos apelidos do FA 4/5, então o nome passa antes pelo FA_ALIASES.
  *
@@ -18,8 +14,8 @@
  */
 
 /**
- * Apelidos antigos do Font Awesome → nome canônico do FA 6 (o que o Discourse
- * usa). Só os que aparecem no core, nas extensões instaladas ou no tema, mais
+ * Apelidos antigos do Font Awesome → nome canônico do FA 6 (o das chaves do
+ * mapa). Só os que aparecem no core, nas extensões instaladas ou no tema, mais
  * os mais comuns que um admin digita para tags e grupos.
  */
 export const FA_ALIASES: Record<string, string> = {
@@ -102,8 +98,7 @@ export const FA_ALIASES: Record<string, string> = {
 };
 
 /**
- * A tabela do "Discourse Lucide Icons" (nome do Discourse → nome do Lucide),
- * na ordem do original. As chaves `far-*` são as variantes regulares.
+ * A tabela principal (nome do Font Awesome → nome do Lucide). As chaves `far-*` são as variantes regulares.
  */
 export const META_MAP: Record<string, string> = {
   'align-left': 'align-left',
@@ -379,17 +374,16 @@ export const META_MAP: Record<string, string> = {
 };
 
 /**
- * Os que o componente do Meta ignora por padrão (configuração
- * `ignored_icons`: "d-liked|square-full|circle"). O `circle` sólido fica no
+ * Os que ficam fora do mapa de propósito (`square-full` e `circle`). O
+ * `circle` sólido fica no
  * Font Awesome porque é usado como bolinha cheia (status, não lido). O
- * `d-liked` (coração cheio de quem curtiu) não tem nome no Flarum: o tema o
- * reproduz preenchendo o coração do Lucide pelo CSS (Icons.less).
+ * coração cheio de quem curtiu não tem nome no Flarum: o tema o reproduz preenchendo o coração do Lucide pelo CSS (Icons.less).
  */
 export const META_IGNORED = new Set(['circle', 'square-full']);
 
 /**
- * Ícones de interface que o Flarum e as extensões usam e que o Discourse não
- * tem (logo, o Meta não precisou mapear). Sem eles, a casca misturaria traço
+ * Ícones de interface que o Flarum e as extensões usam e que a tabela
+ * principal não cobre. Sem eles, a casca misturaria traço
  * e sólido na mesma barra; o equivalente escolhido é o do próprio Lucide.
  */
 export const CANELA_EXTRAS: Record<string, string> = {
@@ -407,7 +401,7 @@ export const CANELA_EXTRAS: Record<string, string> = {
   'rotate-left': 'rotate-ccw',
   'code-branch': 'git-branch',
   print: 'printer',
-  // O composer do Discourse usa "discourse-expand/compress" → maximize/minimize
+  // Tela cheia e minimizar do composer → maximize/minimize
   expand: 'maximize',
   'up-right-and-down-left-from-center': 'maximize',
   'down-left-and-up-right-to-center': 'minimize',
@@ -439,10 +433,10 @@ export const CANELA_EXTRAS: Record<string, string> = {
   // destoava, menor e preenchido, entre os ícones de traço.
   'sticky-note': 'sticky-note',
   'note-sticky': 'sticky-note',
-  // O sino de "acompanhando" (o d-watching do Discourse Lucide): com ondas,
+  // O sino de "acompanhando": com ondas,
   // diferente do sino simples de "normal".
   'bell-ring': 'bell-ring',
-  // E o de "monitorando" (d-tracking), com o ponto.
+  // E o de "monitorando", com o ponto.
   'bell-dot': 'bell-dot',
   'calendar-days': 'calendar-days',
   'circle-dot': 'circle-dot',
@@ -452,9 +446,9 @@ export const CANELA_EXTRAS: Record<string, string> = {
   // seção "Etiquetas" da barra misturaria sólido e traço.
   server: 'server',
   'universal-access': 'accessibility',
-  // O seletor "Recentes ⌃⌄" da lista no celular (`discourse-chevron-expand`,
-  // que o componente do Meta troca pelo chevrons-up-down).
-  'discourse-chevron-expand': 'chevrons-up-down',
+  // O seletor "Recentes ⌃⌄" da lista no celular, desenhado como
+  // chevrons-up-down.
+  'chevron-expand': 'chevrons-up-down',
 };
 
 /** Classes do Font Awesome que são estilo, não nome de ícone. */
@@ -483,7 +477,7 @@ const UTILITY =
 /**
  * O nome do Lucide para uma classe de ícone do Flarum (`fas fa-search`,
  * `far fa-bell fa-fw`…), ou `null` quando o ícone deve continuar no Font
- * Awesome: marcas (`fab`), os ignorados pelo Meta e qualquer um fora do mapa,
+ * Awesome: marcas (`fab`), os ignorados (META_IGNORED) e qualquer um fora do mapa,
  * como boa parte dos que o admin escolhe para tags e grupos.
  */
 export function lucideNameFor(classes: string): string | null {
@@ -502,7 +496,7 @@ export function lucideNameFor(classes: string): string | null {
 
   const name = FA_ALIASES[icon] ?? icon;
 
-  // No Discourse o regular tem chave própria (`far-bell`). No Flarum o
+  // No mapa o regular tem chave própria (`far-bell`). No Flarum o
   // regular e o sólido do mesmo nome são o mesmo ícone de interface, e no
   // Lucide (só traço) os dois sairiam iguais: daí o recuo para o sólido.
   const regularName = regular ? META_MAP[`far-${name}`] : undefined;

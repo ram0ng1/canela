@@ -18,7 +18,7 @@ export interface FeaturedBadgesAttrs extends ComponentAttrs {
 }
 
 /**
- * Os emblemas de destaque de alguém, como no cartão do usuário do Discourse:
+ * Os emblemas de destaque de alguém, no cartão do usuário:
  * os primeiros na ordem ouro → prata → bronze, e um "+N" que leva à aba
  * Emblemas do perfil. Some por inteiro enquanto carrega e quando não há
  * emblema — um cartão não precisa avisar que alguém ainda não ganhou nada.

@@ -1,12 +1,11 @@
 /*
- * A linha "último acesso" da lista do Discourse (.topic-list-item-separator):
+ * A linha "último acesso" da lista:
  * na lista de Recentes, uma linha vermelha separa os tópicos que se mexeram
  * desde a visita anterior dos que já estavam assim.
  *
  * O Flarum não guarda a visita anterior (o last_seen_at é atualizado a cada
  * requisição), então o tema guarda no aparelho, por usuário: a visita atual
- * e a anterior. Uma "visita" nova começa depois de uma hora sem uso, como o
- * previous_visit_at do Discourse.
+ * e a anterior. Uma "visita" nova começa depois de uma hora sem uso.
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';

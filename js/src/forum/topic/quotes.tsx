@@ -1,7 +1,7 @@
 /*
- * Citações no jeito do Discourse (aside.quote): o mentions grava uma citação
- * como `<blockquote><p><a class="PostMention">Fulano</a> texto…</p>`, e o
- * Discourse mostra em cima da citação um cabeçalho "avatar Fulano:" com a
+ * Citações com cabeçalho: o mentions grava uma citação
+ * como `<blockquote><p><a class="PostMention">Fulano</a> texto…</p>`, e aqui
+ * a citação ganha em cima um cabeçalho "avatar Fulano:" com a
  * seta para ir ao post citado. O tema monta esse cabeçalho dentro do próprio
  * blockquote, sobre o HTML já renderizado.
  *
