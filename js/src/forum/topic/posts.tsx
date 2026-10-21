@@ -18,7 +18,6 @@ import Button from 'flarum/common/components/Button';
 import Dropdown from 'flarum/common/components/Dropdown';
 import Icon from 'flarum/common/components/Icon';
 import Avatar from 'flarum/common/components/Avatar';
-import Link from 'flarum/common/components/Link';
 import Separator from 'flarum/common/components/Separator';
 import Tooltip from 'flarum/common/components/Tooltip';
 import CommentPost from 'flarum/forum/components/CommentPost';

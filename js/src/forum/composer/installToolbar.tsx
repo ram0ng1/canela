@@ -18,7 +18,6 @@
  * a barra por `override`, e um `extend` registrado antes seria descartado.
  * Vale para qualquer TextEditor com composer (o de mensagens também).
  */
-import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import Component from 'flarum/common/Component';
 import TextEditor from 'flarum/common/components/TextEditor';

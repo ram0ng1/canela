@@ -16,7 +16,7 @@ import { AdminNotice, AdminSubGroup, SubDivider } from '../components/AdminCard'
 import AdminToggle from '../components/AdminToggle';
 import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
-import { AdminComponent, getBool, getStr, saveSetting, trans } from '../util';
+import { AdminComponent, getStr, saveSetting, trans } from '../util';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings.ai';

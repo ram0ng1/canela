@@ -439,7 +439,9 @@ export function reactionTitle(char: string, userIds: number[], count: number): s
   const others = userIds.filter((id) => id !== me).map((id) => chatUser(id)?.username() ?? '?');
   const reacted = userIds.includes(me);
   const more = count - userIds.length;
-  const strip = (html: string) => html.replace(/<[^>]+>/g, '');
+  // Texto puro para a dica: tira as tags e, por garantia, qualquer `<`/`>`
+  // que sobre (uma passada só deixaria remontar `<scr<script>ipt>`).
+  const strip = (html: string) => html.replace(/<[^>]*>/g, '').replace(/[<>]/g, '');
 
   if (reacted && !others.length) return strip(ct('reactions.only_you', { emoji: char }));
   if (reacted && others.length === 1) return strip(ct('reactions.you_and_single_user', { emoji: char, username: others[0] }));

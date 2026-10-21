@@ -54,6 +54,12 @@ function reactionComponent(): any {
   return extModule<any>('fof-reactions', 'common/components/ReactionComponent');
 }
 
+/**
+ * A chave do carregamento do curtir/descurtir sem reação: o reactToPost do
+ * fof/reactions guarda `loading[reação]`, e a reação nula vira "null".
+ */
+const NO_REACTION = 'null';
+
 function reactToPostFn(): ((post: Post, reaction: any, loading: Record<string, boolean>) => unknown) | null {
   const mod = extModule<any>('fof-reactions', 'forum/utils/reactToPost');
 
@@ -385,7 +391,7 @@ class CanelaReactButton {
           aria-haspopup={list.length ? 'menu' : undefined}
           aria-expanded={list.length ? (this.open ? 'true' : 'false') : undefined}
           title={label}
-          loading={!!this.loading[null as any]}
+          loading={!!this.loading[NO_REACTION]}
           onpointerdown={(event: PointerEvent) => this.press(event)}
           onpointerup={() => window.clearTimeout(this.pressTimer)}
           onpointercancel={() => window.clearTimeout(this.pressTimer)}
@@ -684,7 +690,7 @@ export default function installReactions(): void {
         className="Button Button--link Reactions--ShowReactions CanelaReactions-mine"
         title={label}
         aria-label={label}
-        loading={this.loading?.[null as any]}
+        loading={this.loading?.[NO_REACTION]}
         onclick={() => reactToPost(post, null, this.loading)}
       >
         {reactionEmoji(mine)}

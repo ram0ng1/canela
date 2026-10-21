@@ -124,7 +124,6 @@ export default class ComposerActionTitle extends Component<ComposerActionTitleAt
   }
 
   trigger(): Mithril.Children {
-    const { kind } = this.attrs;
     const label = this.label();
     const actions = this.actionItems().toArray();
 

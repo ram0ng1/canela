@@ -35,7 +35,7 @@ import type Mithril from 'mithril';
 import SelectKit, { type SelectKitRow } from '../../composer/SelectKit';
 import ComposerActionTitle from '../../composer/ComposerActionTitle';
 import { fullDate, shortAge } from '../../utils/dates';
-import { categorySymbol, type CanelaTag } from '../../utils/tags';
+import type { CanelaTag } from '../../utils/tags';
 import { t } from '../../utils/settings';
 import { thirdParty } from '../settings';
 import { wikiArticleUrl, wikiAttr, wikiCan, wikiIndexUrl, wt } from './shared';

@@ -3,7 +3,7 @@
  * desce quando alguém abre "Convidar" (barra lateral ou compartilhar).
  */
 import app from 'flarum/forum/app';
-import Modal, { type IInternalModalAttrs } from 'flarum/common/components/Modal';
+import type { IInternalModalAttrs } from 'flarum/common/components/Modal';
 import FormModal from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
