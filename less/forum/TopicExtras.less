@@ -386,10 +386,15 @@ button.CanelaTopicMap-stat {
 // O menu de notificações: ícone na
 // cor de destaque ao lado do título, a descrição pequena em cinza e o nível
 // atual com o fundo destacado, sem o ✓.
+// No celular o menu é a folha de baixo do core, de ponta a ponta: a largura
+// de 300–360px (que cortava a folha à direita) é só da janela flutuante.
 .CanelaNotifications-menu {
-  min-width: 300px;
-  max-width: 360px;
   padding: 4px;
+
+  @media @tablet-up {
+    min-width: 300px;
+    max-width: 360px;
+  }
 
   > li > .DetailedDropdownItem {
     display: block;
