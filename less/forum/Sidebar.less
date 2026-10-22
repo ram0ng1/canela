@@ -794,11 +794,12 @@
   }
 }
 
-// A seção principal: a caixa e o nome à esquerda, as setas de ordem à direita.
+// A seção principal: a alça de arrastar (⋮⋮), a caixa e o nome.
 .CanelaSidebarCustomize-row {
   display: flex;
   align-items: center;
   gap: var(--cn-space-1);
+  background: var(--cn-surface);
 
   > label {
     flex: 1 1 auto;
@@ -806,25 +807,46 @@
   }
 }
 
-.CanelaSidebarCustomize-move {
-  display: flex;
+.CanelaSidebarCustomize-handle {
+  display: inline-flex;
   flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  border-radius: var(--cn-radius);
+  color: var(--cn-primary-low-mid);
+  cursor: grab;
+  // O dedo arrasta a linha, e não a página.
+  touch-action: none;
 
-  .Button--icon {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    color: var(--cn-primary-medium);
+  &:hover,
+  &:focus-visible {
+    color: var(--cn-primary-high);
+    background: var(--cn-primary-very-low);
+  }
+}
 
-    &:hover:not(:disabled),
-    &:focus-visible {
-      color: var(--cn-primary);
-    }
+// A linha sendo arrastada "levanta": sombra e a cor do cartão por cima das
+// vizinhas, que deslizam por baixo dela.
+.CanelaSidebarCustomize-list--dragging {
+  cursor: grabbing;
+  user-select: none;
 
-    &:disabled {
-      opacity: 0.3;
-      background: transparent;
-    }
+  .CanelaSidebarCustomize-handle {
+    cursor: grabbing;
+  }
+}
+
+.CanelaSidebarCustomize-row--dragging {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--cn-radius);
+  border-bottom-color: transparent;
+  box-shadow: var(--cn-shadow-dropdown);
+
+  .CanelaSidebarCustomize-handle {
+    color: var(--cn-primary);
   }
 }
 
