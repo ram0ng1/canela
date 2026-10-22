@@ -2900,6 +2900,7 @@ ramon-canela:
     not_found:
       page_title: ページが見つかりません
       title: おっと！そのページは存在しないか、非公開です。
+      hint: 'アドレスが間違っているか、コンテンツが削除されたか制限されている可能性があります。'
       popular_topics: 人気のスレッド
       recent_topics: 最近のスレッド
       see_more: もっと見る

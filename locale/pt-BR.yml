@@ -2900,6 +2900,7 @@ ramon-canela:
     not_found:
       page_title: Página não encontrada
       title: Oops! Essa página não existe ou é privada.
+      hint: 'O endereço pode ter sido digitado errado, ou o conteúdo foi removido ou é restrito.'
       popular_topics: Discussões populares
       recent_topics: Discussões recentes
       see_more: Mais
