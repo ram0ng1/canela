@@ -38,6 +38,11 @@ final class GapsSettings
 
     public const NOT_FOUND = 'canela.not_found_page';
 
+    /** O modelo da página 404 (views/gaps/not-found/<modelo>.blade.php). */
+    public const NOT_FOUND_TEMPLATE = 'canela.not_found_template';
+
+    public const NOT_FOUND_TEMPLATES = ['classic', 'minimal', 'split', 'signpost'];
+
     public const MARKDOWN_TABLES = 'canela.markdown_tables';
 
     public const LOCAL_DATES = 'canela.local_dates';
@@ -54,6 +59,7 @@ final class GapsSettings
         self::INVITE_DAYS => 7,
         self::MOVE_POSTS => true,
         self::NOT_FOUND => true,
+        self::NOT_FOUND_TEMPLATE => 'classic',
         self::MARKDOWN_TABLES => true,
         self::LOCAL_DATES => true,
     ];
@@ -68,6 +74,14 @@ final class GapsSettings
         $value = $this->settings->get($key, self::DEFAULTS[$key] ?? false);
 
         return $value === true || $value === 1 || $value === '1' || $value === 'true';
+    }
+
+    /** O modelo da 404; um valor desconhecido volta para o clássico. */
+    public function notFoundTemplate(): string
+    {
+        $template = (string) $this->settings->get(self::NOT_FOUND_TEMPLATE, 'classic');
+
+        return in_array($template, self::NOT_FOUND_TEMPLATES, true) ? $template : 'classic';
     }
 
     /** Dias de validade de um convite novo: de 1 a 90. */

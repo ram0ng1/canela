@@ -1,0 +1,55 @@
+// Card "Página 404" (js/src/admin/components/NotFoundPicker.tsx): os modelos
+// como esboços, na cor de destaque do fórum (--cn-np-accent).
+.CanelaNotFoundPicker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.CanelaNotFoundPicker-option {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 10px 10px 8px;
+  border: 1px solid var(--control-bg);
+  border-radius: var(--border-radius);
+  background: var(--body-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: var(--muted-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &.is-selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+  }
+}
+
+.CanelaNotFoundPicker-sketch {
+  display: block;
+  border: 1px solid var(--control-bg);
+  border-radius: 6px;
+  background: var(--body-bg);
+  overflow: hidden;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.CanelaNotFoundPicker-name {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}

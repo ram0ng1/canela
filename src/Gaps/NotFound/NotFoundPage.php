@@ -18,13 +18,16 @@ use Flarum\Extension\ExtensionManager;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
+use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Collection;
 use Ramon\Canela\Gaps\GapsSettings;
 use Ramon\Canela\Support\NullOrder;
+use Ramon\Canela\Theme\FontFamily;
 
 /**
  * Os dados da página 404 ("Oops! Essa página não existe ou é
- * privada."): logo, cor, os tópicos populares e os recentes.
+ * privada."): o modelo escolhido no admin, logo, cor, a fonte do tema e os
+ * tópicos populares e recentes.
  *
  * A página de erro é desenhada sem a requisição (o ViewFormatter do core
  * não a repassa), então os tópicos são os que um visitante veria — o que
@@ -37,11 +40,21 @@ final class NotFoundPage
 {
     private const COUNT = 5;
 
+    /** Só um hexadecimal entra num `style`: as cores vêm do banco. */
+    private const HEX = '/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i';
+
+    /** Família do CSS e arquivos (latin, latin-ext) de cada fonte do tema (less/fonts.less). */
+    private const FONTS = [
+        FontFamily::INTER => ['Inter', 'inter-latin-wght-normal.woff2', 'inter-latin-ext-wght-normal.woff2'],
+        FontFamily::JAKARTA => ['Plus Jakarta Sans', 'plus-jakarta-sans-latin-wght-normal.woff2', 'plus-jakarta-sans-latin-ext-wght-normal.woff2'],
+    ];
+
     public function __construct(
         private readonly GapsSettings $gaps,
         private readonly SettingsRepositoryInterface $settings,
         private readonly UrlGenerator $url,
         private readonly ExtensionManager $extensions,
+        private readonly Factory $filesystem,
     ) {
     }
 
@@ -55,19 +68,49 @@ final class NotFoundPage
     {
         try {
             $base = rtrim($this->url->to('forum')->base(), '/');
+            $assets = $this->filesystem->disk('flarum-assets');
             $logo = $this->settings->get('logo_path');
 
             return [
+                'template' => $this->gaps->notFoundTemplate(),
                 'base' => $base,
                 'title' => (string) $this->settings->get('forum_title'),
-                'logo' => $logo ? $base.'/assets/'.$logo : null,
-                'color' => (string) $this->settings->get('theme_primary_color', '#4d698e'),
+                'logo' => $logo ? $assets->url($logo) : null,
+                'color' => $this->color(),
+                'font' => $this->font(fn (string $file) => $assets->url('extensions/ramon-canela/fonts/'.$file)),
                 'popular' => $this->topics('popular'),
                 'recent' => $this->topics('recent'),
             ];
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    private function color(): string
+    {
+        $color = (string) $this->settings->get('theme_primary_color', '#4d698e');
+
+        return preg_match(self::HEX, $color) ? $color : '#4d698e';
+    }
+
+    /**
+     * A mesma fonte do fórum (a do admin): a família e os arquivos para o
+     * `@font-face`. Com a do sistema, só a pilha de fontes do sistema.
+     *
+     * @param callable(string): string $url
+     *
+     * @return array{family: ?string, latin: ?string, latinExt: ?string}
+     */
+    private function font(callable $url): array
+    {
+        $choice = (new FontFamily())($this->settings->get(FontFamily::SETTING));
+        $font = self::FONTS[$choice] ?? null;
+
+        return [
+            'family' => $font[0] ?? null,
+            'latin' => $font ? $url($font[1]) : null,
+            'latinExt' => $font ? $url($font[2]) : null,
+        ];
     }
 
     /** @return list<array{title: string, url: string, tag: ?string, color: ?string}> */
@@ -95,7 +138,7 @@ final class NotFoundPage
                 'title' => (string) $discussion->title,
                 'url' => $this->url->to('forum')->route('discussion', ['id' => $discussion->id.'-'.$discussion->slug]),
                 'tag' => $tag?->name,
-                'color' => $tag?->color ?: null,
+                'color' => $tag && preg_match(self::HEX, (string) $tag->color) ? (string) $tag->color : null,
             ];
         })->values()->all();
     }
