@@ -9,6 +9,7 @@
  * - O menu da sessão abre com a identidade do usuário no topo.
  * - As subabas de "Atividade" que faltavam (Lidos, Reações,
  *   Votos, Resolvido), em activity/.
+ * - Avatar nítido em qualquer tamanho (avatarSizes).
  *
  * Os componentes gerais (botões, modais, composer, busca, configurações) são
  * só LESS: o markup do core já serve.
@@ -18,6 +19,7 @@ import installSummary from './installSummary';
 import installSessionMenu from './installSessionMenu';
 import installPreferences from './preferences/install';
 import installActivity from './activity/install';
+import installAvatarSizes from './avatarSizes';
 
 export default function installUser() {
   installProfile();
@@ -25,4 +27,5 @@ export default function installUser() {
   installSessionMenu();
   installPreferences();
   installActivity();
+  installAvatarSizes();
 }
