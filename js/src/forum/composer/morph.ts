@@ -9,6 +9,11 @@
  * antiga até a nova (esquerda, topo, largura e altura juntos), preso à tela
  * durante o movimento, e o conteúdo reaparece no fim. Depois, as regras de
  * sempre voltam a valer.
+ *
+ * O rodapé (a barra, Descartar e Publicar) fica colado na borda de baixo o
+ * movimento inteiro: a área de texto anima a altura junto com a caixa, e o
+ * core não a remede enquanto a caixa está no meio do caminho (ver
+ * `isMorphing`).
  */
 import app from 'flarum/forum/app';
 
@@ -16,6 +21,17 @@ const DURATION = 240;
 const EASING = 'cubic-bezier(0.2, 0, 0, 1)';
 
 let running: Animation[] = [];
+let morphing = false;
+
+/**
+ * Se o composer está no meio de uma troca. O `updateHeight()` do core mede a
+ * caixa a cada redesenho e grava a altura na área de texto: no meio do
+ * movimento, ela sai da caixa antiga, e o rodapé ia para o meio da tela
+ * (entrando na tela cheia) ou para fora da janela (saindo) até o fim.
+ */
+export function isMorphing(): boolean {
+  return morphing;
+}
 
 function composerElement(): HTMLElement | null {
   return document.querySelector<HTMLElement>('.Composer.CanelaComposer');
@@ -30,6 +46,7 @@ function reducedMotion(): boolean {
 }
 
 function stopRunning(): void {
+  morphing = false;
   running.forEach((animation) => animation.cancel());
   running = [];
 }
@@ -104,23 +121,28 @@ export function morphComposer(change: () => void): void {
   const main = el.animate([box(from), box(to)], options);
 
   running = [main];
+  morphing = true;
+
+  // A área de texto cresce (ou encolhe) o mesmo que a caixa, no mesmo ritmo:
+  // o rodapé, logo abaixo dela, acompanha a borda de baixo.
+  const grow = to.height - from.height;
+
+  if (Math.abs(grow) >= 1) {
+    el.querySelectorAll<HTMLElement>('.Composer-flexible').forEach((flexible) => {
+      const height = flexible.getBoundingClientRect().height;
+
+      running.push(flexible.animate([{ height: `${Math.max(0, height - grow)}px` }, { height: `${height}px` }], { ...options, fill: 'backwards' }));
+    });
+  }
 
   // O conteúdo já está no lugar novo: some por um instante e reaparece com a
   // caixa quase pronta, em vez de mostrar o texto se reorganizando enquanto
-  // a largura muda.
-  const content = el.querySelector<HTMLElement>('.Composer-content');
-
-  if (content) {
+  // a largura muda. O rodapé fica de fora: parado e visível o tempo todo.
+  el.querySelectorAll<HTMLElement>('.ComposerBody-header, .TextEditor-editorContainer, .CanelaComposerPreview').forEach((part) => {
     running.push(
-      content.animate(
-        [
-          { opacity: 0, transform: 'translateY(6px)' },
-          { opacity: 1, transform: 'none' },
-        ],
-        { duration: DURATION * 0.75, delay: DURATION * 0.45, easing: 'ease-out', fill: 'backwards' }
-      )
+      part.animate([{ opacity: 0 }, { opacity: 1 }], { duration: DURATION * 0.75, delay: DURATION * 0.45, easing: 'ease-out', fill: 'backwards' })
     );
-  }
+  });
 
   // A folha branca da tela cheia sem a prévia (o `::before`) acompanha.
   if (!wasFull && el.classList.contains('fullScreen')) {
@@ -136,14 +158,13 @@ export function morphComposer(change: () => void): void {
     restore(el);
   };
 
-  // Enquanto a caixa anima, o core mede o composer (a cada redesenho, como o
-  // do foco que ele faz ao sair da tela cheia) e grava na área de texto uma
-  // altura tirada da caixa ainda em movimento: o rodapé (a barra e
-  // "Publicar") ia para fora da janela, ou para o meio da tela cheia. Quando
-  // tudo para, um redesenho faz o core medir de novo, com a caixa no lugar.
-  // Interrompido por outra troca, quem mede é a troca seguinte.
+  // Quando tudo para, o core volta a medir (um redesenho, com a caixa no
+  // lugar). Interrompido por outra troca, quem mede é a troca seguinte.
   Promise.all(running.map((animation) => animation.finished)).then(
-    () => m.redraw.sync(),
+    () => {
+      morphing = false;
+      m.redraw.sync();
+    },
     () => {}
   );
 }
