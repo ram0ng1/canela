@@ -13,6 +13,7 @@ import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
 import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 import AdminTextarea from './AdminTextarea';
+import NotFoundPicker from '../components/NotFoundPicker';
 import { getBool, getStr, trans } from '../util';
 import type { CardDef } from '../types';
 
@@ -206,11 +207,12 @@ const cards: CardDef[] = [
     title: () => trans(`${KEY}.not_found_page_label`, 'Página 404'),
     description: help(
       'not_found_page',
-      '"Oops! Essa página não existe ou é privada.", com "Voltar para o início", a busca e as discussões populares e recentes, no lugar da página de erro simples.'
+      '"Oops! Essa página não existe ou é privada.", com "Voltar para o início" e a busca, no lugar da página de erro simples. O modelo escolhido abaixo define o desenho e quais discussões aparecem.'
     ),
-    keywords: '404 página não encontrada not found erro error',
+    keywords: '404 página não encontrada not found erro error modelo template',
     master: 'canela.not_found_page',
     lockedBy: backendOff,
+    body: () => <NotFoundPicker />,
   },
 
   // ── Lista de tópicos ───────────────────────────────────────────────────────

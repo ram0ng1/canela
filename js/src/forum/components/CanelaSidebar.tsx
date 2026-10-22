@@ -4,6 +4,7 @@ import Button from 'flarum/common/components/Button';
 import LinkButton from 'flarum/common/components/LinkButton';
 import Link from 'flarum/common/components/Link';
 import Dropdown from 'flarum/common/components/Dropdown';
+import Separator from 'flarum/common/components/Separator';
 import ItemList from 'flarum/common/utils/ItemList';
 import listItems from 'flarum/common/helpers/listItems';
 import classList from 'flarum/common/utils/classList';
@@ -12,7 +13,7 @@ import type Mithril from 'mithril';
 import SidebarSection from './SidebarSection';
 import DraftsMenu, { showDraftsMenu } from '../features/composer/drafts/DraftsMenu';
 import { FooterColorMode, FooterPaletteSelector } from '../shell/colorMode';
-import { getCommunityMore, getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
+import { getCommunityMore, getCommunityOrder, getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
 import { forumBool, forumInt, isExtensionEnabled, t } from '../utils/settings';
 import {
   allTags,
@@ -195,16 +196,26 @@ export default class CanelaSidebar extends IndexSidebar {
 
   /**
    * A seção principal depois de todas as extensões terem posto os seus itens:
-   * os que o leitor escolheu esconder vão para dentro do "Mais", e o "Mais"
-   * ganha o "Personalizar" com a lista de todos eles.
+   * na ordem que o leitor escolheu, os que ele mandou esconder vão para dentro
+   * do "Mais", e o "Mais" ganha o "Personalizar" com a lista de todos eles.
    */
   communitySection(): ItemList<Mithril.Children> {
     const items = this.communityItems();
     const hidden = new Set(getCommunityMore());
     const entries: { key: string; label: string; icon?: string }[] = [];
-    const moved: Mithril.Children[] = [];
+    const moved: { key: string; vnode: Mithril.Children }[] = [];
 
-    Object.keys(items.toObject()).forEach((key) => {
+    // A ordem escolhida fica acima de todas as prioridades do código; o que
+    // não está nela (um item novo) vem depois, na posição de sempre.
+    getCommunityOrder().forEach((key, index) => {
+      if (key !== 'more' && items.has(key)) items.setPriority(key, 10000 - index);
+    });
+
+    // Na ordem em que aparecem (a do toArray, por prioridade), não na ordem em
+    // que o código os adicionou: é a que o modal mostra e a do "Mais".
+    const keys = items.toArray().map((item) => item.itemName);
+
+    keys.forEach((key) => {
       if (key === 'more') return;
 
       const vnode = items.get(key) as any;
@@ -213,7 +224,7 @@ export default class CanelaSidebar extends IndexSidebar {
 
       // O item ativo nunca some: quem está na página vê onde está.
       if (hidden.has(key) && vnode?.attrs?.active !== true && vnode?.attrs?.active !== 'true') {
-        moved.push(vnode);
+        moved.push({ key, vnode });
         items.remove(key);
       }
     });
@@ -271,8 +282,20 @@ export default class CanelaSidebar extends IndexSidebar {
     return items;
   }
 
-  moreDropdown(moved: Mithril.Children[] = [], entries: { key: string; label: string; icon?: string }[] = []): Mithril.Children {
+  moreDropdown(
+    moved: { key: string; vnode: Mithril.Children }[] = [],
+    entries: { key: string; label: string; icon?: string }[] = []
+  ): Mithril.Children {
     const more = this.moreItems();
+
+    // Os itens mandados para cá vêm primeiro, na ordem da barra, e um traço os
+    // separa dos de sempre. Tudo na mesma ItemList: o Dropdown dá a cada item
+    // a `key` do nome dele, e um vnode solto (sem nome) no meio fazia o
+    // Mithril recusar a lista ("vnodes must either all have keys or none") —
+    // a barra quebrava e o "Mais" sumia, a cada página, até limpar a escolha.
+    moved.forEach(({ key, vnode }, index) => more.add(key, vnode, 1000 - index));
+
+    if (moved.length) more.add('movedSeparator', <Separator />, 500);
 
     if (entries.length && app.session.user) {
       more.add(
@@ -294,7 +317,7 @@ export default class CanelaSidebar extends IndexSidebar {
         accessibleToggleLabel={t('sidebar.more')}
         onshow={() => placeMoreMenu()}
       >
-        {[...moved, ...(moved.length ? [<li className="Dropdown-separator" />] : []), ...more.toArray()]}
+        {more.toArray()}
       </Dropdown>
     );
   }

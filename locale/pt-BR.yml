@@ -2316,7 +2316,8 @@ ramon-canela:
       customize_tags: Personalizar tags secundárias
       customize_filter: Filtrar…
       customize_community: Personalizar
-      customize_community_help: 'Desmarque os itens que devem ir para dentro do "Mais". A escolha vale neste navegador.'
+      customize_community_help: 'Desmarque os itens que devem ir para dentro do "Mais" e arraste-os pela alça para mudar a ordem. A escolha vale neste navegador.'
+      customize_drag: 'Reordenar {item}: arraste, ou use as setas do teclado'
       customize_save: Salvar
       customize_reset: Restaurar o padrão
       keyboard_shortcuts: Atalhos de teclado
@@ -2900,6 +2901,7 @@ ramon-canela:
     not_found:
       page_title: Página não encontrada
       title: Oops! Essa página não existe ou é privada.
+      hint: 'O endereço pode ter sido digitado errado, ou o conteúdo foi removido ou é restrito.'
       popular_topics: Discussões populares
       recent_topics: Discussões recentes
       see_more: Mais

@@ -2316,7 +2316,8 @@ ramon-canela:
       customize_tags: セカンダリタグをカスタマイズ
       customize_filter: 絞り込み…
       customize_community: カスタマイズ
-      customize_community_help: '「その他」に移す項目のチェックを外してください。この設定はこのブラウザに保存されます。'
+      customize_community_help: '「その他」に移す項目のチェックを外し、ハンドルをドラッグして並び順を変更してください。この設定はこのブラウザに保存されます。'
+      customize_drag: '{item}の並び替え：ドラッグするか、矢印キーを使用'
       customize_save: 保存
       customize_reset: デフォルトに戻す
       keyboard_shortcuts: キーボードショートカット
@@ -2900,6 +2901,7 @@ ramon-canela:
     not_found:
       page_title: ページが見つかりません
       title: おっと！そのページは存在しないか、非公開です。
+      hint: 'アドレスが間違っているか、コンテンツが削除されたか制限されている可能性があります。'
       popular_topics: 人気のスレッド
       recent_topics: 最近のスレッド
       see_more: もっと見る
