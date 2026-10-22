@@ -781,6 +781,14 @@
     cursor: pointer;
   }
 
+  // O `.checkbox` do core recua a caixa 20px para a esquerda, para dentro do
+  // recuo que ele mesmo dá ao rótulo; aqui o rótulo não tem recuo (é flex),
+  // e a caixa saía da lista e era cortada pela rolagem dela.
+  label input[type="checkbox"] {
+    flex: none;
+    margin: 0;
+  }
+
   .CanelaSidebarCustomize-item--child label {
     padding-left: var(--cn-space-6);
   }
