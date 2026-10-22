@@ -11,6 +11,13 @@
  * para `--cn-vv-height` e `--cn-vv-top` no <html>, e o CSS do celular prende o
  * composer nela. No Android,
  * onde a janela já encolhe, os valores coincidem com os de sempre.
+ *
+ * Prender a caixa não basta: a altura da área de texto é o core quem grava,
+ * em pixels, e ele só a recalcula ao redesenhar ou quando a janela muda de
+ * tamanho — e o teclado do iOS não muda a janela. A área de texto ficava com
+ * a altura da tela inteira e empurrava o rodapé para trás do teclado. Quando
+ * a área visível muda, um redesenho faz o core medir a caixa já no tamanho
+ * novo.
  */
 import { extend } from 'flarum/common/extend';
 
@@ -22,6 +29,8 @@ const OPEN = '.Composer.CanelaComposer.visible:not(.minimized)';
 const KEYBOARD_MIN = 120;
 
 let frame = 0;
+/** A última área aplicada: só um valor novo pede redesenho (sem laço). */
+let applied = '';
 
 function update(): void {
   frame = 0;
@@ -34,13 +43,24 @@ function update(): void {
     root.style.removeProperty('--cn-vv-height');
     root.style.removeProperty('--cn-vv-top');
     root.classList.remove('CanelaComposerKeyboard');
+    applied = '';
 
     return;
   }
 
-  root.style.setProperty('--cn-vv-height', `${Math.round(viewport!.height)}px`);
-  root.style.setProperty('--cn-vv-top', `${Math.round(viewport!.offsetTop)}px`);
-  root.classList.toggle('CanelaComposerKeyboard', window.innerHeight - viewport!.height > KEYBOARD_MIN);
+  const height = Math.round(viewport!.height);
+  const top = Math.round(viewport!.offsetTop);
+  const keyboard = window.innerHeight - viewport!.height > KEYBOARD_MIN;
+  const area = `${height}|${top}|${keyboard}`;
+
+  root.style.setProperty('--cn-vv-height', `${height}px`);
+  root.style.setProperty('--cn-vv-top', `${top}px`);
+  root.classList.toggle('CanelaComposerKeyboard', keyboard);
+
+  if (area !== applied) {
+    applied = area;
+    m.redraw();
+  }
 }
 
 function schedule(): void {
