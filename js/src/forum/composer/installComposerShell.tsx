@@ -29,7 +29,7 @@ import installModals from './installModals';
 import installTagModal from './tagModal';
 import installAlignComposer from './alignComposer';
 import installMobileViewport from './mobileViewport';
-import { morphComposer } from './morph';
+import { isMorphing, morphComposer } from './morph';
 import installToolbar, { addMoreAction, richMode, setPlaceholderProvider } from './installToolbar';
 import { editorComposer } from '../features/composer/common';
 import { draftableBody, draftsOn, saveCurrentDraft } from '../features/composer/drafts/fofDrafts';
@@ -152,6 +152,14 @@ function installHeights(): void {
   });
 
   override('flarum/forum/components/Composer' as any, 'defaultHeight', () => defaultHeight());
+
+  // Durante a troca de forma (tela cheia, prévia), a caixa está no meio do
+  // caminho: medida agora, a área de texto ficaria com a altura antiga e o
+  // rodapé fora do lugar. As alturas certas já foram gravadas antes do
+  // movimento, e o morph manda medir de novo no fim.
+  override('flarum/forum/components/Composer' as any, 'updateHeight', function (original: () => void) {
+    if (!isMorphing()) original();
+  });
 }
 
 function installRoot(): void {

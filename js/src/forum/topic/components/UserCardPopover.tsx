@@ -7,6 +7,11 @@
  * Há um cartão só para a página inteira, montado num <div> próprio no body:
  * dentro do post ele seria cortado pelo overflow do conteúdo e ficaria preso
  * ao SubtreeRetainer, que não redesenha o post à toa.
+ *
+ * O cartão aparece inteiro: ele é montado escondido e só se mostra quando o
+ * perfil completo (tempo de leitura, curtidas...), os emblemas e o avatar
+ * chegaram. Antes, na primeira vez depois de carregar a página, ele abria
+ * com o que o post trazia e ia crescendo e mudando com o que chegava.
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
@@ -29,20 +34,57 @@ import { thirdParty } from '../../thirdparty/settings';
 import { Bio, BirthdayFact, LocationFact, StatusLine, WebsiteFact, profileImageStyle, userTitle } from '../../features/profile';
 import { AUTHOR_FILTER_MAX_POSTS, authorPostCount, filterByAuthor } from '../authorFilter';
 import { FeaturedBadges } from '../../features/badges';
+import { badgesEnabled, loadUserBadges } from '../../features/badges/utils';
 import { userIcons } from '../../utils/userIcons';
 
 /** Distância do cartão até o avatar e até as bordas da janela. */
 const GAP = 8;
 const EDGE = 16;
 
+/** Quanto o cartão espera pelos dados antes de abrir com o que tiver (ms). */
+const MAX_WAIT = 1200;
+
 interface CardState {
   user: User;
   anchor: HTMLElement;
+  /** Dados e avatar prontos: o cartão se mostra. */
+  ready: boolean;
 }
 
 let state: CardState | null = null;
 let root: HTMLElement | null = null;
-const requested = new Set<string>();
+const profiles = new Map<string, Promise<unknown>>();
+
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * O perfil completo e os emblemas, uma vez por sessão para cada pessoa. O
+ * usuário que vem junto do post não traz as estatísticas (só a resposta do
+ * perfil traz), e os emblemas vêm de outro pedido.
+ */
+export function prefetchUserCard(user: User): Promise<unknown> {
+  const id = user.id();
+
+  if (!id) return Promise.resolve();
+
+  if (!profiles.has(id)) {
+    profiles.set(
+      id,
+      Promise.all([app.store.find('users', id, {}, { errorHandler: () => {} }).catch(() => {}), badgesEnabled() ? loadUserBadges(user) : null])
+    );
+  }
+
+  return profiles.get(id)!;
+}
+
+/** O avatar grande do cartão já baixado (ou falhou, ou não há foto). */
+function avatarReady(): Promise<unknown> {
+  const img = root?.querySelector<HTMLImageElement>('.CanelaUserCard-avatar img');
+
+  if (!img || (img.complete && img.naturalWidth > 0)) return Promise.resolve();
+
+  return img.decode().catch(() => {});
+}
 
 function onDocumentEvent(event: Event) {
   if (!state) return;
@@ -66,7 +108,7 @@ function ensureRoot() {
   root.className = 'CanelaUserCardRoot';
   document.body.appendChild(root);
 
-  m.mount(root, { view: () => (state ? <CanelaUserCard user={state.user} anchor={state.anchor} /> : null) });
+  m.mount(root, { view: () => (state ? <CanelaUserCard user={state.user} anchor={state.anchor} ready={state.ready} /> : null) });
 
   document.addEventListener('mousedown', onDocumentEvent, true);
   document.addEventListener('keydown', onDocumentEvent, true);
@@ -86,21 +128,28 @@ export function openUserCard(user: User, anchor: HTMLElement): void {
     return;
   }
 
-  state = { user, anchor };
+  const current: CardState = { user, anchor, ready: false };
 
-  // O usuário que vem junto do post pode não ter tudo (data de entrada,
-  // contagens): busca o perfil completo uma vez por sessão.
-  const id = user.id();
+  state = current;
 
-  if (id && !requested.has(id) && user.joinTime() === undefined) {
-    requested.add(id);
-    app.store
-      .find('users', id, {}, { errorHandler: () => {} })
-      .catch(() => {})
-      .then(() => m.redraw());
-  }
+  // Montado já (escondido): o avatar começa a baixar enquanto os dados
+  // chegam. Com tudo pronto, ou passado o limite, ele aparece de uma vez.
+  m.redraw.sync();
 
-  m.redraw();
+  Promise.race([
+    prefetchUserCard(user).then(() => {
+      // O cartão com os dados novos, ainda escondido, antes de olhar o avatar.
+      if (state === current) m.redraw.sync();
+
+      return avatarReady();
+    }),
+    wait(MAX_WAIT),
+  ]).then(() => {
+    if (state !== current) return;
+
+    current.ready = true;
+    m.redraw();
+  });
 }
 
 /** O tempo de leitura (segundos) no formato curto: "35 d", "13 h", "8 min". */
@@ -123,6 +172,7 @@ export function closeUserCard(): void {
 interface CanelaUserCardAttrs extends ComponentAttrs {
   user: User;
   anchor: HTMLElement;
+  ready: boolean;
 }
 
 class CanelaUserCard extends Component<CanelaUserCardAttrs> {
@@ -195,7 +245,11 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
 
     return (
       <div
-        className={classList('CanelaUserCard', { 'CanelaProfile--hasCardBg': !!profileImageStyle(user)['--canela-user-card-bg'] })}
+        className={classList('CanelaUserCard', {
+          'CanelaUserCard--ready': this.attrs.ready,
+          'CanelaProfile--hasCardBg': !!profileImageStyle(user)['--canela-user-card-bg'],
+        })}
+        aria-hidden={this.attrs.ready ? undefined : 'true'}
         role="dialog"
         aria-label={user.displayName()}
         style={{ '--usercard-color': user.color() || undefined, ...profileImageStyle(user) }}

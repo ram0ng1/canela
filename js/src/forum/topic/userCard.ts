@@ -1,10 +1,12 @@
 /*
  * Avatar e nome do autor abrem o cartão de usuário no clique, no lugar do cartão do core que aparece ao passar o mouse.
+ * Ao passar o mouse (ou focar), os dados do cartão já começam a chegar: no
+ * clique, ele abre na hora e inteiro.
  */
 import { override } from 'flarum/common/extend';
 import CommentPost from 'flarum/forum/components/CommentPost';
 
-import { openUserCard } from './components/UserCardPopover';
+import { openUserCard, prefetchUserCard } from './components/UserCardPopover';
 import { topicSettings } from './ui';
 
 const TRIGGERS = '.Post-side .Post-avatar, .PostUser-name a';
@@ -12,6 +14,15 @@ const TRIGGERS = '.Post-side .Post-avatar, .PostUser-name a';
 export default function installUserCard(): void {
   override(CommentPost.prototype, 'listenForCard', function (this: any, original: () => void) {
     if (!topicSettings.userCard()) return original();
+
+    const prefetch = (event: Event) => {
+      const user = this.attrs.post.user();
+
+      if (user && (event.target as HTMLElement).closest?.(TRIGGERS)) prefetchUserCard(user);
+    };
+
+    this.element.addEventListener('pointerover', prefetch);
+    this.element.addEventListener('focusin', prefetch);
 
     // Na fase de captura: o clique para aqui, antes de o Link do avatar
     // navegar para o perfil.
