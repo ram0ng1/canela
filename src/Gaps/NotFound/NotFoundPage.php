@@ -18,6 +18,7 @@ use Flarum\Extension\ExtensionManager;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Collection;
 use Ramon\Canela\Gaps\GapsSettings;
@@ -68,16 +69,20 @@ final class NotFoundPage
     {
         try {
             $base = rtrim($this->url->to('forum')->base(), '/');
-            $assets = $this->filesystem->disk('flarum-assets');
             $logo = $this->settings->get('logo_path');
+
+            // O endereço público vem do disco de assets (CDN, S3...); um disco
+            // que não sabe dar URL fica com o /assets do fórum.
+            $disk = $this->filesystem->disk('flarum-assets');
+            $asset = fn (string $path): string => $disk instanceof Cloud ? $disk->url($path) : $base.'/assets/'.$path;
 
             return [
                 'template' => $this->gaps->notFoundTemplate(),
                 'base' => $base,
                 'title' => (string) $this->settings->get('forum_title'),
-                'logo' => $logo ? $assets->url($logo) : null,
+                'logo' => $logo ? $asset((string) $logo) : null,
                 'color' => $this->color(),
-                'font' => $this->font(fn (string $file) => $assets->url('extensions/ramon-canela/fonts/'.$file)),
+                'font' => $this->font(fn (string $file) => $asset('extensions/ramon-canela/fonts/'.$file)),
                 'popular' => $this->topics('popular'),
                 'recent' => $this->topics('recent'),
             ];
