@@ -734,6 +734,13 @@ button.CanelaTopicMap-stat {
   animation: canelaFloatDown 250ms ease forwards;
 }
 
+// Montado escondido até o perfil, os emblemas e o avatar chegarem
+// (UserCardPopover): aparece inteiro, e a animação de entrada só começa aí.
+.CanelaUserCard:not(.CanelaUserCard--ready) {
+  visibility: hidden;
+  animation: none;
+}
+
 // Sem o véu duplo do recurso de perfil: o véu é o do conteúdo.
 .CanelaUserCardRoot .CanelaUserCard.CanelaProfile--hasCardBg {
   background-image: var(--canela-user-card-bg);
