@@ -2316,7 +2316,9 @@ ramon-canela:
       customize_tags: Personalizar tags secundárias
       customize_filter: Filtrar…
       customize_community: Personalizar
-      customize_community_help: 'Desmarque os itens que devem ir para dentro do "Mais". A escolha vale neste navegador.'
+      customize_community_help: 'Desmarque os itens que devem ir para dentro do "Mais" e use as setas para mudar a ordem. A escolha vale neste navegador.'
+      customize_move_up: 'Subir {item}'
+      customize_move_down: 'Descer {item}'
       customize_save: Salvar
       customize_reset: Restaurar o padrão
       keyboard_shortcuts: Atalhos de teclado

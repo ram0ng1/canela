@@ -13,7 +13,7 @@ import type Mithril from 'mithril';
 import SidebarSection from './SidebarSection';
 import DraftsMenu, { showDraftsMenu } from '../features/composer/drafts/DraftsMenu';
 import { FooterColorMode, FooterPaletteSelector } from '../shell/colorMode';
-import { getCommunityMore, getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
+import { getCommunityMore, getCommunityOrder, getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
 import { forumBool, forumInt, isExtensionEnabled, t } from '../utils/settings';
 import {
   allTags,
@@ -196,8 +196,8 @@ export default class CanelaSidebar extends IndexSidebar {
 
   /**
    * A seção principal depois de todas as extensões terem posto os seus itens:
-   * os que o leitor escolheu esconder vão para dentro do "Mais", e o "Mais"
-   * ganha o "Personalizar" com a lista de todos eles.
+   * na ordem que o leitor escolheu, os que ele mandou esconder vão para dentro
+   * do "Mais", e o "Mais" ganha o "Personalizar" com a lista de todos eles.
    */
   communitySection(): ItemList<Mithril.Children> {
     const items = this.communityItems();
@@ -205,7 +205,17 @@ export default class CanelaSidebar extends IndexSidebar {
     const entries: { key: string; label: string; icon?: string }[] = [];
     const moved: { key: string; vnode: Mithril.Children }[] = [];
 
-    Object.keys(items.toObject()).forEach((key) => {
+    // A ordem escolhida fica acima de todas as prioridades do código; o que
+    // não está nela (um item novo) vem depois, na posição de sempre.
+    getCommunityOrder().forEach((key, index) => {
+      if (key !== 'more' && items.has(key)) items.setPriority(key, 10000 - index);
+    });
+
+    // Na ordem em que aparecem (a do toArray, por prioridade), não na ordem em
+    // que o código os adicionou: é a que o modal mostra e a do "Mais".
+    const keys = items.toArray().map((item) => item.itemName);
+
+    keys.forEach((key) => {
       if (key === 'more') return;
 
       const vnode = items.get(key) as any;

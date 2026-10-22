@@ -63,3 +63,34 @@ export function setCommunityMore(keys: string[]): void {
     // Sem armazenamento a escolha vale só até recarregar a página.
   }
 }
+
+/*
+ * A ordem da seção principal escolhida no "Personalizar": as chaves dos
+ * itens, de cima para baixo. Vazia = a ordem padrão. Um item que não está
+ * na lista (de uma extensão ativada depois, por exemplo) vem depois dos
+ * ordenados, na posição de sempre entre os que também não estão.
+ */
+function communityOrderKey(): string {
+  return `canela.sidebarCommunityOrder.${app.session.user?.id() ?? 'guest'}`;
+}
+
+export function getCommunityOrder(): string[] {
+  if (!app.session.user) return [];
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(communityOrderKey()) || '[]');
+
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function setCommunityOrder(keys: string[]): void {
+  try {
+    if (keys.length) localStorage.setItem(communityOrderKey(), JSON.stringify(keys));
+    else localStorage.removeItem(communityOrderKey());
+  } catch {
+    // Sem armazenamento a escolha vale só até recarregar a página.
+  }
+}

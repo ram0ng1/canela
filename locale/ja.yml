@@ -2316,7 +2316,9 @@ ramon-canela:
       customize_tags: セカンダリタグをカスタマイズ
       customize_filter: 絞り込み…
       customize_community: カスタマイズ
-      customize_community_help: '「その他」に移す項目のチェックを外してください。この設定はこのブラウザに保存されます。'
+      customize_community_help: '「その他」に移す項目のチェックを外し、矢印で並び順を変更してください。この設定はこのブラウザに保存されます。'
+      customize_move_up: '{item}を上へ移動'
+      customize_move_down: '{item}を下へ移動'
       customize_save: 保存
       customize_reset: デフォルトに戻す
       keyboard_shortcuts: キーボードショートカット

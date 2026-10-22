@@ -794,6 +794,40 @@
   }
 }
 
+// A seção principal: a caixa e o nome à esquerda, as setas de ordem à direita.
+.CanelaSidebarCustomize-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-1);
+
+  > label {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.CanelaSidebarCustomize-move {
+  display: flex;
+  flex: none;
+
+  .Button--icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--cn-primary-medium);
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      color: var(--cn-primary);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      background: transparent;
+    }
+  }
+}
+
 .CanelaSidebarCustomize-actions {
   display: flex;
   gap: var(--cn-space-2);
