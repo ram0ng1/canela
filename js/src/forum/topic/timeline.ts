@@ -33,6 +33,17 @@ export function timelineDate(date: Date, now = new Date()): string {
     .trim();
 }
 
+/** A altura do editor aberto (0 fechado), para a aba da linha do tempo. */
+let composerHeight = 0;
+
+/** Grava só quando muda, e só nas barras de progresso (as únicas que leem a variável). */
+function setComposerHeight(height: number): void {
+  if (height === composerHeight) return;
+
+  composerHeight = height;
+  document.querySelectorAll<HTMLElement>('.PostStreamScrubber').forEach((el) => el.style.setProperty('--cn-composer-height', `${height}px`));
+}
+
 export default function installTimeline(): void {
   override('flarum/forum/components/PostStreamScrubber', 'firstPostLabel', function (this: any, original: () => unknown) {
     const created: Date | undefined = this.stream?.discussion?.createdAt();
@@ -170,12 +181,22 @@ export default function installTimeline(): void {
   // A aba "1 / 15" fica acima do editor
   // aberto: bottom = --composer-height. O core já mede o editor para o
   // padding do conteúdo; a mesma medida vai para uma variável do tema.
+  //
+  // Na própria barra, e não no <html>: arrastando a alça do editor, o core
+  // chama isto a cada movimento do mouse, e uma variável no <html> recalcula
+  // o estilo da página inteira a cada vez (~120 ms com um tópico aberto).
   extend('flarum/forum/components/Composer', 'updateBodyPadding', function (this: any) {
     const position = this.state?.position;
     const open = position && position !== 'hidden' && app.screen() !== 'phone';
-    const height = open ? this.element?.offsetHeight || 0 : 0;
+    // A altura que o core acabou de aplicar, sem medir (e forçar o layout) de novo.
+    const height = !open ? 0 : position === 'normal' ? this.state.computedHeight() : this.element?.offsetHeight || 0;
 
-    document.documentElement.style.setProperty('--cn-composer-height', `${height}px`);
+    setComposerHeight(height);
+  });
+
+  // A barra recriada (outro tópico) recebe a última medida.
+  extend('flarum/forum/components/PostStreamScrubber', 'oncreate', function (this: any) {
+    this.element?.style?.setProperty('--cn-composer-height', `${composerHeight}px`);
   });
 
   // O trilho anima a altura com transição de CSS (.15s ease-out)

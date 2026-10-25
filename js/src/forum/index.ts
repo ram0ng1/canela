@@ -20,6 +20,8 @@ import installAi from './features/ai';
 import installChat from './features/chat';
 import installMessages from './features/messages';
 import installSystemUser from './features/system';
+import installEvents from './features/events';
+import installCooked from './features/cooked';
 import installUserMenu from './usermenu';
 import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
@@ -38,6 +40,7 @@ import aiExtend from './features/ai/extend';
 import chatExtend from './features/chat/extend';
 import messagesExtend from './features/messages/extend';
 import gapsExtend from './gaps/extend';
+import eventsExtend from './features/events/extend';
 import userMenuExtend from './usermenu/extend';
 
 // Modelos e rotas dos recursos com backend. Cada recurso decide sozinho se
@@ -52,6 +55,7 @@ export const extend = [
   ...chatExtend,
   ...messagesExtend,
   ...gapsExtend,
+  ...eventsExtend,
   ...userMenuExtend,
 ];
 
@@ -84,6 +88,8 @@ app.initializers.add('ramon-canela', () => {
   installChat();
   installMessages();
   installSystemUser();
+  installEvents();
+  installCooked();
   installUserMenu();
   // A fila de revisão na página /flags (flarum/flags e approval).
   installReview();

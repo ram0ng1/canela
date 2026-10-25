@@ -276,11 +276,16 @@
   max-height: 240px;
   overflow-y: auto;
   margin: 0;
-  padding: 4px;
+  // O painel sem respiro, com as linhas de borda a borda.
+  padding: 0;
   background: var(--cn-surface);
   border: 1px solid var(--cn-border);
-  border-radius: var(--cn-radius);
-  box-shadow: var(--cn-shadow-dropdown);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  > li + li {
+    margin: 0;
+  }
 
   .Dropdown-header {
     padding: 4px 8px;
@@ -293,9 +298,9 @@
     align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 6px 8px;
+    padding: 0.5em 1em;
     border: 0;
-    border-radius: var(--cn-radius-input);
+    border-radius: 0;
     background: none;
     color: var(--cn-primary);
     text-align: left;
@@ -315,8 +320,19 @@
   mark {
     padding: 0;
     background: none;
+    box-shadow: none;
     color: inherit;
-    font-weight: 600;
+    font-weight: inherit;
+  }
+}
+
+// As hashtags: linhas mais baixas e rolagem a partir de 13.5em.
+.Dropdown-menu.CanelaAutocomplete--hashtag {
+  max-height: 13.5em;
+
+  > li > button {
+    gap: 0.25em;
+    padding: 0.3em 1em;
   }
 }
 
@@ -338,8 +354,8 @@
 }
 
 .CanelaHashtag-tagIcon {
-  color: var(--cn-primary-medium);
-  font-size: 12px;
+  color: var(--cn-primary);
+  font-size: 0.93em;
 }
 
 // O autocompletar ":" do flarum/emoji, quando ele está ligado: só a pele.
@@ -366,43 +382,73 @@
 }
 
 // ---------------------------------------------------------------------
-// Hashtags nos posts (e na prévia): uma pílula
+// Hashtags nos posts (e na prévia): a mesma pílula das menções —
+// inline-block, 0.93em, sem negrito e sem quebra; o hover só firma a cor.
 // ---------------------------------------------------------------------
 .CanelaHashtag,
 .Post-body a.CanelaHashtag,
 .Post-body a.TagMention.CanelaHashtag {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.3em;
-  margin: 0 1px;
-  padding: 0 0.4em;
+  display: inline-block;
+  margin: 0;
+  padding: 0.2em 0.34em;
   border: 0;
-  border-radius: 0.3em;
+  border-radius: 0.6em;
   background: var(--cn-primary-low) !important;
   color: var(--cn-primary) !important;
-  font-weight: 500;
-  line-height: inherit;
+  font-size: 0.93em;
+  font-weight: 400;
+  line-height: 1;
   text-decoration: none;
   white-space: nowrap;
   vertical-align: baseline;
 
-  &:hover {
-    background: var(--cn-primary-low-mid) !important;
+  &:hover,
+  &:visited {
+    color: var(--cn-primary) !important;
     text-decoration: none;
   }
 
   .CanelaHashtag-symbol {
-    display: inline-flex;
-    align-self: center;
+    display: inline;
   }
 
+  // O quadrado da categoria: 0.72em, sem raio.
   .CanelaCategorySymbol {
-    font-size: 0.85em;
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin-left: 0.1em;
+    margin-right: 4px;
+    vertical-align: baseline;
+
+    &--square::before {
+      display: inline-block;
+      width: 0.72em;
+      height: 0.72em;
+      border-radius: 0;
+    }
+  }
+
+  // O ícone (da categoria, na cor dela; o da etiqueta, na cor do texto): 0.93em.
+  .CanelaCategorySymbol:not(.CanelaCategorySymbol--square) {
+    margin-left: 0;
+  }
+
+  .CanelaCategorySymbol .icon,
+  .CanelaHashtag-symbol > .icon {
+    width: 0.93em;
+    height: 0.93em;
+    margin-right: 4px;
+    font-size: 0.93em;
+    vertical-align: -0.125em;
+  }
+
+  .CanelaCategorySymbol .icon {
+    margin-right: 0;
   }
 
   .CanelaHashtag-symbol > .icon {
-    color: var(--cn-primary-medium);
-    font-size: 0.8em;
+    color: inherit;
   }
 }
 

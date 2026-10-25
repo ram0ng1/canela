@@ -80,6 +80,14 @@ export default function installPosts(): void {
     );
   });
 
+  // O nome de usuário primeiro (canela.post_username_first, ligado por
+  // padrão): o nome de exibição vai depois, em CanelaPostNames.
+  extend(PostUser.prototype, 'linkChildren', function (this: any, items: ItemList<Mithril.Children>, user: User) {
+    if (!topicSettings.usernameFirst() || !items.has('username')) return;
+
+    items.setContent('username', <span className="username">{user.username()}</span>);
+  });
+
   // Os ícones depois do nome (selo de verificado, emoji de status: ver
   // utils/userIcons) ficam fora do link do autor, na linha do nome: o clique
   // neles não abre o cartão, e o popover do selo funciona.
@@ -176,14 +184,14 @@ function buildHeader(post: any, items: ItemList<Mithril.Children>) {
   const model: PostModel = post.attrs.post;
   const user = model.user();
 
-  // A ordem: nome em negrito, o nome de usuário (quando é
-  // outro) e o título em cinza (features/profile). O grupo não entra em
-  // texto: ele já aparece como flair no avatar.
+  // A ordem: o primeiro nome em negrito, o outro (quando é diferente) e o
+  // título em cinza (features/profile). O grupo não entra em texto: ele já
+  // aparece como flair no avatar.
   if (user && user.username() !== user.displayName()) {
     items.add(
       'canelaNames',
       <span className="CanelaPostNames">
-        <span className="CanelaPostNames-username">{user.username()}</span>
+        <span className="CanelaPostNames-username">{topicSettings.usernameFirst() ? user.displayName() : user.username()}</span>
       </span>,
       95
     );

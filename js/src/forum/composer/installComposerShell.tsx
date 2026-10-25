@@ -29,6 +29,8 @@ import installModals from './installModals';
 import installTagModal from './tagModal';
 import installAlignComposer from './alignComposer';
 import installMobileViewport from './mobileViewport';
+import installMentionsDropdown from './mentionsDropdown';
+import installCaret from './caret';
 import { isMorphing, morphComposer } from './morph';
 import installToolbar, { addMoreAction, richMode, setPlaceholderProvider } from './installToolbar';
 import { editorComposer } from '../features/composer/common';
@@ -162,15 +164,28 @@ function installHeights(): void {
   });
 }
 
+/** As classes de forma da última vez que o composer estava aberto (ver installRoot). */
+let shapeClasses = '';
+
 function installRoot(): void {
   // As classes de que o CSS precisa: o tipo do composer e se a prévia está
   // ao lado (`show-preview` / `hide-preview`, que mudam a largura).
   extend('flarum/forum/components/Composer' as any, 'view', function (vdom: any) {
     if (!vdom?.attrs) return;
 
+    // Ao fechar, o core esvazia o composer antes de ele descer: recalculadas,
+    // as classes viravam as de um composer vazio (outro tipo, sem prévia) e a
+    // caixa pulava de lado e encolhia no meio da descida. Fechando, ficam as
+    // da última vez que ele estava aberto.
+    if (app.composer.position === 'hidden' && shapeClasses) {
+      vdom.attrs.className = `${vdom.attrs.className} CanelaComposer ${shapeClasses}`;
+      return;
+    }
+
     const rich = richMode();
 
-    vdom.attrs.className = `${vdom.attrs.className} CanelaComposer ${kindClass()} ${splitPreviewVisible() && !rich ? 'show-preview' : 'hide-preview'}${rich ? ' is-rich' : ' is-markdown'}`;
+    shapeClasses = `${kindClass()} ${splitPreviewVisible() && !rich ? 'show-preview' : 'hide-preview'}${rich ? ' is-rich' : ' is-markdown'}`;
+    vdom.attrs.className = `${vdom.attrs.className} CanelaComposer ${shapeClasses}`;
   });
 
   // «, tela cheia, minimizar e ✕ — a ordem e os ícones do canto. Minimizado,
@@ -386,4 +401,8 @@ export default function installComposerShell() {
   installAlignComposer();
   // No celular, o composer cabe acima do teclado (o do iOS cobre a página).
   installMobileViewport();
+  // O menu do `@`/`#` do flarum/mentions no desenho do tema, e a medida do
+  // cursor que ele usa sem recalcular a página inteira.
+  installMentionsDropdown();
+  installCaret();
 }

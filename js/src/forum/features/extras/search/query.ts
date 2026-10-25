@@ -16,6 +16,7 @@ import app from 'flarum/forum/app';
 import type IGambit from 'flarum/common/query/IGambit';
 
 import { allTags, type CanelaTag } from '../../../utils/tags';
+import { termLongEnough } from '../../../utils/searchTerm';
 
 export type SearchStatus = '' | 'open' | 'closed' | 'sticky';
 
@@ -201,7 +202,7 @@ export function highlightPattern(text: string): RegExp | undefined {
   const words = text
     .split(/\s+/)
     .map((word) => word.trim())
-    .filter((word) => word.length > 1)
+    .filter((word) => termLongEnough(word))
     .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
   return words.length ? new RegExp(words.join('|'), 'gi') : undefined;

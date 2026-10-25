@@ -9,8 +9,12 @@
  * 200w, 300w) e o `sizes`, o tamanho exibido; o navegador faz a conta com a
  * densidade e baixa a menor que serve.
  *
- * O `sizes` real só se sabe depois do layout: ele entra no oncreate. Como o
- * avatar é `loading="lazy"`, o download espera o layout e já sai com ele.
+ * O `sizes` real só se sabe depois do layout. Um ResizeObserver só (para
+ * todos os avatares) recebe a largura quando o navegador já fez o layout que
+ * ia fazer: medir com getBoundingClientRect no oncreate forçava um layout da
+ * página inteira por avatar desenhado — o menu do `@` desenha seis a cada
+ * tecla, e a digitação travava. Como o avatar é `loading="lazy"`, o download
+ * espera o layout e quase sempre já sai com o `sizes` certo.
  */
 import { extend, override } from 'flarum/common/extend';
 import Avatar from 'flarum/common/components/Avatar';
@@ -31,12 +35,28 @@ function widthSrcset(srcset: string): string | null {
   return entries.map((entry) => `${entry![1]} ${Math.round(Number(entry![2]) * BASE_WIDTH)}w`).join(', ');
 }
 
-function fitSizes(element: Element | undefined): void {
+let observer: ResizeObserver | null = null;
+
+function sizesObserver(): ResizeObserver | null {
+  if (observer || typeof ResizeObserver === 'undefined') return observer;
+
+  observer = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const image = entry.target as HTMLImageElement;
+      const width = Math.round(entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width);
+
+      if (width > 0 && image.sizes !== `${width}px`) image.sizes = `${width}px`;
+    }
+  });
+
+  return observer;
+}
+
+/** Passa a acompanhar a largura do avatar (observar de novo o mesmo elemento não faz nada). */
+function watchSizes(element: Element | undefined): void {
   if (!(element instanceof HTMLImageElement) || !/\s\d+w(,|$)/.test(element.srcset)) return;
 
-  const width = Math.round(element.getBoundingClientRect().width);
-
-  if (width > 0 && element.sizes !== `${width}px`) element.sizes = `${width}px`;
+  sizesObserver()?.observe(element);
 }
 
 export default function installAvatarSizes(): void {
@@ -56,6 +76,11 @@ export default function installAvatarSizes(): void {
   });
 
   extend(Avatar.prototype, ['oncreate', 'onupdate'], function (this: Avatar, _result: unknown, vnode: Mithril.VnodeDOM) {
-    fitSizes(vnode.dom);
+    watchSizes(vnode.dom);
+  });
+
+  // Sem isto o observador seguraria os avatares que já saíram da página.
+  extend(Avatar.prototype, 'onremove', function (this: Avatar, _result: unknown, vnode: Mithril.VnodeDOM) {
+    if (vnode.dom instanceof Element) observer?.unobserve(vnode.dom);
   });
 }

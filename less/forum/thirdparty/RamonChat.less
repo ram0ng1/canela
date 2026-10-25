@@ -1445,6 +1445,310 @@ body.ChatFullPage {
   transform: rotate(45deg);
 }
 
+// A faixa das fixadas (thirdparty/ramonChat/features/pins.tsx): o rótulo
+// "Fixada" com o alfinete em cima e o trecho embaixo; com várias, o
+// indicador de segmentos à esquerda; "ver todas" e o "×" à direita.
+.ChatChannel-pinnedBar.CanelaPinnedBar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--cn-space-1);
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: var(--cn-space-1) var(--cn-space-2);
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.CanelaPinnedBar {
+  &-main {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--cn-space-2);
+    min-width: 0;
+    padding: var(--cn-space-1) var(--cn-space-2);
+    text-align: start;
+
+    &:hover .CanelaPinnedBar-jump {
+      background: var(--chat-hover);
+    }
+  }
+
+  // O botão cobre a faixa toda; o conteúdo deixa o clique passar (menos os links).
+  &-jump {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--cn-radius-sm, 4px);
+    background: transparent;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--cn-link);
+      outline-offset: -2px;
+    }
+  }
+
+  &-indicator {
+    position: relative;
+    flex-shrink: 0;
+    align-self: center;
+    width: 3px;
+    height: var(--cn-pin-height, 30px);
+    overflow: hidden;
+    pointer-events: none;
+    mask-image: ~"linear-gradient(to bottom, transparent 0, black var(--cn-pin-fade-top, 0px), black calc(100% - var(--cn-pin-fade-bottom, 0px)), transparent 100%)";
+  }
+
+  // Rola um segmento (altura + espaço) por passo.
+  &-track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-pin-gap, 2px);
+    transform: ~"translateY(calc(var(--cn-pin-top, 0) * (var(--cn-pin-seg, 6px) + var(--cn-pin-gap, 2px)) * -1))";
+  }
+
+  &-segment {
+    flex: 0 0 auto;
+    height: var(--cn-pin-seg, 6px);
+    border-radius: 3px;
+    background: var(--cn-link);
+    opacity: 0.35;
+  }
+
+  &-thumb {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: var(--cn-pin-seg, 6px);
+    border-radius: 3px;
+    background: var(--cn-link);
+    transform: ~"translateY(calc(var(--cn-pin-active, 0) * (var(--cn-pin-seg, 6px) + var(--cn-pin-gap, 2px))))";
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &-track,
+    &-thumb {
+      transition: transform 150ms ease;
+    }
+  }
+
+  &-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  &-label {
+    display: flex;
+    align-items: center;
+    gap: var(--cn-space-1);
+    color: var(--cn-link);
+    font-size: var(--cn-font-down-2);
+    font-weight: 700;
+    line-height: 1.3;
+
+    .icon {
+      width: 1em;
+      height: 1em;
+      font-size: inherit;
+      transform: rotate(45deg);
+    }
+  }
+
+  &-excerpt {
+    overflow: hidden;
+    color: var(--cn-primary);
+    font-size: var(--cn-font-down-1);
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    a {
+      pointer-events: auto;
+    }
+  }
+
+  &-all,
+  &-dismiss {
+    position: relative;
+    flex-shrink: 0;
+    align-self: center;
+    color: var(--cn-primary-medium);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--chat-hover);
+      color: var(--cn-primary);
+    }
+  }
+
+  &-all--active,
+  &-all--active:hover {
+    color: var(--cn-link);
+  }
+
+  &-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--cn-surface);
+    border-radius: 50%;
+    background: var(--cn-link);
+    pointer-events: none;
+  }
+}
+
+// O painel das fixadas: "Fixada por …" em cima de cada uma, a linha toda leva
+// à mensagem e o desafixar aparece no hover.
+.CanelaPinnedPanel {
+  display: flex;
+  flex-direction: column;
+
+  .CanelaPinnedPanel-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;
+    overscroll-behavior: contain;
+  }
+
+  &-empty {
+    padding: 2rem;
+    color: var(--cn-primary-medium);
+    text-align: center;
+  }
+
+  &-footer {
+    position: sticky;
+    bottom: 0;
+    flex-shrink: 0;
+    padding: var(--cn-space-2);
+    border-top: 1px solid var(--cn-border);
+    background: var(--cn-surface);
+  }
+
+  &-toggleBar {
+    width: 100%;
+    justify-content: center;
+    color: var(--cn-primary-medium);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--chat-hover);
+      color: var(--cn-primary);
+    }
+  }
+}
+
+.CanelaPinnedItem {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin: 0 0.75rem 0 1rem;
+  border-bottom: 1px solid var(--cn-border);
+
+  &:hover {
+    margin: 0;
+    padding: 0 0.75rem 0 1rem;
+    background: var(--chat-hover);
+  }
+
+  &-jump {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--cn-link);
+      outline-offset: -2px;
+    }
+  }
+
+  // A mensagem é só leitura aqui: o clique passa para a linha (menos os links).
+  &-body {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    pointer-events: none;
+
+    a {
+      pointer-events: auto;
+    }
+
+    .ChatMessage {
+      padding-right: 0;
+      padding-left: 0;
+      background: transparent;
+    }
+
+    .ChatMessage:hover {
+      background: transparent;
+    }
+
+    .ChatMessage-actions,
+    .ChatMessage-pinMark {
+      display: none;
+    }
+  }
+
+  &-by {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0.5em 0 0;
+    color: var(--cn-primary-medium);
+    font-size: var(--cn-font-down-1);
+
+    .icon {
+      color: var(--cn-link);
+      transform: rotate(45deg);
+    }
+  }
+
+  &-unpin {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    margin-top: 0.25em;
+    color: var(--cn-primary-medium);
+    opacity: 0;
+
+    &:hover {
+      color: var(--cn-primary);
+    }
+  }
+
+  &:hover &-unpin,
+  &-unpin:focus-visible {
+    opacity: 1;
+  }
+}
+
+// No toque não há hover: o desafixar fica à vista.
+@media (hover: none) {
+  .CanelaPinnedItem-unpin {
+    opacity: 1;
+  }
+}
+
+// Na linha da mensagem, a marca de fixada é só o alfinete inclinado.
+.ChatMessage-pinMark .icon {
+  transform: rotate(45deg);
+}
+
 // ---------------------------------------------------------------------
 // Pesquisar, Meus tópicos, Salvos e Denúncias: listas simples
 // (fio embaixo de cada item, fundo no hover).

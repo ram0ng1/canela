@@ -15,18 +15,18 @@ import { extend, override } from 'flarum/common/extend';
 import TextEditor from 'flarum/common/components/TextEditor';
 import Icon from 'flarum/common/components/Icon';
 import CommentPost from 'flarum/forum/components/CommentPost';
-import highlight from 'flarum/common/helpers/highlight';
 
 import Autocomplete from './Autocomplete';
 import { composerOn } from './common';
 import { normalize } from './emoji/emojiUtils';
-import { allTags, categorySymbol, isTagsEnabled, sortTags, tagUrl, type CanelaTag } from '../../utils/tags';
+import { allTags, categorySymbol, childSymbol, isTagsEnabled, sortTags, tagUrl, type CanelaTag } from '../../utils/tags';
 import { isExtensionEnabled, t } from '../../utils/settings';
 import { iconMarkup } from '../../icons';
 
 declare const s9e: { TextFormatter: { preview: (text: string, element: HTMLElement) => void } } | undefined;
 
-const SUGGESTION_LIMIT = 8;
+/** No máximo 20 hashtags na lista. */
+const SUGGESTION_LIMIT = 20;
 
 /** O flarum/mentions já cuida do `#` quando as duas extensões estão ligadas. */
 function mentionsOwnsHash(): boolean {
@@ -62,21 +62,31 @@ export default function installHashtags() {
       validBit: /[-_\p{L}\p{N}\p{M}]/u,
       suggest: (typed) =>
         suggestTags(typed).map((tag) => {
-          const parent = tag.isChild() ? (tag.parent() as CanelaTag | null) : null;
+          const parent = tag.position() !== null && tag.isChild() ? (tag.parent() as CanelaTag | null) : null;
+          const count: number = (tag as any).discussionCount?.() || 0;
 
+          // A subcategoria como "Pai > Filha" com o quadrado das duas cores,
+          // e a etiqueta com a contagem "(x315)".
           return {
             key: tag.id() || tag.slug(),
             replacement: `[#${tag.name()}](${absoluteUrl(tagUrl(tag))})`,
             label: (
               <>
-                {tag.position() !== null ? categorySymbol(tag) : <Icon name="fas fa-tag" className="CanelaHashtag-tagIcon" />}
-                <span className="CanelaAutocomplete-label">{typed ? highlight(tag.name(), typed) : tag.name()}</span>
-                {parent && <span className="CanelaAutocomplete-meta">{parent.name()}</span>}
+                {tag.position() === null ? (
+                  <Icon name="fas fa-tag" className="CanelaHashtag-tagIcon" />
+                ) : parent ? (
+                  childSymbol(tag, parent)
+                ) : (
+                  categorySymbol(tag)
+                )}
+                <span className="CanelaAutocomplete-label">{parent ? `${parent.name()} > ${tag.name()}` : tag.name()}</span>
+                {tag.position() === null && count > 0 && (
+                  <span className="CanelaAutocomplete-count">{t('composer.hashtags.tag_count', { count })}</span>
+                )}
               </>
             ),
           };
         }),
-      header: () => t('composer.hashtags.autocomplete_header'),
     });
 
     (this as any).canelaHashtagAutocomplete = autocomplete;
@@ -139,16 +149,18 @@ export function decorateHashtags(root: HTMLElement): void {
     link.dataset.canelaHashtag = '1';
     link.classList.add('CanelaHashtag', tag.position() !== null ? 'CanelaHashtag--category' : 'CanelaHashtag--tag');
 
-    // O nome sem o "#": o símbolo é que faz esse papel.
+    // O nome sem o "#": o símbolo é que faz esse papel. A subcategoria vem
+    // como "Pai > Filha", com o quadrado metade de cada cor.
+    const parent = tag.position() !== null && tag.isChild() ? (tag.parent() as CanelaTag | null) : null;
     const label = document.createElement('span');
     label.className = 'CanelaHashtag-name';
-    label.textContent = tag.name();
+    label.textContent = parent ? `${parent.name()} > ${tag.name()}` : tag.name();
 
     const symbol = document.createElement('span');
     symbol.className = 'CanelaHashtag-symbol';
 
     if (tag.position() !== null) {
-      m.render(symbol, categorySymbol(tag));
+      m.render(symbol, parent ? childSymbol(tag, parent) : categorySymbol(tag));
     } else {
       symbol.innerHTML = iconMarkup('fas fa-tag');
     }

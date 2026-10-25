@@ -18,6 +18,8 @@ export const thirdParty = {
   uploadProgress: () => isExtensionEnabled('fof-upload') && forumBool('canelaThirdPartyUploadProgress', true),
   /** fof/discussion-thumbnail: a miniatura na lista de tópicos. */
   thumbnails: () => isExtensionEnabled('fof-discussion-thumbnail') && forumBool('canelaThirdPartyThumbnails', true),
+  /** fof/forum-widgets-core: os widgets em cartões, numa coluna à direita da lista. */
+  widgets: () => isExtensionEnabled('fof-forum-widgets-core') && forumBool('canelaThirdPartyWidgets', true),
   /**
    * forumaker/profile-cover: a capa da extensão no lugar da interna do tema
    * (perfil, cartão e o editor dela nas Configurações). A interna fica no banco.

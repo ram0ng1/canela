@@ -6,6 +6,7 @@
  * `canela.thirdparty_*` do extend.php e a `canela.messages_enabled` do
  * extend/messages.php.
  */
+import AdminNumber from '../components/AdminNumber';
 import AdminToggle from '../components/AdminToggle';
 import { trans } from '../util';
 import type { CardDef } from '../types';
@@ -131,6 +132,33 @@ const cards: CardDef[] = [
     keywords: 'miniatura thumbnail imagem image lista list tópico fof',
     master: 'canela.thirdparty_thumbnails',
     extensions: ['fof-discussion-thumbnail'],
+  },
+  {
+    id: 'thirdparty-widgets',
+    group: 'integrations',
+    icon: 'fas fa-table-columns',
+    title: () => trans(`${KEY}.widgets_label`, 'Widgets (fof/forum-widgets-core)'),
+    description: help(
+      'widgets',
+      'Os widgets da extensão em cartões, como os do tema, numa coluna à direita da lista. Os que ficariam na barra lateral da página (que o tema esconde) entram na mesma coluna. Desligado, ficam com o visual e os lugares da extensão.'
+    ),
+    keywords: 'widgets widget coluna sidebar estatísticas statistics online usuários users html fof',
+    master: 'canela.thirdparty_widgets',
+    extensions: ['fof-forum-widgets-core'],
+    body: () => (
+      <AdminNumber
+        settingKey="canela.widgets_width"
+        label={trans(`${KEY}.widgets_width_label`, 'Largura da coluna')}
+        help={trans(
+          `${KEY}.widgets_width_help`,
+          'A largura da coluna de widgets ao lado da lista, no computador (de 200 a 480 px). A lista fica com o resto do espaço.'
+        )}
+        min={200}
+        max={480}
+        fallback={280}
+        suffix="px"
+      />
+    ),
   },
   {
     id: 'thirdparty-profile-cover',

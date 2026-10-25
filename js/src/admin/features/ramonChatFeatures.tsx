@@ -88,6 +88,11 @@ const cards: CardDef[] = [
       toggle('self_dm', 'MD consigo mesmo ("Anotar algo")', 'Uma conversa só sua, para anotações.'),
       toggle('group_name', 'Nome do chat em grupo', 'Qualquer participante muda o nome da conversa em grupo.'),
       toggle('starred', 'Canais favoritos', 'A estrela no cabeçalho e nas Informações do canal; os favoritos vão para o topo da barra lateral.'),
+      toggle(
+        'pin_bar',
+        'Faixa das fixadas',
+        'A faixa acompanha o trecho da conversa à vista, com o indicador de várias fixadas; clicar percorre todas, o "×" oculta a faixa só para o leitor, e o painel lista na ordem da conversa, com quem fixou.'
+      ),
       toggle('pin_indicator', 'Fixadas não vistas', 'Um ponto na faixa da mensagem fixada quando há fixada que o leitor ainda não abriu.'),
       toggle('retention', 'Lembrete de retenção', 'Por quanto tempo as mensagens ficam guardadas, nas Informações do canal.'),
       toggle('delete_confirm', 'Excluir canal digitando o nome', 'Excluir um canal pede o nome dele digitado, em vez de um "OK".'),

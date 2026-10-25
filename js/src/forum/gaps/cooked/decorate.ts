@@ -88,7 +88,7 @@ function decorateCode(body: HTMLElement): void {
 }
 
 /** O "nome" do título: minúsculas, hífens, sem acento. */
-function slugify(text: string): string {
+export function slugify(text: string): string {
   return text
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')

@@ -80,4 +80,178 @@
   color: var(--cn-primary);
 }
 
+// ---------------------------------------------------------------------
+// O gerenciador de mídia (FileManagerModal): o título e o "Upload" na mesma
+// linha, as abas "Minha mídia / Mídia compartilhada" sublinhadas embaixo
+// dele, a área vazia tracejada (é também onde se solta o arquivo) e os
+// botões à direita do rodapé, o principal por último.
+// ---------------------------------------------------------------------
+.fof-file-manager-modal {
+  .Modal-content {
+    position: relative;
+  }
+
+  // O "Upload" (fica fora do cabeçalho no HTML) no canto, na altura do título.
+  .fof-modal-buttons {
+    position: absolute;
+    z-index: 2;
+    top: var(--cn-modal-pad-y);
+    right: var(--cn-modal-pad-x);
+    display: flex;
+    gap: var(--cn-space-2);
+    margin: 0;
+
+    .Button {
+      height: 36px;
+    }
+  }
+
+  .Modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--cn-space-3);
+    // O espaço do botão "Upload" à direita do título.
+    padding: var(--cn-modal-pad-y) ~"calc(var(--cn-modal-pad-x) + 140px)" 0 var(--cn-modal-pad-x);
+    text-align: left;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      min-height: 36px;
+      margin: 0;
+      font-size: var(--cn-font-up-1);
+      font-weight: 700;
+    }
+  }
+
+  // As abas: sublinhadas, na largura do cabeçalho (o traço vai até a borda).
+  .LibrarySelection {
+    display: flex;
+    gap: var(--cn-space-4);
+    margin: 0 ~"calc(-1 * (var(--cn-modal-pad-x) + 140px))" 0 0;
+    padding: 0;
+    border-bottom: 1px solid var(--cn-border);
+
+    .Button {
+      height: auto;
+      margin-bottom: -1px;
+      padding: 8px 2px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      background: none;
+      color: var(--cn-primary-medium);
+      font-weight: 500;
+
+      &:hover,
+      &:focus-visible {
+        background: none;
+        color: var(--cn-primary);
+      }
+
+      &.active {
+        border-bottom-color: var(--cn-accent);
+        background: none;
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  .Modal-body {
+    padding-top: var(--cn-space-4);
+  }
+
+  // A área vazia: tracejada, com o ícone de imagens e a dica de soltar ali.
+  .fof-upload-file-list > .Placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cn-space-2);
+    min-height: 200px;
+    margin: 0;
+    padding: var(--cn-space-6) var(--cn-space-4);
+    border: 2px dashed var(--cn-primary-low);
+    border-radius: var(--cn-radius-large, 12px);
+    background: var(--cn-primary-very-low);
+    color: var(--cn-primary-medium);
+    text-align: center;
+
+    &::before {
+      content: '';
+      width: 40px;
+      height: 40px;
+      background: currentColor;
+      opacity: 0.7;
+      -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M18 22H4a2 2 0 0 1-2-2V6'/><path d='m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18'/><circle cx='12' cy='8' r='2'/><rect width='16' height='16' x='6' y='2' rx='2'/></svg>") center / contain no-repeat;
+      mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M18 22H4a2 2 0 0 1-2-2V6'/><path d='m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18'/><circle cx='12' cy='8' r='2'/><rect width='16' height='16' x='6' y='2' rx='2'/></svg>") center / contain no-repeat;
+    }
+
+    .fof-upload-empty {
+      margin: 0;
+      color: var(--cn-primary-high);
+      font-size: var(--cn-font-0, 1em);
+      font-weight: 500;
+    }
+  }
+
+  // O rodapé: "Cancelar" discreto e o botão principal por último, à direita.
+  .Modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--cn-space-2);
+    padding: 12px var(--cn-modal-pad-x);
+    border-top: 1px solid var(--cn-border);
+    text-align: right;
+
+    .Button {
+      margin: 0;
+    }
+
+    .Button:not(.Button--primary) {
+      background: none;
+      color: var(--cn-primary-high);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--cn-hover);
+        color: var(--cn-primary);
+      }
+    }
+  }
+
+  @media @phone {
+    .fof-modal-buttons {
+      position: static;
+      order: 2;
+      padding: 0 var(--cn-modal-pad-x);
+    }
+
+    .Modal-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .Modal-header {
+      order: 1;
+      padding-right: var(--cn-modal-pad-x);
+    }
+
+    .LibrarySelection {
+      margin-right: ~"calc(-1 * var(--cn-modal-pad-x))";
+    }
+
+    .Modal-alert,
+    .Modal-body,
+    .Modal-footer {
+      order: 3;
+    }
+
+    .fof-drag-and-drop {
+      order: 0;
+    }
+  }
+}
+
 }

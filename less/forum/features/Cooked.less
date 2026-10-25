@@ -1,0 +1,232 @@
+// =====================================================================
+// A sintaxe a mais do conteúdo (features/cooked): as notas de rodapé e o
+// sumário.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Notas de rodapé: "[1]" pequeno e acima da linha, na cor dos links; a
+// nota abre numa dica. As definições saem do texto.
+// ---------------------------------------------------------------------
+.CanelaFootnote-ref,
+.CanelaFootnote-inline {
+  &.CanelaFootnote--ready {
+    display: inline-block;
+    vertical-align: baseline;
+
+    > sup {
+      display: none;
+    }
+  }
+}
+
+.CanelaFootnote-trigger {
+  display: inline-block;
+  padding: 0 0.125em;
+  color: var(--cn-link) !important;
+  font-size: 0.75rem;
+  line-height: 1;
+  vertical-align: super;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.CanelaFootnote-definitions,
+.CanelaFootnote-content[hidden],
+.CanelaFootnote-def[hidden] {
+  display: none !important;
+}
+
+.CanelaFootnotePopover {
+  position: absolute;
+  z-index: 1100;
+  max-width: ~"min(400px, calc(100vw - 16px))";
+  padding: 0.5em 0.75em;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+  color: var(--cn-primary);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.5;
+  overflow-wrap: break-word;
+
+  p {
+    margin: 0;
+  }
+
+  img {
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  a {
+    color: var(--cn-link);
+  }
+}
+
+// ---------------------------------------------------------------------
+// O sumário: a lista com a barra fina à esquerda, o item de agora em
+// preto com a barra na cor de destaque, os subníveis abrindo com a rolagem.
+// ---------------------------------------------------------------------
+.CanelaToc-marker {
+  display: none;
+}
+
+.CanelaToc {
+  min-width: 6em;
+  max-width: 13em;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+
+  a {
+    display: block;
+    padding: 0.15em 0;
+    color: var(--cn-primary-medium);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--cn-primary-high);
+      text-decoration: none;
+    }
+  }
+}
+
+.CanelaToc-scroll {
+  max-height: ~"calc(100vh - 4.5em - var(--cn-header-height) - 120px)";
+  overflow: auto;
+  border-left: 1px solid var(--cn-primary-low);
+}
+
+.CanelaToc-list,
+.CanelaToc-sublevel {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaToc-item {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 0.75em;
+  line-height: 1.4;
+
+  > .CanelaToc-sublevel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0.5;
+    transition:
+      opacity 0.3s ease-in-out,
+      max-height 0.3s ease-in-out;
+  }
+
+  &--active > .CanelaToc-sublevel {
+    max-height: 500em;
+    overflow: visible;
+    opacity: 1;
+  }
+
+  // A barra do item de agora, sobre a linha da lista.
+  &--current > a {
+    position: relative;
+    color: var(--cn-primary);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -0.75em;
+      width: 1px;
+      height: 100%;
+      background: var(--cn-accent);
+    }
+  }
+}
+
+.CanelaToc-sublevel {
+  font-size: var(--cn-font-down-1);
+
+  > .CanelaToc-item:first-child {
+    padding-top: 0.25em;
+  }
+
+  > .CanelaToc-item {
+    padding-bottom: 0.15em;
+  }
+
+  .CanelaToc-item--current > a::before {
+    left: -1.5em;
+  }
+}
+
+.CanelaToc-end {
+  margin-top: 0.5em;
+  padding-left: 0.75em;
+  color: var(--cn-link);
+  font-size: var(--cn-font-down-1);
+
+  .icon {
+    color: currentColor;
+  }
+}
+
+// Na coluna, o sumário fica no lugar da linha do tempo (a linha toda, acima
+// dos botões) e a troca, sozinha embaixo.
+@media (min-width: 925px) {
+  .CanelaTopic--timeline .DiscussionPage-nav {
+    .item-canelaToc {
+      order: -2;
+      flex: 0 0 100%;
+      min-width: 0;
+    }
+
+    .item-canelaTocToggle {
+      order: 10;
+      flex: 0 0 100%;
+    }
+  }
+}
+
+// O botão de troca: cantos de cima arredondados; nas telas
+// baixas ele fica preso ao pé da coluna.
+.CanelaToc-toggle {
+  margin-top: 1em;
+  white-space: nowrap;
+}
+
+@media (max-height: 950px) and @desktop-up {
+  .DiscussionPage-nav .item-canelaTocToggle {
+    position: fixed;
+    bottom: 0;
+    z-index: 2;
+
+    .CanelaToc-toggle {
+      margin: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}
+
+// No celular, dentro da folha da linha do tempo.
+.CanelaToc-sheet {
+  padding: var(--cn-space-3) var(--cn-space-4);
+  border-top: 1px solid var(--cn-border);
+
+  h3 {
+    margin: 0 0 var(--cn-space-2);
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .CanelaToc {
+    max-width: none;
+  }
+}

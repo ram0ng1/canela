@@ -319,6 +319,7 @@ export const META_MAP: Record<string, string> = {
   'table-columns': 'columns-2',
   'temperature-three-quarters': 'thermometer',
   thumbtack: 'pin',
+  'thumbtack-slash': 'pin-off',
   'toggle-off': 'toggle-left',
   'toggle-on': 'toggle-right',
   'trash-can': 'trash',

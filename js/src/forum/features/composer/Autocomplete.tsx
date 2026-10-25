@@ -124,10 +124,11 @@ export default class Autocomplete {
     // o textarea num div posicionado depois que o contêiner foi criado.
     const textareaRect = this.textarea!.getBoundingClientRect();
     const parentRect = parent.getBoundingClientRect();
-    let top = textareaRect.top - parentRect.top + coordinates.top + 22;
+    const caretTop = textareaRect.top - parentRect.top + coordinates.top;
     let left = textareaRect.left - parentRect.left + coordinates.left;
-
-    if (top + menu.offsetHeight > parent.clientHeight) top = top - 22 - menu.offsetHeight - 6;
+    // Acima do cursor quando cabe na tela; senão, embaixo dele.
+    const above = caretTop - menu.offsetHeight - 6;
+    let top = parentRect.top + above >= 0 ? above : caretTop + 22;
     if (left + menu.offsetWidth > parent.clientWidth) left = Math.max(0, parent.clientWidth - menu.offsetWidth);
 
     menu.style.top = `${top}px`;
@@ -148,7 +149,8 @@ export default class Autocomplete {
   private move(delta: number): void {
     const count = this.items.length;
 
-    this.index = (this.index + delta + count) % count;
+    // As setas param nas pontas, sem dar a volta.
+    this.index = Math.max(0, Math.min(count - 1, this.index + delta));
     this.render();
 
     this.container?.querySelector('.active')?.scrollIntoView({ block: 'nearest' });
@@ -183,10 +185,6 @@ export default class Autocomplete {
               onmousedown={(e: MouseEvent) => {
                 e.preventDefault();
                 this.choose(i);
-              }}
-              onmouseenter={() => {
-                this.index = i;
-                this.render();
               }}
             >
               {item.label}
