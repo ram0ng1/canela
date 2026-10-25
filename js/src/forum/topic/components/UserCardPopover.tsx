@@ -214,7 +214,10 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
     const inTopic = discussion && stream ? authorPostCount(discussion, user) : 0;
 
     const facts = [LocationFact(user), WebsiteFact(user), BirthdayFact(user)].filter(Boolean);
-    const meta1 = [
+    // Uma linha só, que quebra sozinha: com
+    // Curtidas/Soluções numa segunda linha, a Curtidas ficava sozinha nos
+    // fóruns sem o fof/best-answer.
+    const metadata = [
       lastSeen && !user.isOnline() && this.meta('seen', t('topic.user_card.last_seen'), shortAge(lastSeen), fullDate(lastSeen)),
       // Online: só "online agora", em verde (o "Visto" sobra).
       user.isOnline() && (
@@ -234,8 +237,6 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
             ? `${readTime(timeRead)} (${t('topic.user_card.read_recently', { time: readTime(recentRead) })})`
             : readTime(timeRead)
         ),
-    ].filter(Boolean);
-    const meta2 = [
       typeof likes === 'number' && this.meta('likes', t('topic.user_card.likes_received'), abbreviateNumber(likes), undefined, true),
       typeof solutions === 'number' && solutions > 0 && this.meta('solutions', t('topic.user_card.solutions'), abbreviateNumber(solutions)),
     ].filter(Boolean);
@@ -325,8 +326,7 @@ class CanelaUserCard extends Component<CanelaUserCardAttrs> {
           {status && <div className="CanelaUserCard-row">{status}</div>}
           {bio && <div className="CanelaUserCard-row CanelaUserCard-bio">{bio}</div>}
           {facts.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-facts">{dotted(facts)}</div>}
-          {meta1.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{dotted(meta1)}</div>}
-          {meta2.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{dotted(meta2)}</div>}
+          {metadata.length > 0 && <div className="CanelaUserCard-row CanelaUserCard-metadata">{dotted(metadata)}</div>}
           <FeaturedBadges className="CanelaUserCard-row CanelaUserCard-badges" user={user} limit={3} />
         </div>
       </div>

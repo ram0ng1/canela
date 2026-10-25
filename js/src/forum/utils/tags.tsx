@@ -144,7 +144,7 @@ export function categorySymbol(tag: CanelaTag | null, className = ''): Mithril.C
  * O símbolo da filha sem ícone: o quadradinho em duas cores, a do pai e a
  * dela (`.badge-category.--has-parent::before`).
  */
-function childSymbol(tag: CanelaTag, parent: CanelaTag): Mithril.Children {
+export function childSymbol(tag: CanelaTag, parent: CanelaTag): Mithril.Children {
   const symbol: any = categorySymbol(tag);
 
   if (!tag.icon() && symbol?.attrs) {

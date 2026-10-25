@@ -7,12 +7,16 @@
  * o SubscriptionMenu da extensão porque o botão dele é dividido (seguir com um
  * clique + seta), e aqui o clique sempre abre o menu.
  */
+import { extend } from 'flarum/common/extend';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
+import Badge from 'flarum/common/components/Badge';
 import Dropdown from 'flarum/common/components/Dropdown';
+import type ItemList from 'flarum/common/utils/ItemList';
+import type Mithril from 'mithril';
 import DetailedDropdownItem from 'flarum/common/components/DetailedDropdownItem';
 import Icon from 'flarum/common/components/Icon';
 import classList from 'flarum/common/utils/classList';
-import type Discussion from 'flarum/common/models/Discussion';
+import Discussion from 'flarum/common/models/Discussion';
 
 import { t } from '../../utils/settings';
 import { bellIcon } from '../../utils/bells';
@@ -41,6 +45,32 @@ export function currentLevel(discussion: Discussion): Level {
   const value = ((discussion as any).subscription?.() ?? null) as SubscriptionLevel;
 
   return LEVELS.find((level) => level.value === value) || LEVELS[1];
+}
+
+/**
+ * O badge do flarum/subscriptions ao lado do título (⭐ "Seguindo", 👁
+ * "Ignorando") com o ícone e o nome do nível escolhido no sino: o sino
+ * tocando em "Acompanhando" e o cortado em "Silenciado". "Normal" continua
+ * sem badge.
+ */
+export function installSubscriptionBadge(): void {
+  extend(Discussion.prototype, 'badges', function (this: Discussion, badges: ItemList<Mithril.Children>) {
+    if (!badges.has('subscription')) return;
+
+    const level = currentLevel(this);
+
+    if (level.value === null) return;
+
+    badges.setContent(
+      'subscription',
+      <Badge
+        label={t(`topic.notifications.${level.key}`)}
+        icon={level.icon}
+        type={level.value === 'follow' ? 'following' : 'ignoring'}
+        tabindex="0"
+      />
+    );
+  });
 }
 
 export interface TopicNotificationsAttrs extends ComponentAttrs {

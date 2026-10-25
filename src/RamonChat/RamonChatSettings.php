@@ -58,6 +58,7 @@ final class RamonChatSettings
         'long_press' => true,
         'collapse_deleted' => true,
         'pin_indicator' => true,
+        'pin_bar' => true,
         'retention' => true,
         'delete_confirm' => true,
         'typing_poll' => true,

@@ -593,6 +593,18 @@ const CORE_CARDS: CardDef[] = [
     ),
   },
   {
+    id: 'post-username-first',
+    group: 'topic',
+    icon: 'fas fa-at',
+    title: () => trans(`${KEY}.post_username_first_label`, 'Nome de usuário primeiro'),
+    description: help(
+      'post_username_first',
+      'Nas postagens, o nome de usuário vem primeiro, em negrito, e o nome de exibição depois. Desligado, o nome de exibição vem primeiro.'
+    ),
+    keywords: 'nome name usuário username apelido nickname exibição display cabeçalho header postagens posts',
+    master: 'canela.post_username_first',
+  },
+  {
     id: 'post-actions',
     group: 'topic',
     icon: 'fas fa-ellipsis',

@@ -17,7 +17,9 @@
   --cn-topic-love-low: ~"color-mix(in srgb, var(--cn-topic-love) 15%, var(--cn-surface))";
   // O fundo e a barra das citações: no escuro clareiam bem mais do que o
   // "muito baixo" da paleta.
-  --cn-post-aside-bg: var(--cn-primary-very-low);
+  // O fundo das citações: 5% da cor do texto sobre o cartão (≈#f4f4f4 no
+  // claro).
+  --cn-post-aside-bg: ~"color-mix(in srgb, var(--cn-primary) 5%, var(--cn-surface))";
   --cn-post-aside-border: var(--cn-primary-300);
   // O texto dos posts acompanha o "tamanho do texto" do leitor (extras).
   --cn-post-font: calc(16px * var(--cn-text-scale, 1));
@@ -159,14 +161,32 @@
     }
   }
 
+  // Código inline: 14px fixos (0.875rem, que não cresce com o texto do
+  // post) e quebrando como o texto.
   code {
     padding: 2px 4px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
-    font-size: 0.875em;
+    font-size: calc(0.875rem * var(--cn-text-scale, 1));
     line-height: 1.3077;
+    white-space: pre-wrap;
     color: var(--cn-primary);
     background: var(--cn-primary-100);
     border-radius: var(--cn-radius);
+  }
+
+  a > code {
+    color: var(--cn-link);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    code {
+      font-size: inherit;
+    }
   }
 
   pre {
@@ -206,9 +226,9 @@
     border-bottom-width: 2px;
     border-radius: 3px;
     background: var(--cn-primary-very-low);
-    font-family: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
     font-size: var(--cn-font-down-1);
-    line-height: 1.6;
+    line-height: 1.4;
     color: var(--cn-primary);
     box-shadow: none;
   }
@@ -222,7 +242,7 @@
     border-collapse: collapse;
 
     thead th {
-      padding: 0 3px 2px 0.5em;
+      padding: 8px 8px 2px;
       text-align: left;
       font-weight: 700;
       color: var(--cn-primary);
@@ -316,10 +336,12 @@
     font-weight: 400;
     line-height: 1;
     text-decoration: none;
+    white-space: nowrap;
 
+    // No hover nada muda.
     &:hover,
     &:focus-visible {
-      background: var(--cn-primary-200);
+      background: var(--cn-primary-low);
       color: var(--cn-primary);
       text-decoration: none;
     }
@@ -330,52 +352,27 @@
     }
   }
 
-  // Menção de grupo: a mesma pílula, tingida pela cor do grupo (--color, que
-  // o flarum/mentions põe no estilo), com o ícone num círculo cheio na frente.
+  // Menção de grupo: a mesma pílula cinza das menções de pessoa. O ícone
+  // do grupo que o flarum/mentions põe depois do nome não aparece.
   .GroupMention {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.18em 0.5em 0.18em 0.22em;
-    border: 1px solid ~"color-mix(in oklch, var(--color, var(--cn-primary-medium)) 28%, transparent)";
-    border-radius: 999px;
-    background: ~"color-mix(in oklch, var(--color, var(--cn-primary-medium)) 12%, var(--cn-surface))";
-    color: ~"color-mix(in oklch, var(--color, var(--cn-primary)) 78%, var(--cn-primary))";
+    display: inline-block;
+    padding: 0.2em 0.34em;
+    border: 0;
+    border-radius: 0.6em;
+    background: var(--cn-primary-low);
+    color: var(--cn-primary);
     font-size: 0.93em;
-    font-weight: 600;
-    line-height: 1.2;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
     vertical-align: baseline;
-    transition: background-color 0.15s;
-
-    &:hover {
-      background: ~"color-mix(in oklch, var(--color, var(--cn-primary-medium)) 20%, var(--cn-surface))";
-    }
 
     .GroupMention-name {
       color: inherit;
     }
 
-    // O ícone do grupo vem depois do nome no HTML: vai para a frente.
     .icon {
-      order: -1;
-      box-sizing: border-box;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 1.35em;
-      height: 1.35em;
-      margin: 0;
-      padding: 0.25em;
-      border-radius: 50%;
-      background: var(--color, var(--cn-primary-medium));
-      color: #fff;
-      font-size: 0.85em;
-      line-height: 1;
-    }
-
-    // Sem ícone, a pílula não precisa do recuo da esquerda.
-    &:not(:has(.icon)) {
-      padding-left: 0.5em;
+      display: none;
     }
   }
 
@@ -580,7 +577,7 @@
     }
   }
 
-  // O nome do autor em preto (a cor do texto), não no cinza do cabeçalho.
+  // O primeiro nome em negrito, no mesmo cinza do segundo.
   .PostUser-name {
     font-size: inherit;
     line-height: inherit;
@@ -589,7 +586,7 @@
     a {
       font-weight: 700;
       font-size: inherit;
-      color: var(--cn-primary);
+      color: var(--cn-primary-high);
     }
   }
 
@@ -846,8 +843,10 @@
   position: absolute;
   // Acima do avatar (e o tooltip do grupo, que mora aqui dentro, junto).
   z-index: 2;
-  right: -4px;
-  bottom: 0;
+  // O emblema de grupo (ícone sobre fundo): 24px, 2px abaixo e 8px para fora
+  // do avatar.
+  right: -8px;
+  bottom: -2px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -868,8 +867,8 @@
   }
 
   .Badge {
-    .Badge--size(20px);
-    box-shadow: 0 0 0 2px var(--cn-surface);
+    .Badge--size(24px);
+    box-shadow: none;
   }
 }
 
@@ -1389,6 +1388,32 @@
     time {
       color: var(--cn-primary-medium);
     }
+
+    // As tags do "adicionou/removeu a tag": o badge da lista (símbolo da
+    // categoria ou ícone da etiqueta e o nome), sem caixa colorida.
+    .CanelaCategoryBadge,
+    .CanelaTagBadge {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.3em;
+      padding: 0;
+      background: none;
+      color: var(--cn-primary-high);
+      font-weight: 600;
+      white-space: nowrap;
+      vertical-align: baseline;
+
+      &:hover,
+      &:focus-visible {
+        background: none;
+        color: var(--cn-primary);
+      }
+    }
+
+    .CanelaCategorySymbol,
+    .CanelaTagSymbol {
+      align-self: center;
+    }
   }
 }
 
@@ -1466,9 +1491,12 @@
     color: var(--cn-accent);
   }
 
+  // O hover do tema é translúcido: sobre o cartão (e não no lugar dele), o
+  // botão continua opaco por cima do texto selecionado.
   &:hover,
   &:focus-visible {
-    background: var(--cn-hover);
+    background-color: var(--cn-surface);
+    background-image: linear-gradient(var(--cn-hover), var(--cn-hover));
     color: var(--cn-primary);
   }
 }
@@ -1640,11 +1668,9 @@
       white-space: normal;
     }
 
+    // No celular o segundo nome também vai em negrito.
     .CanelaPostNames-username {
       font-weight: 700;
-    }
-
-    .CanelaPostNames-username {
       line-height: 1.2;
     }
 
@@ -1672,7 +1698,7 @@
   // O flair no canto de baixo do avatar de 48px do cabeçalho.
   .CanelaTopic .Post-header .PostUser-badges {
     position: absolute;
-    top: 28px;
+    top: 26px;
     left: 32px;
     width: auto;
     margin: 0;
@@ -1682,8 +1708,8 @@
     }
 
     .Badge {
-      .Badge--size(20px);
-      box-shadow: 0 0 0 2px var(--cn-surface);
+      .Badge--size(24px);
+      box-shadow: none;
     }
   }
 }

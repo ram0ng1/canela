@@ -60,7 +60,13 @@
     box-shadow: var(--cn-composer-shadow);
     // A altura em si é animada pelo core (jQuery, 200ms), igual à
     // transição de 0.2s.
-    transition: max-width 0.2s, margin 0.2s, background-color 0.2s;
+    transition: max-width 0.2s, margin 0.2s, background-color 0.2s, opacity 0.2s;
+
+    // Fechando, o core esvazia o composer e o faz descer: a caixa vazia
+    // some enquanto desce, em vez de atravessar a tela em branco.
+    &:not(.visible) {
+      opacity: 0;
+    }
 
     // O core desenha um anel da cor primária quando o composer tem foco;
     // aqui não.
@@ -88,8 +94,8 @@
     }
   }
 
-  // Com a prévia, a largura toda (até 1475px), por cima da barra lateral nas
-  // telas em que não cabe ao lado.
+  // Com a prévia, a largura toda (até 1475px), centrado na janela e por cima
+  // da barra lateral: cresce para os dois lados, não só para a direita.
   .Composer.CanelaComposer.show-preview:not(.fullScreen) {
     max-width: 1475px;
     margin-left: auto;
@@ -112,14 +118,6 @@
 
     @media (max-width: 1000px) {
       margin-left: ~"calc(var(--cn-sidebar-width) + 1em)";
-    }
-  }
-
-  // Entre 1611 e 2019px a janela com a prévia começa depois da barra.
-  @media (min-width: 1611px) and (max-width: 2019px) {
-    .Canela--sidebarOpen .Composer.CanelaComposer.show-preview:not(.fullScreen) {
-      margin-left: ~"calc(var(--cn-sidebar-width) + 2em)";
-      width: auto;
     }
   }
 }
@@ -893,6 +891,27 @@
   }
 }
 
+// Scribe (ernestdefoe/scribe): o editor dele é este mesmo elemento
+// (`.Scribe-editor.Composer-flexible.TextEditor-editor`), mas em coluna
+// flex, para o ProseMirror (o filho) caber na altura que o core dá e rolar
+// por dentro. Com o `display: block` de cima, o ProseMirror crescia com o
+// texto, vazava do composer e nada rolava.
+.CanelaComposer .TextEditor .TextEditor-editor.Scribe-editor {
+  &,
+  &:focus,
+  &[disabled] {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .ProseMirror {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
 // Prévia ao lado: uma grade ("editor preview" / rodapé embaixo
 // das duas). O TextEditor some da grade (`display: contents`) para o rodapé
 // dele ocupar a largura toda, debaixo da prévia também.
@@ -1364,7 +1383,8 @@
 
 // ---------------------------------------------------------------------
 // Tela cheia: a coluna de 740px no meio da tela branca (sem a prévia), ou a
-// largura toda com ela; o cabeçalho só com os botões do canto.
+// largura toda com ela. O cabeçalho fica inteiro (a ação, as tags, o
+// título): só o texto ganha a altura que sobra.
 // ---------------------------------------------------------------------
 @media @tablet-up {
   .Composer.CanelaComposer.fullScreen {
@@ -1374,19 +1394,8 @@
     max-width: none;
     margin: 0;
 
-    .ComposerBody-header > li:not(.item-title) {
-      display: none;
-    }
-
     .ComposerBody-header > .item-title {
-      min-height: 46px;
-      padding-top: 0;
-      padding-bottom: 0;
       border-bottom-color: var(--cn-composer-border);
-
-      .CanelaComposerAction {
-        visibility: hidden;
-      }
     }
 
     .Composer-controls {
@@ -1717,4 +1726,181 @@
     margin-left: ~"calc(var(--cn-composer-card-left) + max(0px, (var(--cn-composer-card-room) - 960px) / 2))";
     margin-right: 0;
   }
+}
+
+// ---------------------------------------------------------------------
+// O menu do `@` e do `#` (flarum/mentions; o conteúdo das linhas vem de
+// composer/mentionsDropdown.tsx):
+// painel de raio 8 sem respiro interno, linhas de borda a borda, avatar de
+// 24px a 8px do texto, o nome sem negrito e o resto em cinza menor.
+// ---------------------------------------------------------------------
+@keyframes cn-mentions-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ComposerBody .Dropdown-menu.MentionsDropdown,
+.Dropdown-menu.MentionsDropdown {
+  min-width: 300px;
+  max-width: ~"min(370px, calc(100vw - 32px))";
+  width: max-content;
+  max-height: none;
+  margin: 0 !important;
+  padding: 0;
+  overflow: hidden auto;
+  border: 1px solid var(--cn-border);
+  border-radius: 8px;
+  background: var(--cn-surface);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  animation: cn-mentions-in 0.25s ease;
+
+  > li + li {
+    margin: 0;
+  }
+
+  > li > button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5em 1em;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: var(--cn-primary);
+    font-size: 1em;
+    line-height: 1.5;
+    text-align: left;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--cn-hover);
+    }
+  }
+
+  > li.active > button {
+    background: var(--cn-selected);
+  }
+
+  .PostPreview {
+    color: var(--cn-primary);
+  }
+
+  .PostPreview-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+    line-height: inherit;
+  }
+
+  .Avatar {
+    .Avatar--size(24px);
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .username {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--cn-primary);
+    font-weight: 400;
+  }
+
+  .name,
+  .MentionsDropdown-meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--cn-primary-high);
+    font-size: var(--cn-font-down-1);
+  }
+
+  .MentionsDropdown-status {
+    flex-shrink: 0;
+  }
+
+  // O digitado não é realçado.
+  mark {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font-weight: inherit;
+  }
+
+  // Grupo: o ícone de pessoas, cinza e sem fundo.
+  .MentionsDropdown-groupIcon {
+    flex-shrink: 0;
+    padding: 0 2px;
+    color: var(--cn-primary-medium);
+  }
+
+  // Hashtags: linhas mais baixas, o quadrado de 0.93em sem raio, o ícone da
+  // categoria a 1em na cor dela e o da etiqueta na cor do texto.
+  > li > .MentionsDropdown-tag {
+    padding: 0.3em 1em;
+
+    .PostPreview-content {
+      gap: 0.25em;
+    }
+  }
+
+  .MentionsDropdown-symbol {
+    display: inline-flex;
+    flex-shrink: 0;
+    margin-right: 0.25em;
+
+    .CanelaCategorySymbol {
+      width: 1em;
+      height: 1em;
+    }
+
+    .CanelaCategorySymbol--square::before {
+      width: 0.93em;
+      height: 0.93em;
+      border-radius: 0;
+    }
+  }
+
+  .MentionsDropdown-tagIcon {
+    flex-shrink: 0;
+    width: 0.93em;
+    margin-right: 0.25em;
+    color: var(--cn-primary);
+    font-size: 0.93em;
+  }
+
+  // A lista de hashtags rola a partir de 13.5em, com o fim esmaecido.
+  &:has(.MentionsDropdown-tag) {
+    max-height: 13.5em;
+
+    &::after {
+      content: '';
+      position: sticky;
+      bottom: 0;
+      display: block;
+      height: 1.5em;
+      margin-top: -1.5em;
+      background: linear-gradient(to bottom, transparent, var(--cn-surface));
+      pointer-events: none;
+    }
+  }
+
+  @media @tablet-up {
+    max-width: 600px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+[data-theme^=dark] .Dropdown-menu.MentionsDropdown {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }

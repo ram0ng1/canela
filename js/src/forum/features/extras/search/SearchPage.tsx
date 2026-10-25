@@ -24,6 +24,7 @@ import type Mithril from 'mithril';
 
 import { t } from '../../../utils/settings';
 import { isTagsEnabled, type CanelaTag } from '../../../utils/tags';
+import { minTermLength, termLongEnough } from '../../../utils/searchTerm';
 import AdvancedFilters from './AdvancedFilters';
 import { hasCriteria, highlightPattern, parseQuery, serializeQuery, type SearchQuery } from './query';
 import { discussionResult, postResult, resultSkeleton, tagResult, userResult } from './results';
@@ -244,14 +245,29 @@ export default class SearchPage extends Page<IPageAttrs> {
 
   /** Etiquetas e usuários só se buscam por texto; tópicos e postagens, também por filtros. */
   canSearch(): boolean {
-    if (this.tab === 'categories' || this.tab === 'users') return !!this.query.text;
+    // O mesmo mínimo do menu do cabeçalho (utils/searchTerm): texto curto
+    // demais só busca se houver filtros.
+    const text = this.query.text && termLongEnough(this.query.text) ? this.query.text : '';
 
-    return hasCriteria(this.query);
+    if (this.tab === 'categories' || this.tab === 'users') return !!text;
+
+    return hasCriteria({ ...this.query, text });
+  }
+
+  /** Há texto, mas curto demais para buscar. */
+  tooShort(): boolean {
+    return !!this.query.text && !termLongEnough(this.query.text);
   }
 
   resultsView(): Mithril.Children {
     if (!this.searched && !this.loading) {
-      return <p className="CanelaSearch-empty">{this.raw ? t('extras.search.need_more') : t('extras.search.start')}</p>;
+      const message = this.tooShort()
+        ? t('extras.search.too_short', { count: minTermLength() })
+        : this.raw
+          ? t('extras.search.need_more')
+          : t('extras.search.start');
+
+      return <p className="CanelaSearch-empty">{message}</p>;
     }
 
     const pattern = highlightPattern(this.query.text);

@@ -120,6 +120,9 @@ $forumSettings = [
     // O "em resposta a" do post: 'discourse' (↩ nome à direita do cabeçalho)
     // ou 'avocado' (uma linha embaixo do nome: "↳ Em resposta a [avatar] Fulano").
     'canela.topic_reply_to_style' => ['canelaTopicReplyToStyle', 'discourse', null],
+    // O nome de usuário antes do nome de exibição nas postagens (ligado por
+    // padrão; desligado, o nome de exibição vem primeiro).
+    'canela.post_username_first' => ['canelaPostUsernameFirst', true, 'boolval'],
 
     // Extensões de terceiros (no visual do tema)
     'canela.thirdparty_solved' => ['canelaThirdPartySolved', true, 'boolval'],
@@ -128,6 +131,10 @@ $forumSettings = [
     'canela.thirdparty_links_sidebar' => ['canelaThirdPartyLinksSidebar', true, 'boolval'],
     'canela.thirdparty_upload_progress' => ['canelaThirdPartyUploadProgress', true, 'boolval'],
     'canela.thirdparty_thumbnails' => ['canelaThirdPartyThumbnails', true, 'boolval'],
+    // fof/forum-widgets-core: os widgets em cartões numa coluna à direita (thirdparty/widgets).
+    'canela.thirdparty_widgets' => ['canelaThirdPartyWidgets', true, 'boolval'],
+    // A largura da coluna de widgets (px, de 200 a 480).
+    'canela.widgets_width' => ['canelaWidgetsWidth', 280, 'intval'],
     // forumaker/profile-cover no lugar da capa interna (thirdparty/profileCover).
     'canela.thirdparty_profile_cover' => ['canelaThirdPartyProfileCover', true, 'boolval'],
     // ramon/verified: o selo depois do nome, na linha do texto (thirdparty/verified).
@@ -238,6 +245,7 @@ foreach ([
     'config-canela-tp-terms' => ['fof-terms'],
     'config-canela-tp-formatting' => ['fof-formatting'],
     'config-canela-tp-thumbnails' => ['fof-discussion-thumbnail'],
+    'config-canela-tp-widgets' => ['fof-forum-widgets-core'],
     'config-canela-tp-moderation' => ['fof-split', 'fof-merge-discussions', 'fof-ignore-users'],
     'config-canela-tp-verified' => ['ramon-verified'],
     'config-canela-tp-profile-cover' => ['forumaker-profile-cover'],

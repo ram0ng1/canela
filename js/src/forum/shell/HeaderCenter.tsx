@@ -5,7 +5,9 @@
  * volta ao topo. Fora disso, é a busca.
  */
 import app from 'flarum/forum/app';
+import { override } from 'flarum/common/extend';
 import Component from 'flarum/common/Component';
+import Badge from 'flarum/common/components/Badge';
 import DiscussionPage from 'flarum/forum/components/DiscussionPage';
 import type Discussion from 'flarum/common/models/Discussion';
 import type Mithril from 'mithril';
@@ -44,6 +46,33 @@ function update() {
 
 function schedule() {
   if (!frame) frame = requestAnimationFrame(update);
+}
+
+/**
+ * O badge do core cria a dica sem posição (em cima). `tooltipPosition` escolhe
+ * outra: no cabeçalho fixo a dica abre para baixo, e não cortada no topo da
+ * tela. O atributo sai do elemento do badge (não vai para o DOM).
+ */
+export function installBadgeTooltipPosition(): void {
+  override(Badge.prototype, 'view', function (this: any, original: () => any) {
+    const position = this.attrs?.tooltipPosition;
+
+    if (!position) return original();
+
+    const { tooltipPosition: _ignored, ...rest } = this.attrs;
+    const saved = this.attrs;
+    this.attrs = rest;
+
+    try {
+      const result = original();
+
+      if (result?.attrs && result.attrs.text !== undefined) result.attrs = { ...result.attrs, position };
+
+      return result;
+    } finally {
+      this.attrs = saved;
+    }
+  });
 }
 
 export function watchHeaderTopic() {
@@ -87,7 +116,11 @@ export default class HeaderCenter extends Component {
   }
 
   topic(discussion: Discussion): Mithril.Children {
-    const badges = discussion.badges().toArray();
+    // As dicas dos badges abrem para baixo: em cima, ficariam fora da tela.
+    const badges = discussion
+      .badges()
+      .toArray()
+      .map((badge: any) => (badge?.attrs ? { ...badge, attrs: { ...badge.attrs, tooltipPosition: 'bottom' } } : badge));
 
     return (
       <div className="CanelaHeaderTopic">

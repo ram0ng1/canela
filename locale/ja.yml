@@ -262,6 +262,8 @@ ramon-canela:
       post_style_discourse: 標準
       post_style_direct: タイムライン付き（avocado スタイル）
       topic_reply_to_style_label: 投稿の「返信先」
+      post_username_first_label: ユーザー名を先に表示
+      post_username_first_help: 投稿では、ユーザー名を太字で先に、表示名をその後に表示します。オフにすると、表示名が先になります。
       topic_reply_to_style_help: 'ほかの投稿への返信で、返信先をどう表示するかです。標準スタイルではヘッダーの右に「↩ 名前」（返信先が直前の投稿でないときだけ）。avocado では名前の下に「↳ 返信先 [アバター] 名前」の行をすべての返信に表示します。クリックすると返信先の投稿を表示します。'
       topic_reply_to_style_discourse: '標準: ヘッダーの右に ↩ 名前'
       topic_reply_to_style_avocado: 名前の下の行（avocado スタイル）
@@ -523,6 +525,10 @@ ramon-canela:
         profile_cover_label: プロフィールカバー（forumaker/profile-cover）
         profile_cover_help: 'テーマ独自のカバーの代わりに拡張機能のカバーを使います。プロフィールのバナー、ユーザーカードの背景（サムネイルがあればサムネイル）に、拡張機能のエディターで選んだ位置で表示します。エディターはプロフィールの「…」メニューと設定から開きます。テーマ独自の画像は保存されたままで、このスイッチをオフにすると元に戻ります。'
         thumbnails_label: 一覧のサムネイル
+        widgets_label: 'ウィジェット（fof/forum-widgets-core）'
+        widgets_help: "拡張機能のウィジェットを、テーマと同じカードにして一覧の右の列に表示します。ページのサイドバー（テーマでは非表示）に置かれるウィジェットも同じ列に入ります。オフにすると、拡張機能の見た目と配置のままになります。"
+        widgets_width_label: '列の幅'
+        widgets_width_help: "パソコンで一覧の横に表示するウィジェット列の幅です（200〜480 px）。一覧は残りの幅を使います。"
         thumbnails_help: スレッド一覧のタイトルの横に FoF Discussion Thumbnail の画像を表示します。
         verified_label: 認証バッジ
         verified_help: 'ramon/verified のバッジを、ユーザーアイコンのように名前のすぐ後ろ、文字と同じ行・同じ大きさで表示します（投稿ヘッダー、埋め込み投稿、「返信先」、ユーザーカード、プロフィール）。'
@@ -649,6 +655,35 @@ ramon-canela:
         panel_signup_title: "新規登録時のタイトル"
         panel_login_text: "ログイン時の本文"
         panel_signup_text: "新規登録時の本文"
+      events:
+        title: イベント
+        backend_off: イベントのバックエンド（extend/events.php）がまだサーバーで読み込まれていません。
+        events_enabled_help: 'コンポーザーの ⊕ メニューの「イベントを作成」で、最初の投稿にイベントを入れます: 日時とタイムゾーン、繰り返し、配信のアドレス、場所、参加者の上限。投稿には「参加する」「興味あり」「参加しない」、参加者、「カレンダーに追加」（Google と .ics）のカードが表示されます。オフにすると、カードはテキストになり、API は機能が存在しないかのように応答します。'
+        events_tag_label: イベントのタグ
+        events_tag_any: すべてのタグ
+        events_tag_help: '「イベントを作成」ボタンはこのタグでスレッドを作成するときだけ表示され、このタグのスレッドだけがイベントカードを表示し、「今後のイベント」に入り、リマインダーを送ります。イベントを作成できるのは、このタグでスレッドを始められる人です（タグ自体の権限）。「すべてのタグ」では、すべてのスレッドで有効です。'
+        events_list_badge_label: リストとヘッダーの日付
+        events_list_badge_help: 'スレッド一覧とトピックのヘッダーで、タイトルの横にイベントの日付（「3 日後」「2 日前」）を表示します。'
+        events_upcoming_label: 今後のイベント
+        events_upcoming_help: 'サイドバーの「イベント」リンク、/events ページ（リストとカレンダー）、イベントのタグの一覧の上部に次の日程を表示します。'
+        events_chat_label: イベントのチャット
+        events_chat_help: '作成画面に「イベントのチャット」が追加されます: スレッドのタグに紐づいた、イベント専用の ramon/chat チャンネルです。「参加する」を選んだ人がチャンネルに参加します。'
+        events_docked_chat_label: トピックの横のチャット
+        events_docked_chat_help: パソコンでは、イベントのチャンネルがトピックの右に画面の高さいっぱいの列で表示されます。スマートフォンとタブレットでは、カードにチャットへのリンクがあります。
+        events_reminder_minutes_label: イベント前のリマインダー
+        events_reminder_minutes_help: '各回の何分前に、「参加する」を選んだ人に通知するかです。0 でリマインダーはオフになります。'
+        minutes: 分
+        reminders_notice: 'リマインダーは Flarum のスケジューラーから 5 分ごとに送られます: サーバーで「php flarum schedule:run」を cron で毎分実行する必要があります。'
+      cooked:
+        backend_off: 脚注と目次の構文（extend/cooked.php）がまだサーバーで読み込まれていません。
+        footnotes_title: 脚注
+        footnotes_help: '脚注: 本文の「テキスト[^1]」と投稿の最後の「[^1]: 注」、またはインラインの「^[注]」。番号は行の上に小さく表示され、クリックするとツールチップで注が開きます。コンポーザーの ⊕ メニューに「脚注」が追加されます。オフにすると、注は「[1]」と「[1]: テキスト」のままになります。'
+        toc_title: 目次
+        toc_help: '最初の投稿に [toc] があると（コンポーザーの ⊕ メニューに「目次を挿入」があります）、その見出しがタイムラインの列に表示され、現在の見出しと「最後へ移動」が付きます。下のボタンで「目次」と「タイムライン」を切り替えられ、選択はブラウザーに保存されます。スマートフォンでは、目次はタイムラインのシートに入ります。'
+        toc_min_headings_label: 見出しの最小数
+        toc_min_headings_help: 最初の投稿の見出しがこれより少ないと、目次は表示されません。
+        toc_auto_tags_label: これらのタグで目次を自動表示
+        toc_auto_tags_help: これらのタグのスレッドでは、[toc] がなくても最初の投稿に目次が付きます（見出しが十分にある場合）。
       bookmarks:
         title: ブックマーク
         bookmarks_enabled_label: ブックマーク
@@ -832,6 +867,8 @@ ramon-canela:
         group_name_help: "参加者なら誰でもグループの会話名を変更できます。"
         starred_label: "お気に入りチャンネル"
         starred_help: "ヘッダーとチャンネル情報のスター。お気に入りはサイドバーの上に並びます。"
+        pin_bar_label: "固定バー"
+        pin_bar_help: "表示中の会話に合わせてバーが切り替わり、複数の固定があるとインジケーターを表示します。クリックで順に移動し、「×」でその読者だけバーを隠せます。パネルは会話順に、固定した人とともに一覧表示します。"
         pin_indicator_label: "未読のピン留め"
         pin_indicator_help: "まだ開いていないピン留めがあると、ピン留めバーに点を表示します。"
         retention_label: "保持期間の表示"
@@ -989,6 +1026,98 @@ ramon-canela:
 
           スレッドや返信をまた作成できます。ご協力ありがとうございました。
   forum:
+    events:
+      sidebar: イベント
+      page_title: イベント
+      upcoming_title: 今後のイベント
+      all_events: すべてのイベント
+      no_upcoming: 予定されているイベントはありません。
+      view_list: リスト
+      view_calendar: カレンダー
+      previous_month: 前の月
+      next_month: 次の月
+      today: 今日
+      happening_now: 開催中
+      created_by: 作成者
+      local_time: あなたのタイムゾーン
+      more: その他のオプション
+      going: 参加する
+      interested: 興味あり
+      not_going: 参加しない
+      full: 満員
+      remove_answer: 回答を取り消す
+      login_to_rsvp: ログインして回答
+      ended_notice: このイベントは終了しました。
+      see_invitees: 参加者を見る
+      invitees_title: '参加者: {title}'
+      no_invitees: まだ誰もいません。
+      capacity: '{max} 枠中 {going} 人'
+      add_google: Google カレンダーに追加
+      add_ics: カレンダー用にダウンロード (.ics)
+      open_chat: イベントのチャットで話す
+      join_livestream: '配信に参加 ({host})'
+      status:
+        public: 公開
+        standalone: お知らせ
+        ended: 終了
+      tabs:
+        going: 参加する
+        interested: 興味あり
+        not_going: 参加しない
+      recurrence:
+        every_day: 毎日
+        every_weekday: 平日毎日
+        every_week: '毎週{weekday}'
+        every_two_weeks: '隔週{weekday}'
+        every_four_weeks: '4 週ごとの{weekday}'
+        every_month: '毎月第{position}{weekday}'
+      notification:
+        text: '{name} は {when} に始まります'
+        setting: 参加するイベントがまもなく始まるとき
+      builder:
+        create_title: イベントを作成
+        edit_title: イベントを編集
+        name: イベント名
+        name_placeholder: 空欄ならスレッドのタイトル
+        start: 開始
+        end: 終了
+        time: 時刻
+        timezone: タイムゾーン
+        status: 種類
+        status_public: 公開（出欠あり）
+        status_standalone: お知らせ（出欠なし）
+        status_public_help: スレッドを見られる人なら誰でも、参加・興味あり・不参加を回答できます。
+        status_standalone_help: 日時と情報だけで、出欠のボタンはありません。
+        recurrence: 繰り返し
+        recurrence_none: 繰り返さない
+        recurrence_every_day: 毎日
+        recurrence_every_weekday: 平日毎日（月〜金）
+        recurrence_every_week: 毎週
+        recurrence_every_two_weeks: 2 週間ごと
+        recurrence_every_four_weeks: 4 週間ごと
+        recurrence_every_month: 毎月（同じ曜日）
+        until: 終了日
+        url: 配信またはミーティングのアドレス
+        location: 場所
+        max: 参加者の上限
+        max_placeholder: 上限なし
+        chat: イベントのチャット
+        chat_help: イベント専用のチャットチャンネルを作成します。「参加する」を選んだ人が参加し、パソコンではトピックの横に表示されます。
+        description: 説明
+        create: イベントを挿入
+        save: イベントを保存
+        remove: イベントを削除
+        error_start: 開始日を選んでください。
+        error_end: 終了は開始より後にしてください。
+    toc:
+      title: 目次
+      jump_end: 最後へ移動
+      show_timeline: タイムライン
+      show_toc: 目次
+      insert: 目次を挿入
+    footnotes:
+      add: 脚注
+      placeholder: 脚注
     ai:
       translation:
         original_language: この投稿は元々 {language} で書かれました。
@@ -1313,8 +1442,12 @@ ramon-canela:
         invitations_sent: '{count, plural, one {招待を送信しました} other {招待を送信しました}}'
       pinned_bar:
         title: 固定
+        jump_to_pinned: 固定されたメッセージへ移動
       pinned_messages:
         title: 固定されたメッセージ
+        close: 固定されたメッセージを閉じる
+        dismiss: 自分には固定バーを隠す
+        show: 固定バーを表示
         pinned_by_you: あなたが固定
         pinned_by_user: '{username} が固定'
       channel_list:
@@ -1638,6 +1771,7 @@ ramon-canela:
           '5': 濃い肌の色
       hashtags:
         autocomplete_header: タグ
+        tag_count: "(x{count})"
       similar:
         title: あなたのスレッドは次のスレッドに似ています…
         close: 閉じる
@@ -1765,6 +1899,7 @@ ramon-canela:
         failed: 検索を完了できませんでした。しばらくしてからもう一度お試しください。
         start: 探しているものを入力するか、詳細フィルターを開いてください。
         need_more: 検索語を入力してください。
+        too_short: '{count, plural, other {# 文字以上入力してください。}}'
         load_more: さらに表示
         modal_link: 詳細検索 →
         posts_filters_note: 投稿の検索では、投稿者、タグ（1つ）、いいね、ブックマークのみが使われます。その他のフィルターはスレッドに適用されます。
@@ -2309,7 +2444,7 @@ ramon-canela:
       categories: タグ
       tags: セカンダリタグ
       all_categories: すべてのタグ
-      all_tags: すべてのタグ
+      all_tags: すべてのセカンダリタグ
       notifications: 通知
       settings: 設定
       customize_categories: タグをカスタマイズ
@@ -2459,6 +2594,7 @@ ramon-canela:
         next: '次へ'
         pager_label: '同じカテゴリの記事'
     topic:
+      tagged_post: '{count, plural, other {タグ {tags}}}'
       link_copied: リンクをクリップボードにコピーしました。
       new_replies: '{count, plural, one {新しい返信が # 件あります} other {新しい返信が # 件あります}}'
       embedded:
@@ -2897,6 +3033,9 @@ ramon-canela:
       invalid_birthday: 生年月日は 1900 年から昨日までの間で選んでください。
     invites:
       too_many: 有効な招待が多すぎます。新しく生成する前に、いずれかを削除してください。
+    events:
+      invalid_status: 回答は「参加する」「興味あり」「参加しない」のいずれかにしてください。
+      full: このイベントは参加者の上限に達しています。
   views:
     not_found:
       page_title: ページが見つかりません

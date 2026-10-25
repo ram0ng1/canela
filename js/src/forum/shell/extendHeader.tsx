@@ -11,8 +11,12 @@ import type Mithril from 'mithril';
 
 import { forumBool } from '../utils/settings';
 import LocaleSwitcher from './LocaleSwitcher';
+import { installBadgeTooltipPosition } from './HeaderCenter';
 
 export default function extendHeader() {
+  // As dicas dos badges do título no cabeçalho fixo abrem para baixo.
+  installBadgeTooltipPosition();
+
   // O fof/drafts põe uma pena (DraftsDropdown, chave `Drafts`) no cabeçalho.
   // Esse ícone sai: os rascunhos ficam no "⌄" do botão "Novo
   // tópico". O initializer do fof roda depois do tema, então a remoção é

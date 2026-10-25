@@ -14,6 +14,7 @@ import installTopicMap from './topicMap';
 import installUserCard from './userCard';
 import installAuthorFilter from './authorFilter';
 import installEventPosts from './eventPosts';
+import { installSubscriptionBadge } from './components/TopicNotifications';
 import installReplyToComposer from './replyToComposer';
 import installMarkUnread from './markUnread';
 import installBackHistory from './backHistory';
@@ -34,6 +35,7 @@ export default function installTopic(): void {
     installLayout();
     installPosts();
     installEventPosts();
+    installSubscriptionBadge();
     installTimeline();
     installTopicMap();
     installUserCard();

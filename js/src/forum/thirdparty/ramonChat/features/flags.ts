@@ -27,6 +27,7 @@ export type RamonChatFeature =
   | 'long_press'
   | 'collapse_deleted'
   | 'pin_indicator'
+  | 'pin_bar'
   | 'retention'
   | 'delete_confirm'
   | 'typing_poll'

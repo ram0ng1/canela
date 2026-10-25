@@ -18,11 +18,13 @@ import METOO_CARDS from './metoo';
 import INTEGRATION_CARDS from './integrations';
 import RAMON_CHAT_FEATURE_CARDS from './ramonChatFeatures';
 import SYSTEM_CARDS from './system';
+import EVENTS_CARDS from './events';
 
 const FEATURE_CARDS: CardDef[] = [
   ...COMMUNITY_CARDS,
   ...STATS_CARDS,
   ...BOOKMARKS_CARDS,
+  ...EVENTS_CARDS,
   ...METOO_CARDS,
   ...COMPOSER_CARDS,
   ...EXTRAS_CARDS,

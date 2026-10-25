@@ -886,3 +886,31 @@
     align-items: flex-start;
   }
 }
+
+// As tags marcáveis (o sumário automático por tag, nos eventos).
+.CanelaAdmin-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.CanelaAdmin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid var(--control-bg);
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    margin: 0;
+  }
+
+  &.is-on {
+    border-color: var(--primary-color);
+    background: var(--control-bg);
+  }
+}

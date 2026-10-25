@@ -262,6 +262,8 @@ ramon-canela:
       post_style_discourse: Padrão
       post_style_direct: Com a linha do tempo (estilo avocado)
       topic_reply_to_style_label: '"Em resposta a" nas postagens'
+      post_username_first_label: Nome de usuário primeiro
+      post_username_first_help: Nas postagens, o nome de usuário vem primeiro, em negrito, e o nome de exibição depois. Desligado, o nome de exibição vem primeiro.
       topic_reply_to_style_help: 'Como a postagem que responde a outra mostra a quem responde. No estilo padrão, "↩ Fulano" à direita do cabeçalho (só quando a respondida não é a de cima). No avocado, uma linha embaixo do nome, "↳ Em resposta a [avatar] Fulano", em toda resposta. O clique mostra a postagem respondida.'
       topic_reply_to_style_discourse: 'Padrão: ↩ nome à direita do cabeçalho'
       topic_reply_to_style_avocado: Linha abaixo do nome (estilo avocado)
@@ -523,6 +525,10 @@ ramon-canela:
         profile_cover_label: Capa do perfil (forumaker/profile-cover)
         profile_cover_help: 'A capa da extensão no lugar da capa interna do tema: na faixa do perfil, no fundo do cartão do usuário (na miniatura, quando existe) e na posição escolhida no editor dela, que abre pelo menu "…" do perfil e pelas Configurações. As imagens internas ficam guardadas e voltam se esta chave for desligada.'
         thumbnails_label: Miniaturas na lista
+        widgets_label: 'Widgets (fof/forum-widgets-core)'
+        widgets_help: "Os widgets da extensão em cartões, como os do tema, numa coluna à direita da lista. Os que ficariam na barra lateral da página (que o tema esconde) entram na mesma coluna. Desligado, ficam com o visual e os lugares da extensão."
+        widgets_width_label: 'Largura da coluna'
+        widgets_width_help: "A largura da coluna de widgets ao lado da lista, no computador (de 200 a 480 px). A lista fica com o resto do espaço."
         thumbnails_help: A miniatura do FoF Discussion Thumbnail ao lado do título na lista de discussões.
         verified_label: Selo de verificado
         verified_help: 'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como um ícone de usuário: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
@@ -649,6 +655,35 @@ ramon-canela:
         panel_signup_title: "Título no cadastro"
         panel_login_text: "Texto no login"
         panel_signup_text: "Texto no cadastro"
+      events:
+        title: Eventos
+        backend_off: O backend dos eventos (extend/events.php) ainda não está carregado no servidor.
+        events_enabled_help: 'O "Criar evento" no menu ⊕ do composer põe um evento no primeiro post: data, hora e fuso, recorrência, endereço da transmissão, local e limite de vagas. O post mostra o cartão com "Eu vou", "Interessado" e "Não vou", os participantes e o "Adicionar à agenda" (Google e .ics). Desligado, o cartão vira texto e a API responde como se o recurso não existisse.'
+        events_tag_label: Tag dos eventos
+        events_tag_any: Qualquer tag
+        events_tag_help: 'O botão "Criar evento" só aparece ao criar uma discussão nesta tag, e só as discussões dela mostram o cartão do evento, entram em "Próximos eventos" e mandam lembrete. Quem pode criar evento é quem pode começar discussão na tag (as permissões da própria tag). Em "Qualquer tag", vale em todas as discussões.'
+        events_list_badge_label: Data na lista e no cabeçalho
+        events_list_badge_help: 'A data do evento ("em 3 dias", "há 2 dias") ao lado do título na lista de discussões e no cabeçalho do tópico.'
+        events_upcoming_label: Próximos eventos
+        events_upcoming_help: 'O link "Eventos" na barra lateral, a página /events (lista e calendário) e, no topo da lista da tag dos eventos, as próximas datas.'
+        events_chat_label: Chat do evento
+        events_chat_help: 'O construtor ganha a opção "Chat do evento": um canal do ramon/chat só para o evento, preso à tag da discussão; quem marca "Eu vou" entra no canal.'
+        events_docked_chat_label: Chat ao lado do tópico
+        events_docked_chat_help: No computador, o canal do evento fica numa coluna à direita do tópico, da altura da tela. No celular e no tablet, o cartão tem o link para o chat.
+        events_reminder_minutes_label: Lembrete antes do evento
+        events_reminder_minutes_help: 'Quantos minutos antes de cada ocorrência quem marcou "Eu vou" recebe o alerta. Zero desliga o lembrete.'
+        minutes: min
+        reminders_notice: 'Os lembretes saem pelo agendador do Flarum, a cada cinco minutos: o servidor precisa rodar "php flarum schedule:run" pelo cron a cada minuto.'
+      cooked:
+        backend_off: A sintaxe das notas e do sumário (extend/cooked.php) ainda não está carregada no servidor.
+        footnotes_title: Notas de rodapé
+        footnotes_help: 'Notas de rodapé: "texto[^1]" com "[^1]: a nota" no fim do post, ou a nota em linha "^[a nota]". O número aparece pequeno, acima da linha, e o clique abre a nota numa dica. O menu ⊕ do composer ganha "Nota de rodapé". Desligado, as notas ficam como "[1]" e "[1]: texto".'
+        toc_title: Sumário
+        toc_help: 'Com [toc] no primeiro post (o menu ⊕ do composer tem "Inserir sumário"), os títulos dele aparecem na coluna da linha do tempo, com o título em que se está marcado e "Ir para o fim". O botão embaixo troca entre "Conteúdo" e "Linha de tempo", e a escolha fica no navegador. No celular, o sumário fica na folha da linha do tempo.'
+        toc_min_headings_label: Mínimo de títulos
+        toc_min_headings_help: Com menos títulos que isso no primeiro post, o sumário não aparece.
+        toc_auto_tags_label: Sumário automático nestas tags
+        toc_auto_tags_help: Nas discussões destas tags, o primeiro post ganha o sumário mesmo sem o [toc] (desde que tenha títulos suficientes).
       bookmarks:
         title: Marcadores
         bookmarks_enabled_label: Marcadores
@@ -832,6 +867,8 @@ ramon-canela:
         group_name_help: "Qualquer participante muda o nome da conversa em grupo."
         starred_label: "Canais favoritos"
         starred_help: "A estrela no cabeçalho e nas Informações do canal; os favoritos vão para o topo da barra lateral."
+        pin_bar_label: "Faixa das fixadas"
+        pin_bar_help: "A faixa acompanha o trecho da conversa à vista, com o indicador de várias fixadas; clicar percorre todas, o \"×\" oculta a faixa só para o leitor, e o painel lista na ordem da conversa, com quem fixou."
         pin_indicator_label: "Fixadas não vistas"
         pin_indicator_help: "Um ponto na faixa da mensagem fixada quando há fixada que o leitor ainda não abriu."
         retention_label: "Lembrete de retenção"
@@ -989,6 +1026,98 @@ ramon-canela:
 
           Você já pode criar discussões e respostas de novo. Obrigado pela paciência.
   forum:
+    events:
+      sidebar: Eventos
+      page_title: Eventos
+      upcoming_title: Próximos eventos
+      all_events: Todos os eventos
+      no_upcoming: Nenhum evento marcado.
+      view_list: Lista
+      view_calendar: Calendário
+      previous_month: Mês anterior
+      next_month: Próximo mês
+      today: Hoje
+      happening_now: Acontecendo agora
+      created_by: Criado(a) por
+      local_time: No seu fuso horário
+      more: Mais opções
+      going: Eu vou
+      interested: Interessado
+      not_going: Não vou
+      full: Lotado
+      remove_answer: Desfazer resposta
+      login_to_rsvp: Entre para responder
+      ended_notice: Este evento já terminou.
+      see_invitees: Ver participantes
+      invitees_title: 'Participantes: {title}'
+      no_invitees: Ninguém por aqui ainda.
+      capacity: '{going} de {max} vagas'
+      add_google: Adicionar ao Google Agenda
+      add_ics: Baixar para a agenda (.ics)
+      open_chat: Conversar no chat do evento
+      join_livestream: 'Entrar na transmissão ({host})'
+      status:
+        public: Público
+        standalone: Aviso
+        ended: Encerrado
+      tabs:
+        going: Vou
+        interested: Interessados
+        not_going: Não vou
+      recurrence:
+        every_day: Todo dia
+        every_weekday: Todo dia útil
+        every_week: 'Toda {weekday}'
+        every_two_weeks: 'A cada duas semanas, {weekday}'
+        every_four_weeks: 'A cada quatro semanas, {weekday}'
+        every_month: 'Todo mês, na {position}ª {weekday}'
+      notification:
+        text: '{name} começa {when}'
+        setting: Quando um evento em que vou estiver para começar
+      builder:
+        create_title: Criar evento
+        edit_title: Editar evento
+        name: Nome do evento
+        name_placeholder: O título da discussão, se ficar vazio
+        start: Começa em
+        end: Termina em
+        time: Hora
+        timezone: Fuso horário
+        status: Tipo
+        status_public: Público (com presença)
+        status_standalone: Aviso (sem presença)
+        status_public_help: Qualquer pessoa que vê a discussão responde vou, interessado ou não vou.
+        status_standalone_help: Só a data e as informações, sem os botões de presença.
+        recurrence: Repetir
+        recurrence_none: Não repete
+        recurrence_every_day: Todo dia
+        recurrence_every_weekday: Todo dia útil (seg–sex)
+        recurrence_every_week: Toda semana
+        recurrence_every_two_weeks: A cada duas semanas
+        recurrence_every_four_weeks: A cada quatro semanas
+        recurrence_every_month: Todo mês (mesmo dia da semana)
+        until: Até
+        url: Endereço da transmissão ou da reunião
+        location: Local
+        max: Limite de participantes
+        max_placeholder: Sem limite
+        chat: Chat do evento
+        chat_help: Cria um canal de chat só para o evento; quem marca "Eu vou" entra nele, e no computador ele fica ao lado do tópico.
+        description: Descrição
+        create: Inserir evento
+        save: Salvar evento
+        remove: Remover evento
+        error_start: Escolha a data de início.
+        error_end: O fim precisa ser depois do início.
+    toc:
+      title: Conteúdo
+      jump_end: Ir para o fim
+      show_timeline: Linha de tempo
+      show_toc: Conteúdo
+      insert: Inserir sumário
+    footnotes:
+      add: Nota de rodapé
+      placeholder: Nota de rodapé
     ai:
       translation:
         original_language: Esta postagem foi originalmente escrita em {language}.
@@ -1313,8 +1442,12 @@ ramon-canela:
         invitations_sent: '{count, plural, one {Convite enviado} other {Convites enviados}}'
       pinned_bar:
         title: Fixada
+        jump_to_pinned: Ir para a mensagem fixada
       pinned_messages:
         title: Mensagens fixadas
+        close: Fechar mensagens fixadas
+        dismiss: Ocultar a faixa das fixadas para mim
+        show: Mostrar a faixa das fixadas
         pinned_by_you: Fixada por você
         pinned_by_user: Fixada por {username}
       channel_list:
@@ -1638,6 +1771,7 @@ ramon-canela:
           '5': Pele escura
       hashtags:
         autocomplete_header: Tags
+        tag_count: "(x{count})"
       similar:
         title: Sua discussão é semelhante a…
         close: Fechar
@@ -1765,6 +1899,7 @@ ramon-canela:
         failed: Não foi possível concluir a pesquisa. Tente de novo em instantes.
         start: Digite o que procura, ou abra os filtros avançados.
         need_more: Digite um termo de pesquisa.
+        too_short: '{count, plural, one {Digite pelo menos # caractere.} other {Digite pelo menos # caracteres.}}'
         load_more: Mais resultados
         modal_link: Busca avançada →
         posts_filters_note: Na busca de postagens valem só o autor, uma tag, as curtidas e os marcadores; os outros filtros são para discussões.
@@ -2309,7 +2444,7 @@ ramon-canela:
       categories: Tags
       tags: Tags secundárias
       all_categories: Todas as tags
-      all_tags: Todas as tags
+      all_tags: Todas as tags secundárias
       notifications: Notificações
       settings: Configurações
       customize_categories: Personalizar tags
@@ -2459,6 +2594,7 @@ ramon-canela:
         next: 'Próximo'
         pager_label: 'Artigos da mesma categoria'
     topic:
+      tagged_post: '{count, plural, one {a tag {tags}} other {as tags {tags}}}'
       link_copied: Link copiado para a área de transferência.
       new_replies: '{count, plural, one {Há # nova resposta} other {Há # novas respostas}}'
       embedded:
@@ -2897,6 +3033,9 @@ ramon-canela:
       invalid_birthday: Escolha uma data de nascimento entre 1900 e ontem.
     invites:
       too_many: Você já tem convites ativos demais. Apague algum antes de gerar outro.
+    events:
+      invalid_status: A resposta precisa ser vou, interessado ou não vou.
+      full: O evento já atingiu o número máximo de participantes.
   views:
     not_found:
       page_title: Página não encontrada

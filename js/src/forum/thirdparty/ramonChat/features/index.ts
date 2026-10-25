@@ -23,6 +23,7 @@ import installMessageActions from './messageActions';
 import installDrawerShortcut from './shortcut';
 import installRamonChatNotifications from './notifications';
 import installChannelView from './channelView';
+import installPins from './pins';
 import installChannelInfo from './channelInfo';
 import installComposer from './composer';
 import installPermalink from './permalink';
@@ -44,6 +45,7 @@ export default function installRamonChatFeatures(): void {
   installDrawerShortcut();
   installRamonChatNotifications();
   installChannelView();
+  installPins();
   installChannelInfo();
   installComposer();
   installPermalink();

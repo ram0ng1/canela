@@ -6,7 +6,8 @@
  * - (18) mensagens excluídas seguidas viram uma linha só, "N mensagens foram
  *   excluídas. [ver todas]";
  * - (19) o ponto na faixa da fixada quando há fixada que o leitor ainda não
- *   viu (a última vista fica no navegador, por canal);
+ *   viu (a última vista fica no navegador, por canal) — com a faixa nova
+ *   (`pin_bar`, pins.tsx), o ponto mora no "ver todas" dela;
  * - (22) "está digitando" sem websocket: sem o flarum/realtime, quem tem a
  *   conversa aberta pergunta ao servidor a cada poucos segundos
  *   (extend/ramonchat.php guarda o sinal no cache).
@@ -21,6 +22,7 @@ import type Mithril from 'mithril';
 
 import { apiUrl, chatState, childList, component, ct, feature, findByClass, pushChild, readLocal, rt, writeLocal } from './flags';
 import { isStarred, toggleStar } from './starred';
+import { pinBarOn } from './pins';
 
 // ─── (19) Fixadas não vistas ────────────────────────────────────────────────
 
@@ -181,7 +183,7 @@ export default function installChannelView(): void {
   });
 
   extend(component('ChannelView'), 'pinnedBar', function (this: any, vnode: any) {
-    if (!vnode || typeof vnode !== 'object' || !feature('pin_indicator')) return;
+    if (!vnode || typeof vnode !== 'object' || !feature('pin_indicator') || pinBarOn()) return;
 
     const channelId = Number(this.attrs.channel.id());
     const pinned = chatState()?.latestPinned?.(channelId);
@@ -211,6 +213,8 @@ export default function installChannelView(): void {
 
   // O painel das fixadas aberto também conta como ver todas.
   extend(component('PinnedPanel'), 'oncreate', function (this: any) {
+    if (pinBarOn()) return;
+
     const channelId = Number(this.attrs?.channel?.id?.());
     const pinned = channelId ? chatState()?.latestPinned?.(channelId) : null;
 

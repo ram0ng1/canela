@@ -5,11 +5,11 @@
  * cabeçalho o desenha desde a primeira pintura.
  */
 import app from 'flarum/forum/app';
-import SearchManager from 'flarum/common/SearchManager';
 import type Discussion from 'flarum/common/models/Discussion';
 import type User from 'flarum/common/models/User';
 
 import { allTags, isTagsEnabled, type CanelaTag } from '../utils/tags';
+import { termLongEnough } from '../utils/searchTerm';
 import { CATEGORY_SLUG_REGEXP, discussionFilter, SUGGESTIONS_REGEXP, USERNAME_REGEXP } from './query';
 import { addRecentSearch } from './assist';
 import type { SearchMenuState, SearchResults } from './state';
@@ -49,14 +49,14 @@ function canSearchUsers(): boolean {
   return !!app.forum.attribute('canSearchUsers');
 }
 
-/** Termos curtos demais não buscam, a menos que tenham um filtro. */
+/** Termos curtos demais (utils/searchTerm) não buscam, a menos que tenham um filtro. */
 function isValidTerm(term: string): boolean {
   const trimmed = term.trim();
 
   if (!trimmed) return false;
   if (/[#@:]/.test(trimmed)) return true;
 
-  return trimmed.length >= SearchManager.minSearchLength();
+  return termLongEnough(trimmed);
 }
 
 /** O trabalho de `SearchMenuState.trigger()`, com o mesmo estado (um só, compartilhado pelos menus). */
