@@ -179,16 +179,19 @@ final class BadgeGranter
         $threshold = $now->copy()->subHours(self::NOTIFY_WINDOW_HOURS);
         // Em lotes: um whereIn único passaria do limite de 65.535 parâmetros
         // do MySQL na primeira concessão em massa de um fórum grande.
-        /** @var Collection<int, User> $users */
-        $users = new Collection();
+        /** @var array<int, User> $users */
+        $users = [];
 
         foreach (array_chunk(array_values(array_unique(array_column($rows, 'user_id'))), 1000) as $chunk) {
-            $users = $users->union(User::query()->whereIn('id', $chunk)->get()->keyBy('id'));
+            foreach (User::query()->whereIn('id', $chunk)->get() as $user) {
+                $users[(int) $user->id] = $user;
+            }
         }
+
         $granted = 0;
 
         foreach ($rows as $row) {
-            $user = $users->get($row['user_id']);
+            $user = $users[(int) $row['user_id']] ?? null;
 
             if (! $user instanceof User) {
                 continue;
