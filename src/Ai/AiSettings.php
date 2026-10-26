@@ -115,9 +115,12 @@ final class AiSettings
      *
      * @return array<string, mixed>
      */
+    /** @var array<string, mixed>|null os padrões, montados uma vez por processo */
+    private static ?array $defaults = null;
+
     public static function defaults(): array
     {
-        return [
+        return self::$defaults ??= [
             self::ENABLED => true,
             self::PROVIDER => self::PROVIDER_ANTHROPIC,
             self::ANTHROPIC_KEY => '',

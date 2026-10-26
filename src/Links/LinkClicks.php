@@ -134,6 +134,14 @@ final class LinkClicks
             'url' => $url,
             'created_at' => Carbon::now(),
         ]);
+
+        // A contagem do tópico está em cache: o clique novo aparece na próxima leitura.
+        $this->cache->forget(self::clicksKey((int) $post->discussion_id));
+    }
+
+    private static function clicksKey(int $discussionId): string
+    {
+        return 'canela.links.clicks.'.$discussionId;
     }
 
     /**
@@ -148,27 +156,12 @@ final class LinkClicks
     {
         $links = $this->topicLinks($discussion);
 
-        // Os apelidos pela gramática no SQL cru: com prefixo de tabela, `c`
-        // vira `flarum_c`, e um `c.url` solto apontaria para nada.
-        $g = $this->db->table(self::TABLE)->getGrammar();
-
-        $rows = $this->db->table(self::TABLE.' as c')
-            ->join('posts as p', 'p.id', '=', 'c.post_id')
-            ->where('c.discussion_id', $discussion->id)
-            ->where('p.type', 'comment')
-            ->whereNull('p.hidden_at')
-            ->where('p.is_private', false)
-            ->groupBy('c.post_id', 'c.url_hash')
-            ->select('c.post_id', 'c.url_hash', $this->db->raw('MAX('.$g->wrap('c.url').') as url'), $this->db->raw('COUNT(*) as clicks'))
-            ->get();
-
-        $posts = [];
-        $byHash = [];
-
-        foreach ($rows as $row) {
-            $posts[(string) $row->post_id][(string) $row->url] = (int) $row->clicks;
-            $byHash[(string) $row->url_hash] = ($byHash[(string) $row->url_hash] ?? 0) + (int) $row->clicks;
+        // Sem links externos (a maioria dos tópicos), não há clique para contar.
+        if ($links === []) {
+            return ['total' => 0, 'top' => [], 'posts' => []];
         }
+
+        ['posts' => $posts, 'byHash' => $byHash] = $this->clickCounts((int) $discussion->id);
 
         foreach ($links as &$link) {
             $link['clicks'] = $byHash[self::hash($link['url'])] ?? 0;
@@ -187,58 +180,103 @@ final class LinkClicks
     }
 
     /**
+     * Os cliques do tópico por postagem e por link, em cache até o próximo
+     * clique (record() apaga) ou dez minutos: o GROUP BY não roda a cada
+     * abertura do tópico. Só postagens que todo leitor vê, então vale para todos.
+     *
+     * @return array{posts: array<string, array<string, int>>, byHash: array<string, int>}
+     */
+    private function clickCounts(int $discussionId): array
+    {
+        return $this->cache->remember(self::clicksKey($discussionId), self::CACHE_TTL, function () use ($discussionId): array {
+            // Os apelidos pela gramática no SQL cru: com prefixo de tabela, `c`
+            // vira `flarum_c`, e um `c.url` solto apontaria para nada.
+            $g = $this->db->table(self::TABLE)->getGrammar();
+
+            $rows = $this->db->table(self::TABLE.' as c')
+                ->join('posts as p', 'p.id', '=', 'c.post_id')
+                ->where('c.discussion_id', $discussionId)
+                ->where('p.type', 'comment')
+                ->whereNull('p.hidden_at')
+                ->where('p.is_private', false)
+                ->groupBy('c.post_id', 'c.url_hash')
+                ->select('c.post_id', 'c.url_hash', $this->db->raw('MAX('.$g->wrap('c.url').') as url'), $this->db->raw('COUNT(*) as clicks'))
+                ->get();
+
+            $posts = [];
+            $byHash = [];
+
+            foreach ($rows as $row) {
+                $posts[(string) $row->post_id][(string) $row->url] = (int) $row->clicks;
+                $byHash[(string) $row->url_hash] = ($byHash[(string) $row->url_hash] ?? 0) + (int) $row->clicks;
+            }
+
+            return ['posts' => $posts, 'byHash' => $byHash];
+        });
+    }
+
+    /**
      * Os links externos distintos do tópico, na ordem em que aparecem, com o
-     * texto e a postagem onde surgiram primeiro. Ler o XML de mil postagens a
-     * cada abertura do tópico seria caro: fica em cache, e a chave muda quando
-     * chega resposta nova (edições entram quando o cache vence).
+     * texto e a postagem onde surgiram primeiro.
+     *
+     * Ler o XML de mil postagens a cada abertura seria caro, então a lista
+     * fica em cache. Quando chega resposta nova, só as postagens novas são
+     * lidas e somadas à lista; a releitura completa (que pega edições e
+     * postagens ocultadas) acontece no máximo a cada dez minutos.
      *
      * @return list<array{url: string, title: string|null, domain: string, postId: string, postNumber: int}>
      */
     private function topicLinks(Discussion $discussion): array
     {
-        $key = sprintf('canela.links.topic.%d.%s', $discussion->id, md5($discussion->last_posted_at.'|'.$discussion->comment_count));
+        $key = 'canela.links.topic.'.$discussion->id;
+        $sig = md5($discussion->last_posted_at.'|'.$discussion->comment_count);
 
-        $build = fn (): array => $this->cache->remember($key, self::CACHE_TTL, function () use ($discussion): array {
-            $links = [];
+        $fresh = static fn (mixed $entry): bool => is_array($entry) && ($entry['sig'] ?? null) === $sig;
 
-            // Em lotes de 100 (e não as mil de uma vez): o XML de cada postagem
-            // pode ter dezenas de KB, e tudo junto estoura a memória.
-            $posts = $this->db->table('posts')
-                ->where('discussion_id', $discussion->id)
-                ->where('type', 'comment')
-                ->whereNull('hidden_at')
-                ->where('is_private', false)
-                ->where('content', 'like', '%<URL %')
-                ->orderBy('number')
-                ->limit(self::TOPIC_POSTS_SCANNED)
-                ->select('id', 'number', 'content')
-                ->lazy(100);
+        // O caminho de quase toda abertura: a lista pronta, sem trava nem banco.
+        $cached = $this->cache->get($key);
 
-            foreach ($posts as $post) {
-                foreach (self::extract($post->content) as $link) {
-                    if (isset($links[$link['url']]) || ! $this->isExternal($link['url'])) {
-                        continue;
-                    }
+        if ($fresh($cached)) {
+            return $cached['links'];
+        }
 
-                    $links[$link['url']] = [
-                        'url' => $link['url'],
-                        'title' => $link['text'] !== '' ? $link['text'] : null,
-                        'domain' => (string) parse_url($link['url'], PHP_URL_HOST),
-                        'postId' => (string) $post->id,
-                        'postNumber' => (int) $post->number,
-                    ];
+        $build = function () use ($discussion, $key, $sig, $fresh): array {
+            $entry = $this->cache->get($key);
 
-                    if (count($links) >= self::TOPIC_LINKS_SCANNED) {
-                        break 2;
-                    }
-                }
+            // Outra requisição montou enquanto esta esperava a trava.
+            if ($fresh($entry)) {
+                return $entry['links'];
             }
 
-            return array_values($links);
-        });
+            $now = time();
+            $recent = is_array($entry) && ($now - (int) ($entry['builtAt'] ?? 0)) < self::CACHE_TTL;
 
-        // Uma resposta nova invalida a chave para todos: com a trava, só uma
-        // requisição remonta a lista, e as outras esperam e leem o cache.
+            // Lista já no teto: uma resposta nova não entra nela (a leitura
+            // completa também pararia nos mesmos links), então nada a ler.
+            if ($recent && ($entry['capped'] ?? false)) {
+                $this->cache->put($key, ['sig' => $sig] + $entry, self::CACHE_TTL * 6);
+
+                return $entry['links'];
+            }
+
+            $incremental = $recent;
+
+            $links = $incremental ? self::keyed($entry['links']) : [];
+            [$links, $upto, $capped] = $this->scanLinks($discussion, $links, $incremental ? (int) $entry['upto'] : 0);
+
+            $this->cache->put($key, [
+                'sig' => $sig,
+                'links' => array_values($links),
+                'upto' => $upto,
+                'capped' => $capped,
+                'builtAt' => $incremental ? (int) $entry['builtAt'] : $now,
+            ], self::CACHE_TTL * 6);
+
+            return array_values($links);
+        };
+
+        // Uma resposta nova invalida a lista para todos: com a trava, só uma
+        // requisição remonta, e as outras esperam e leem o cache.
         $store = $this->cache->getStore();
 
         if (! $store instanceof LockProvider) {
@@ -250,6 +288,75 @@ final class LinkClicks
         } catch (LockTimeoutException) {
             return $build();
         }
+    }
+
+    /**
+     * @param list<array<string, mixed>> $links
+     * @return array<string, array<string, mixed>>
+     */
+    private static function keyed(array $links): array
+    {
+        $out = [];
+
+        foreach ($links as $link) {
+            $out[(string) $link['url']] = $link;
+        }
+
+        return $out;
+    }
+
+    /**
+     * Lê as postagens depois de `$after` (número) e soma os links novos.
+     *
+     * @param array<string, array<string, mixed>> $links
+     * @return array{0: array<string, array<string, mixed>>, 1: int, 2: bool} os links, o último número lido e se bateu no teto
+     */
+    private function scanLinks(Discussion $discussion, array $links, int $after): array
+    {
+        $upto = $after;
+        $read = 0;
+
+        // Em lotes de 100 (e não as mil de uma vez): o XML de cada postagem
+        // pode ter dezenas de KB, e tudo junto estoura a memória.
+        $posts = $this->db->table('posts')
+            ->where('discussion_id', $discussion->id)
+            ->where('type', 'comment')
+            ->whereNull('hidden_at')
+            ->where('is_private', false)
+            ->where('number', '>', $after)
+            ->where('content', 'like', '%<URL %')
+            ->orderBy('number')
+            ->limit(self::TOPIC_POSTS_SCANNED)
+            ->select('id', 'number', 'content')
+            ->lazy(100);
+
+        foreach ($posts as $post) {
+            $upto = max($upto, (int) $post->number);
+            $read++;
+
+            foreach (self::extract($post->content) as $link) {
+                if (isset($links[$link['url']]) || ! $this->isExternal($link['url'])) {
+                    continue;
+                }
+
+                $links[$link['url']] = [
+                    'url' => $link['url'],
+                    'title' => $link['text'] !== '' ? $link['text'] : null,
+                    'domain' => (string) parse_url($link['url'], PHP_URL_HOST),
+                    'postId' => (string) $post->id,
+                    'postNumber' => (int) $post->number,
+                ];
+
+                if (count($links) >= self::TOPIC_LINKS_SCANNED) {
+                    return [$links, $upto, true];
+                }
+            }
+        }
+
+        // Lido até o fim: o "até onde li" vai para a última postagem do tópico
+        // (as que não têm link também já foram vistas). Parou no teto de
+        // postagens: fica na última lida, e a próxima leitura continua dali.
+        return [$links, $read < self::TOPIC_POSTS_SCANNED ? max($upto, (int) $discussion->last_post_number) : $upto, false];
     }
 
     /**
