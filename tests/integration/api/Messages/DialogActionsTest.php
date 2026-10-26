@@ -222,7 +222,7 @@ class DialogActionsTest extends TestCase
      * reaproveitá-la para novas mensagens entre as duas pessoas.
      *
      * Bug: DialogActions::inviteEndpoint muda o tipo para `canela_group`
-     * mesmo quando nenhum convidado entrou (src/Messages/Api/DialogActions.php:136).
+     * mesmo quando nenhum convidado entrou (src/Messages/Api/DialogActions.php:135).
      */
     #[Test]
     #[Group('bug')]

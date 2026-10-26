@@ -81,12 +81,31 @@ class PinStickiedToTopTest extends TestCase
     }
 
     /**
-     * Ordenação padrão: fixados em ordem de criação, depois por atividade.
+     * Ordenação padrão (fixando todos, não só os não lidos): fixados em ordem
+     * de criação, depois por atividade.
      */
     #[Test]
     public function lista_padrao_fixa_em_ordem_de_criacao(): void
     {
+        // Com "só os não lidos", a ordenação padrão fica com o flarum/sticky.
+        $this->setting('flarum-sticky.only_sticky_unread_discussions', false);
+
         $this->assertSame([2, 1, 3, 4], $this->ids([]));
+    }
+
+    /**
+     * Com "fixar só os não lidos", a ordenação padrão é a do flarum/sticky
+     * (o tema não mexe na união dele): os fixados não lidos sobem.
+     */
+    #[Test]
+    public function lista_padrao_com_so_nao_lidos_fica_com_o_sticky(): void
+    {
+        $this->setting('flarum-sticky.only_sticky_unread_discussions', true);
+
+        $ids = $this->ids([]);
+
+        $this->assertEqualsCanonicalizing([1, 2], array_slice($ids, 0, 2));
+        $this->assertSame([3, 4], array_slice($ids, 2));
     }
 
     /**

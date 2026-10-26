@@ -36,20 +36,21 @@ trait RerunsMessagesMigrations
             $path = str_starts_with($config['database'], '/') ? $config['database'] : "$tmp/{$config['database']}";
             $pdo = new PDO("sqlite:$path");
             $hasEvents = (bool) $pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = '{$prefix}canela_dialog_events'")->fetchColumn();
-            $hasDialogs = (bool) $pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = '{$prefix}dialogs'")->fetchColumn();
         } else {
+            $pgsql = $config['driver'] === 'pgsql';
             $pdo = new PDO(
-                sprintf('%s:host=%s;port=%s;dbname=%s', $config['driver'], $config['host'], $config['port'] ?? 3306, $config['database']),
+                sprintf('%s:host=%s;port=%s;dbname=%s', $pgsql ? 'pgsql' : 'mysql', $config['host'], $config['port'] ?? ($pgsql ? 5432 : 3306), $config['database']),
                 $config['username'],
                 $config['password']
             );
-            $exists = fn (string $table): bool => (bool) $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = '$prefix$table'")->fetchColumn();
-            $hasEvents = $exists('canela_dialog_events');
-            $hasDialogs = $exists('dialogs');
+            $schema = $pgsql ? 'current_schema()' : 'DATABASE()';
+            $hasEvents = (bool) $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = $schema AND table_name = '{$prefix}canela_dialog_events'")->fetchColumn();
         }
 
-        // Sem o flarum/messages migrado, o próprio enable() dele roda tudo na ordem.
-        if ($hasEvents || ! $hasDialogs) {
+        // Já migradas de verdade. Sem elas, apagar o registro basta mesmo que o
+        // flarum/messages ainda não tenha migrado: o enable() dele vem antes
+        // do tema (`extension('flarum-messages', 'ramon-canela')`).
+        if ($hasEvents) {
             return;
         }
 
