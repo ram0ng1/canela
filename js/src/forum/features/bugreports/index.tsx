@@ -14,7 +14,7 @@ import Icon from 'flarum/common/components/Icon';
 import classList from 'flarum/common/utils/classList';
 
 import { t } from '../../utils/settings';
-import { installConsoleCapture, UI_ATTR } from './context';
+import { installConsoleCapture, UI_ATTR } from './console';
 
 export interface BugReportsOptions {
   button: boolean;
