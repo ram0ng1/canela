@@ -51,6 +51,7 @@ final class ExportController implements RequestHandlerInterface
 
         RequestUtil::getActor($request)->assertAdmin();
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, BugReport> $rows */
         $rows = BugReport::query()
             ->with('user')
             ->whereNotIn('status', ['fixed', 'wontfix'])
@@ -58,9 +59,15 @@ final class ExportController implements RequestHandlerInterface
             ->limit(self::MAX)
             ->get();
 
+        $presented = [];
+
+        foreach ($rows as $report) {
+            $presented[] = $this->reports->present($report, true);
+        }
+
         $api = rtrim($this->url->to('api')->base(), '/');
         $markdown = Worklist::markdown(
-            $rows->map(fn (BugReport $report) => $this->reports->present($report, true))->values()->all(),
+            $presented,
             (string) $this->config->get('forum_title', 'Flarum'),
             static fn (int $id, string $which): string => "$api/canela-bug-reports/$id/$which",
         );

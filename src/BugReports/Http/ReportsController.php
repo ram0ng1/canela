@@ -82,14 +82,21 @@ final class ReportsController implements RequestHandlerInterface
         $page = max(1, (int) Arr::get($query, 'page', 1));
         $total = (clone $base)->count();
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, BugReport> $rows */
         $rows = $base->with('user')
             ->orderByDesc('id')
             ->offset(($page - 1) * self::PER_PAGE)
             ->limit(self::PER_PAGE)
             ->get();
 
+        $reports = [];
+
+        foreach ($rows as $report) {
+            $reports[] = $this->reports->present($report, $all);
+        }
+
         return new JsonResponse([
-            'reports' => $rows->map(fn (BugReport $report) => $this->reports->present($report, $all))->values()->all(),
+            'reports' => $reports,
             'counts' => $counts,
             'total' => $total,
             'page' => $page,
