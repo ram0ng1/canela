@@ -7,6 +7,8 @@
  */
 import { UI_ATTR, type Rect } from './context';
 
+const SKIP_TAGS = new Set(['NOSCRIPT', 'SCRIPT', 'TEMPLATE']);
+
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** O html-to-image clona o DOM e perde a rolagem das áreas internas: elas são deslocadas à mão durante a captura. */
@@ -48,7 +50,9 @@ export async function captureViewport(): Promise<string> {
       width: `${document.documentElement.scrollWidth}px`,
       height: `${document.documentElement.scrollHeight}px`,
     },
-    filter: (node: Node) => !(node instanceof Element) || !node.hasAttribute(UI_ATTR),
+    // Fora: a interface do recurso e o que o navegador não desenha (o <noscript>
+    // do Flarum viraria texto solto na captura).
+    filter: (node: Node) => !(node instanceof Element) || (!node.hasAttribute(UI_ATTR) && !SKIP_TAGS.has(node.tagName)),
   };
   const restore = freezeScrolled();
 

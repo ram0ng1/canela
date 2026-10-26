@@ -3,7 +3,7 @@
  * Com "Mudar texto ou imagem", também o texto atual e o sugerido.
  */
 import app from 'flarum/forum/app';
-import Modal, { type IInternalModalAttrs } from 'flarum/common/components/Modal';
+import FormModal, { type IFormModalAttrs } from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import classList from 'flarum/common/utils/classList';
 import type Mithril from 'mithril';
@@ -24,14 +24,14 @@ export const KIND_ICONS: Record<Kind, string> = {
 
 export const apiUrl = (path: string) => `${((app.forum.attribute<string>('apiUrl') as string) || '/api').replace(/\/+$/, '')}${path}`;
 
-export interface ReportModalAttrs extends IInternalModalAttrs {
+export interface ReportModalAttrs extends IFormModalAttrs {
   region: string;
   full: string | null;
   context: ReportContext;
   onAnother: () => void;
 }
 
-export default class ReportModal extends Modal<ReportModalAttrs> {
+export default class ReportModal extends FormModal<ReportModalAttrs> {
   private kind: Kind = 'bug';
   private description = '';
   private currentText = '';

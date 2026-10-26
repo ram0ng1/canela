@@ -18,6 +18,7 @@ The whole palette comes from Flarum's primary color, in light and dark mode, so 
 - Profiles with cover, bio, status, summary and activity tabs
 - Bookmarks with reminders, badges and trust levels, About, Users and Groups pages
 - Login and sign-up pages, keyboard shortcuts, edit history, bulk select and more
+- "Report a problem": members mark an area of the screen and send it with a screenshot and page context; admins follow the reports in the panel (off by default)
 - Adapts fof/reactions, fof/drafts, fof/best-answer, ramon/chat and other extensions to the theme
 
 ## Installation
@@ -36,7 +37,7 @@ Brazilian Portuguese, English and Japanese ship with the theme. Core and extensi
 
 ## Credits
 
-Inspired by the Horizon theme of [Discourse](https://www.discourse.org). Canela is an unofficial project, not affiliated with or endorsed by Discourse. It is maintained by [Ramon Guilherme](https://ramonguilherme.com.br).
+Inspired by the Horizon theme of [Discourse](https://www.discourse.org). Canela is an unofficial project, not affiliated with or endorsed by Discourse. The "Report a problem" feature is based on [Bugframe](https://github.com/vmatheus3/bug-frame) (MIT) and draws the screenshot with [html-to-image](https://github.com/bubkoo/html-to-image) (MIT). It is maintained by [Ramon Guilherme](https://ramonguilherme.com.br).
 
 ## License
 

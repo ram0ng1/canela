@@ -33,7 +33,7 @@ ramon-canela:
         bug_reports_console_help: "直近1分間のブラウザのコンソールエラーも送信します。原因の特定に役立ちますが、ページのデータを含む場合があります。"
         privacy_notice: "キャプチャは公開フォルダの外の storage/canela-bug-reports に保存され、管理者と報告者だけが開けます。パスワード欄はキャプチャで隠されます。"
         reports_heading: "報告"
-        filter_active: "未対応"
+        filter_active: "未完了"
         filter_all: "すべて"
         status_open: "未確認"
         status_reviewed: "確認済み"

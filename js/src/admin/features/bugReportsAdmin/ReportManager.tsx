@@ -66,7 +66,7 @@ const KIND_LABELS: Record<string, string> = {
 export const statusLabel = (status: string) => trans(`${KEY}.status_${status}`, STATUS_LABELS[status as Status] || status);
 const kindLabel = (kind: string) => trans(`${KEY}.kind_${kind}`, KIND_LABELS[kind] || kind);
 const filterLabel = (filter: Filter) =>
-  filter === 'active' ? trans(`${KEY}.filter_active`, 'Em aberto') : filter === 'all' ? trans(`${KEY}.filter_all`, 'Todos') : statusLabel(filter);
+  filter === 'active' ? trans(`${KEY}.filter_active`, 'Pendentes') : filter === 'all' ? trans(`${KEY}.filter_all`, 'Todos') : statusLabel(filter);
 
 const date = (iso: string) => {
   try {

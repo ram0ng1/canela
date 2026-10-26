@@ -33,7 +33,7 @@ ramon-canela:
         bug_reports_console_help: "Sends the browser console errors from the last minute. It helps find the cause, but may contain page data."
         privacy_notice: "Screenshots are kept in storage/canela-bug-reports, outside the public folder: only admins and the reporter can open them. Password fields are covered in the screenshot."
         reports_heading: "Reports"
-        filter_active: "Open"
+        filter_active: "Pending"
         filter_all: "All"
         status_open: "Open"
         status_reviewed: "Reviewed"

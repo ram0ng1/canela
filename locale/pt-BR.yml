@@ -33,7 +33,7 @@ ramon-canela:
         bug_reports_console_help: "Envia junto os erros do console do navegador do último minuto. Ajuda a achar a causa, mas pode conter dados da página."
         privacy_notice: "As capturas ficam em storage/canela-bug-reports, fora da pasta pública: só o admin e quem reportou conseguem abri-las. Campos de senha são cobertos na captura."
         reports_heading: "Relatórios"
-        filter_active: "Em aberto"
+        filter_active: "Pendentes"
         filter_all: "Todos"
         status_open: "Aberto"
         status_reviewed: "Revisado"
