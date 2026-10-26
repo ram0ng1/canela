@@ -35,6 +35,7 @@ use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Event\AvatarChanged;
 use Flarum\User\Event\Saving;
 use Flarum\User\User;
+use Illuminate\Console\Scheduling\Event;
 use Illuminate\Database\Eloquent\Builder;
 use Ramon\Canela\Badges\Api\BadgeResource;
 use Ramon\Canela\Badges\Badge;
@@ -161,5 +162,7 @@ return [
 
     (new Extend\Console())
         ->command(BadgesCommand::class)
-        ->schedule(BadgesCommand::class, fn ($event) => $event->dailyAt('03:30')->withoutOverlapping()),
+        ->schedule(BadgesCommand::class, static function (Event $event): void {
+            $event->dailyAt('03:30')->withoutOverlapping();
+        }),
 ];

@@ -177,7 +177,7 @@ final class SendAutoMessages
 
         // Só interessa saber se há uma ou mais de uma: no máximo duas linhas
         // lidas, e não a contagem de todas as postagens de quem escreve muito.
-        $count = $this->db->table('posts')->where('user_id', $user->id)->where('type', 'comment')->limit(2)->pluck('id')->count();
+        $count = \count($this->db->table('posts')->where('user_id', $user->id)->where('type', 'comment')->limit(2)->pluck('id')->all());
 
         if ($count === 1) {
             $this->custom($user, 'first_post', null, ['url' => '/d/'.$post->discussion_id.'/'.$post->number]);

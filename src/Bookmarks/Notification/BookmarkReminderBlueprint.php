@@ -42,7 +42,7 @@ final class BookmarkReminderBlueprint implements BlueprintInterface, AlertableIn
     }
 
     #[\Override]
-    public function getSubject(): ?AbstractModel
+    public function getSubject(): AbstractModel
     {
         return $this->post;
     }

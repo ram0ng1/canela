@@ -39,7 +39,7 @@ final class ThreadController extends AbstractChatController
     }
 
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         [$thread, $channel] = $this->thread($this->routeInt($request, 'id'), $actor);
         $body = $this->body($request);

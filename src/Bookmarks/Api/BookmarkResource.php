@@ -160,7 +160,7 @@ final class BookmarkResource extends AbstractDatabaseResource
      * nome e o lembrete que vierem agora — um duplo clique não vira erro.
      */
     #[\Override]
-    public function creating(object $model, OriginalContext $context): ?object
+    public function creating(object $model, OriginalContext $context): object
     {
         /** @var Context $context */
         $actor = $context->getActor();

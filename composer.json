@@ -7,6 +7,7 @@
     ],
     "type": "flarum-extension",
     "license": "MIT",
+    "homepage": "https://github.com/ram0ng1/canela",
     "authors": [
         {
             "name": "Ramon Guilherme",
@@ -32,32 +33,34 @@
     "require-dev": {
         "flarum/tags": "^2.0.0",
         "flarum/messages": "^2.0.0",
-        "phpunit/phpunit": "^11.5 || ^13.2.0",
+        "phpunit/phpunit": "^11.5 || ^12.5.22 || ^13.2.0",
         "phpstan/phpstan": "^2.1",
         "roave/security-advisories": "dev-latest",
         "fof/pages": "^2.0",
         "fof/polls": "^3.0",
         "ernestdefoe/wardrobe": "^1.1",
-        "ramon/chat": "^0.3"
+        "ramon/chat": "^0.3",
+        "flarum/testing": "^2.0",
+        "flarum/phpstan": "^2.0"
     },
     "suggest": {
-        "flarum/tags": "Categorias e etiquetas na barra lateral, na lista e na página de categorias.",
-        "flarum/subscriptions": "Link \"Seguindo\" e o sino de notificações do tópico.",
-        "flarum/likes": "Curtidas no mapa do tópico e no resumo do perfil.",
-        "flarum/messages": "Link \"Minhas mensagens\" na barra lateral.",
-        "fof/polls": "Enquetes com barras de resultado e contagem de votos.",
-        "fof/best-answer": "Solução aceita logo abaixo do primeiro post.",
-        "fof/reactions": "Reações com resumo de emoji na barra da postagem.",
-        "fof/upload": "Envio de imagens e arquivos no editor.",
-        "fof/follow-tags": "Observar/silenciar categorias e etiquetas.",
-        "fof/split": "Dividir tópicos.",
-        "fof/merge-discussions": "Mesclar tópicos.",
-        "fof/ignore-users": "Ignorar usuários.",
-        "fof/terms": "Termos e diretrizes no cadastro.",
-        "fof/formatting": "Spoiler, detalhes e mais formatação.",
-        "fof/links": "Links personalizados.",
-        "fof/oauth": "Login social.",
-        "fof/discussion-thumbnail": "Miniaturas na lista de tópicos."
+        "flarum/tags": "Categories and tags in the sidebar, the discussion list and the tags page.",
+        "flarum/subscriptions": "\"Following\" link and the discussion notification bell.",
+        "flarum/likes": "Likes in the topic map and the profile summary.",
+        "flarum/messages": "\"My messages\" link in the sidebar.",
+        "fof/polls": "Polls with result bars and vote counts.",
+        "fof/best-answer": "Accepted solution right below the first post.",
+        "fof/reactions": "Reactions with an emoji summary on the post bar.",
+        "fof/upload": "Image and file uploads in the composer.",
+        "fof/follow-tags": "Follow/mute categories and tags.",
+        "fof/split": "Split discussions.",
+        "fof/merge-discussions": "Merge discussions.",
+        "fof/ignore-users": "Ignore users.",
+        "fof/terms": "Terms and guidelines at sign-up.",
+        "fof/formatting": "Spoiler, details and more formatting.",
+        "fof/links": "Custom links.",
+        "fof/oauth": "Social login.",
+        "fof/discussion-thumbnail": "Thumbnails in the discussion list."
     },
     "autoload": {
         "psr-4": {
@@ -70,8 +73,22 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "analyse": "phpstan analyse --memory-limit=2G"
+        "analyse:phpstan": "phpstan analyse --memory-limit=2G",
+        "clear-cache:phpstan": "phpstan clear-result-cache",
+        "test": [
+            "@test:unit",
+            "@test:integration"
+        ],
+        "test:unit": "phpunit -c tests/phpunit.unit.xml",
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php"
+    },
+    "scripts-descriptions": {
+        "analyse:phpstan": "Run static analysis",
+        "test": "Runs all tests.",
+        "test:unit": "Runs all unit tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
     },
     "extra": {
         "flarum-extension": {
@@ -122,6 +139,6 @@
             }
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "beta",
     "prefer-stable": true
 }

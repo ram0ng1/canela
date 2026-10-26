@@ -41,7 +41,8 @@ final class TopicMapFields
     ) {
     }
 
-    private function cached(string $what, Discussion $discussion, callable $count): int
+    /** @param \Closure(): int $count */
+    private function cached(string $what, Discussion $discussion, \Closure $count): int
     {
         $key = sprintf('canela.topicmap.%s.%d.%d.%d', $what, $discussion->id, (int) $discussion->last_post_number, (int) $discussion->comment_count);
 
@@ -69,7 +70,7 @@ final class TopicMapFields
     }
 
     /** Os comentários que qualquer leitor do tópico vê: o mapa é igual para todos. */
-    private function visibleComments(Discussion $discussion)
+    private function visibleComments(Discussion $discussion): \Illuminate\Database\Query\Builder
     {
         return $this->db->table('posts')
             ->where('posts.discussion_id', $discussion->id)

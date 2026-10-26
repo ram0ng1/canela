@@ -31,7 +31,7 @@ use Ramon\Canela\Support\NullOrder;
 final class ChannelsController extends AbstractChatController
 {
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         if ($method === 'POST') {
             $channel = $this->service->createChannel($actor, $this->body($request));

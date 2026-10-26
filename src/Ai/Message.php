@@ -16,6 +16,7 @@ namespace Ramon\Canela\Ai;
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Ramon\Canela\Support\Dates;
 
 /**
  * Uma mensagem de uma conversa com a IA: a pergunta (`user`) ou a resposta
@@ -68,7 +69,7 @@ final class Message extends AbstractModel
             'content' => $this->content,
             'tools' => $this->tools ?? [],
             'model' => $this->model,
-            'createdAt' => $this->created_at?->toAtomString(),
+            'createdAt' => Dates::atom($this->created_at),
         ];
     }
 }

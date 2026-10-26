@@ -30,13 +30,13 @@ final class InviteAcceptedBlueprint implements BlueprintInterface, AlertableInte
     }
 
     #[\Override]
-    public function getSubject(): ?AbstractModel
+    public function getSubject(): AbstractModel
     {
         return $this->newUser;
     }
 
     #[\Override]
-    public function getFromUser(): ?User
+    public function getFromUser(): User
     {
         return $this->newUser;
     }

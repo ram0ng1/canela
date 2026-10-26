@@ -90,7 +90,7 @@ final class DialogActions
                     $current = (int) $db->table(MessagesSchema::DIALOG_TABLE)->where('id', $dialog->id)->value(MessagesSchema::GROUP_COLUMN);
 
                     if ($current === $groupId) {
-                        $name = (string) (\Flarum\Group\Group::find($groupId)?->name_plural ?? '');
+                        $name = (string) (\Flarum\Group\Group::find($groupId)->name_plural ?? '');
 
                         throw new ValidationException(['groupId' => $translator->trans('ramon-canela.api.messages.invite_group_already', ['group' => $name])]);
                     }
@@ -137,7 +137,9 @@ final class DialogActions
                 $last = $dialog->last_message_id ? DialogMessage::find($dialog->last_message_id) : null;
 
                 if ($last) {
-                    resolve(Queue::class)->push(new SendMessageNotificationsJob($last));
+                    /** @var Queue $queue */
+                    $queue = resolve(Queue::class);
+                    $queue->push(new SendMessageNotificationsJob($last));
                 }
             })
             ->response(fn () => new EmptyResponse(204));

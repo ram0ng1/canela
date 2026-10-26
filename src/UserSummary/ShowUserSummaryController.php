@@ -145,7 +145,7 @@ final class ShowUserSummaryController implements RequestHandlerInterface
 
     /**
      * @param callable(callable|null=): Builder $visiblePosts
-     * @return Collection<int, object> linhas (user_id, total)
+     * @return Collection<int, \stdClass> linhas (user_id, total)
      */
     private function mostRepliedTo(User $user, callable $visiblePosts, callable $byUser): Collection
     {
@@ -172,7 +172,7 @@ final class ShowUserSummaryController implements RequestHandlerInterface
 
     /**
      * @param callable(callable|null=): Builder $visiblePosts
-     * @return Collection<int, object> linhas (user_id, total)
+     * @return Collection<int, \stdClass> linhas (user_id, total)
      */
     private function mostLikedBy(User $user, callable $visiblePosts, callable $byUser): Collection
     {
@@ -190,7 +190,7 @@ final class ShowUserSummaryController implements RequestHandlerInterface
 
     /**
      * @param callable(callable|null=): Builder $visiblePosts
-     * @return Collection<int, object> linhas (user_id, total)
+     * @return Collection<int, \stdClass> linhas (user_id, total)
      */
     private function mostLiked(User $user, callable $visiblePosts): Collection
     {

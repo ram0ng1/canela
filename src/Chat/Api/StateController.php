@@ -29,7 +29,7 @@ use Ramon\Canela\Support\NullOrder;
 final class StateController extends AbstractChatController
 {
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         $this->service->autoJoin($actor);
 

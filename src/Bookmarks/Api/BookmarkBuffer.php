@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ramon\Canela\Bookmarks\Api;
 
 use Closure;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\QueryException;
 use Ramon\Canela\Bookmarks\Bookmark;
 use Ramon\Canela\Support\Log;
@@ -79,7 +80,8 @@ final class BookmarkBuffer
             // Tabela ainda não migrada (o tema atualizado antes do `migrate`):
             // os posts saem sem marcador em vez de derrubar a página do tópico.
             Log::warning('marcadores indisponíveis: '.$error->getMessage());
-            $found = Bookmark::query()->getModel()->newCollection();
+            /** @var EloquentCollection<int, Bookmark> $found */
+            $found = new EloquentCollection();
         }
 
         foreach ($postIds as $postId) {

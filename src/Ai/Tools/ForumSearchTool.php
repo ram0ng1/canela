@@ -18,6 +18,7 @@ use Flarum\Search\SearchCriteria;
 use Flarum\Search\SearchManager;
 use Flarum\User\User;
 use Ramon\Canela\Ai\Llm\ToolDefinition;
+use Ramon\Canela\Support\Dates;
 
 /**
  * A busca do fórum para o bot (`search_forum`), a ferramenta "Pesquisar" das
@@ -88,7 +89,7 @@ final class ForumSearchTool implements AiTool
                 $discussion->id,
                 $discussion->title,
                 $url,
-                $discussion->created_at?->toDateString() ?? '',
+                Dates::day($discussion->created_at),
                 max(0, (int) $discussion->comment_count - 1),
                 $excerpt
             );

@@ -42,13 +42,13 @@ final class ChatMentionBlueprint implements BlueprintInterface, AlertableInterfa
     }
 
     #[\Override]
-    public function getSubject(): ?AbstractModel
+    public function getSubject(): AbstractModel
     {
         return $this->sender;
     }
 
     #[\Override]
-    public function getFromUser(): ?User
+    public function getFromUser(): User
     {
         return $this->sender;
     }

@@ -199,7 +199,7 @@ final class TopicSummarizer
                 $input .= "\n[… postagens do meio omitidas …]\n";
             }
 
-            $entry = sprintf("(%d %s disse: %s)\n", $post->number, $post->user?->display_name ?? '[excluído]', PostText::plain((string) $post->content));
+            $entry = sprintf("(%d %s disse: %s)\n", $post->number, $post->user->display_name ?? '[excluído]', PostText::plain((string) $post->content));
 
             if (mb_strlen($input) + mb_strlen($entry) > self::MAX_CHARS) {
                 $input .= "\n[… cortado …]\n";

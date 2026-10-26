@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Flarum\User\User;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\Query\Expression;
+use Illuminate\Contracts\Database\Query\Expression;
 
 /**
  * Os dias de visita e o tempo de leitura de cada pessoa (canela_user_visits).

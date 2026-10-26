@@ -258,7 +258,7 @@ final class BadgeResource extends AbstractDatabaseResource
 
     /** Emblema novo: personalizado, com slug próprio, no fim da lista. */
     #[\Override]
-    public function creating(object $model, OriginalContext $context): ?object
+    public function creating(object $model, OriginalContext $context): object
     {
         /** @var Badge $model */
         $model->system = false;
@@ -277,7 +277,7 @@ final class BadgeResource extends AbstractDatabaseResource
 
     /** Dois emblemas com o mesmo nome confundiriam a página e a notificação. */
     #[\Override]
-    public function saving(object $model, OriginalContext $context): ?object
+    public function saving(object $model, OriginalContext $context): object
     {
         /** @var Badge $model */
         if ($model->isDirty('name')) {

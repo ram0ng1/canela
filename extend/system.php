@@ -101,17 +101,20 @@ foreach (AutoMessages::TYPES as $type => $definition) {
 
 $extenders[] = $settings;
 
-// Respostas à conversa do sistema: só com o flarum/messages. A API recusa a
-// resposta, e a conversa já chega ao fórum como "não pode responder".
-if (class_exists(\Flarum\Messages\DialogMessage\Event\Creating::class)) {
-    $extenders[] = (new Extend\Event())
-        ->listen(\Flarum\Messages\DialogMessage\Event\Creating::class, BlockRepliesToSystem::class);
+// Respostas à conversa do sistema: só com o flarum/messages habilitado. A API
+// recusa a resposta, e a conversa já chega ao fórum como "não pode responder".
+// Pelo Conditional, e não por class_exists(): com o pacote instalado mas
+// desabilitado, o ApiResource registraria as rotas /api/dialogs dele.
+$extenders[] = (new Extend\Conditional())
+    ->whenExtensionEnabled('flarum-messages', static fn (): array => [
+        (new Extend\Event())
+            ->listen(\Flarum\Messages\DialogMessage\Event\Creating::class, BlockRepliesToSystem::class),
 
-    $extenders[] = (new Extend\ApiResource(\Flarum\Messages\Api\Resource\DialogResource::class))
-        ->field('canSendMessage', static fn (Schema\Boolean $field) => $field->get(
-            static fn (\Flarum\Messages\Dialog $dialog, Context $context): bool => ! SystemDialogs::involvesSystem($dialog, $context->getActor())
-                && \Flarum\Messages\Access\MessagingPermission::canSendIn($context->getActor(), $dialog)
-        ));
-}
+        (new Extend\ApiResource(\Flarum\Messages\Api\Resource\DialogResource::class))
+            ->field('canSendMessage', static fn (Schema\Boolean $field) => $field->get(
+                static fn (\Flarum\Messages\Dialog $dialog, Context $context): bool => ! SystemDialogs::involvesSystem($dialog, $context->getActor())
+                    && \Flarum\Messages\Access\MessagingPermission::canSendIn($context->getActor(), $dialog)
+            )),
+    ]);
 
 return $extenders;

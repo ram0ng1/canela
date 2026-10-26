@@ -95,6 +95,7 @@ final class UnreadTags
             ->join('tags as canela_unread_tag', 'canela_unread_tag.id', '=', 'discussion_tag.tag_id')
             ->distinct()
             ->limit(500)
+            ->toBase()
             ->get(['discussion_tag.tag_id', 'canela_unread_tag.parent_id']);
 
         $result = [];

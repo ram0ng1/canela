@@ -203,8 +203,11 @@ final class UserMetrics
                 ->count('flags.post_id');
         }
 
-        if ($capabilities->suspensions() && $user->suspended_until) {
-            $this->suspendedRecently = Carbon::parse($user->suspended_until)->gte(Carbon::now()->subMonths(6));
+        // A coluna é do flarum/suspend, opcional: lida pelo atributo.
+        $suspendedUntil = $user->getAttribute('suspended_until');
+
+        if ($capabilities->suspensions() && $suspendedUntil) {
+            $this->suspendedRecently = Carbon::parse($suspendedUntil)->gte(Carbon::now()->subMonths(6));
         }
     }
 

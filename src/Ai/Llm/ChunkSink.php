@@ -83,7 +83,7 @@ final class ChunkSink implements StreamInterface
     }
 
     #[\Override]
-    public function getSize(): ?int
+    public function getSize(): int
     {
         return $this->size;
     }

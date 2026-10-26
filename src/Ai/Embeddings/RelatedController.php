@@ -25,6 +25,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Http\AiGate;
 use Ramon\Canela\Ai\Tools\TopicLinks;
+use Ramon\Canela\Support\Dates;
 use Ramon\Canela\Support\Log;
 use Throwable;
 
@@ -101,7 +102,7 @@ final class RelatedController implements RequestHandlerInterface
                 'title' => $topic->title,
                 'url' => $this->links->discussion($topic),
                 'replyCount' => max(0, (int) $topic->comment_count - 1),
-                'lastPostedAt' => ($topic->last_posted_at ?? $topic->created_at)?->toAtomString(),
+                'lastPostedAt' => Dates::atom($topic->last_posted_at ?? $topic->created_at),
                 'tagIds' => $withTags ? $topic->tags->pluck('id')->map(static fn ($tagId): string => (string) $tagId)->all() : [],
             ];
         }

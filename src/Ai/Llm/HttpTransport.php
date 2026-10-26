@@ -41,6 +41,7 @@ final class HttpTransport
      */
     public function postJson(string $url, array $headers, array $body, ?callable $onChunk = null, int $timeout = 300): array
     {
+        /** @var int $status preenchido pelo on_headers, antes do corpo */
         $status = 0;
         $sink = $onChunk ? new ChunkSink(static function (string $chunk) use (&$status, $onChunk): bool {
             // Uma resposta de erro chega pelo mesmo caminho, mas não é SSE:
