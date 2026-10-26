@@ -61,11 +61,11 @@ final class ListDirectoryController implements RequestHandlerInterface
         $this->community->assertEnabled($groupId === null ? Community::DIRECTORY_ENABLED : Community::GROUPS_ENABLED);
         $this->community->assertCanListUsers($actor);
 
-        $columns = $this->directory->columns($actor);
-        $sortable = [...$columns, 'username', 'joinedAt'];
-
         $period = (string) Arr::get($params, 'period', 'all');
         $period = array_key_exists($period, Directory::PERIODS) ? $period : 'all';
+
+        $columns = $this->directory->columns($actor, $period);
+        $sortable = [...$columns, 'username', 'joinedAt'];
 
         $order = (string) Arr::get($params, 'order', '');
         $order = in_array($order, $sortable, true) ? $order : ($groupId === null ? $this->directory->defaultOrder() : 'username');

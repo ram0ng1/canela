@@ -59,7 +59,8 @@ final class SyncPostEvent
         /** @var CalendarEvent|null $existing */
         $existing = CalendarEvent::query()->where('post_id', $post->id)->first();
 
-        if ($data === null) {
+        // Fora da tag dos eventos o `[event]` é só texto: nem evento nem canal.
+        if ($data === null || ! $post->discussion || ! $this->settings->appliesTo($post->discussion)) {
             $existing?->delete();
 
             return;

@@ -7,9 +7,9 @@ namespace Ramon\Canela\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 
 /**
- * O carregador de recursos do extend.php só liga o que está em
- * extend/.enabled. Um nome errado ali desliga o recurso em silêncio; um
- * recurso que não devolve uma lista de extenders derruba o boot.
+ * O extend.php carrega todo arquivo em extend/. Um recurso que não devolve
+ * uma lista de extenders derruba o boot, e a lista de recursos nunca pode vir
+ * da requisição.
  */
 final class FeatureLoaderTest extends TestCase
 {
@@ -18,28 +18,15 @@ final class FeatureLoaderTest extends TestCase
         return dirname(__DIR__, 2);
     }
 
-    /** @return list<string> */
-    private function enabled(): array
+    public function test_nomes_dos_recursos_sao_validos(): void
     {
-        // A mesma leitura do extend.php: nomes separados por espaço, quebra de linha ou vírgula.
-        $text = (string) file_get_contents($this->root().'/extend/.enabled');
+        $files = glob($this->root().'/extend/*.php') ?: [];
 
-        return array_values(array_filter(array_map('trim', preg_split('/[\s,]+/', $text) ?: [])));
-    }
+        self::assertNotEmpty($files);
 
-    public function test_todo_recurso_ligado_tem_arquivo(): void
-    {
-        foreach ($this->enabled() as $feature) {
-            self::assertMatchesRegularExpression('/^[a-z][a-z0-9_-]*$/', $feature, "Nome inválido em extend/.enabled: $feature");
-            self::assertFileExists($this->root()."/extend/$feature.php", "extend/.enabled liga \"$feature\", mas extend/$feature.php não existe");
+        foreach ($files as $file) {
+            self::assertMatchesRegularExpression('/^[a-z][a-z0-9_-]*$/', basename($file, '.php'), 'Nome inválido em extend/: '.basename($file));
         }
-    }
-
-    public function test_recursos_nao_se_repetem(): void
-    {
-        $enabled = $this->enabled();
-
-        self::assertSame(array_values(array_unique($enabled)), $enabled, 'Recurso repetido em extend/.enabled');
     }
 
     public function test_todo_arquivo_de_recurso_devolve_algo(): void
@@ -47,5 +34,14 @@ final class FeatureLoaderTest extends TestCase
         foreach (glob($this->root().'/extend/*.php') ?: [] as $file) {
             self::assertMatchesRegularExpression('/^\s*return\s/m', (string) file_get_contents($file), basename($file).' precisa devolver a lista de extenders');
         }
+    }
+
+    public function test_lista_de_recursos_nao_vem_da_requisicao(): void
+    {
+        // Um cabeçalho ou parâmetro que mudasse os recursos deixaria qualquer
+        // visitante ligar ou desligar partes do fórum.
+        $source = (string) file_get_contents($this->root().'/extend.php');
+
+        self::assertDoesNotMatchRegularExpression('/\$_(SERVER|GET|POST|REQUEST|COOKIE)\b|getallheaders\s*\(/', $source);
     }
 }

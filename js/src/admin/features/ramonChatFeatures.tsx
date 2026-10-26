@@ -2,8 +2,8 @@
  * Card dos recursos de chat que o tema põe por cima do ramon/chat
  * (extend/ramonchat.php + js/src/forum/thirdparty/ramonChat/features): uma
  * chave por recurso, todas `canela.ramonchat_*`, e o limite de participantes
- * das MDs. Sem o ramon/chat o card fica trancado; sem o recurso `ramonchat`
- * no extend/.enabled, também (os padrões só existem com ele carregado).
+ * das MDs. Sem o ramon/chat o card fica trancado; se extend/ramonchat.php não
+ * carregou (ver o log de erros), também: os padrões só existem com ele.
  */
 import app from 'flarum/admin/app';
 import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
@@ -44,7 +44,7 @@ const cards: CardDef[] = [
     extensions: ['ramon-chat'],
     lockedBy: () =>
       isExtensionEnabled('ramon-chat') && app.data.settings[MASTER] === undefined
-        ? trans(`${KEY}.backend_off`, 'O recurso "ramonchat" do tema não está ligado (extend/.enabled).')
+        ? trans(`${KEY}.backend_off`, 'O recurso "ramonchat" do tema não carregou (veja o log de erros do PHP).')
         : null,
     body: () => [
       heading('group_reader', 'Para o leitor'),

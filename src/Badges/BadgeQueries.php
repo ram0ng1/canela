@@ -571,14 +571,22 @@ final class BadgeQueries
 
         $rows = [];
 
-        foreach ($candidates->pluck('user_id') as $userId) {
-            $completedOn = self::streakCompletedOn(
-                $this->db->table('canela_user_visits')->where('user_id', $userId)->orderBy('visited_at')->pluck('visited_at'),
-                $days
-            );
+        // As datas de um lote de pessoas numa consulta só, e não uma consulta
+        // por pessoa a cada dia.
+        foreach ($candidates->pluck('user_id')->chunk(200) as $chunk) {
+            $visits = $this->db->table('canela_user_visits')
+                ->whereIn('user_id', $chunk->all())
+                ->orderBy('user_id')
+                ->orderBy('visited_at')
+                ->get(['user_id', 'visited_at'])
+                ->groupBy('user_id');
 
-            if ($completedOn !== null) {
-                $rows[] = ['user_id' => (int) $userId, 'post_id' => null, 'granted_at' => $completedOn.' 00:00:00'];
+            foreach ($visits as $userId => $dates) {
+                $completedOn = self::streakCompletedOn($dates->pluck('visited_at'), $days);
+
+                if ($completedOn !== null) {
+                    $rows[] = ['user_id' => (int) $userId, 'post_id' => null, 'granted_at' => $completedOn.' 00:00:00'];
+                }
             }
         }
 

@@ -45,6 +45,9 @@ final class ChatNotifier
 
     private const HERE_MINUTES = 5;
 
+    /** @var array<string, bool> "tag|grupos" => enxerga */
+    private array $seesTag = [];
+
     public function __construct(
         private readonly NotificationSyncer $notifications,
         private readonly ChatAccess $access,
@@ -60,23 +63,27 @@ final class ChatNotifier
      */
     public function mentions(Message $message, Channel $channel, User $sender, array $userIds, bool $here, bool $all, string $channelTitle): array
     {
+        $wide = ($here || $all) && $channel->allow_channel_wide_mentions;
+
+        // Sem @here/@all, só interessam os mencionados: carregar o canal
+        // inteiro a cada mensagem seria uma consulta por membro.
         /** @var \Illuminate\Database\Eloquent\Collection<int, Membership> $members */
         $members = Membership::query()
-            ->with('user')
+            ->with('user.groups')
             ->where('channel_id', $channel->id)
             ->when(! $channel->isDirect(), static fn ($q) => $q->where('following', true))
+            ->when(! $wide, static fn ($q) => $q->whereIn('user_id', $userIds ?: [0]))
             ->where('muted', false)
             ->where('user_id', '<>', $sender->id)
             ->get();
 
-        $wide = ($here || $all) && $channel->allow_channel_wide_mentions;
         $since = Carbon::now()->subMinutes(self::HERE_MINUTES);
         $recipients = [];
 
         foreach ($members as $member) {
             $user = $member->user;
 
-            if (! $user || ! $this->access->canUse($user)) {
+            if (! $user || ! $this->access->canUse($user) || ! $this->stillSees($channel, $user)) {
                 continue;
             }
 
@@ -149,7 +156,7 @@ final class ChatNotifier
         $active = Carbon::now()->subSeconds(self::ACTIVE_SECONDS);
 
         $query = Membership::query()
-            ->with('user')
+            ->with('user.groups')
             ->where('channel_id', $channel->id)
             ->where('muted', false)
             ->where('user_id', '<>', $sender->id)
@@ -162,7 +169,7 @@ final class ChatNotifier
             $query->where('following', true)->where('notification_level', Membership::NOTIFY_ALWAYS);
         }
 
-        $users = $query->get()->map(static fn (Membership $m) => $m->user)->filter(fn (?User $u) => $u && $this->access->canUse($u))->values();
+        $users = $query->get()->map(static fn (Membership $m) => $m->user)->filter(fn (?User $u) => $u && $this->access->canUse($u) && $this->stillSees($channel, $u))->values();
 
         if ($users->isEmpty()) {
             return;
@@ -187,6 +194,27 @@ final class ChatNotifier
         } catch (\Throwable $error) {
             error_log('[ramon/canela] chat: notificação de mensagem falhou: '.$error->getMessage());
         }
+    }
+
+    /**
+     * Se o membro ainda enxerga o canal: quem perdeu acesso à tag do canal
+     * continua na lista de membros, mas não recebe mais alertas dele.
+     *
+     * A visibilidade das tags vem das permissões dos grupos, então a resposta
+     * fica guardada por conjunto de grupos — uma consulta por combinação, e
+     * não uma por membro.
+     */
+    private function stillSees(Channel $channel, User $user): bool
+    {
+        if ($channel->isDirect() || $channel->tag_id === null) {
+            return true;
+        }
+
+        $groups = $user->isAdmin() ? 'admin' : implode(',', $user->groups->pluck('id')->sort()->all());
+        // A suspensão também muda as permissões, então entra na chave.
+        $key = $channel->tag_id.'|'.$groups.'|'.($this->access->isSuspended($user) ? 's' : '');
+
+        return $this->seesTag[$key] ??= $this->access->canSeeChannel($channel, $user);
     }
 
     /** A mensagem apagada leva junto o alerta de menção dela. */

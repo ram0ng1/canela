@@ -38,6 +38,8 @@ use Ramon\Canela\Extras\Extras;
  *   de cada versão só vai para quem pode editá-la. Quem vê uma postagem oculta
  *   (moderação) sem poder editá-la não deveria ler o que foi apagado por meio
  *   das versões antigas.
+ * - Histórico só para o autor e quem pode editar (opção do admin): para os
+ *   demais, 404.
  * - Recurso desligado no admin: 404, como se a rota não existisse.
  */
 final class ListRevisionsController implements RequestHandlerInterface
@@ -60,7 +62,7 @@ final class ListRevisionsController implements RequestHandlerInterface
 
         $post = $this->posts->findOrFail($postId, $actor);
 
-        if (! $post instanceof CommentPost) {
+        if (! $post instanceof CommentPost || ! Extras::canSeeHistory($this->settings, $actor, $post)) {
             throw new RouteNotFoundException();
         }
 

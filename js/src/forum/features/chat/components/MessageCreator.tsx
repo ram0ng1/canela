@@ -233,7 +233,7 @@ export default class MessageCreator extends Component<MessageCreatorAttrs> {
           {selected && <Icon name="fas fa-check" />}
         </div>
         {!this.group && highlighted && (
-          <span className="chat-message-creator__shortcut">{m.trust(ct('new_message_modal.add_user_long', { username: user?.username() }))}</span>
+          <span className="chat-message-creator__shortcut">{ct('new_message_modal.add_user_long', { username: user?.username() || '' })}</span>
         )}
       </li>
     );

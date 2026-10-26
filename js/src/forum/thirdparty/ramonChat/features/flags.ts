@@ -1,8 +1,8 @@
 /*
  * As chaves do admin dos recursos que o tema põe por cima do ramon/chat
  * (extend/ramonchat.php serializa `canelaRamonChat`), as preferências do
- * leitor e as traduções. Sem o atributo (o recurso `ramonchat` fora do
- * extend/.enabled) nenhum recurso liga: vários dependem dos endpoints dele.
+ * leitor e as traduções. Sem o atributo (extend/ramonchat.php não carregou)
+ * nenhum recurso liga: vários dependem dos endpoints dele.
  */
 import app from 'flarum/forum/app';
 

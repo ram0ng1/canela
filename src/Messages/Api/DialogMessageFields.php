@@ -67,6 +67,17 @@ final class DialogMessageFields
                         return;
                     }
 
+                    // O título nasce com a conversa: uma resposta numa conversa
+                    // que já existe não dá nome a ela.
+                    $earlier = DialogMessage::query()
+                        ->where('dialog_id', $dialog->id)
+                        ->where('id', '<', $message->id)
+                        ->exists();
+
+                    if ($earlier) {
+                        return;
+                    }
+
                     // Direto na tabela: salvar o modelo dispararia de novo os
                     // eventos da conversa por causa de um texto.
                     $this->db->table(MessagesSchema::DIALOG_TABLE)

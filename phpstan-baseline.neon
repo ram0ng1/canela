@@ -63,8 +63,14 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
 			identifier: method.notFound
-			count: 1
+			count: 2
 			path: src/Ai/Console/EmbedTopicsCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Ai/Summaries/TopicSummarizer.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Flarum\\Discussion\\Discussion\>\:\:whereVisibleTo\(\)\.$#'

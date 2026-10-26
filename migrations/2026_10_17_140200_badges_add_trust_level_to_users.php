@@ -22,6 +22,9 @@ use Illuminate\Database\Schema\Builder;
  * - `canela_trust_level_at`: quando o nível mudou pela última vez. Um Regular
  *   não é rebaixado nos primeiros 100 dias depois da promoção (período
  *   de carência), e isso só se sabe guardando a data.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * cria também um índice, que o Migration::addColumns não cria.
  */
 return [
     'up' => static function (Builder $schema): void {

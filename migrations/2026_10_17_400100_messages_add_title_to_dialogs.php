@@ -16,6 +16,9 @@ use Illuminate\Database\Schema\Builder;
  * O título da mensagem: o composer pede um. O flarum/messages não tem — o nome da conversa
  * é "Conversando com X" —, então o tema guarda o título na própria conversa.
  * Vazio, continua valendo o nome do flarum/messages.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * só age se a tabela do flarum/messages existir.
  */
 return [
     'up' => static function (Builder $schema): void {

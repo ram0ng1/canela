@@ -67,6 +67,14 @@ final class AiGate
         }
     }
 
+    /** Gasta um pedido do limite diário, ou recusa (ver UsageLimiter::claim). */
+    public function claim(User $actor): void
+    {
+        if (! $this->usage->claim($actor)) {
+            throw new ValidationException(['ai' => $this->translator->trans('ramon-canela.api.ai.errors.limit_reached')]);
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */

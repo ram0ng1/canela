@@ -60,6 +60,7 @@ foreach ([
     Extras::BANNER_ID => ['canelaBannerId', '', null],
     Extras::PRINT_TOPIC => ['canelaPrintTopicEnabled', true, 'boolval'],
     Extras::POST_HISTORY => ['canelaPostHistoryEnabled', true, 'boolval'],
+    Extras::POST_HISTORY_PUBLIC => ['canelaPostHistoryPublic', true, 'boolval'],
 ] as $key => [$attributeName, $default, $cast]) {
     $settings->default($key, $default)->serializeToForum($attributeName, $key, $cast);
 }

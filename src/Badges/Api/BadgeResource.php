@@ -140,6 +140,13 @@ final class BadgeResource extends AbstractDatabaseResource
                 ->visible($installed)
                 ->admin()
                 ->action(function () {
+                    // A primeira carga é completa (lê o conteúdo de todas as
+                    // postagens) e passaria do tempo de uma requisição: só pelo
+                    // comando, que roda sem esse limite.
+                    if (! $this->settings->backfilled()) {
+                        throw new ValidationException(['badges' => $this->translator->trans('ramon-canela.api.badges_admin.first_backfill_cli')]);
+                    }
+
                     resolve(BadgeGranter::class)->backfill();
                 })
                 ->response(fn () => new EmptyResponse(204)),

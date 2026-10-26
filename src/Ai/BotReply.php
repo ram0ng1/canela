@@ -74,7 +74,6 @@ final class BotReply
         $history = $conversation->messages()->orderByDesc('id')->limit(self::HISTORY)->get()->reverse();
 
         $userMessage = $this->addMessage($conversation, Message::ROLE_USER, $question);
-        $this->usage->countRequest($actor);
 
         $write('conversation', ['conversation' => $conversation->toSummaryArray(), 'userMessage' => $userMessage->toApiArray(), 'isNew' => $isNew]);
 

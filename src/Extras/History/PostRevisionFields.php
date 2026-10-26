@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Extras\History;
 
+use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
@@ -24,8 +25,8 @@ use Ramon\Canela\Extras\Extras;
  * número ao lado do lápis no cabeçalho do post.
  *
  * Conta pela relação (um COUNT agrupado para a página inteira de postagens, e
- * não uma consulta por post). Com o recurso desligado o atributo some, e o
- * fórum volta ao "Editado" do core.
+ * não uma consulta por post). Com o recurso desligado (ou o histórico fechado
+ * para quem lê) o atributo some, e o fórum volta ao "Editado" do core.
  */
 final class PostRevisionFields
 {
@@ -42,8 +43,8 @@ final class PostRevisionFields
         return [
             Schema\Integer::make('canelaRevisionCount')
                 ->countRelation('canelaRevisions')
-                ->visible(fn (Post $post): bool => $post instanceof CommentPost
-                    && Extras::enabled($this->settings, Extras::POST_HISTORY)),
+                ->visible(fn (Post $post, Context $context): bool => $post instanceof CommentPost
+                    && Extras::canSeeHistory($this->settings, $context->getActor(), $post)),
         ];
     }
 }

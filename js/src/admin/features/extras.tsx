@@ -7,6 +7,7 @@ import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
 
 import { AdminNotice } from '../components/AdminCard';
+import AdminToggle from '../components/AdminToggle';
 import AdminTextarea from './AdminTextarea';
 import { saveSetting, trans } from '../util';
 import type { CardDef } from '../types';
@@ -151,12 +152,22 @@ const cards: CardDef[] = [
     keywords: 'histórico edições revisões history revisions editado edited diff versões comparar lápis',
     master: 'canela.post_history_enabled',
     body: () => (
-      <AdminNotice>
-        {trans(
-          `${KEY}.history_notice`,
-          'Só as edições feitas com o recurso ligado entram no histórico. Desligado, nada novo é guardado e o histórico some do fórum, o que já foi guardado fica no banco. O texto das versões de um post oculto só aparece para quem pode editá-lo.'
-        )}
-      </AdminNotice>
+      <>
+        <AdminToggle
+          settingKey="canela.post_history_public"
+          label={trans(`${KEY}.post_history_public_label`, 'Histórico visível para todos')}
+          help={trans(
+            `${KEY}.post_history_public_help`,
+            'Desligado, só o autor do post e quem pode editá-lo abrem o histórico; os demais veem o "Editado" do Flarum.'
+          )}
+        />
+        <AdminNotice>
+          {trans(
+            `${KEY}.history_notice`,
+            'Só as edições feitas com o recurso ligado entram no histórico. Desligado, nada novo é guardado e o histórico some do fórum, o que já foi guardado fica no banco. O texto das versões de um post oculto só aparece para quem pode editá-lo.'
+          )}
+        </AdminNotice>
+      </>
     ),
   },
 ];

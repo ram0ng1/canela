@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ramon\Canela\Chat\Api;
 
 use Flarum\User\User;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,6 +46,7 @@ final class ChannelActionController extends AbstractChatController
         private readonly ChatBroadcaster $broadcaster,
         private readonly TypingStore $typing,
         private readonly UnreadCounter $counter,
+        private readonly Cache $cache,
     ) {
         parent::__construct($access, $service, $presenter);
     }
@@ -64,6 +66,22 @@ final class ChannelActionController extends AbstractChatController
             case 'typing':
                 $typing = (bool) ($body['typing'] ?? true);
                 $threadId = isset($body['threadId']) ? (int) $body['threadId'] : null;
+
+                // Só avisa quem pode escrever aqui (não suspensos, canal aberto),
+                // e só num fio deste canal.
+                if ($this->access->cannotPostReason($channel, $actor, $this->access->membership($channel, $actor)) !== null) {
+                    return null;
+                }
+
+                if ($threadId !== null && ! Thread::query()->whereKey($threadId)->where('channel_id', $channel->id)->exists()) {
+                    return null;
+                }
+
+                // Cada aviso vira um push para todo o canal: no máximo um por
+                // estado a cada 2 s (o fórum já manda a cada 4 s, no mínimo).
+                if (! $this->cache->add("canela.chat.typing.{$channel->id}.{$actor->id}.".(int) $typing, 1, 2)) {
+                    return null;
+                }
 
                 $this->typing->set($channel->id, $threadId, (int) $actor->id, $typing);
                 $this->broadcaster->toChannel($channel, [

@@ -40,6 +40,12 @@ final class TranslateController implements RequestHandlerInterface
     /** Pedidos por minuto por pessoa (ou IP): o limite diário cobre o custo, este cobre o abuso. */
     private const PER_MINUTE = 20;
 
+    /**
+     * Chamadas ao modelo por dia para cada IP de visitante. Sem isso, um IP
+     * sozinho gastava em minutos o limite diário do fórum inteiro.
+     */
+    private const GUEST_CALLS_PER_DAY = 60;
+
     public function __construct(
         private readonly ContentTranslator $translator,
         private readonly Cache $cache,
@@ -71,8 +77,9 @@ final class TranslateController implements RequestHandlerInterface
 
         $who = $actor->isGuest() ? 'ip:'.sha1((string) $request->getAttribute('ipAddress')) : 'user:'.$actor->id;
         $key = 'canela-ai-translate-rate:'.$who.':'.intdiv(time(), 60);
-        $count = (int) $this->cache->get($key, 0) + 1;
-        $this->cache->put($key, $count, 120);
+        // add() + increment(): atômico, ao contrário de get() + put().
+        $this->cache->add($key, 0, 120);
+        $count = (int) $this->cache->increment($key);
 
         if ($count > self::PER_MINUTE) {
             // Nada traduzido agora: o fórum tenta de novo mais tarde.
@@ -87,6 +94,10 @@ final class TranslateController implements RequestHandlerInterface
         // acabou (ContentTranslator::TIME_BUDGET); o padrão do PHP é 30 s.
         if (function_exists('set_time_limit')) {
             @set_time_limit(120);
+        }
+
+        if ($actor->isGuest()) {
+            $this->translator->limitCaller($who, self::GUEST_CALLS_PER_DAY);
         }
 
         // Os títulos primeiro: uma chamada só para todos, e é o que se vê primeiro.

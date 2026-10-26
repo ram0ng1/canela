@@ -57,6 +57,34 @@ final class UsageLimiter
         return $remaining !== null && $remaining <= 0;
     }
 
+    /**
+     * Confere e gasta um pedido de uma vez só: o UPDATE condicional é atômico,
+     * então pedidos em paralelo não passam juntos do limite. Devolve false
+     * quando o limite de hoje já acabou.
+     */
+    public function claim(User $actor): bool
+    {
+        $limit = $this->settings->int(AiSettings::DAILY_LIMIT, 0);
+
+        if ($limit === 0 || $actor->isAdmin()) {
+            $this->countRequest($actor);
+
+            return true;
+        }
+
+        $this->db->table('canela_ai_usage')->insertOrIgnore([
+            'user_id' => $actor->id, 'day' => $this->today(), 'requests' => 0, 'input_tokens' => 0, 'output_tokens' => 0,
+        ]);
+
+        $query = $this->db->table('canela_ai_usage');
+
+        return $query
+            ->where('user_id', $actor->id)
+            ->where('day', $this->today())
+            ->where('requests', '<', $limit)
+            ->update(['requests' => $this->db->raw($query->getGrammar()->wrap('requests').' + 1')]) > 0;
+    }
+
     public function countRequest(User $actor): void
     {
         $query = $this->db->table('canela_ai_usage');

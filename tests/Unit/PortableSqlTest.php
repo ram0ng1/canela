@@ -109,6 +109,30 @@ final class PortableSqlTest extends TestCase
         self::assertSame(14, (int) $this->db->table('canela_ai_usage')->selectRaw('input_tokens + output_tokens as total')->value('total'));
     }
 
+    /** O claim confere e gasta num UPDATE só: passa até o limite e para nele. */
+    public function test_claim_do_limite_de_ia_para_no_limite(): void
+    {
+        Carbon::setTestNow('2026-10-18 12:00:00');
+        $this->db->getSchemaBuilder()->create('canela_ai_usage', static function (Blueprint $table): void {
+            $table->unsignedInteger('user_id');
+            $table->date('day');
+            $table->unsignedInteger('requests')->default(0);
+            $table->unsignedInteger('input_tokens')->default(0);
+            $table->unsignedInteger('output_tokens')->default(0);
+            $table->primary(['user_id', 'day']);
+        });
+
+        $limiter = new UsageLimiter(new AiSettings(new ArraySettings([AiSettings::DAILY_LIMIT => '2'])), $this->db);
+        $actor = new User();
+        $actor->id = 9;
+        $actor->setRelation('groups', $actor->newCollection());
+
+        self::assertTrue($limiter->claim($actor));
+        self::assertTrue($limiter->claim($actor));
+        self::assertFalse($limiter->claim($actor));
+        self::assertSame(2, (int) $this->db->table('canela_ai_usage')->where('user_id', 9)->value('requests'));
+    }
+
     /** `canela_via_group` é boolean: no PostgreSQL, `boolean = 0` não existe. */
     public function test_contagem_de_mensagens_com_caixas_de_grupo(): void
     {

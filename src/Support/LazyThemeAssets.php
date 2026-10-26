@@ -17,6 +17,7 @@ use Ernestdefoe\Wardrobe\ThemeAssets;
 use Ernestdefoe\Wardrobe\ThemeRegistry;
 use Ernestdefoe\Wardrobe\WarmThemeAssets;
 use Flarum\Frontend\Compiler\RevisionCompiler;
+use Flarum\Frontend\Compiler\VersionerInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Container\Container;
@@ -43,9 +44,12 @@ final class LazyThemeAssets extends ThemeAssets
         private readonly Container $app,
         ThemeRegistry $themes,
         SettingsRepositoryInterface $config,
-        private readonly Cache $store
+        private readonly Cache $store,
+        VersionerInterface $versioner
     ) {
-        parent::__construct($app, $themes, $config, $store);
+        // O Wardrobe 1.1.4 passou a pedir o versionador; as versões anteriores
+        // ignoram o argumento a mais.
+        parent::__construct($app, $themes, $config, $store, $versioner);
     }
 
     #[\Override]
@@ -123,12 +127,12 @@ final class LazyThemeAssets extends ThemeAssets
      * com ela vazia e decide pelo carimbo de tempo, como numa requisição nova.
      */
     #[\Override]
-    public function warmAll(): void
+    public function warmAll(?string $shared = null): void
     {
         \Closure::bind(function (): void {
             $this->fresh = [];
         }, $this, ThemeAssets::class)();
 
-        parent::warmAll();
+        parent::warmAll($shared);
     }
 }

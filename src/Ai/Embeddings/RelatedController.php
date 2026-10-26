@@ -17,6 +17,7 @@ use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,11 +37,15 @@ use Throwable;
  */
 final class RelatedController implements RequestHandlerInterface
 {
+    /** Pedidos por minuto por pessoa (ou IP): cada cache vazio compara o tópico com todos os outros. */
+    private const PER_MINUTE = 30;
+
     public function __construct(
         private readonly AiGate $gate,
         private readonly RelatedTopics $related,
         private readonly TopicLinks $links,
         private readonly ExtensionManager $extensions,
+        private readonly Cache $cache,
     ) {
     }
 
@@ -54,6 +59,14 @@ final class RelatedController implements RequestHandlerInterface
 
         if (! $discussion instanceof Discussion) {
             throw new RouteNotFoundException();
+        }
+
+        $who = $actor->isGuest() ? 'ip:'.sha1((string) $request->getAttribute('ipAddress')) : 'user:'.$actor->id;
+        $key = 'canela.ai.related.rate.'.sha1($who).'.'.intdiv(time(), 60);
+        $this->cache->add($key, 0, 120);
+
+        if ((int) $this->cache->increment($key) > self::PER_MINUTE) {
+            return new JsonResponse(['data' => []]);
         }
 
         try {

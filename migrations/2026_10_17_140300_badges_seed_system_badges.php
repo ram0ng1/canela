@@ -25,6 +25,9 @@ use Ramon\Canela\Badges\SystemBadges;
  *
  * As concessões não acontecem aqui: o primeiro `canela:badges` (o agendado ou
  * o rodado à mão) faz a carga inicial, sem notificar ninguém.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * grava dados (os emblemas do sistema), não muda o esquema.
  */
 return [
     'up' => static function (Builder $schema): void {

@@ -30,6 +30,9 @@ use Throwable;
  * mudam esse número, então o esquema novo é lido de novo sem depender de um
  * `cache:clear`. Custa uma consulta barata (`count` na tabela `migrations`) por
  * processo, só quando alguém pergunta.
+ *
+ * A contagem fica guardada no processo: num processo de longa duração (fila,
+ * Octane), reinicie-o depois do `migrate` para ele ver o esquema novo.
  */
 final class SchemaCache
 {

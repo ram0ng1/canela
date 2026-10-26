@@ -19,6 +19,9 @@ use Illuminate\Database\Schema\Builder;
  * então o arquivo é uma data nela — sem tabela nova, sem junção a mais.
  *
  * O flarum/messages é opcional: sem a tabela dele não há o que alterar.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * só age se a tabela do flarum/messages existir.
  */
 return [
     'up' => static function (Builder $schema): void {

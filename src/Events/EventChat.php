@@ -46,9 +46,16 @@ final class EventChat
         }
 
         try {
+
             if ($event->chat_channel_id && Channel::query()->whereKey($event->chat_channel_id)->exists()) {
                 $this->rename($event);
 
+                return;
+            }
+
+            // Criar canal público é coisa de quem pode criar canais no chat:
+            // sem isso, qualquer autor abriria canais com um `[event chat=true]`.
+            if (! $this->canCreateChannel($creator)) {
                 return;
             }
 
@@ -114,6 +121,17 @@ final class EventChat
             $channel->name = $name;
             $channel->save();
         }
+    }
+
+    private function canCreateChannel(?User $creator): bool
+    {
+        if (! $creator || ! $creator->exists) {
+            return false;
+        }
+
+        return $creator->isAdmin()
+            || $creator->hasPermission('ramon-chat.moderate')
+            || $creator->hasPermission('ramon-chat.createChannel');
     }
 
     private function channelName(CalendarEvent $event): string

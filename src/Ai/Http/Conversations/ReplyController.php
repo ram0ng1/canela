@@ -81,6 +81,10 @@ final class ReplyController implements RequestHandlerInterface
             $conversation->persona = $this->personas->find(isset($body['persona']) ? (string) $body['persona'] : null)['id'] ?? null;
         }
 
+        // O pedido conta aqui, antes do stream: depois dos cabeçalhos a recusa
+        // já não vira um status HTTP.
+        $this->gate->claim($actor);
+
         return NdjsonStream::response(
             fn (callable $write) => $this->reply->stream($actor, $conversation, $question, $write),
             $this->errors->describe(...)

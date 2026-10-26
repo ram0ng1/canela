@@ -16,6 +16,9 @@ use Illuminate\Database\Schema\Builder;
  * Os posts de ação pequena das mensagens ("Convidou @fulano", "Removeu
  * @fulano"): o flarum/messages só guarda mensagens, então os acontecimentos
  * da conversa ficam numa tabela do tema, apagados junto com a conversa.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * só age se a tabela do flarum/messages existir.
  */
 return [
     'up' => static function (Builder $schema): void {

@@ -24,6 +24,9 @@ use Illuminate\Database\Schema\Builder;
  *
  * O código funciona sem estas colunas: os campos novos só aparecem depois
  * desta migração.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * também atualiza dados dos emblemas do sistema.
  */
 return [
     'up' => static function (Builder $schema): void {

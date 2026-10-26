@@ -19,6 +19,9 @@ use Illuminate\Database\Schema\Builder;
  *
  * As imagens guardam o nome do arquivo no disco `canela-covers` ou a URL
  * externa inteira (ProfileImageUploader distingue pelo `://`).
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * precisa ser idempotente (só adiciona as colunas que faltam), e o Migration::addColumns não é.
  */
 $columns = [
     'canela_bio',

@@ -76,8 +76,39 @@ final class UserMetrics
 
     public bool $suspendedRecently = false;
 
+    /**
+     * Totais do fórum na janela, por tamanho de janela: são os mesmos para
+     * todas as pessoas, e a revisão diária mede milhares delas seguidas.
+     *
+     * @var array<int, array{expires: int, totals: array{int, int}}>
+     */
+    private static array $forumTotals = [];
+
+    private const FORUM_TOTALS_TTL = 600;
+
     private function __construct()
     {
+    }
+
+    /** @return array{int, int} tópicos e postagens criados no fórum desde `$since` */
+    private static function forumTotals(ConnectionInterface $db, Carbon $since, int $periodDays): array
+    {
+        $cached = self::$forumTotals[$periodDays] ?? null;
+
+        if ($cached !== null && $cached['expires'] > time()) {
+            return $cached['totals'];
+        }
+
+        $totals = [
+            $db->table('discussions')
+                ->whereNull('hidden_at')->where('is_private', false)->where('created_at', '>=', $since)->count(),
+            $db->table('posts')
+                ->where('type', 'comment')->whereNull('hidden_at')->where('is_private', false)->where('created_at', '>=', $since)->count(),
+        ];
+
+        self::$forumTotals[$periodDays] = ['expires' => time() + self::FORUM_TOTALS_TTL, 'totals' => $totals];
+
+        return $totals;
     }
 
     /** Só os números dos níveis 1 e 2 — o que os eventos precisam, sem as janelas do 3. */
@@ -148,10 +179,7 @@ final class UserMetrics
 
         $this->periodTopicsRepliedTo = $this->repliesQuery($db, $user)->where('posts.created_at', '>=', $since)->distinct()->count('posts.discussion_id');
 
-        $this->periodTopicsCreated = $db->table('discussions')
-            ->whereNull('hidden_at')->where('is_private', false)->where('created_at', '>=', $since)->count();
-        $this->periodPostsCreated = $db->table('posts')
-            ->where('type', 'comment')->whereNull('hidden_at')->where('is_private', false)->where('created_at', '>=', $since)->count();
+        [$this->periodTopicsCreated, $this->periodPostsCreated] = self::forumTotals($db, $since, $periodDays);
 
         if ($capabilities->likes()) {
             $this->periodLikesGiven = $capabilities->likeDates()

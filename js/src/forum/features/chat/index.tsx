@@ -50,9 +50,32 @@ const ChatHeaderIcon = lazyComponent(
   )
 );
 
+/**
+ * Apaga os rascunhos do chat que não são de quem está logado agora: depois de
+ * sair (ou trocar de conta), as MDs não escritas não ficam no navegador.
+ */
+function forgetOtherDrafts(): void {
+  try {
+    const mine = `canela.chat.draft.${app.session.user?.id() || 0}.`;
+    const stale: string[] = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+
+      if (key?.startsWith('canela.chat.draft.') && !key.startsWith(mine)) stale.push(key);
+    }
+
+    stale.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // Sem armazenamento: não há o que apagar.
+  }
+}
+
 export default function installChat(): void {
   // O pedido sai antes do primeiro desenho; a gaveta e o resto ligam quando ele chega.
   app.beforeMount(() => {
+    forgetOtherDrafts();
+
     if (chatOn()) loadRuntime().then((r) => r.start());
   });
 

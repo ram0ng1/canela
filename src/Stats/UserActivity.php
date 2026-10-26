@@ -65,13 +65,28 @@ final class UserActivity
             'recentTimeRead' => (int) ($visits->recent_time_read ?? 0),
             'postsRead' => (int) ($visits->posts_read ?? 0),
             // Uma linha por (tópico, usuário) em canela_topic_views: COUNT já é "distintos".
-            'topicsViewed' => $this->db->table(TopicViewRecorder::TABLE)->where('user_id', $id)->count(),
+            // Só tópicos públicos: o perfil é visto por todos, e contar tópicos
+            // privados ou ocultos diria quantos a pessoa abriu fora da vista.
+            'topicsViewed' => $this->db->table(TopicViewRecorder::TABLE.' as v')
+                ->join('discussions as d', 'd.id', '=', 'v.discussion_id')
+                ->where('v.user_id', $id)
+                ->where('d.is_private', false)
+                ->whereNull('d.hidden_at')
+                ->count(),
             'likesGiven' => null,
             'likesReceived' => null,
         ];
 
         if ($this->extensions->isEnabled('flarum-likes')) {
-            $summary['likesGiven'] = $this->db->table('post_likes')->where('user_id', $id)->count();
+            $summary['likesGiven'] = $this->db->table('post_likes')
+                ->join('posts', 'posts.id', '=', 'post_likes.post_id')
+                ->join('discussions', 'discussions.id', '=', 'posts.discussion_id')
+                ->where('post_likes.user_id', $id)
+                ->where('posts.is_private', false)
+                ->whereNull('posts.hidden_at')
+                ->where('discussions.is_private', false)
+                ->whereNull('discussions.hidden_at')
+                ->count();
             $summary['likesReceived'] = $this->db->table('post_likes')
                 ->join('posts', 'posts.id', '=', 'post_likes.post_id')
                 ->where('posts.user_id', $id)

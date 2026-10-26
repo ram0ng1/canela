@@ -72,6 +72,8 @@ final class UpcomingController implements RequestHandlerInterface
         }
 
         $events = CalendarEvent::query()
+            // Evento cujo primeiro post a moderação ocultou sai da agenda.
+            ->whereHas('post', static fn ($post) => $post->whereNull('hidden_at'))
             ->with('discussion')
             ->whereIn('discussion_id', $visible)
             ->where(static function ($q) use ($from, $to) {

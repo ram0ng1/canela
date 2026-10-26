@@ -22,6 +22,9 @@ use Illuminate\Database\Schema\Builder;
  *   caixa de mensagens da equipe) e a contagem de membros dos grupos.
  *
  * `post_likes` é do flarum/likes, que pode não estar instalado.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * só cria índices, e só os que ainda não existem.
  */
 $indexes = [
     'post_likes' => ['user_id', 'canela_post_likes_user_id_index'],

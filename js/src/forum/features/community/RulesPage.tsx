@@ -56,7 +56,18 @@ function structure(html: string): { intro: string; sections: RulesSection[] } {
       });
     }
 
-    const out = node instanceof HTMLElement ? node.outerHTML : node.textContent?.trim() ? `<p>${node.textContent}</p>` : '';
+    // O texto solto vira parágrafo pelo DOM: montado como string, o
+    // `textContent` (já sem as entidades) voltaria a ser HTML.
+    let out = '';
+
+    if (node instanceof HTMLElement) {
+      out = node.outerHTML;
+    } else if (node.textContent?.trim()) {
+      const paragraph = document.createElement('p');
+      paragraph.textContent = node.textContent;
+      out = paragraph.outerHTML;
+    }
+
     (current ? current.nodes : intro).push(out);
   });
 

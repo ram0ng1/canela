@@ -17,6 +17,9 @@ use Illuminate\Database\Schema\Builder;
  * mensagens). Na própria
  * conversa, como o `canela_view_count` dos tópicos: a lista mostra o número
  * sem somar nada a cada página.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * só age se a tabela do flarum/messages existir.
  */
 return [
     'up' => static function (Builder $schema): void {

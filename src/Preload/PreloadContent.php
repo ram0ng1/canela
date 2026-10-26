@@ -20,6 +20,7 @@ use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Psr\Http\Message\ServerRequestInterface;
+use Ramon\Canela\Stats\Http\Visitor;
 use Throwable;
 
 /**
@@ -47,6 +48,12 @@ final class PreloadContent
 
     public function __invoke(Document $document, ServerRequestInterface $request): void
     {
+        // Robô não roda o JS: os pedidos seriam só carga extra (um perfil custa
+        // uns seis). O HTML do core já traz o que o robô lê.
+        if ((new Visitor($request))->isCrawler()) {
+            return;
+        }
+
         try {
             $plan = $this->plan($document, $request);
         } catch (Throwable) {

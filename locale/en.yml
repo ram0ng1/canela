@@ -743,6 +743,8 @@ ramon-canela:
         post_history_enabled_label: Store and show the edit history
         post_history_enabled_help: Each edit keeps the previous text. The post’s “Edited” becomes a pencil with the number of revisions, which opens the comparison between versions (inline or side by side).
         history_notice: Only edits made while the feature is on are recorded. When off, nothing new is stored and the history disappears from the forum, what was already stored stays in the database. The text of a hidden post’s versions is only shown to those who can edit it.
+        post_history_public_label: Edit history visible to everyone
+        post_history_public_help: When off, only the post’s author and those who can edit it open the history; everyone else sees Flarum’s “Edited”.
       section_icons: Icons
       lucide_icons_label: Lucide icons
       lucide_icons_help: Interface icons (search, bell, reply, like, menus…) drawn with Lucide's thin stroke. When off, the solid Font Awesome icons come back. Icons with no Lucide replacement (brands and some of those picked for tags and groups) stay in Font Awesome.
@@ -829,7 +831,7 @@ ramon-canela:
         review_flags_help: "Reported chat messages join the theme review queue (page, sidebar and user menu), alongside posts and ordered by date, for whoever sees flags or moderates the chat."
         title: "Extra chat features (ramon/chat)"
         description: "What ramon/chat lacks: bell notifications, one-click reactions, \"New message\", starred channels, message links, \"is typing\" without websocket and more, without changing the extension."
-        backend_off: "The theme's \"ramonchat\" feature is not enabled (extend/.enabled)."
+        backend_off: "The theme's \"ramonchat\" feature did not load (check the PHP error log)."
         group_reader: "For readers"
         group_messages: "Messages"
         group_channels: "Channels and DMs"
@@ -3015,6 +3017,7 @@ ramon-canela:
         long_description: This badge is granted when you reach trust level 4. You're a leader in this community as selected by staff, and you set a positive example for the rest of the community in your actions and words here.
     badges_admin:
       name_taken: A badge with that name already exists.
+      first_backfill_cli: 'The first badge load runs only from the command line: run php flarum canela:badges once, then use this button.'
       badge_not_found: That badge does not exist.
       badge_not_grantable: That badge cannot be granted manually (system badges are granted by their automatic rule).
       user_not_found: No user with that username.
