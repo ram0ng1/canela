@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Flarum\Testing\integration\Setup\Bootstrapper;
 use Flarum\Testing\integration\Setup\SetupScript;
 
 require __DIR__.'/../../vendor/autoload.php';
@@ -16,3 +17,35 @@ require __DIR__.'/../../vendor/autoload.php';
 $setup = new SetupScript();
 
 $setup->run();
+
+/*
+ * Liga uma vez, antes da suíte, todas as extensões que os testes usam — o tema
+ * por último, depois das tabelas do flarum/messages. Assim as migrations e o
+ * esquema do tema nas mensagens (MessagesSchemaProvider) já estão no banco, e
+ * nenhum teste roda DDL: no MySQL e no MariaDB o DDL confirma a transação do
+ * teste, e o que ele gravou ficaria para os seguintes.
+ */
+$bootstrapper = new Bootstrapper(['env' => 'testing'], [
+    'flarum-tags',
+    'flarum-likes',
+    'flarum-mentions',
+    'flarum-sticky',
+    'flarum-subscriptions',
+    'flarum-lock',
+    'flarum-approval',
+    'flarum-flags',
+    'flarum-suspend',
+    'flarum-messages',
+    'fof-pages',
+    'ramon-canela',
+]);
+
+$bootstrapper->run()->bootApp();
+
+try {
+    $bootstrapper->database?->rollBack();
+} catch (Throwable) {
+    // O DDL do MySQL já encerrou a transação.
+}
+
+echo "Extensions migrated\n";

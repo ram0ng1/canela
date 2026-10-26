@@ -171,13 +171,16 @@ class TopicCountsTest extends TestCase
     #[Test]
     public function visitante_nao_registra_tempo_de_leitura(): void
     {
+        // Comparado com o antes: no MySQL, outro teste pode ter deixado visitas.
+        $before = $this->database()->table('canela_user_visits')->count();
+
         $response = $this->send($this->request('POST', '/api/canela-read-time', [
             'json' => ['discussionId' => 1, 'seconds' => 30, 'postIds' => [11]],
         ]));
 
         // 400 (sem token CSRF de sessão) ou 401 (sem conta): nunca grava.
         $this->assertContains($response->getStatusCode(), [400, 401]);
-        $this->assertSame(0, $this->database()->table('canela_user_visits')->count());
+        $this->assertSame($before, $this->database()->table('canela_user_visits')->count());
     }
 
     /**

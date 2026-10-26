@@ -54,9 +54,12 @@ class DialogFieldsTest extends TestCase
                 ['id' => 101, 'dialog_id' => 10, 'user_id' => 2, 'content' => '<t>Oi, Alice</t>', 'number' => 1, 'created_at' => $now],
                 ['id' => 102, 'dialog_id' => 10, 'user_id' => 3, 'content' => '<t>Oi!</t>', 'number' => 2, 'created_at' => $now],
             ],
+            // Com `id` (conversa × 100 + pessoa), como no core: no MySQL as
+            // migrations do primeiro teste confirmam a transação e as linhas
+            // ficam; o id deixa o prepareDatabase() sobrescrevê-las.
             'dialog_user' => [
-                ['dialog_id' => 10, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 102],
-                ['dialog_id' => 10, 'user_id' => 3, 'joined_at' => $now, 'last_read_message_id' => 101],
+                ['id' => 1002, 'dialog_id' => 10, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 102],
+                ['id' => 1003, 'dialog_id' => 10, 'user_id' => 3, 'joined_at' => $now, 'last_read_message_id' => 101],
             ],
         ]);
     }

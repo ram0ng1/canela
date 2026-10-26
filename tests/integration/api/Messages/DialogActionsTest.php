@@ -67,15 +67,18 @@ class DialogActionsTest extends TestCase
                 ['id' => 111, 'dialog_id' => 11, 'user_id' => 2, 'content' => '<t>Oi, admin</t>', 'number' => 1, 'created_at' => $now],
                 ['id' => 301, 'dialog_id' => 30, 'user_id' => 2, 'content' => '<t>Ajuda</t>', 'number' => 1, 'created_at' => $now],
             ],
+            // Com `id` (conversa × 100 + pessoa), como no core: no MySQL as
+            // migrations do primeiro teste confirmam a transação e as linhas
+            // ficam; o id deixa o prepareDatabase() sobrescrevê-las.
             'dialog_user' => [
-                ['dialog_id' => 10, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 102],
-                ['dialog_id' => 10, 'user_id' => 3, 'joined_at' => $now, 'last_read_message_id' => 102],
-                ['dialog_id' => 11, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 111],
-                ['dialog_id' => 11, 'user_id' => 1, 'joined_at' => $now, 'last_read_message_id' => 111],
-                ['dialog_id' => 30, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 301],
-                ['dialog_id' => 30, 'user_id' => 1, 'joined_at' => $now, 'last_read_message_id' => 0, 'canela_via_group' => true],
-                ['dialog_id' => 30, 'user_id' => 7, 'joined_at' => $now, 'last_read_message_id' => 0, 'canela_via_group' => true],
-                ['dialog_id' => 30, 'user_id' => 3, 'joined_at' => $now, 'last_read_message_id' => 0],
+                ['id' => 1002, 'dialog_id' => 10, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 102],
+                ['id' => 1003, 'dialog_id' => 10, 'user_id' => 3, 'joined_at' => $now, 'last_read_message_id' => 102],
+                ['id' => 1102, 'dialog_id' => 11, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 111],
+                ['id' => 1101, 'dialog_id' => 11, 'user_id' => 1, 'joined_at' => $now, 'last_read_message_id' => 111],
+                ['id' => 3002, 'dialog_id' => 30, 'user_id' => 2, 'joined_at' => $now, 'last_read_message_id' => 301],
+                ['id' => 3001, 'dialog_id' => 30, 'user_id' => 1, 'joined_at' => $now, 'last_read_message_id' => 0, 'canela_via_group' => true],
+                ['id' => 3007, 'dialog_id' => 30, 'user_id' => 7, 'joined_at' => $now, 'last_read_message_id' => 0, 'canela_via_group' => true],
+                ['id' => 3003, 'dialog_id' => 30, 'user_id' => 3, 'joined_at' => $now, 'last_read_message_id' => 0],
             ],
         ]);
     }

@@ -57,9 +57,12 @@ class AutoMessagesTest extends TestCase
             DialogMessage::class => [
                 ['id' => 201, 'dialog_id' => 20, 'user_id' => 5, 'content' => '<t>Aviso</t>', 'number' => 1, 'created_at' => $past],
             ],
+            // Com `id` (conversa × 100 + pessoa), como no core: no MySQL as
+            // migrations do primeiro teste confirmam a transação e as linhas
+            // ficam; o id deixa o prepareDatabase() sobrescrevê-las.
             'dialog_user' => [
-                ['dialog_id' => 20, 'user_id' => 2, 'joined_at' => $past, 'last_read_message_id' => 0],
-                ['dialog_id' => 20, 'user_id' => 5, 'joined_at' => $past, 'last_read_message_id' => 201],
+                ['id' => 2002, 'dialog_id' => 20, 'user_id' => 2, 'joined_at' => $past, 'last_read_message_id' => 0],
+                ['id' => 2005, 'dialog_id' => 20, 'user_id' => 5, 'joined_at' => $past, 'last_read_message_id' => 201],
             ],
             Discussion::class => [
                 ['id' => 1, 'title' => 'Tópico', 'user_id' => 1, 'created_at' => $past, 'last_posted_at' => $past, 'comment_count' => 1, 'first_post_id' => 1, 'last_post_number' => 1],
@@ -259,13 +262,16 @@ class AutoMessagesTest extends TestCase
     #[Test]
     public function ninguem_escreve_ao_sistema(): void
     {
+        // Comparado com o antes: no MySQL, outro teste pode ter deixado mensagens.
+        $before = $this->database()->table('dialog_messages')->where('user_id', 2)->count();
+
         $response = $this->send($this->request('POST', '/api/dialog-messages', [
             'authenticatedAs' => 2,
             'json' => ['data' => ['type' => 'dialog-messages', 'attributes' => ['content' => 'Oi, sistema', 'users' => [['id' => 5]]]]],
         ]));
 
         $this->assertContains($response->getStatusCode(), [403, 422]);
-        $this->assertSame(0, $this->database()->table('dialog_messages')->where('user_id', 2)->count());
+        $this->assertSame($before, $this->database()->table('dialog_messages')->where('user_id', 2)->count());
     }
 
     /**
