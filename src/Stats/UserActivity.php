@@ -87,11 +87,19 @@ final class UserActivity
                 ->where('discussions.is_private', false)
                 ->whereNull('discussions.hidden_at')
                 ->count();
+            // Mesmos filtros das curtidas dadas: o perfil é visto por todos, e
+            // contar curtidas em postagens ocultas/privadas ou em tópicos
+            // privados revelaria o que acontece fora da vista.
             $summary['likesReceived'] = $this->db->table('post_likes')
                 ->join('posts', 'posts.id', '=', 'post_likes.post_id')
+                ->join('discussions', 'discussions.id', '=', 'posts.discussion_id')
                 ->where('posts.user_id', $id)
                 // Curtir a própria postagem não é reconhecimento de ninguém.
                 ->where('post_likes.user_id', '!=', $id)
+                ->where('posts.is_private', false)
+                ->whereNull('posts.hidden_at')
+                ->where('discussions.is_private', false)
+                ->whereNull('discussions.hidden_at')
                 ->count();
         }
 
