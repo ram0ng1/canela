@@ -43,7 +43,13 @@
         "flarum/testing": "^2.0",
         "flarum/phpstan": "^2.0",
         "flarum/suspend": "^2.0.0",
-        "flarum/flags": "^2.0.0"
+        "flarum/flags": "^2.0.0",
+        "flarum/likes": "^2.0.0",
+        "flarum/mentions": "^2.0.0",
+        "flarum/sticky": "^2.0.0",
+        "flarum/subscriptions": "^2.0.0",
+        "flarum/lock": "^2.0.0",
+        "flarum/approval": "^2.0.0"
     },
     "suggest": {
         "flarum/tags": "Categories and tags in the sidebar, the discussion list and the tags page.",

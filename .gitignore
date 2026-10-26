@@ -9,3 +9,6 @@ CLAUDE.md
 docs/DISCOURSE-PARITY.md
 docs/OPTIMIZATION-LOG.md
 docs/design/
+
+# Banco e config dos testes de integração (flarum/testing)
+tests/integration/tmp
