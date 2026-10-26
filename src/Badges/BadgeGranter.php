@@ -179,6 +179,7 @@ final class BadgeGranter
         $threshold = $now->copy()->subHours(self::NOTIFY_WINDOW_HOURS);
         // Em lotes: um whereIn único passaria do limite de 65.535 parâmetros
         // do MySQL na primeira concessão em massa de um fórum grande.
+        /** @var Collection<int, User> $users */
         $users = new Collection();
 
         foreach (array_chunk(array_values(array_unique(array_column($rows, 'user_id'))), 1000) as $chunk) {
