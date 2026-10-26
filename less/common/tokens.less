@@ -250,3 +250,51 @@
   --button-primary-color-active: var(--cn-accent-text);
   --button-primary-bg-disabled: var(--cn-accent);
 }
+
+// ---------------------------------------------------------------------
+// Alto contraste (light-hc / dark-hc do core)
+//
+// Os seletores acima (`^=light`, `^=dark`) também pegam os esquemas de alto
+// contraste, e o tema redefine os tokens que o core ajusta para eles. Aqui o
+// texto secundário e as bordas ficam mais fortes e os tons translúcidos viram
+// cores sólidas.
+// ---------------------------------------------------------------------
+[data-theme$="-hc"] {
+  --cn-hover: var(--cn-selected);
+  --cn-hover-accent: var(--cn-selected);
+  --cn-sidebar-link: var(--cn-primary);
+  --cn-sidebar-border: var(--cn-border);
+  --cn-header-muted: var(--cn-primary-high);
+  --cn-header-border: var(--cn-border);
+  --cn-shell-locale: var(--cn-primary-high);
+  --cn-blob-1: transparent;
+  --cn-blob-2: transparent;
+}
+
+[data-theme=light-hc] {
+  --cn-primary: #000000;
+  --cn-primary-very-high: #1a1a1a;
+  --cn-primary-high: #3d3d3d;
+  --cn-primary-medium: #595959;
+  --cn-primary-low-mid: #767676;
+  --cn-primary-300: #767676;
+  --cn-border: #8c8c8c;
+  --cn-placeholder: #595959;
+  --cn-shell-icon: #595959;
+  --cn-link: ~"oklch(from var(--cn-accent) min(l, 0.45) c h)";
+  --cn-hover-accent-text: var(--cn-link);
+}
+
+[data-theme=dark-hc] {
+  --cn-primary: #ffffff;
+  --cn-primary-very-high: #f2f2f2;
+  --cn-primary-high: #d6d6d6;
+  --cn-primary-medium: #b3b3b3;
+  --cn-primary-low-mid: #8f8f8f;
+  --cn-primary-300: #8f8f8f;
+  --cn-border: #6b6b6b;
+  --cn-placeholder: #a6a6a6;
+  --cn-shell-icon: #b3b3b3;
+  --cn-link: ~"oklch(from var(--cn-accent) max(l, 0.8) c h)";
+  --cn-hover-accent-text: var(--cn-link);
+}
