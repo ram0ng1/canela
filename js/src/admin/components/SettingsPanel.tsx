@@ -84,6 +84,12 @@ export const GROUPS: GroupDef[] = [
     description: () => trans(`${SHELL}.group_moderation_desc`, 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'),
   },
   {
+    key: 'bugreports',
+    icon: 'fas fa-bug',
+    label: () => trans(`${SHELL}.group_bugreports`, 'Relatar problemas'),
+    description: () => trans(`${SHELL}.group_bugreports_desc`, 'O botão para marcar a tela e relatar um problema, e os relatórios que chegaram.'),
+  },
+  {
     key: 'system',
     icon: 'fas fa-robot',
     label: () => trans(`${SHELL}.group_system`, 'Mensagens automáticas'),

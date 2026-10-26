@@ -234,6 +234,8 @@ ramon-canela:
         group_messages_desc: Private messages and real-time chat.
         group_community_desc: About, guidelines, users, groups, badges, trust levels and invites.
         group_moderation_desc: 'Staff tools: bulk actions, edit history and notices to the author.'
+        group_bugreports: "Problem reports"
+        group_bugreports_desc: "The button to mark the screen and report a problem, and the reports that came in."
         group_integrations_desc: The theme look for third-party extensions. Each one only works with its extension enabled.
         group_ai_desc: Provider, bot, composer helper, summaries and related discussions.
         group_system: "Automated messages"

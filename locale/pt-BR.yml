@@ -234,6 +234,8 @@ ramon-canela:
         group_messages_desc: As mensagens privadas e o chat em tempo real.
         group_community_desc: Sobre, diretrizes, usuários, grupos, emblemas, níveis de confiança e convites.
         group_moderation_desc: 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'
+        group_bugreports: "Relatar problemas"
+        group_bugreports_desc: "O botão para marcar a tela e relatar um problema, e os relatórios que chegaram."
         group_integrations_desc: O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.
         group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
         group_system: "Mensagens automáticas"

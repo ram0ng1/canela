@@ -1,5 +1,5 @@
 /*
- * Card do "Relatar problema", no grupo Moderação: a chave do recurso, as
+ * Card do "Relatar problema", na aba própria do painel: a chave do recurso, as
  * opções do botão e o painel com os relatórios (./bugReportsAdmin).
  * Baseado no Bugframe (github.com/vmatheus3/bug-frame, MIT).
  */
@@ -16,7 +16,7 @@ const toggle = (name: string, label: string, help: string) => (
 const cards: CardDef[] = [
   {
     id: 'bug-reports',
-    group: 'moderation',
+    group: 'bugreports',
     icon: 'fas fa-bug',
     title: () => trans(`${KEY}.title`, 'Relatar problema'),
     description: () =>

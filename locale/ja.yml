@@ -234,6 +234,8 @@ ramon-canela:
         group_messages_desc: プライベートメッセージとリアルタイムチャット。
         group_community_desc: 概要、ガイドライン、ユーザー、グループ、バッジ、信頼レベル、招待。
         group_moderation_desc: 'スタッフ向けツール：一括操作、編集履歴、投稿者への通知。'
+        group_bugreports: "問題の報告"
+        group_bugreports_desc: "画面を囲んで問題を報告するボタンと、届いた報告。"
         group_integrations_desc: サードパーティ拡張機能向けのテーマのデザインです。それぞれ対応する拡張機能が有効な場合のみ動作します。
         group_ai_desc: プロバイダー、ボット、投稿エディターのアシスタント、要約、関連スレッド。
         group_system: "自動メッセージ"
