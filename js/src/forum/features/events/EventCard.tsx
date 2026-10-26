@@ -137,7 +137,8 @@ export default class EventCard extends Component<EventCardAttrs> {
           </section>
         )}
 
-        {event.url && (
+        {/* O servidor já filtra a URL; o href nunca recebe nada que não seja http(s). */}
+        {event.url && /^https?:\/\//i.test(event.url) && (
           <section className="CanelaEventCard-section CanelaEventCard-url">
             <Icon name="fas fa-video" />
             <p>

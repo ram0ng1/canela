@@ -96,33 +96,51 @@ final class EventController implements RequestHandlerInterface
             throw new RouteNotFoundException();
         }
 
+        // Responder à presença é como responder ao tópico: tópico trancado (ou
+        // sem permissão de responder) e evento oculto pela moderação não aceitam.
+        $firstPost = $event->post;
+
+        if (! $firstPost || $firstPost->hidden_at !== null) {
+            throw new RouteNotFoundException();
+        }
+
+        $actor->assertCan('reply', $event->discussion);
+
         $status = Arr::get($body, 'status');
 
         if ($status !== null && ! in_array($status, EventInvitee::STATUSES, true)) {
             throw new ValidationException(['status' => $this->translator->trans('ramon-canela.api.events.invalid_status')]);
         }
 
-        /** @var EventInvitee|null $invitee */
-        $invitee = EventInvitee::query()->where('event_id', $event->id)->where('user_id', $actor->id)->first();
+        // Numa transação com a linha do evento travada: dois "vou" ao mesmo
+        // tempo na última vaga leriam a mesma contagem e lotariam o evento.
+        $event->getConnection()->transaction(function () use ($event, $actor, $status): void {
+            /** @var CalendarEvent $locked */
+            $locked = CalendarEvent::query()->whereKey($event->id)->lockForUpdate()->firstOrFail();
+            $locked->refreshCounts();
 
-        // Vagas: só o "vou" conta, e quem já ia não perde a vaga ao responder de novo.
-        if ($status === EventInvitee::GOING && $event->max_attendees !== null && $invitee?->status !== EventInvitee::GOING
-            && $event->going_count >= $event->max_attendees) {
-            throw new ValidationException(['status' => $this->translator->trans('ramon-canela.api.events.full')]);
-        }
+            /** @var EventInvitee|null $invitee */
+            $invitee = EventInvitee::query()->where('event_id', $event->id)->where('user_id', $actor->id)->first();
 
-        if ($status === null) {
-            $invitee?->delete();
-        } else {
-            $invitee ??= new EventInvitee();
-            $invitee->event_id = $event->id;
-            $invitee->user_id = $actor->id;
-            $invitee->status = $status;
-            $invitee->save();
-        }
+            // Vagas: só o "vou" conta, e quem já ia não perde a vaga ao responder de novo.
+            if ($status === EventInvitee::GOING && $locked->max_attendees !== null && $invitee?->status !== EventInvitee::GOING
+                && $locked->going_count >= $locked->max_attendees) {
+                throw new ValidationException(['status' => $this->translator->trans('ramon-canela.api.events.full')]);
+            }
 
-        $event->refreshCounts();
-        $event->save();
+            if ($status === null) {
+                $invitee?->delete();
+            } else {
+                $invitee ??= new EventInvitee();
+                $invitee->event_id = $event->id;
+                $invitee->user_id = $actor->id;
+                $invitee->status = $status;
+                $invitee->save();
+            }
+
+            $event->refreshCounts();
+            $event->save();
+        });
 
         if ($status === EventInvitee::GOING) {
             $this->chat->join($event, $actor);

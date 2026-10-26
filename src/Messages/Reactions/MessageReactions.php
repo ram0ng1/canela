@@ -39,6 +39,12 @@ final class MessageReactions
 
     private static ?bool $exists = null;
 
+    /** @var array<int, true> mensagens à espera do resumo */
+    private static array $pending = [];
+
+    /** @var array<int, array<int, object>> mensagem => linhas (reaction, user_id) */
+    private static array $loaded = [];
+
     public function __construct(
         private readonly ConnectionInterface $db,
         private readonly ExtensionManager $extensions,
@@ -76,10 +82,65 @@ final class MessageReactions
             return ['counts' => [], 'mine' => null];
         }
 
-        $rows = $this->db->table(self::TABLE)
-            ->where('message_id', $messageId)
-            ->get(['reaction', 'user_id']);
+        self::$pending[$messageId] = true;
+        $this->loadPending();
 
+        return $this->tally(self::$loaded[$messageId] ?? [], $actor);
+    }
+
+    /**
+     * O mesmo resumo, adiado: o serializador resolve as closures de um nível
+     * inteiro de uma vez, e a primeira busca as reações de todas as mensagens
+     * anotadas numa consulta só (e não uma por mensagem).
+     *
+     * @return \Closure(): array{counts: array<string, int>, mine: string|null}
+     */
+    public function deferSummary(int $messageId, ?User $actor): \Closure
+    {
+        if (! array_key_exists($messageId, self::$loaded)) {
+            self::$pending[$messageId] = true;
+        }
+
+        return function () use ($messageId, $actor): array {
+            if (! $this->enabled()) {
+                return ['counts' => [], 'mine' => null];
+            }
+
+            $this->loadPending();
+
+            return $this->tally(self::$loaded[$messageId] ?? [], $actor);
+        };
+    }
+
+    private function loadPending(): void
+    {
+        $ids = array_keys(self::$pending);
+
+        if (! $ids) {
+            return;
+        }
+
+        self::$pending = [];
+
+        foreach ($ids as $id) {
+            self::$loaded[$id] = [];
+        }
+
+        $rows = $this->db->table(self::TABLE)
+            ->whereIn('message_id', $ids)
+            ->get(['message_id', 'reaction', 'user_id']);
+
+        foreach ($rows as $row) {
+            self::$loaded[(int) $row->message_id][] = $row;
+        }
+    }
+
+    /**
+     * @param array<int, object> $rows
+     * @return array{counts: array<string, int>, mine: string|null}
+     */
+    private function tally(array $rows, ?User $actor): array
+    {
         $counts = [];
         $mine = null;
 
@@ -102,6 +163,9 @@ final class MessageReactions
      */
     public function react(int $messageId, User $actor, ?string $key): bool
     {
+        // A resposta precisa ler a reação nova, e não a do lote já carregado.
+        unset(self::$loaded[$messageId]);
+
         $current = $this->db->table(self::TABLE)->where('message_id', $messageId)->where('user_id', $actor->id)->value('reaction');
 
         if ($key === null) {

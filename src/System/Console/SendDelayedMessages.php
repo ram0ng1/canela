@@ -16,6 +16,7 @@ namespace Ramon\Canela\System\Console;
 use Carbon\Carbon;
 use Flarum\User\User;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Ramon\Canela\System\Messages\CustomMessages;
 use Ramon\Canela\System\Messages\MessageSender;
 use Ramon\Canela\System\SystemUser;
@@ -37,7 +38,7 @@ final class SendDelayedMessages extends Command
     /** Por mensagem, por ciclo: um fórum grande espalha os envios pelas horas. */
     private const BATCH = 200;
 
-    public function handle(CustomMessages $customs, MessageSender $sender, SystemUser $system): int
+    public function handle(CustomMessages $customs, MessageSender $sender, SystemUser $system, Cache $cache): int
     {
         if (! $sender->available()) {
             $this->info('Sem usuário do sistema ou sem o flarum/messages; nada a enviar.');
@@ -56,11 +57,19 @@ final class SendDelayedMessages extends Command
 
             [$from, $until] = $window;
 
+            // O lote anda: cada ciclo continua do último id tentado, e não do
+            // começo. Sem isso, 200 envios que falham sempre (conta que não
+            // recebe mensagens, erro no destino) seriam escolhidos de novo a
+            // cada ciclo, e ninguém depois deles receberia a mensagem.
+            $cursorKey = 'canela.system_messages.cursor.'.CustomMessages::type($entry);
+            $after = (int) $cache->get($cursorKey, 0);
+
             $users = User::query()
                 ->where('is_email_confirmed', true)
                 ->where('joined_at', '>=', $from)
                 ->where('joined_at', '<=', $until)
                 ->where('id', '!=', (int) $system->id())
+                ->where('id', '>', $after)
                 ->whereNotIn('id', fn ($query) => $query->select('user_id')->from(MessageSender::TABLE)->where('type', CustomMessages::type($entry)))
                 ->orderBy('id')
                 ->limit(self::BATCH)
@@ -73,6 +82,10 @@ final class SendDelayedMessages extends Command
                     $sent++;
                 }
             }
+
+            // Lote incompleto: chegou ao fim da fila, e o próximo ciclo recomeça
+            // do início (quem falhou ganha outra tentativa).
+            $cache->forever($cursorKey, $users->count() < self::BATCH ? 0 : (int) $users->last()?->id);
         }
 
         $this->info("Mensagens enviadas: $sent.");

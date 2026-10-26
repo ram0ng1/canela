@@ -743,6 +743,8 @@ ramon-canela:
         post_history_enabled_label: Guardar e mostrar o histórico de edições
         post_history_enabled_help: Cada edição guarda o texto anterior. O “Editado” do post vira um lápis com o número de revisões, que abre a comparação entre as versões (no texto ou lado a lado).
         history_notice: Só as edições feitas com o recurso ligado entram no histórico. Desligado, nada novo é guardado e o histórico some do fórum, o que já foi guardado fica no banco. O texto das versões de um post oculto só aparece para quem pode editá-lo.
+        post_history_public_label: Histórico visível para todos
+        post_history_public_help: Desligado, só o autor do post e quem pode editá-lo abrem o histórico; os demais veem o “Editado” do Flarum.
       section_icons: Ícones
       lucide_icons_label: Ícones Lucide
       lucide_icons_help: Os ícones de interface (busca, sino, responder, curtir, menus…) com o traço fino do Lucide. Desligado, voltam os ícones sólidos do Font Awesome. Os que não têm substituto no Lucide (marcas e parte dos escolhidos para tags e grupos) continuam no Font Awesome.
@@ -3015,6 +3017,7 @@ ramon-canela:
         long_description: Este emblema é concedido ao alcançar o nível de confiança 4. Você é um(a) líder desta comunidade, conforme selecionado(a) pela equipe, e dá um exemplo positivo para o restante dos integrantes com suas ações e palavras.
     badges_admin:
       name_taken: Já existe um emblema com esse nome.
+      first_backfill_cli: 'A primeira carga de emblemas roda só pela linha de comando: rode php flarum canela:badges uma vez e depois use este botão.'
       badge_not_found: Esse emblema não existe.
       badge_not_grantable: Esse emblema não aceita concessão manual (os do sistema são concedidos pela regra automática).
       user_not_found: Nenhum usuário com esse nome de usuário.

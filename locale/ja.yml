@@ -743,6 +743,8 @@ ramon-canela:
         post_history_enabled_label: 編集履歴を保存・表示
         post_history_enabled_help: 編集のたびに以前の文章を保持します。投稿の「編集済み」が改訂回数付きの鉛筆アイコンになり、バージョン間の比較（インラインまたは横並び）を開きます。
         history_notice: 記録されるのは機能が有効な間に行われた編集のみです。オフにすると新しい履歴は保存されず、フォーラムから履歴が消えますが、保存済みのものはデータベースに残ります。非表示の投稿のバージョンの文章は、その投稿を編集できるユーザーにのみ表示されます。
+        post_history_public_label: 編集履歴を全員に表示
+        post_history_public_help: オフにすると、履歴を開けるのは投稿者と編集権限を持つ人だけになり、それ以外の人には Flarum の「編集済み」が表示されます。
       section_icons: アイコン
       lucide_icons_label: Lucide アイコン
       lucide_icons_help: インターフェースのアイコン（検索、ベル、返信、いいね、メニュー…）を Lucide の細い線で描画します。オフにすると、塗りつぶしの Font Awesome アイコンに戻ります。Lucide で置き換えないアイコン（ブランドや、タグとグループ用に選ばれた一部のアイコン）は Font Awesome のままです。
@@ -3015,6 +3017,7 @@ ramon-canela:
         long_description: このバッジは、信頼レベル 4 に達すると付与されます。あなたはスタッフに選ばれたこのコミュニティのリーダーであり、ここでの言動を通じてコミュニティの他のメンバーに良い手本を示しています。
     badges_admin:
       name_taken: その名前のバッジはすでに存在します。
+      first_backfill_cli: '最初のバッジの読み込みはコマンドラインからのみ実行できます。php flarum canela:badges を一度実行してから、このボタンを使ってください。'
       badge_not_found: そのバッジは存在しません。
       badge_not_grantable: そのバッジは手動で付与できません（システムバッジは自動ルールによって付与されます）。
       user_not_found: そのユーザー名のユーザーはいません。

@@ -36,7 +36,7 @@ final class ReactionFields
         return [
             Schema\Arr::make('canelaReactions')
                 ->visible(fn (): bool => $this->reactions->enabled())
-                ->get(fn (DialogMessage $message, Context $context): array => $this->reactions->summary((int) $message->id, $context->getActor())),
+                ->get(fn (DialogMessage $message, Context $context): \Closure => $this->reactions->deferSummary((int) $message->id, $context->getActor())),
         ];
     }
 }

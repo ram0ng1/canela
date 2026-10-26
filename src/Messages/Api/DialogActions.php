@@ -29,6 +29,7 @@ use Laminas\Diactoros\Response\EmptyResponse;
 use Ramon\Canela\Messages\DialogEvents;
 use Ramon\Canela\Messages\MessagesSchema;
 use Ramon\Canela\Messages\StaffGroups;
+use Ramon\Canela\System\SystemDialogs;
 
 /**
  * Os botões do tópico de mensagem que o flarum/messages não tem:
@@ -59,6 +60,12 @@ final class DialogActions
 
                 // Quem participa (e pode escrever) ou a equipe (`ensure_can_invite_to!`).
                 if (! $actor->can('sendMessage', $dialog) && ! StaffGroups::isStaff($actor)) {
+                    throw new PermissionDeniedException();
+                }
+
+                // A conversa do usuário do sistema não recebe ninguém: lá não
+                // se responde, e um convite a abriria como uma conversa comum.
+                if (SystemDialogs::involvesSystem($dialog, $actor)) {
                     throw new PermissionDeniedException();
                 }
 
