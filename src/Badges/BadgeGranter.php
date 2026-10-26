@@ -177,7 +177,13 @@ final class BadgeGranter
 
         $now = Carbon::now();
         $threshold = $now->copy()->subHours(self::NOTIFY_WINDOW_HOURS);
-        $users = User::query()->whereIn('id', array_unique(array_column($rows, 'user_id')))->get()->keyBy('id');
+        // Em lotes: um whereIn único passaria do limite de 65.535 parâmetros
+        // do MySQL na primeira concessão em massa de um fórum grande.
+        $users = new Collection();
+
+        foreach (array_chunk(array_values(array_unique(array_column($rows, 'user_id'))), 1000) as $chunk) {
+            $users = $users->union(User::query()->whereIn('id', $chunk)->get()->keyBy('id'));
+        }
         $granted = 0;
 
         foreach ($rows as $row) {
@@ -241,40 +247,49 @@ final class BadgeGranter
      */
     private function withoutExisting(Badge $badge, array $rows): array
     {
-        $userIds = array_values(array_unique(array_column($rows, 'user_id')));
+        // Agrupadas por pessoa antes: percorrer todas as linhas a cada lote de
+        // ids seria quadrático num fórum com centenas de milhares de pessoas.
+        $rowsByUser = [];
+
+        foreach ($rows as $row) {
+            $rowsByUser[$row['user_id']][] = $row;
+        }
+
         $kept = [];
 
-        foreach (array_chunk($userIds, 1000) as $chunk) {
-            $existing = UserBadge::query()
+        foreach (array_chunk(array_keys($rowsByUser), 1000) as $chunk) {
+            $existing = [];
+
+            foreach (UserBadge::query()
                 ->where('badge_id', $badge->id)
                 ->whereIn('user_id', $chunk)
-                ->get(['user_id', 'post_id']);
+                ->get(['user_id', 'post_id']) as $grant) {
+                $existing[(int) $grant->user_id][(string) ($grant->post_id ?? '')] = true;
+            }
 
-            $byUser = $existing->groupBy('user_id');
+            foreach ($chunk as $userId) {
+                $userGrants = $existing[$userId] ?? null;
 
-            foreach ($rows as $row) {
-                if (! in_array($row['user_id'], $chunk, true)) {
-                    continue;
-                }
+                foreach ($rowsByUser[$userId] as $row) {
+                    $postKey = (string) ($row['post_id'] ?? '');
+                    $key = $userId.':'.$postKey;
 
-                $userGrants = $byUser->get($row['user_id']);
-                $key = $row['user_id'].':'.($row['post_id'] ?? '');
-
-                if (isset($kept[$key])) {
-                    continue;
-                }
-
-                if (! $badge->multiple_grant) {
-                    if ($userGrants || isset($kept[$row['user_id'].':*'])) {
+                    if (isset($kept[$key])) {
                         continue;
                     }
 
-                    $kept[$row['user_id'].':*'] = true;
-                } elseif ($row['post_id'] !== null && $userGrants?->contains('post_id', $row['post_id'])) {
-                    continue;
-                }
+                    if (! $badge->multiple_grant) {
+                        if ($userGrants || isset($kept[$userId.':*'])) {
+                            continue;
+                        }
 
-                $kept[$key] = $row;
+                        $kept[$userId.':*'] = true;
+                    } elseif ($row['post_id'] !== null && isset($userGrants[$postKey])) {
+                        continue;
+                    }
+
+                    $kept[$key] = $row;
+                }
             }
         }
 

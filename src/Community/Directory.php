@@ -16,6 +16,7 @@ namespace Ramon\Canela\Community;
 use Carbon\Carbon;
 use Flarum\Extension\ExtensionManager;
 use Flarum\User\User;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -46,6 +47,13 @@ final class Directory
         'daily' => 1,
     ];
 
+    /**
+     * Segundos que uma página do diretório fica guardada. As contas leem as
+     * tabelas inteiras de postagens, curtidas e visitas: sem o cache, cada
+     * página aberta (ou varrida por um robô) refaz tudo.
+     */
+    public const CACHE_TTL = 120;
+
     /** A tabela de visitas do recurso "stats" do tema, quando ele existe. */
     private const VISITS_TABLE = 'canela_user_visits';
 
@@ -55,6 +63,7 @@ final class Directory
     public function __construct(
         private readonly ConnectionInterface $db,
         private readonly ExtensionManager $extensions,
+        private readonly Cache $cache,
     ) {
     }
 
@@ -69,7 +78,7 @@ final class Directory
      *
      * @return list<string>
      */
-    public function columns(User $actor): array
+    public function columns(User $actor, string $period = 'all'): array
     {
         $columns = [];
 
@@ -79,7 +88,7 @@ final class Directory
 
         array_push($columns, 'topicCount', 'postCount');
 
-        if ($visits = $this->visitsSchema()) {
+        if (($visits = $this->visitsSchema()) && $this->canSeeVisits($actor, $period)) {
             $columns[] = 'daysVisited';
 
             if ($visits['read'] !== null) {
@@ -101,6 +110,18 @@ final class Directory
         return $actor->hasPermission('user.viewLastSeenAt');
     }
 
+    /**
+     * Dias visitados de hoje ou da semana dizem quem passou por aqui — o mesmo
+     * que "último acesso", que quem esconde que está online não mostra. Nos
+     * períodos curtos, as colunas de visita ficam com a mesma permissão.
+     */
+    public function canSeeVisits(User $actor, string $period): bool
+    {
+        $days = self::PERIODS[$period] ?? null;
+
+        return $days === null || $days > 7 || $this->canSortByLastSeen($actor);
+    }
+
     public function defaultOrder(): string
     {
         return $this->hasLikes() ? 'likesReceived' : 'postCount';
@@ -110,6 +131,53 @@ final class Directory
      * @return array{users: list<User>, total: int, hasMore: bool}
      */
     public function query(User $actor, string $period, string $order, bool $ascending, string $search, int $page, ?int $groupId): array
+    {
+        // Guarda só os ids e os números; os usuários são lidos de novo, para o
+        // resto da resposta ser do ator. A chave separa cada pessoa (outra
+        // extensão pode esconder usuários de um ator só) e junta os visitantes,
+        // que são quem mais repete as mesmas páginas.
+        $key = 'canela.directory.'.md5((string) json_encode([
+            $period, $order, $ascending, $search, $page, $groupId,
+            $actor->isGuest() ? 'guest' : (int) $actor->id,
+            $this->canSeeVisits($actor, $period),
+        ]));
+
+        /** @var array{ids: list<int>, stats: array<int, array<string, int>>, total: int, hasMore: bool} $cached */
+        $cached = $this->cache->remember($key, self::CACHE_TTL, function () use ($actor, $period, $order, $ascending, $search, $page, $groupId): array {
+            $result = $this->compute($actor, $period, $order, $ascending, $search, $page, $groupId);
+            $stats = [];
+
+            foreach ($result['users'] as $user) {
+                $stats[(int) $user->id] = $this->stats($user);
+            }
+
+            return ['ids' => array_keys($stats), 'stats' => $stats, 'total' => $result['total'], 'hasMore' => $result['hasMore']];
+        });
+
+        $users = User::query()->with('groups')->whereIn('id', $cached['ids'])->get()->keyBy('id');
+        $rows = [];
+
+        foreach ($cached['ids'] as $id) {
+            $user = $users->get($id);
+
+            if (! $user instanceof User) {
+                continue;
+            }
+
+            foreach ($cached['stats'][$id] ?? [] as $column => $value) {
+                $user->setAttribute(self::alias($column), $value);
+            }
+
+            $rows[] = $user;
+        }
+
+        return ['users' => $rows, 'total' => $cached['total'], 'hasMore' => $cached['hasMore']];
+    }
+
+    /**
+     * @return array{users: list<User>, total: int, hasMore: bool}
+     */
+    private function compute(User $actor, string $period, string $order, bool $ascending, string $search, int $page, ?int $groupId): array
     {
         $since = self::PERIODS[$period] === null ? null : Carbon::now()->subDays(self::PERIODS[$period]);
 
@@ -143,7 +211,7 @@ final class Directory
             $this->joinAggregate($users, 'likesGiven', $this->likesGiven($since));
         }
 
-        if ($visits = $this->visitsSchema()) {
+        if (($visits = $this->visitsSchema()) && $this->canSeeVisits($actor, $period)) {
             $this->joinAggregate($users, 'daysVisited', $this->visits($since, $visits['date'], null));
 
             if ($visits['read'] !== null) {

@@ -32,6 +32,13 @@ final class UserResourceFields
         'canelaLikesReceived' => 'likesReceived',
     ];
 
+    /**
+     * Os números que mudam a cada visita: comparar dois carregamentos do
+     * perfil diz se a pessoa passou por aqui. Ficam com a mesma regra do
+     * "último acesso" do core para quem esconde que está online.
+     */
+    private const PRESENCE = ['canelaDaysVisited', 'canelaTimeRead', 'canelaRecentTimeRead', 'canelaPostsRead', 'canelaTopicsViewed'];
+
     public function __construct(
         private readonly StatsSettings $settings,
         private readonly UserActivity $activity
@@ -44,11 +51,23 @@ final class UserResourceFields
 
         $fields = [];
 
+        $presence = static function (User $user, Context $context): bool {
+            $actor = $context->getActor();
+
+            return $user->getPreference('discloseOnline')
+                || $actor->id === $user->id
+                || $actor->can('viewLastSeenAt', $user);
+        };
+
         foreach (self::ATTRIBUTES as $attribute => $stat) {
             $fields[] = Schema\Integer::make($attribute)
                 ->nullable()
                 ->visible($visible)
-                ->get(fn (User $user) => $this->activity->get($user, $stat));
+                // null (e não ausente): o perfil esconde o número, mas ainda
+                // mostra os outros.
+                ->get(fn (User $user, Context $context) => in_array($attribute, self::PRESENCE, true) && ! $presence($user, $context)
+                    ? null
+                    : $this->activity->get($user, $stat));
         }
 
         return $fields;
