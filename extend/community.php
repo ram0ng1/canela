@@ -23,10 +23,10 @@ use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Group\Event\Deleted as GroupDeleted;
 use Flarum\Settings\Event\Saving;
+use Flarum\User\Event\Activated as UserActivated;
 use Flarum\User\Event\Deleted as UserDeleted;
 use Flarum\User\Event\GroupsChanged;
 use Flarum\User\Event\Registered as UserRegistered;
-use Illuminate\Contracts\Cache\Repository as Cache;
 use Ramon\Canela\Community\AboutPages;
 use Ramon\Canela\Community\Api\ShowAboutPageController;
 use Ramon\Canela\Community\Content\AboutPageContent;
@@ -61,11 +61,6 @@ return [
         // Desligadas por padrão, e ligadas só aparecem com conteúdo (o texto ou
         // uma página do fof/pages): sem isso, nada de aba, link ou /guidelines.
         ->default(Community::GUIDELINES_ENABLED, false)
-        ->serializeToForum(
-            'canelaGuidelinesEnabled',
-            Community::GUIDELINES_ENABLED,
-            static fn (mixed $enabled): bool => (bool) $enabled && resolve(GuidelinesPage::class)->hasContent()
-        )
         ->default(Community::GUIDELINES_TEXT, '')
         ->default(Community::ABOUT_PAGES, '[]')
         ->default(Community::TOS_URL, '')
@@ -112,6 +107,11 @@ return [
         ->fields(fn () => [
             Schema\Boolean::make('canelaCanViewDirectory')
                 ->get(fn (object $model, Context $context) => resolve(Community::class)->canListUsers($context->getActor())),
+            // As Diretrizes ligadas e com conteúdo para este ator: a página do
+            // fof/pages oculta ou restrita para ele não vira um link para 404.
+            Schema\Boolean::make('canelaGuidelinesEnabled')
+                ->get(fn (object $model, Context $context) => resolve(Community::class)->enabled(Community::GUIDELINES_ENABLED)
+                    && resolve(GuidelinesPage::class)->hasContent($context->getActor())),
             // As abas de Termos/Privacidade (e outras políticas) com endereço.
             Schema\Arr::make('canelaLegalPages')
                 ->get(fn () => resolve(LegalPages::class)->all()),
@@ -129,12 +129,17 @@ return [
             }
         })
         // A contagem de membros dos grupos (GroupFields) fica no cache: sai
-        // quando alguém entra ou sai de um grupo, ou quando uma conta ou um
+        // quando alguém entra ou sai de um grupo, quando uma conta é criada,
+        // confirmada (só contas confirmadas contam) ou apagada, ou quando um
         // grupo é apagado.
-        ->listen(GroupsChanged::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY))
-        ->listen(UserRegistered::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY))
-        ->listen(UserDeleted::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY))
-        ->listen(GroupDeleted::class, static fn () => resolve(Cache::class)->forget(GroupFields::CACHE_KEY)),
+        // (GroupFields::forgetCounts não devolve nada: um ouvinte que devolve
+        // false — o `forget` de uma chave que não existe — interrompe o evento
+        // para os seguintes, como as boas-vindas no Registered/Activated.)
+        ->listen(GroupsChanged::class, [GroupFields::class, 'forgetCounts'])
+        ->listen(UserRegistered::class, [GroupFields::class, 'forgetCounts'])
+        ->listen(UserActivated::class, [GroupFields::class, 'forgetCounts'])
+        ->listen(UserDeleted::class, [GroupFields::class, 'forgetCounts'])
+        ->listen(GroupDeleted::class, [GroupFields::class, 'forgetCounts']),
 
     (new Extend\ApiResource(GroupResource::class))
         ->fields(GroupFields::class),

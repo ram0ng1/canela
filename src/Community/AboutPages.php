@@ -42,6 +42,16 @@ final class AboutPages
     }
 
     /**
+     * As abas extras são parte da área Sobre: com o Sobre desligado no admin
+     * elas somem junto (lista vazia no fórum, 404 na API e no /about/{id}),
+     * como o próprio /about.
+     */
+    public function enabled(): bool
+    {
+        return (bool) $this->settings->get(Community::ABOUT_ENABLED) && $this->available();
+    }
+
+    /**
      * A lista do admin, já limpa (ids inteiros e únicos, no máximo MAX).
      *
      * @return list<array{id: int, label: string, icon: string}>
@@ -62,7 +72,7 @@ final class AboutPages
     {
         $entries = $this->entries();
 
-        if ($entries === [] || ! $this->available()) {
+        if ($entries === [] || ! $this->enabled()) {
             return [];
         }
 
@@ -95,7 +105,7 @@ final class AboutPages
     /** A página, se estiver na lista do admin e o ator puder vê-la. */
     public function find(User $actor, int $id): ?Page
     {
-        if ($id <= 0 || ! $this->available() || ! in_array($id, array_column($this->entries(), 'id'), true)) {
+        if ($id <= 0 || ! $this->enabled() || ! in_array($id, array_column($this->entries(), 'id'), true)) {
             return null;
         }
 

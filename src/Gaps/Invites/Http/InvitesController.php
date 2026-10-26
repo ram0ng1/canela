@@ -34,8 +34,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - POST gera um link novo ({maxRedemptions, expiresDays});
  * - DELETE /api/canela-invites/{id} apaga um convite dele.
  *
- * Um controlador só para os três verbos: as regras (recurso ligado,
- * permissão, dono do convite) são as mesmas.
+ * Um controlador só para os três verbos: as regras (recurso ligado, conta,
+ * dono do convite) são as mesmas; a permissão de convidar, só para gerar.
  */
 final class InvitesController implements RequestHandlerInterface
 {
@@ -58,7 +58,11 @@ final class InvitesController implements RequestHandlerInterface
         $actor = RequestUtil::getActor($request);
         $actor->assertRegistered();
 
-        if (! $this->invites->canCreate($actor)) {
+        // A permissão vale para gerar. Listar e apagar os próprios convites,
+        // não: quem perdeu a permissão (mudou de grupo, foi suspenso) ainda
+        // precisa ver e revogar os links que espalhou — e eles já não valem
+        // (InviteService::findUsable confere o dono a cada uso).
+        if ($request->getMethod() === 'POST' && ! $this->invites->canCreate($actor)) {
             throw new PermissionDeniedException();
         }
 
@@ -76,6 +80,8 @@ final class InvitesController implements RequestHandlerInterface
         return new JsonResponse([
             'invites' => array_map(fn (Invite $invite) => $this->invites->present($invite), $this->invites->listFor($actor)),
             'signUpOpen' => $this->invites->signUpOpen(),
+            // Para o fórum esconder o botão "Gerar" de quem só pode revogar.
+            'canCreate' => $this->invites->canCreate($actor),
         ]);
     }
 

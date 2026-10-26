@@ -77,13 +77,24 @@ final class SendAutoMessages
 
     public function subscribe(Dispatcher $events): void
     {
-        $events->listen(Registered::class, fn (Registered $event) => $event->user->is_email_confirmed && $this->activated($event->user));
-        $events->listen(Activated::class, fn (Activated $event) => $this->activated($event->user));
+        // Ouvintes sem retorno: no dispatcher do Illuminate, um ouvinte que
+        // devolve `false` para a propagação, e os ouvintes seguintes do
+        // mesmo evento (de outras extensões) não rodariam.
+        $events->listen(Registered::class, function (Registered $event): void {
+            if ($event->user->is_email_confirmed) {
+                $this->activated($event->user);
+            }
+        });
+        $events->listen(Activated::class, function (Activated $event): void {
+            $this->activated($event->user);
+        });
         $events->listen(GroupsChanged::class, $this->groupsChanged(...));
         $events->listen(TrustLevelChanged::class, $this->trustLevelChanged(...));
-        $events->listen(BadgeAwarded::class, fn (BadgeAwarded $event) => $this->custom($event->user, 'badge', (int) $event->badge->id, [
-            'badge_name' => (string) ($event->badge->translated($this->translator, 'name') ?? $event->badge->name),
-        ]));
+        $events->listen(BadgeAwarded::class, function (BadgeAwarded $event): void {
+            $this->custom($event->user, 'badge', (int) $event->badge->id, [
+                'badge_name' => (string) ($event->badge->translated($this->translator, 'name') ?? $event->badge->name),
+            ]);
+        });
         $events->listen(Posted::class, $this->posted(...));
     }
 

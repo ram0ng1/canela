@@ -7,6 +7,7 @@ namespace Ramon\Canela\Tests\unit;
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
+use Flarum\User\Access\Gate;
 use Flarum\User\User;
 use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase;
@@ -17,8 +18,13 @@ use Ramon\Canela\Tests\Support\TestDatabase;
 /** "Eu também": liga e desliga por pessoa, e quem não pode não alterna. */
 final class MeTooTest extends TestCase
 {
-    private function meToo(array $settings = [MeToo::ENABLED => '1']): array
+    private function meToo(array $settings = [MeToo::ENABLED => '1'], bool $canReply = true): array
     {
+        // `canToggle` pede a permissão de responder ao Gate do core.
+        $gate = $this->createStub(Gate::class);
+        $gate->method('allows')->willReturn($canReply);
+        User::setGate($gate);
+
         $db = TestDatabase::connection();
         $db->getSchemaBuilder()->create(MeToo::TABLE, static function (Blueprint $table): void {
             $table->unsignedInteger('discussion_id');
@@ -80,6 +86,25 @@ final class MeTooTest extends TestCase
         self::assertTrue($meToo->canToggle($this->user(5), $discussion));
         // Tópico de conta apagada: qualquer um pode.
         self::assertTrue($meToo->canToggle($this->user(5), $this->discussion(8, authorId: null)));
+    }
+
+    public function test_sem_permissao_de_responder_nao_alterna(): void
+    {
+        [$meToo] = $this->meToo(canReply: false);
+
+        self::assertFalse($meToo->canToggle($this->user(5), $this->discussion(7)));
+    }
+
+    public function test_so_desmarcar_nao_marca(): void
+    {
+        [$meToo] = $this->meToo();
+        $discussion = $this->discussion(7);
+
+        // Sem voto, "só desmarcar" não cria um.
+        self::assertSame(['count' => 0, 'mine' => false, 'subscription' => null], $meToo->toggle($discussion, $this->user(2), removeOnly: true));
+
+        $meToo->toggle($discussion, $this->user(2));
+        self::assertSame(['count' => 0, 'mine' => false, 'subscription' => null], $meToo->toggle($discussion, $this->user(2), removeOnly: true));
     }
 
     public function test_desligado_ou_topico_privado_nao_mostra(): void

@@ -187,4 +187,57 @@ class GroupsTest extends TestCase
         $this->assertSame(1, $counts['4']);
         $this->assertSame(1, $counts['1']);
     }
+
+    /**
+     * A contagem do cartão bate com a lista de membros: contas não
+     * confirmadas e o usuário do sistema ficam de fora das duas.
+     */
+    #[Test]
+    public function contagem_de_membros_segue_a_lista(): void
+    {
+        $this->prepareDatabase([
+            User::class => [
+                ['id' => 7, 'username' => 'pendente', 'email' => 'pendente@machine.local', 'is_email_confirmed' => 0],
+                ['id' => 8, 'username' => 'system', 'email' => 'system-x@system.invalid', 'is_email_confirmed' => 1],
+            ],
+            'group_user' => [
+                ['user_id' => 7, 'group_id' => 6],
+                ['user_id' => 8, 'group_id' => 6],
+            ],
+        ]);
+        $this->setting('canela.system_user_id', '8');
+
+        $members = $this->body($this->members(6, 1));
+        $groups = $this->body($this->send($this->request('GET', '/api/groups', ['authenticatedAs' => 1])));
+        $count = null;
+
+        foreach ($groups['data'] as $group) {
+            if ($group['id'] === '6') {
+                $count = $group['attributes']['canelaMemberCount'];
+            }
+        }
+
+        $this->assertSame(2, $members['meta']['total']);
+        $this->assertSame(2, $count);
+    }
+
+    /**
+     * A aba "Atividade" revela quem está no grupo: pede a mesma permissão da
+     * lista de membros. Visitante sem a liberação do diretório recebe 403
+     * (antes bastava ver o fórum); com a liberação, vê.
+     */
+    #[Test]
+    public function atividade_exige_poder_listar_usuarios(): void
+    {
+        $this->assertEquals(403, $this->activity(6, null)->getStatusCode());
+        $this->assertEquals(403, $this->members(6, null)->getStatusCode());
+    }
+
+    #[Test]
+    public function atividade_abre_para_visitante_com_o_diretorio_liberado(): void
+    {
+        $this->setting('canela.directory_guests', true);
+
+        $this->assertSame(['1'], $this->body($this->activity(6, null))['data']);
+    }
 }

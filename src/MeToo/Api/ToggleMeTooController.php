@@ -37,7 +37,8 @@ use Ramon\Canela\Support\Log;
  * mudar junto).
  *
  * Visitante recebe 401 (o fórum abre o login antes de chegar aqui); tópico que
- * a pessoa não vê, 404; sem permissão, 403; mais de 5 trocas na hora, 429.
+ * a pessoa não vê, 404; sem permissão, 403 — menos para tirar o próprio voto,
+ * que vale sempre; mais de 5 trocas na hora, 429.
  */
 final class ToggleMeTooController implements RequestHandlerInterface
 {
@@ -67,7 +68,11 @@ final class ToggleMeTooController implements RequestHandlerInterface
             throw new ModelNotFoundException();
         }
 
-        if (! $this->meToo->canToggle($actor, $discussion)) {
+        // Quem não pode mais marcar (tópico trancado, resolvido, sem
+        // permissão) ainda tira o próprio voto: o voto é dele.
+        $canToggle = $this->meToo->canToggle($actor, $discussion);
+
+        if (! $canToggle && ! $this->meToo->stateFor($discussion, $actor)['mine']) {
             throw new PermissionDeniedException();
         }
 
@@ -75,7 +80,7 @@ final class ToggleMeTooController implements RequestHandlerInterface
             throw new FloodingException();
         }
 
-        $result = $this->meToo->toggle($discussion, $actor);
+        $result = $this->meToo->toggle($discussion, $actor, removeOnly: ! $canToggle);
 
         // Quem ouve (a entrega em tempo real, com o flarum/realtime) não pode
         // desfazer o clique: a marcação já está gravada e a resposta sai igual.
@@ -85,7 +90,9 @@ final class ToggleMeTooController implements RequestHandlerInterface
             Log::warning('me too: aviso da troca falhou: '.$error->getMessage());
         }
 
-        return new JsonResponse($result);
+        // `can` junto: depois de tirar o voto num tópico trancado, o botão
+        // apaga (não dá para marcar de novo).
+        return new JsonResponse([...$result, 'can' => $canToggle]);
     }
 
     /** Janela fixa de uma hora: a chave muda a cada hora e vence sozinha. */

@@ -16,7 +16,9 @@ namespace Ramon\Canela\Community\Content;
 use Closure;
 use Flarum\Frontend\Document;
 use Flarum\Http\Exception\RouteNotFoundException;
+use Flarum\Http\RequestUtil;
 use Flarum\Locale\TranslatorInterface;
+use Flarum\User\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Community\Community;
 use Ramon\Canela\Community\GuidelinesPage;
@@ -38,16 +40,17 @@ final class CommunityPage
     public static function for(string $settingKey, string $titleKey): Closure
     {
         return static function (Document $document, ServerRequestInterface $request) use ($settingKey, $titleKey): void {
-            resolve(self::class)->render($document, $settingKey, $titleKey);
+            resolve(self::class)->render($document, $settingKey, $titleKey, RequestUtil::getActor($request));
         };
     }
 
-    public function render(Document $document, string $settingKey, string $titleKey): void
+    public function render(Document $document, string $settingKey, string $titleKey, User $actor): void
     {
         $this->community->assertEnabled($settingKey);
 
-        // As diretrizes só existem com conteúdo definido no admin.
-        if ($settingKey === Community::GUIDELINES_ENABLED && ! resolve(GuidelinesPage::class)->hasContent()) {
+        // As diretrizes só existem com conteúdo definido no admin — e, sendo
+        // uma página do fof/pages, visível para quem pede.
+        if ($settingKey === Community::GUIDELINES_ENABLED && ! resolve(GuidelinesPage::class)->hasContent($actor)) {
             throw new RouteNotFoundException();
         }
 

@@ -60,6 +60,7 @@ final class BadgeResource extends AbstractDatabaseResource
         private readonly BadgeQueries $queries,
         private readonly TranslatorInterface $translator,
         private readonly ConnectionInterface $db,
+        private readonly Queue $queue,
     ) {
     }
 
@@ -150,9 +151,7 @@ final class BadgeResource extends AbstractDatabaseResource
                         throw new ValidationException(['badges' => $this->translator->trans('ramon-canela.api.badges_admin.first_backfill_cli')]);
                     }
 
-                    // Resolvida aqui, e não no construtor: o recurso é montado no
-                    // boot (rotas da API), e a fila só interessa a este botão.
-                    resolve(Queue::class)->push(new RecalculateBadgesJob());
+                    $this->queue->push(new RecalculateBadgesJob());
                 })
                 ->response(fn () => new EmptyResponse(202)),
             // "Restaurar emblemas do sistema": tira a marca dos removidos e
@@ -184,10 +183,11 @@ final class BadgeResource extends AbstractDatabaseResource
                 ->get(fn (Badge $badge) => $badge->translated($this->translator, 'name'))
                 ->writable($isAdmin)
                 ->requiredOnCreate()
-                // Pelo menos um caractere que não seja espaço: o `set()` apara,
-                // e "   " passaria pelo minLength e viraria um nome vazio.
-                ->regex('/\S/u')
-                ->validationMessages(['name.regex' => $this->translator->trans('validation.required')])
+                // `filled` (regra implícita, que apara antes de conferir): "   "
+                // passava pelo minLength, o `set()` aparava e o nome ficava vazio.
+                // Um minLength/regex não serviria — o validador do Laravel pula as
+                // regras comuns quando o texto aparado é vazio.
+                ->rule('filled')
                 ->maxLength(100)
                 ->set(fn (Badge $badge, string $value) => $badge->name = trim($value)),
             Schema\Str::make('description')

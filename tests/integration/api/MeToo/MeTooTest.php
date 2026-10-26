@@ -113,11 +113,11 @@ class MeTooTest extends TestCase
         $on = $this->toggle(3);
 
         $this->assertEquals(200, $on->getStatusCode(), (string) $on->getBody());
-        $this->assertEquals(['count' => 2, 'mine' => true, 'subscription' => null], $this->body($on));
+        $this->assertEquals(['count' => 2, 'mine' => true, 'subscription' => null, 'can' => true], $this->body($on));
 
         $off = $this->toggle(3);
 
-        $this->assertEquals(['count' => 1, 'mine' => false, 'subscription' => null], $this->body($off));
+        $this->assertEquals(['count' => 1, 'mine' => false, 'subscription' => null, 'can' => true], $this->body($off));
         $this->assertFalse($this->database()->table('canela_me_too')->where('user_id', 3)->exists());
     }
 
@@ -247,5 +247,67 @@ class MeTooTest extends TestCase
         $this->assertEquals(404, $this->toggle(3)->getStatusCode());
         $this->assertEquals('ausente', $this->meToo(3));
         $this->assertFalse($this->body($this->send($this->request('GET', '/api')))['data']['attributes']['canelaMeTooEnabled']);
+    }
+
+    /**
+     * Quem silenciou o tópico ('ignore') continua silenciado ao marcar: só
+     * quem nunca escolheu passa a seguir.
+     */
+    #[Test]
+    public function marcar_nao_desfaz_o_silenciar(): void
+    {
+        $this->extension('flarum-subscriptions', 'ramon-canela');
+        $this->prepareDatabase([
+            'discussion_user' => [
+                ['discussion_id' => 1, 'user_id' => 3, 'subscription' => 'ignore'],
+            ],
+        ]);
+
+        $response = $this->toggle(3);
+
+        $this->assertEquals(200, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertEquals('ignore', $this->body($response)['subscription']);
+        $this->assertEquals('ignore', $this->database()->table('discussion_user')->where('user_id', 3)->where('discussion_id', 1)->value('subscription'));
+    }
+
+    /**
+     * Sem a permissão de responder no tópico (como as reações pedem a delas),
+     * não se marca: `can` falso e 403.
+     */
+    #[Test]
+    public function sem_permissao_de_responder_nao_marca(): void
+    {
+        $this->app();
+        $this->database()->table('group_permission')->where('permission', 'discussion.reply')->delete();
+
+        $this->assertFalse($this->meToo(3)['can']);
+        $this->assertEquals(403, $this->toggle(3)->getStatusCode());
+        $this->assertFalse($this->database()->table('canela_me_too')->where('user_id', 3)->exists());
+    }
+
+    /**
+     * O próprio voto sai mesmo quando marcar não vale mais (tópico trancado
+     * depois do voto); marcar de novo continua barrado.
+     */
+    #[Test]
+    public function trancado_ainda_tira_o_proprio_voto(): void
+    {
+        $this->extension('flarum-lock', 'ramon-canela');
+        $this->prepareDatabase([
+            Discussion::class => [
+                ['id' => 1, 'title' => 'Não funciona', 'user_id' => 2, 'first_post_id' => 1, 'comment_count' => 1, 'last_post_number' => 1, 'is_locked' => true],
+            ],
+            'canela_me_too' => [
+                ['discussion_id' => 1, 'user_id' => 3, 'created_at' => Carbon::now()],
+            ],
+        ]);
+
+        $off = $this->toggle(3);
+
+        $this->assertEquals(200, $off->getStatusCode(), (string) $off->getBody());
+        $this->assertEquals(['count' => 1, 'mine' => false, 'subscription' => null, 'can' => false], $this->body($off));
+        $this->assertFalse($this->database()->table('canela_me_too')->where('user_id', 3)->exists());
+
+        $this->assertEquals(403, $this->toggle(3)->getStatusCode());
     }
 }

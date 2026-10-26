@@ -42,6 +42,7 @@ use Ramon\Canela\Gaps\Invites\Http\InviteInfoController;
 use Ramon\Canela\Gaps\Invites\Http\InvitesController;
 use Ramon\Canela\Gaps\Invites\Http\RedeemInviteController;
 use Ramon\Canela\Gaps\Invites\UserResourceFields;
+use Ramon\Canela\Gaps\Listener\NotifyInviteAccepted;
 use Ramon\Canela\Gaps\Listener\NotifyPostEdited;
 use Ramon\Canela\Gaps\Listener\NotifyTopicLinked;
 use Ramon\Canela\Gaps\Notification\InviteAcceptedBlueprint;
@@ -80,7 +81,9 @@ $extenders = [
     (new Extend\Event())
         ->listen(Revised::class, NotifyPostEdited::class)
         ->listen(Posted::class, NotifyTopicLinked::class)
-        ->listen(Revised::class, NotifyTopicLinked::class),
+        ->listen(Revised::class, NotifyTopicLinked::class)
+        // O aviso do convite aceito espera a conta ser ativada.
+        ->subscribe(NotifyInviteAccepted::class),
 
     // Datas locais. O formatador é montado uma vez e guardado em cache; a
     // chave liga/desliga só vale depois de limpar o cache.

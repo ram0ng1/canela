@@ -30,8 +30,11 @@ use Illuminate\Database\ConnectionInterface;
  * - aparece em tópicos públicos (não em mensagens), não ocultos, nas tags
  *   escolhidas no admin, e some quando o tópico tem solução (fof/best-answer),
  *   a menos que o admin peça para manter;
- * - só marca quem está logado, não é o autor, e com o tópico aberto (não
- *   trancado).
+ * - só marca quem está logado, não é o autor, pode responder no tópico (a
+ *   permissão `reply`, como as reações pedem a delas) e com o tópico aberto
+ *   (não trancado);
+ * - desmarcar o próprio voto vale sempre que o tópico estiver visível, mesmo
+ *   que marcar não valha mais (tópico trancado, resolvido, fora das tags).
  */
 final class MeToo
 {
@@ -81,8 +84,9 @@ final class MeToo
 
     /**
      * O `can_create_shared_issue?`: além de visível, quem marca está logado,
-     * com o e-mail confirmado, sem suspensão, não é o autor e o tópico não está
-     * trancado. Ver o tópico já foi conferido por quem o carregou.
+     * com o e-mail confirmado, sem suspensão, não é o autor, pode responder no
+     * tópico e o tópico não está trancado. Ver o tópico já foi conferido por
+     * quem o carregou.
      */
     public function canToggle(User $actor, Discussion $discussion): bool
     {
@@ -97,6 +101,12 @@ final class MeToo
         }
 
         if ($discussion->getAttribute('is_locked')) {
+            return false;
+        }
+
+        // A mesma permissão de responder: quem não pode participar do tópico
+        // (grupo sem `discussion.reply`, tag restrita) também não diz "eu também".
+        if (! $actor->can('reply', $discussion)) {
             return false;
         }
 
@@ -125,20 +135,24 @@ final class MeToo
     /**
      * Marca ou desmarca. Apagar primeiro decide sozinho a direção, sem corrida:
      * se não havia linha, insere (o insertOrIgnore segura dois cliques ao
-     * mesmo tempo). Ao marcar, quem não segue o tópico passa a seguir: o
-     * `start_tracking_topic` do plugin, que só sobe o nível, nunca desce.
+     * mesmo tempo). Ao marcar, quem nunca escolheu como acompanhar o tópico
+     * passa a seguir: o `start_tracking_topic` do plugin, que só sobe o nível
+     * — e quem silenciou o tópico ('ignore') continua silenciado.
+     *
+     * Com `$removeOnly`, só desmarca (quem não pode mais marcar, mas tira o
+     * próprio voto): se não havia voto, nada muda.
      *
      * @return array{count: int, mine: bool, subscription: string|null}
      */
-    public function toggle(Discussion $discussion, User $actor): array
+    public function toggle(Discussion $discussion, User $actor, bool $removeOnly = false): array
     {
-        $mine = $this->db->transaction(function () use ($discussion, $actor): bool {
+        $mine = $this->db->transaction(function () use ($discussion, $actor, $removeOnly): bool {
             $deleted = $this->db->table(self::TABLE)
                 ->where('discussion_id', $discussion->id)
                 ->where('user_id', $actor->id)
                 ->delete();
 
-            if ($deleted > 0) {
+            if ($deleted > 0 || $removeOnly) {
                 return false;
             }
 
@@ -156,7 +170,9 @@ final class MeToo
         if ($this->extensions->isEnabled('flarum-subscriptions')) {
             $state = $discussion->stateFor($actor);
 
-            if ($mine && $this->flag(self::FOLLOW) && $state->getAttribute('subscription') !== 'follow') {
+            // Só quem não escolheu nada: 'ignore' é uma escolha (silenciar), e
+            // o "eu também" não a desfaz.
+            if ($mine && $this->flag(self::FOLLOW) && $state->getAttribute('subscription') === null) {
                 $state->setAttribute('subscription', 'follow');
                 $state->save();
             }

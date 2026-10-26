@@ -31,13 +31,11 @@ use Psr\Http\Message\ResponseInterface;
 class DialogFieldsTest extends TestCase
 {
     use RetrievesAuthorizedUsers;
-    use RerunsMessagesMigrations;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->rerunMessagesMigrations();
         $this->extension('flarum-messages', 'ramon-canela');
 
         // Duas horas atrás: o limitador do flarum/messages barra quem escreveu agora.
@@ -210,13 +208,14 @@ class DialogFieldsTest extends TestCase
     }
 
     /**
-     * Escrever a alguém da equipe leva a conversa para a caixa do grupo da
-     * equipe; o membro da equipe a vê "pelo grupo".
+     * Escrever à equipe (o grupo escolhido no seletor, `canelaToGroup`) leva
+     * a conversa para a caixa do grupo da equipe; o membro da equipe a vê
+     * "pelo grupo".
      */
     #[Test]
     public function mensagem_a_equipe_vai_para_a_caixa_do_grupo(): void
     {
-        $response = $this->message(2, ['content' => 'Ajuda, por favor', 'users' => [['id' => 1]]]);
+        $response = $this->message(2, ['content' => 'Ajuda, por favor', 'users' => [['id' => 1]], 'canelaToGroup' => true]);
 
         $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
         $dialogId = (int) $this->json($response)['data']['relationships']['dialog']['data']['id'];
@@ -227,6 +226,40 @@ class DialogFieldsTest extends TestCase
 
         $this->assertSame([$dialogId], $this->box(1, 'group'));
         $this->assertNotContains($dialogId, $this->box(1, 'inbox'));
+    }
+
+    /**
+     * Escrever a um moderador ou administrador escolhido como pessoa (sem
+     * `canelaToGroup`) é falar com ele: a conversa continua a dois, fora da
+     * caixa da equipe.
+     */
+    #[Test]
+    public function mensagem_a_alguem_da_equipe_continua_a_dois(): void
+    {
+        $response = $this->message(2, ['content' => 'Oi, admin', 'users' => [['id' => 1]]]);
+
+        $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
+        $dialogId = (int) $this->json($response)['data']['relationships']['dialog']['data']['id'];
+
+        $dialog = $this->database()->table('dialogs')->where('id', $dialogId)->first();
+        $this->assertSame('direct', $dialog->type);
+        $this->assertNull($dialog->canela_group_id);
+        $this->assertEqualsCanonicalizing([1, 2], $this->database()->table('dialog_user')->where('dialog_id', $dialogId)->pluck('user_id')->map(fn ($id) => (int) $id)->all());
+        $this->assertSame([], $this->box(1, 'group'));
+    }
+
+    /**
+     * `canelaToGroup` numa mensagem a quem não é da equipe não muda nada.
+     */
+    #[Test]
+    public function intencao_de_equipe_sem_ninguem_da_equipe_nao_converte(): void
+    {
+        $response = $this->message(2, ['content' => 'Oi, Bob', 'users' => [['id' => 4]], 'canelaToGroup' => true]);
+
+        $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
+        $dialogId = (int) $this->json($response)['data']['relationships']['dialog']['data']['id'];
+
+        $this->assertSame('direct', $this->database()->table('dialogs')->where('id', $dialogId)->value('type'));
     }
 
     /**

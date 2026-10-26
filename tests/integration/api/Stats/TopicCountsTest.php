@@ -203,6 +203,38 @@ class TopicCountsTest extends TestCase
     }
 
     /**
+     * O crédito é ler-somar-gravar no cache: com outro envio da mesma pessoa
+     * em andamento (a trava dela ocupada), este espera e, sem a trava, não
+     * credita nada — em vez de as duas abas ganharem o crédito inteiro. Livre
+     * a trava, o próximo envio credita normalmente.
+     */
+    #[Test]
+    public function tempo_de_leitura_e_creditado_um_envio_por_vez(): void
+    {
+        $this->app();
+        $store = $this->app()->getContainer()->make(\Illuminate\Contracts\Cache\Repository::class)->getStore();
+        $this->assertInstanceOf(\Illuminate\Contracts\Cache\LockProvider::class, $store);
+
+        $lock = $store->lock('canela.stats.read_lock.2', 30);
+        $this->assertTrue($lock->get());
+
+        $send = fn () => $this->send($this->request('POST', '/api/canela-read-time', [
+            'authenticatedAs' => 2,
+            'json' => ['discussionId' => 2, 'seconds' => 30, 'postIds' => [21]],
+        ]));
+
+        $this->assertEquals(204, $send()->getStatusCode());
+        $this->assertSame(0, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('time_read'));
+        $this->assertSame(0, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('posts_read'));
+
+        $lock->release();
+
+        $this->assertEquals(204, $send()->getStatusCode());
+        $this->assertSame(30, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('time_read'));
+        $this->assertSame(1, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('posts_read'));
+    }
+
+    /**
      * Tempo de leitura em tópico que a pessoa não vê responde 404, sem somar.
      */
     #[Test]

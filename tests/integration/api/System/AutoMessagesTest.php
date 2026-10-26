@@ -13,15 +13,16 @@ namespace Ramon\Canela\Tests\integration\api\System;
 
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
+use Flarum\Extend;
 use Flarum\Messages\Dialog;
 use Flarum\Messages\DialogMessage;
 use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use Flarum\User\Event\Registered;
 use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
-use Ramon\Canela\Tests\integration\api\Messages\RerunsMessagesMigrations;
 
 /**
  * As mensagens automáticas do usuário do sistema (boas-vindas, suspensão,
@@ -33,13 +34,11 @@ use Ramon\Canela\Tests\integration\api\Messages\RerunsMessagesMigrations;
 class AutoMessagesTest extends TestCase
 {
     use RetrievesAuthorizedUsers;
-    use RerunsMessagesMigrations;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->rerunMessagesMigrations();
         $this->extension('flarum-messages', 'flarum-suspend', 'ramon-canela');
 
         $this->setting('canela.system_user_id', '5');
@@ -127,6 +126,27 @@ class AutoMessagesTest extends TestCase
         $members = $this->database()->table('dialog_user')->where('dialog_id', $message->dialog_id)->pluck('user_id')->map(fn ($v) => (int) $v)->all();
         $this->assertEqualsCanonicalizing([5, $id], $members);
     }
+
+    /**
+     * Os ouvintes do tema não interrompem o `Registered`: um ouvinte que
+     * devolve `false` para a propagação no Illuminate, e os de outras
+     * extensões (o e-mail de ativação, por exemplo) deixariam de rodar.
+     */
+    #[Test]
+    public function cadastro_continua_para_os_outros_ouvintes(): void
+    {
+        self::$registered = 0;
+
+        $this->extend((new Extend\Event())->listen(Registered::class, static function (): void {
+            self::$registered++;
+        }));
+
+        $this->createUser();
+
+        $this->assertSame(1, self::$registered);
+    }
+
+    public static int $registered = 0;
 
     /**
      * Boas-vindas desligadas no admin: nada sai.

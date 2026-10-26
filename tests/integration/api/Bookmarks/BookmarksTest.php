@@ -17,6 +17,7 @@ use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
+use Illuminate\Database\Events\QueryExecuted;
 use PHPUnit\Framework\Attributes\Test;
 use Ramon\Canela\Bookmarks\Bookmark;
 
@@ -167,11 +168,14 @@ class BookmarksTest extends TestCase
     #[Test]
     public function marcar_ao_mesmo_tempo_nao_quebra_no_indice_unico(): void
     {
-        $this->app();
-
-        Bookmark::creating(function (Bookmark $bookmark): void {
-            if ($bookmark->post_id === 2 && ! Bookmark::query()->where('user_id', 2)->where('post_id', 2)->exists()) {
-                $this->database()->table('canela_bookmarks')->insert(['id' => 50, 'user_id' => 2, 'post_id' => 2, 'name' => 'Da outra aba', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+        // A "outra aba" grava logo depois da checagem do `creating()` (o
+        // SELECT do marcador existente) e antes do INSERT desta.
+        $db = $this->database();
+        $raced = false;
+        $db->listen(function (QueryExecuted $query) use ($db, &$raced): void {
+            if (! $raced && str_starts_with(strtolower($query->sql), 'select') && str_contains($query->sql, 'canela_bookmarks') && str_contains($query->sql, 'post_id')) {
+                $raced = true;
+                $db->table('canela_bookmarks')->insert(['id' => 50, 'user_id' => 2, 'post_id' => 2, 'name' => 'Da outra aba', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
             }
         });
 
@@ -187,6 +191,7 @@ class BookmarksTest extends TestCase
         $this->assertContains($response->getStatusCode(), [200, 201], (string) $response->getBody());
         $this->assertEquals('50', $this->body($response)['data']['id']);
         $this->assertEquals(1, Bookmark::query()->where('user_id', 2)->where('post_id', 2)->count());
+        $this->assertTrue($raced);
         $this->assertEquals('Desta aba', Bookmark::query()->find(50)->name);
     }
 

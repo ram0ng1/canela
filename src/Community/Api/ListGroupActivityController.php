@@ -53,7 +53,11 @@ final class ListGroupActivityController implements RequestHandlerInterface
         $this->community->assertEnabled(Community::GROUPS_ACTIVITY);
 
         $actor = RequestUtil::getActor($request);
-        $actor->assertCan('viewForum');
+
+        // A aba "Atividade" diz quem está no grupo (os autores das postagens):
+        // a mesma permissão da lista de membros (ListDirectoryController), e
+        // não só a de ver o fórum.
+        $this->community->assertCanListUsers($actor);
 
         $params = $request->getQueryParams();
         $groupId = (int) Arr::get($params, 'id');

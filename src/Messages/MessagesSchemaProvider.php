@@ -41,7 +41,6 @@ use Throwable;
  */
 final class MessagesSchemaProvider extends AbstractServiceProvider
 {
-    #[\Override]
     public function boot(Dispatcher $events, SettingsRepositoryInterface $settings, ConnectionInterface $db, LoggerInterface $log): void
     {
         $events->listen(Enabled::class, static function (Enabled $event) use ($settings, $db, $log): void {

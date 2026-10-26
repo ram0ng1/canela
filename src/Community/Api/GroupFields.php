@@ -21,6 +21,7 @@ use Flarum\Group\Group;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
 use Ramon\Canela\Community\Community;
+use Ramon\Canela\System\SystemUser;
 
 /**
  * `canelaMemberCount` nos grupos, para os cartões da página /g.
@@ -46,6 +47,7 @@ final class GroupFields
         private readonly ConnectionInterface $db,
         private readonly Community $community,
         private readonly Cache $cache,
+        private readonly SystemUser $systemUser,
     ) {
     }
 
@@ -60,15 +62,40 @@ final class GroupFields
         ];
     }
 
+    /**
+     * Ouvinte dos eventos que mudam a contagem (extend/community.php). Não
+     * devolve o resultado do `forget`: false pararia o evento para os outros
+     * ouvintes.
+     */
+    public function forgetCounts(): void
+    {
+        $this->counts = null;
+        $this->cache->forget(self::CACHE_KEY);
+    }
+
+    /**
+     * Conta como a lista de membros (Directory) lista: sem contas não
+     * confirmadas e sem o usuário do sistema — senão o cartão diz "3 membros"
+     * e a página do grupo mostra dois.
+     */
     private function count(Group $group): int
     {
-        $this->counts ??= $this->cache->remember(self::CACHE_KEY, self::TTL, fn (): array => $this->db->table('group_user')
-            ->select('group_id')
-            ->selectRaw('COUNT(*) as aggregate')
-            ->groupBy('group_id')
-            ->pluck('aggregate', 'group_id')
-            ->map(fn ($count) => (int) $count)
-            ->all());
+        $this->counts ??= $this->cache->remember(self::CACHE_KEY, self::TTL, function (): array {
+            $query = $this->db->table('group_user')
+                ->join('users', 'users.id', '=', 'group_user.user_id')
+                ->where('users.is_email_confirmed', true)
+                ->select('group_user.group_id')
+                ->selectRaw('COUNT(*) as aggregate')
+                ->groupBy('group_user.group_id');
+
+            if ($systemId = $this->systemUser->id()) {
+                $query->where('users.id', '!=', $systemId);
+            }
+
+            return $query->pluck('aggregate', 'group_id')
+                ->map(fn ($count) => (int) $count)
+                ->all();
+        });
 
         return $this->counts[$group->id] ?? 0;
     }
