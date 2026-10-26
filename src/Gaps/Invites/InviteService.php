@@ -95,6 +95,11 @@ final class InviteService
         ];
     }
 
+    public function hasInvites(User $actor): bool
+    {
+        return $this->enabled() && ! $actor->isGuest() && Invite::query()->where('user_id', $actor->id)->exists();
+    }
+
     /** @return list<Invite> */
     public function listFor(User $actor): array
     {

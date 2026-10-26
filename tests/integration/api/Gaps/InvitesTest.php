@@ -378,6 +378,23 @@ class InvitesTest extends TestCase
         $this->assertTrue($member['canelaCanInvite']);
         $this->assertFalse($guest['canelaCanInvite']);
         $this->assertTrue($guest['canelaInvitesEnabled']);
+        $this->assertFalse($member['canelaHasInvites']);
+        $this->assertFalse($guest['canelaHasInvites']);
+    }
+
+    /**
+     * Sem a permissão, quem tem convites ainda fica sabendo (para abrir a
+     * janela e revogá-los).
+     */
+    #[Test]
+    public function forum_informa_quem_tem_convites_para_revogar(): void
+    {
+        $this->database()->table('group_permission')->where('permission', 'canela.createInvite')->delete();
+
+        $owner = $this->json($this->send($this->request('GET', '/api', ['authenticatedAs' => 3])))['data']['attributes'];
+
+        $this->assertFalse($owner['canelaCanInvite']);
+        $this->assertTrue($owner['canelaHasInvites']);
     }
 
     /**
