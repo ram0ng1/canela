@@ -224,7 +224,8 @@ final class UnreadCounter
                 continue;
             }
 
-            $grouped = $this->db->query()
+            // newQuery() do próprio builder: a interface da conexão não tem query().
+            $grouped = $union->newQuery()
                 ->fromSub($union, 'u')
                 ->groupBy('u.gid')
                 ->selectRaw('count(*) as aggregate')
