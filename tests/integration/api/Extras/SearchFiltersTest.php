@@ -18,6 +18,7 @@ use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
+use Ramon\Canela\Tests\integration\CommitsSearchableContent;
 
 /**
  * Os filtros que o tema soma à busca de tópicos: mínimo de respostas, só no
@@ -32,6 +33,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class SearchFiltersTest extends TestCase
 {
+    use CommitsSearchableContent;
     use RetrievesAuthorizedUsers;
 
     protected function setUp(): void
@@ -107,6 +109,9 @@ class SearchFiltersTest extends TestCase
     #[Test]
     public function busca_so_no_titulo(): void
     {
+        // A busca de texto do core (FULLTEXT no MySQL) só acha o que foi commitado.
+        $this->commitSearchableContent();
+
         $everywhere = $this->ids(['filter' => ['q' => 'bolo']]);
         $this->assertContains(3, $everywhere);
 

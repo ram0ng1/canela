@@ -19,6 +19,7 @@ use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
+use Ramon\Canela\Tests\integration\CommitsSearchableContent;
 
 /**
  * Fixados no topo (com o flarum/sticky): na lista padrão e na "Recentes"
@@ -36,6 +37,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class PinStickiedToTopTest extends TestCase
 {
+    use CommitsSearchableContent;
     use RetrievesAuthorizedUsers;
 
     protected function setUp(): void
@@ -180,6 +182,9 @@ class PinStickiedToTopTest extends TestCase
     #[Test]
     public function busca_nao_fixa(): void
     {
+        // A busca de texto do core (FULLTEXT no MySQL) só acha o que foi commitado.
+        $this->commitSearchableContent();
+
         $ids = $this->ids(['filter' => ['q' => 'Tópico']]);
 
         $this->assertNotContains(5, $ids);
