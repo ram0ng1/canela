@@ -56,6 +56,7 @@ final class ConvertToGroupConversation
             return;
         }
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, User> $others */
         $others = $dialog->users()->where('users.id', '!=', $sender->id)->with('groups')->get();
 
         if (! $others->contains(fn (User $user) => StaffGroups::isStaff($user))) {

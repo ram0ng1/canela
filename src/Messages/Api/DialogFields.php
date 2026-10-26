@@ -93,7 +93,7 @@ final class DialogFields
             Schema\Boolean::make('canelaCanRemove')
                 ->visible(fn (Dialog $dialog, Context $context): bool => $context->endpoint instanceof Endpoint\Show)
                 ->get(fn (Dialog $dialog, Context $context): bool => StaffGroups::isStaff($context->getActor())
-                    || (int) ($dialog->firstMessage?->user_id ?? 0) === (int) $context->getActor()->id),
+                    || (int) ($dialog->firstMessage->user_id ?? 0) === (int) $context->getActor()->id),
 
             Schema\Str::make('canelaTitle')
                 ->nullable()

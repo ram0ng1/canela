@@ -28,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 final class MessageActionController extends AbstractChatController
 {
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         [$message, $channel] = $this->message($request, $actor);
         $action = (string) ($request->getQueryParams()['action'] ?? '');

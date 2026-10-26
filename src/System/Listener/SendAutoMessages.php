@@ -22,6 +22,8 @@ use Flarum\Post\Event\Hidden as PostHidden;
 use Flarum\Post\Event\Posted;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\Suspend\Event\Suspended;
+use Flarum\Suspend\Event\Unsuspended;
 use Flarum\User\Event\Activated;
 use Flarum\User\Event\GroupsChanged;
 use Flarum\User\Event\Registered;
@@ -62,14 +64,6 @@ final class SendAutoMessages
     /** O texto do post copiado na mensagem, até este tamanho. */
     private const POST_EXCERPT = 2000;
 
-    private const FLAG_MODEL = 'Flarum\\Flags\\Flag';
-
-    private const SUSPENDED = 'Flarum\\Suspend\\Event\\Suspended';
-
-    private const UNSUSPENDED = 'Flarum\\Suspend\\Event\\Unsuspended';
-
-    private const VERIFIED = 'Ramon\\Verified\\Event\\UserVerified';
-
     public function __construct(
         private readonly MessageSender $sender,
         private readonly SettingsRepositoryInterface $settings,
@@ -90,22 +84,46 @@ final class SendAutoMessages
             'badge_name' => (string) ($event->badge->translated($this->translator, 'name') ?? $event->badge->name),
         ]));
         $events->listen(Posted::class, $this->posted(...));
+    }
 
-        if (class_exists(self::FLAG_MODEL)) {
-            $events->listen(PostHidden::class, fn (PostHidden $event) => $this->flaggedPostRemoved($event->post, $event->actor));
-            // Apagado depois de oculto já recebeu a mensagem quando foi ocultado.
-            $events->listen(PostDeleting::class, fn (PostDeleting $event) => $event->post->hidden_at === null && $this->flaggedPostRemoved($event->post, $event->actor));
-        }
+    /*
+     * Os eventos das extensões opcionais (flarum/flags, flarum/suspend,
+     * ramon/verified) são ligados no extend/system.php, pelo Conditional:
+     * só existem com a extensão habilitada.
+     */
 
-        // A conta verificada pela equipe (ramon/verified).
-        if (class_exists(self::VERIFIED)) {
-            $events->listen(self::VERIFIED, fn ($event) => $event->user instanceof User && $this->custom($event->user, 'verified'));
-        }
+    /** O post denunciado foi ocultado pela moderação (flarum/flags). */
+    public function postHidden(PostHidden $event): void
+    {
+        $this->flaggedPostRemoved($event->post, $event->actor);
+    }
 
-        if (class_exists(self::SUSPENDED)) {
-            $events->listen(self::SUSPENDED, fn ($event) => $event->user instanceof User && $this->suspended($event->user));
-            $events->listen(self::UNSUSPENDED, fn ($event) => $event->user instanceof User && $this->sender->send($event->user, AutoMessages::UNSUSPENDED));
+    /** Apagado depois de oculto já recebeu a mensagem quando foi ocultado. */
+    public function postDeleting(PostDeleting $event): void
+    {
+        if ($event->post->hidden_at === null) {
+            $this->flaggedPostRemoved($event->post, $event->actor);
         }
+    }
+
+    /** A conta verificada pela equipe (ramon/verified). */
+    public function userVerified(object $event): void
+    {
+        if (isset($event->user) && $event->user instanceof User) {
+            $this->custom($event->user, 'verified');
+        }
+    }
+
+    /** A conta foi suspensa (flarum/suspend). */
+    public function userSuspended(Suspended $event): void
+    {
+        $this->suspended($event->user);
+    }
+
+    /** A suspensão acabou antes do prazo (flarum/suspend). */
+    public function userUnsuspended(Unsuspended $event): void
+    {
+        $this->sender->send($event->user, AutoMessages::UNSUSPENDED);
     }
 
     /** A conta ficou ativa: as boas-vindas e as personalizadas "na hora". */
@@ -177,7 +195,7 @@ final class SendAutoMessages
 
         // Só interessa saber se há uma ou mais de uma: no máximo duas linhas
         // lidas, e não a contagem de todas as postagens de quem escreve muito.
-        $count = $this->db->table('posts')->where('user_id', $user->id)->where('type', 'comment')->limit(2)->pluck('id')->count();
+        $count = \count($this->db->table('posts')->where('user_id', $user->id)->where('type', 'comment')->limit(2)->pluck('id')->all());
 
         if ($count === 1) {
             $this->custom($user, 'first_post', null, ['url' => '/d/'.$post->discussion_id.'/'.$post->number]);

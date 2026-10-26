@@ -28,7 +28,7 @@ final class MembersController extends AbstractChatController
     private const PAGE = 50;
 
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         $channel = $this->channel($request, $actor);
 

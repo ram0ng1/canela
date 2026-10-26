@@ -41,7 +41,7 @@ final class UserThreadsController extends AbstractChatController
     }
 
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         $memberships = ThreadMembership::query()
             ->where('user_id', $actor->id)

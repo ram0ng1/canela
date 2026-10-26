@@ -17,6 +17,7 @@ use Flarum\Discussion\Discussion;
 use Flarum\Post\CommentPost;
 use Flarum\User\User;
 use Ramon\Canela\Ai\Llm\ToolDefinition;
+use Ramon\Canela\Support\Dates;
 
 /**
  * Lê um tópico do fórum (`read_topic`), a ferramenta "Ler".
@@ -82,13 +83,13 @@ final class ReadTopicTool implements AiTool
                 continue;
             }
 
-            $author = $post->user?->display_name ?? '[excluído]';
+            $author = $post->user->display_name ?? '[excluído]';
             $entry = sprintf(
                 "\n#%d %s (%s), %s:\n%s\n",
                 $post->number,
                 $author,
                 $this->links->discussion($discussion, (int) $post->number),
-                $post->created_at?->toDateString() ?? '',
+                Dates::day($post->created_at),
                 PostText::plain((string) $post->content)
             );
 

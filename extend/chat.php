@@ -134,7 +134,7 @@ return (static function (): array {
             ->schedule(PurgeChat::class, static fn (ScheduledEvent $event) => PurgeChat::schedule($event)),
 
         (new Extend\Conditional())
-            ->whenExtensionEnabled('flarum-tags', static fn () => [
+            ->whenExtensionEnabled('flarum-tags', fn () => [
                 (new Extend\Event())->listen(\Flarum\Tags\Event\Deleting::class, DeleteTagChannels::class),
             ]),
     ];

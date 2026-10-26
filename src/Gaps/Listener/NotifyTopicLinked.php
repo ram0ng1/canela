@@ -48,7 +48,7 @@ final class NotifyTopicLinked
         $post = $event->post;
         $actor = $event->actor ?? $post->user;
 
-        if (! $this->gaps->on(GapsSettings::TOPIC_LINKED) || ! $post instanceof CommentPost || ! $actor) {
+        if (! $this->gaps->on(GapsSettings::TOPIC_LINKED) || ! $actor) {
             return;
         }
 

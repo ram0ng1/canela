@@ -144,7 +144,7 @@ final class HelperController implements RequestHandlerInterface
             return new JsonResponse(['data' => ['tagIds' => []]]);
         }
 
-        /** @var \Illuminate\Support\Collection<int, \Flarum\Database\AbstractModel> $tags */
+        /** @var \Illuminate\Support\Collection<int, \Flarum\Tags\Tag> $tags */
         $tags = $tagClass::query()->whereVisibleTo($actor)->orderBy('position')->limit(300)->get();
 
         if ($tags->isEmpty()) {

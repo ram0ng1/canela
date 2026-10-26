@@ -60,7 +60,7 @@ return [
         ->serializeToForum('canelaMessagesEnabled', 'canela.messages_enabled', 'boolval'),
 
     (new Extend\Conditional())
-        ->whenExtensionEnabled('flarum-messages', static fn (): array => [
+        ->whenExtensionEnabled('flarum-messages', fn () => [
             // `/u/{username}/messages` já é atendida pela rota do perfil do
             // core (`/u/{username}[/{filter}]`); as caixas têm um nível a mais.
             (new Extend\Frontend('forum'))

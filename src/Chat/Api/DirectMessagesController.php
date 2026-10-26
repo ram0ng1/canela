@@ -24,7 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
 final class DirectMessagesController extends AbstractChatController
 {
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         $body = $this->body($request);
         $channel = $this->service->openDirect($actor, array_map('intval', (array) ($body['userIds'] ?? [])), isset($body['name']) ? (string) $body['name'] : null);

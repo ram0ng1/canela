@@ -26,6 +26,7 @@ use Ramon\Canela\Chat\Model\Thread;
 use Ramon\Canela\Chat\Model\ThreadMembership;
 use Ramon\Canela\Chat\Model\Upload;
 use Ramon\Canela\Chat\Upload\ChatUploads;
+use Ramon\Canela\Support\Dates;
 
 /**
  * Monta o JSON das respostas do chat: canais, mensagens, fios e os usuários
@@ -199,10 +200,10 @@ final class ChatPresenter
                 'id' => $last->id,
                 'userId' => $last->user_id,
                 'excerpt' => ChatFormatter::excerpt($last->cooked, 80),
-                'createdAt' => $last->created_at?->toAtomString(),
+                'createdAt' => Dates::atom($last->created_at),
             ] : null,
             'participantIds' => $participantIds,
-            'createdAt' => $channel->created_at?->toAtomString(),
+            'createdAt' => Dates::atom($channel->created_at),
             'canModerate' => $canModerate,
             'canPost' => $cannotPost === null,
             'cannotPostReason' => $cannotPost,
@@ -343,7 +344,7 @@ final class ChatPresenter
             'message' => $hidden ? '' : $message->message,
             'cooked' => $hidden ? '' : $message->cooked,
             'excerpt' => $hidden ? '' : ChatFormatter::excerpt($message->cooked),
-            'createdAt' => $message->created_at?->toAtomString(),
+            'createdAt' => Dates::atom($message->created_at),
             'editedAt' => $message->edited_at?->toAtomString(),
             'deletedAt' => $message->deleted_at?->toAtomString(),
             'deletedById' => $message->deleted_by_id,

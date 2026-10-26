@@ -31,18 +31,18 @@ $echo = static fn (string $name, callable $post, callable $actor): Closure => st
 
 return [
     (new Extend\Conditional())
-        ->whenExtensionEnabled('flarum-realtime', static fn (): array => [
+        ->whenExtensionEnabled('flarum-realtime', fn () => [
             (new Extend\Event())
                 // O mesmo nome do realtime para a edição (o JS dele recarrega o post).
                 ->listen(Revised::class, $echo('revisedEvent', static fn ($e) => $e->post, static fn ($e) => $e->actor)),
 
             (new Extend\Conditional())
-                ->whenExtensionEnabled('flarum-likes', static fn (): array => [
+                ->whenExtensionEnabled('flarum-likes', fn () => [
                     (new Extend\Event())
                         ->listen('Flarum\Likes\Event\PostWasLiked', $echo('likesMutation', static fn ($e) => $e->post, static fn ($e) => $e->user))
                         ->listen('Flarum\Likes\Event\PostWasUnliked', $echo('likesMutation', static fn ($e) => $e->post, static fn ($e) => $e->user)),
                 ])
-                ->whenExtensionEnabled('fof-reactions', static fn (): array => [
+                ->whenExtensionEnabled('fof-reactions', fn () => [
                     (new Extend\Event())
                         ->listen('FoF\Reactions\Event\PostWasReacted', $echo('reactionMutation', static fn ($e) => $e->post, static fn ($e) => $e->user))
                         ->listen('FoF\Reactions\Event\PostWasUnreacted', $echo('reactionMutation', static fn ($e) => $e->post, static fn ($e) => $e->user)),

@@ -45,13 +45,13 @@ final class MessageReactedBlueprint implements BlueprintInterface, AlertableInte
     }
 
     #[\Override]
-    public function getSubject(): ?AbstractModel
+    public function getSubject(): AbstractModel
     {
         return $this->message;
     }
 
     #[\Override]
-    public function getFromUser(): ?User
+    public function getFromUser(): User
     {
         return $this->user;
     }

@@ -113,10 +113,12 @@ $extenders = [
         ->extendNamespace('flarum.forum', __DIR__.'/../views/override'),
 ];
 
-// O ponto de novidades por categoria só existe com o flarum/tags.
-if (class_exists(Flarum\Tags\Api\Resource\TagResource::class)) {
-    $extenders[] = (new Extend\ApiResource(Flarum\Tags\Api\Resource\TagResource::class))
-        ->fields(TagResourceFields::class);
-}
+// O ponto de novidades por categoria só existe com o flarum/tags habilitado
+// (instalado mas desabilitado, o ApiResource registraria as rotas /api/tags).
+$extenders[] = (new Extend\Conditional())
+    ->whenExtensionEnabled('flarum-tags', fn () => [
+        (new Extend\ApiResource(Flarum\Tags\Api\Resource\TagResource::class))
+            ->fields(TagResourceFields::class),
+    ]);
 
 return $extenders;

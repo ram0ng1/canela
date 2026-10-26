@@ -1,0 +1,19 @@
+# Fora do pacote do Composer (o zip do Packagist): só o que o fórum usa.
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.editorconfig export-ignore
+/.styleci.yml export-ignore
+/tests export-ignore
+/phpstan.neon export-ignore
+/js/src export-ignore
+/js/scripts export-ignore
+/js/eslint-local-rules export-ignore
+/js/*.json export-ignore
+/js/*.js export-ignore
+/js/*.mjs export-ignore
+/js/*.ts export-ignore
+
+# O JavaScript compilado não entra nos diffs nem nas estatísticas de linguagem.
+js/dist/** -diff linguist-generated
+js/dist-typings/** -diff linguist-generated

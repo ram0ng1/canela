@@ -90,7 +90,7 @@ jobs:
         run: composer update --no-interaction --no-progress --prefer-stable --no-scripts --ignore-platform-req=php+
 
       - name: Testes unitários (carregador de recursos)
-        run: vendor/bin/phpunit --testsuite unit
+        run: vendor/bin/phpunit -c tests/phpunit.unit.xml --testsuite unit
 
       - name: Lint PHP (php -l)
         run: |
@@ -102,11 +102,11 @@ jobs:
       - name: composer audit
         run: composer audit --no-dev --format=plain
 
-      # PHPStan nível 5 com baseline versionado (phpstan.neon +
-      # phpstan-baseline.neon): o baseline mantém verde e achado NOVO reprova.
+      # PHPStan nível 6 com a extensão do Flarum (flarum/phpstan), sem
+      # baseline: o mesmo padrão do core e da FoF.
       - name: PHPStan
         if: matrix.php == '8.3' && matrix.flarum-core == '^2.0.0'
-        run: composer analyse
+        run: composer analyse:phpstan
 
   # Os mesmos testes contra um PostgreSQL de verdade: o banco mais rígido com
   # tipos (`MAX(boolean)`, `boolean = 1`, coluna ambígua no ON CONFLICT,
@@ -162,7 +162,7 @@ jobs:
           CANELA_PG_DATABASE: canela_test
           CANELA_PG_USERNAME: canela
           CANELA_PG_PASSWORD: canela
-        run: vendor/bin/phpunit --testsuite unit
+        run: vendor/bin/phpunit -c tests/phpunit.unit.xml --testsuite unit
 
   js:
     name: JS (formatação, tipos, lint, build)
@@ -263,7 +263,7 @@ jobs:
         run: composer update --no-interaction --no-progress --prefer-stable --no-scripts
 
       - name: Chaves en ↔ pt-BR
-        run: vendor/bin/phpunit --testsuite locale
+        run: vendor/bin/phpunit -c tests/phpunit.unit.xml --testsuite locale
 
   # Reprova PRs que tragam dependências com vulnerabilidade conhecida. Só em
   # repositório público: no privado a ação exige o GitHub Advanced Security

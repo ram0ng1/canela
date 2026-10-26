@@ -34,7 +34,7 @@ final class UsersController extends AbstractChatController
     private const LIMIT = 10;
 
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         $term = trim((string) $this->query($request, 'q'));
         $term = ltrim($term, '@');

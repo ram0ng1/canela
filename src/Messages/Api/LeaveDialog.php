@@ -50,7 +50,7 @@ final class LeaveDialog
                 // Tirar outra pessoa (o ✕ na pílula dela): só a equipe ou quem
                 // começou a conversa (`can_remove_allowed_users`).
                 if ($userId !== (int) $actor->id) {
-                    $starter = (int) ($dialog->firstMessage?->user_id ?? 0);
+                    $starter = (int) ($dialog->firstMessage->user_id ?? 0);
 
                     if (! StaffGroups::isStaff($actor) && $starter !== (int) $actor->id) {
                         throw new PermissionDeniedException();

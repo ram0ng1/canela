@@ -18,6 +18,7 @@ use Flarum\Database\AbstractModel;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramon\Canela\Support\Dates;
 
 /**
  * Uma conversa com o bot de IA.
@@ -69,8 +70,8 @@ final class Conversation extends AbstractModel
             'title' => $this->title,
             'persona' => $this->persona,
             'messageCount' => $this->message_count,
-            'createdAt' => $this->created_at?->toAtomString(),
-            'updatedAt' => $this->updated_at?->toAtomString(),
+            'createdAt' => Dates::atom($this->created_at),
+            'updatedAt' => Dates::atom($this->updated_at),
         ];
     }
 }

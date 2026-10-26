@@ -37,7 +37,7 @@ final class BadgeGrantedBlueprint implements BlueprintInterface, AlertableInterf
     }
 
     #[\Override]
-    public function getSubject(): ?AbstractModel
+    public function getSubject(): AbstractModel
     {
         return $this->badge;
     }

@@ -49,7 +49,7 @@ final class UploadController extends AbstractChatController
     }
 
     #[\Override]
-    protected function respond(ServerRequestInterface $request, User $actor, string $method): array|ResponseInterface|null
+    protected function respond(ServerRequestInterface $request, User $actor, string $method): array
     {
         if (! $this->access->settings()->bool(ChatSettings::UPLOADS_ENABLED) || $this->access->isSuspended($actor)) {
             throw new PermissionDeniedException();

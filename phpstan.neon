@@ -1,18 +1,23 @@
 includes:
-    # Achados antigos (relações/estáticos mágicos do Eloquent, integrações com
-    # extensões opcionais) congelados aqui: a CI fica verde e todo código NOVO
-    # é conferido. Vá apertando com o tempo (regenerar: composer analyse --
-    # --generate-baseline).
-    - phpstan-baseline.neon
+    - vendor/flarum/phpstan/extension.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
-        - src
-        - extend
         - extend.php
+        - extend
+        - src
         - migrations
-    # A CI resolve o flarum/core com `composer update`: um erro congelado pode
-    # não se repetir lá. Não falhar quando uma entrada do baseline sobra.
-    reportUnmatchedIgnoredErrors: false
-    treatPhpDocTypesAsCertain: false
+        # As relações que as extensões opcionais põem nos modelos do core
+        # (Discussion::tags, etc.) vêm dos extend.php delas, como no monorepo do core.
+        - vendor/flarum/tags/extend.php
+        - vendor/flarum/flags/extend.php
+        - vendor/flarum/suspend/extend.php
+    excludePaths:
+        analyse:
+            - *.blade.php
+            # Só lido para descobrir as relações, não analisado.
+            - vendor/flarum/tags/extend.php
+            - vendor/flarum/flags/extend.php
+            - vendor/flarum/suspend/extend.php
+    databaseMigrationsPath: ['migrations']
