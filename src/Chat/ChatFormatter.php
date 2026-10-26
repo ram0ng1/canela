@@ -156,7 +156,7 @@ final class ChatFormatter
         $inCode = 0;
 
         return (string) preg_replace_callback('/(<[^>]+>)|(?<![\w@])@(here|all)\b/i', static function (array $match) use (&$inCode): string {
-            if (($match[1] ?? '') !== '') {
+            if ($match[1] !== '') {
                 if (preg_match('/^<(code|pre)\b/i', $match[1])) {
                     $inCode++;
                 } elseif (preg_match('/^<\/(code|pre)>/i', $match[1])) {
