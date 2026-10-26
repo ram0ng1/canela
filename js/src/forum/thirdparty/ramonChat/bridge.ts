@@ -53,7 +53,7 @@ export function ramonModule<T = any>(id: string): T | null {
   if (!isExtensionEnabled(NAMESPACE)) return null;
 
   try {
-    return ((flarum as any).reg.checkModule(NAMESPACE, id) as T) || null;
+    return (flarum.reg.checkModule(NAMESPACE, id) as T) || null;
   } catch {
     return null;
   }

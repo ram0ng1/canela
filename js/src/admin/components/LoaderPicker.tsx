@@ -28,7 +28,7 @@ const SIZE = { min: 50, max: 250, fallback: 100 };
 /** Só um hexadecimal entra no `style`: o valor vem do banco. */
 const HEX_COLOR = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 
-const presets = (): Record<string, string> => (app.data as any).canelaLoaderPresets || {};
+const presets = (): Record<string, string> => app.data.canelaLoaderPresets || {};
 
 /** Como imagem o SVG não executa nada: a prévia do que se colou não precisa esperar o servidor. */
 const svgUrl = (svg: string): string => `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}")`;

@@ -76,7 +76,7 @@ function autoTag(discussion: Discussion): boolean {
 
   if (!ids.length) return false;
 
-  const tags = ((discussion as any).tags?.() || []) as Array<{ id(): string | undefined }>;
+  const tags = (discussion.tags?.() || []) as Array<{ id(): string | undefined }>;
 
   return tags.some((tag) => tag && ids.includes(String(tag.id())));
 }

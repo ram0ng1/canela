@@ -7,7 +7,8 @@
  * volta a aparecer para quem tinha fechado o antigo.
  */
 import app from 'flarum/admin/app';
-import { AdminComponent, getStr, saveSetting } from '../util';
+import { AdminComponent, getStr, saveSetting, type LooseAttrs } from '../util';
+import type Mithril from 'mithril';
 
 const SAVE_DELAY_MS = 600;
 
@@ -63,7 +64,7 @@ export default class AdminTextarea extends AdminComponent {
     saveSetting(payload);
   }
 
-  onremove(vnode: any) {
+  onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
 
     // Sair da página no meio da pausa não pode perder o que foi digitado.

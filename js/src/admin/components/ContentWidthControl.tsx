@@ -1,5 +1,6 @@
 import app from 'flarum/admin/app';
-import { AdminComponent, getStr, saveSetting, trans } from '../util';
+import { AdminComponent, getStr, saveSetting, trans, type LooseAttrs } from '../util';
+import type Mithril from 'mithril';
 
 const KEY = 'ramon-canela.admin.settings';
 const MIN = 960;
@@ -32,7 +33,7 @@ export default class ContentWidthControl extends AdminComponent {
   frame: HTMLIFrameElement | null = null;
   loaded = false;
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
     const stored = getStr('canela.content_width', String(DEFAULT)).trim();
 

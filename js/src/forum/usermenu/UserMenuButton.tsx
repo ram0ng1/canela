@@ -35,7 +35,7 @@ export default class UserMenuButton extends Component {
 
     const user = app.session.user!;
     const unreadDialogs = user.attribute<number>('unreadDialogCount') || 0;
-    const canReview = !!app.forum.attribute('canViewFlags') && !!(app as any).flags;
+    const canReview = !!app.forum.attribute('canViewFlags') && !!app.flags;
     // As denúncias abertas do chat (ramon/chat) também são itens a revisar.
     const chatReviewables = chatReviewCount();
     const newReviewables = (canReview ? Number(user.attribute<number>('newFlagCount') || 0) : 0) + chatReviewables;

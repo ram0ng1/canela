@@ -79,9 +79,9 @@ export function secondaryTags(): CanelaTag[] {
 export function discussionTags(discussion: Discussion): CanelaTag[] {
   if (!isTagsEnabled()) return [];
 
-  const tags = (discussion as any).tags?.();
+  const tags = discussion.tags?.();
 
-  return Array.isArray(tags) ? sortTags(tags.filter(Boolean)) : [];
+  return Array.isArray(tags) ? sortTags(tags.filter(Boolean) as unknown as CanelaTag[]) : [];
 }
 
 /** Separa as tags da discussão em categoria e etiquetas. */

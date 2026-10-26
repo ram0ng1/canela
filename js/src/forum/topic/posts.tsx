@@ -721,7 +721,7 @@ class EmbeddedReplies {
     const post = vnode.attrs.post;
     const replies = this.replies(post);
     const total = Number(post.attribute('mentionedByCount')) || replies.length;
-    const MentionedByModal = (flarum as any).reg.checkModule('flarum-mentions', 'forum/components/MentionedByModal');
+    const MentionedByModal = flarum.reg.checkModule('flarum-mentions', 'forum/components/MentionedByModal');
 
     return (
       <div className="CanelaEmbedded CanelaEmbedded--bottom">

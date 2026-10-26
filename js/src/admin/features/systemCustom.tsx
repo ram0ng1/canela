@@ -9,9 +9,10 @@ import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
 import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 
-import { AdminComponent, getStr, saveSetting, trans } from '../util';
+import { AdminComponent, getStr, saveSetting, trans, type LooseAttrs } from '../util';
 import { AdminSwitch } from '../components/AdminSwitch';
 import { loadBadges } from './badgesAdmin/api';
+import type Mithril from 'mithril';
 
 const KEY = 'ramon-canela.admin.sysmsg.custom';
 const FIELDS = 'ramon-canela.admin.sysmsg.fields';
@@ -61,7 +62,7 @@ export default class CustomMessagesEditor extends AdminComponent {
   badges: { id: number; name: string }[] | null = null;
   saveTimer: ReturnType<typeof setTimeout> | undefined;
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
 
     loadBadges()
@@ -70,7 +71,7 @@ export default class CustomMessagesEditor extends AdminComponent {
       .finally(() => m.redraw());
   }
 
-  onremove(vnode: any) {
+  onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
 
     // Sair no meio da pausa de digitação não pode perder o texto.

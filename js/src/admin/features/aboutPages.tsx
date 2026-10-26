@@ -7,7 +7,8 @@
 import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
 
-import { AdminComponent, trans, getStr, saveSetting } from '../util';
+import { AdminComponent, trans, getStr, saveSetting, type LooseAttrs } from '../util';
+import type Mithril from 'mithril';
 
 const KEY = 'ramon-canela.admin.settings.community';
 const SETTING = 'canela.about_pages';
@@ -44,7 +45,7 @@ export default class AboutPagesEditor extends AdminComponent {
   pages: FofPage[] | null = null;
   saveTimer: ReturnType<typeof setTimeout> | undefined;
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
 
     app
@@ -60,7 +61,7 @@ export default class AboutPagesEditor extends AdminComponent {
       .finally(() => m.redraw());
   }
 
-  onremove(vnode: any) {
+  onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
 
     // Sair no meio da pausa de digitação não pode perder o rótulo.

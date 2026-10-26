@@ -92,7 +92,7 @@ export default function installRoutes(): void {
       const sort = this.getParams().sort;
 
       if (sort && sort !== 'latest' && (currentSortRoute() || sort === HOT_SORT || sort === UNREAD_SORT)) {
-        (app as any).data.apiDocument = null;
+        app.data.apiDocument = null;
       }
 
       return original(page);

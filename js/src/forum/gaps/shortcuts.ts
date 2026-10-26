@@ -242,7 +242,7 @@ function movePostSelection(direction: number, scrollWithinPosts: boolean): void 
 // ---------------------------------------------------------------------------
 
 function mentionsReply(post: Post, quote?: string): boolean {
-  const reply = (flarum as any).reg?.get?.('flarum-mentions', 'forum/utils/reply');
+  const reply = flarum.reg?.get?.('flarum-mentions', 'forum/utils/reply');
   const fn = typeof reply === 'function' ? reply : reply?.default;
 
   if (typeof fn !== 'function') return false;
@@ -324,10 +324,10 @@ function runSequence(prefix: string, key: string, shift: boolean): boolean {
         if (user) m.route.set(app.route('index', { sort: 'unread' }));
         return !!user;
       case 'b':
-        if (user && (app.routes as any)['canela.user.bookmarks']) m.route.set(app.route('canela.user.bookmarks', { username: user.slug() }));
+        if (user && app.routes['canela.user.bookmarks']) m.route.set(app.route('canela.user.bookmarks', { username: user.slug() }));
         return !!user;
       case 'm':
-        if (user && (app.routes as any)['messages']) m.route.set(app.route('messages'));
+        if (user && app.routes['messages']) m.route.set(app.route('messages'));
         return !!user;
       case 'd':
         if (user && draftsOn()) m.route.set(app.route('user.drafts', { username: user.slug() }));

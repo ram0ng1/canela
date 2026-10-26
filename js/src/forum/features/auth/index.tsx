@@ -74,7 +74,7 @@ function installModalRedirect(): void {
 }
 
 function modalMode(component: any): AuthMode | null {
-  const get = (name: string) => (flarum as any).reg.get('core', `forum/components/${name}`);
+  const get = (name: string) => flarum.reg.get('core', `forum/components/${name}`);
   const is = (Base: any) => !!Base && (component === Base || component?.prototype instanceof Base);
 
   if (is(get('SignUpModal'))) return 'signup';

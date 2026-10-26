@@ -72,7 +72,7 @@ export function matches(notification: Notification, filter: NotificationFilter):
   if (filter.exclude && filter.exclude.includes(type)) return false;
 
   // Sem componente registrado (extensão desligada) não há como desenhar.
-  return !!(app as any).notificationComponents?.[type];
+  return !!app.notificationComponents?.[type];
 }
 
 export function filteredNotifications(filter: NotificationFilter): Notification[] {
@@ -136,7 +136,7 @@ export interface NotificationView {
  * 'Primeira curtida'". A frase inteira fica no `title`.
  */
 export function describeNotification(notification: Notification): NotificationView | null {
-  const Component = (app as any).notificationComponents?.[notification.contentType() || ''];
+  const Component = app.notificationComponents?.[notification.contentType() || ''];
 
   if (!Component) return null;
 

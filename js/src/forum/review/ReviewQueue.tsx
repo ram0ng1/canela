@@ -601,7 +601,7 @@ export default class ReviewQueue extends Component {
     const discussion: any = post.discussion();
 
     if (post.number() === 1 && discussion) {
-      return discussion.delete().then(() => (app as any).discussions?.removeDiscussion?.(discussion));
+      return discussion.delete().then(() => app.discussions?.removeDiscussion?.(discussion));
     }
 
     return post.delete().then(() => discussion?.removePost?.(post.id()));
@@ -615,7 +615,7 @@ export default class ReviewQueue extends Component {
     const count = Number(app.forum.attribute<number>('flagCount') || 0);
     app.forum.pushAttributes({ flagCount: Math.max(0, count - 1) });
 
-    const flags: any = (app as any).flags;
+    const flags: any = app.flags;
     if (flags && typeof flags.clear === 'function') flags.clear();
   }
 }

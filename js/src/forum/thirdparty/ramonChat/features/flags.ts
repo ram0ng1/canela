@@ -117,7 +117,7 @@ export function ct(key: string, params: Record<string, unknown> = {}): string {
 /** Um módulo do ramon/chat pelo registro (nunca `import`: sem a extensão, o tema quebraria). */
 export function ramonModule<T = any>(id: string): T | null {
   try {
-    return ((flarum as any).reg.checkModule('ramon-chat', id) as T) || null;
+    return (flarum.reg.checkModule('ramon-chat', id) as T) || null;
   } catch {
     return null;
   }

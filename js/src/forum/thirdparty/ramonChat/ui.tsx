@@ -423,7 +423,7 @@ export class ChannelsList extends Component<ChannelsListAttrs> {
 
 /** "Fechar chat em tela cheia": a conversa (ou a lista) passa para a gaveta e a página volta ao fórum. */
 export function toDrawer(): void {
-  const drawer: any = (flarum as any).reg.checkModule('ramon-chat', 'forum/components/ChatDrawer');
+  const drawer: any = flarum.reg.checkModule('ramon-chat', 'forum/components/ChatDrawer');
 
   m.route.set(app.route('index'));
 

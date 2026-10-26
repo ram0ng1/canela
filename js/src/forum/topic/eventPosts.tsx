@@ -26,7 +26,7 @@ function joined(tags: CanelaTag[]): Mithril.Children[] {
   const badges = tags.map(tagBadge);
 
   try {
-    const locale = (app.data as any).locale || document.documentElement.lang || 'en';
+    const locale = app.data.locale || document.documentElement.lang || 'en';
     // O ListFormat não está nas tipagens do TypeScript que o Flarum usa.
     const parts: Array<{ type: string; value: string }> = new (Intl as any).ListFormat(locale, { type: 'conjunction' }).formatToParts(
       tags.map((tag) => tag.name())

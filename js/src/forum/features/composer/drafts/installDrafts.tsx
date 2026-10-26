@@ -93,7 +93,7 @@ function startAutosave(body: any): () => void {
  */
 function restoreReplyDraft(body: any): void {
   const discussion = body.attrs?.discussion;
-  const composer: any = app.composer;
+  const composer = app.composer;
   const composerBody = composer.body;
 
   if (!discussion || body.attrs?.draft || !composer.bodyMatches('flarum/forum/components/ReplyComposer')) return;
@@ -140,7 +140,7 @@ export default function installDrafts() {
   extend('flarum/forum/components/ComposerBody' as any, 'oninit', function (this: any) {
     if (!draftsOn() || !draftableBody()) return;
 
-    (app.composer as any).canelaDraftError = false;
+    app.composer.canelaDraftError = false;
     this.canelaStopAutosave = startAutosave(this);
     restoreReplyDraft(this);
   });

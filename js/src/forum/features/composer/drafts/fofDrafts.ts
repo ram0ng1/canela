@@ -147,7 +147,7 @@ export function hasContent(): boolean {
 
 /** O texto mudou desde o último salvamento (o `changed()` que o fof põe no ComposerState). */
 export function draftChanged(): boolean {
-  return draftableBody() && !!(app.composer as any).changed?.();
+  return draftableBody() && !!app.composer.changed?.();
 }
 
 /**
@@ -165,7 +165,7 @@ let inFlight: { body: unknown; promise: Promise<FofDraft | null> } | null = null
  * seguinte (que passaria a gravar por cima dele).
  */
 export function saveCurrentDraft(): Promise<void> {
-  const composer: any = app.composer;
+  const composer = app.composer;
 
   if (!draftsOn() || !draftChanged() || typeof composer.data !== 'function') return Promise.resolve();
 
@@ -219,7 +219,7 @@ export function saveCurrentDraft(): Promise<void> {
 
 /** Apaga o rascunho do composer aberto, se houver. */
 export function discardCurrentDraft(): Promise<void> {
-  const composer: any = app.composer;
+  const composer = app.composer;
   const draft: FofDraft | null = composer.draft || null;
 
   composer.draft = null;
@@ -237,7 +237,7 @@ export function discardCurrentDraft(): Promise<void> {
 
 /** O estado discreto do rodapé: salvando, salvo há pouco (até 3 s) ou nada. */
 export function draftStatus(): 'saving' | 'saved' | 'error' | null {
-  const composer: any = app.composer;
+  const composer = app.composer;
 
   if (composer.canelaDraftError) return 'error';
   if (composer.saving) return 'saving';

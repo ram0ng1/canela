@@ -89,7 +89,7 @@ function apiPath(url: string): { path: string; pairs: string[] } | null {
 }
 
 export default function installPreload(): void {
-  const data = (app.data as any)?.canelaPreload;
+  const data = app.data?.canelaPreload;
 
   // Sem nada pré-carregado (a maioria das rotas), nada a interceptar.
   if (!data || typeof data !== 'object') return;

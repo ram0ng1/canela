@@ -16,7 +16,7 @@ import { AdminNotice, AdminSubGroup, SubDivider } from '../components/AdminCard'
 import AdminToggle from '../components/AdminToggle';
 import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
-import { AdminComponent, getStr, saveSetting, trans } from '../util';
+import { AdminComponent, getStr, saveSetting, trans, type LooseAttrs } from '../util';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings.ai';
@@ -116,7 +116,7 @@ class AiText extends AdminComponent {
     m.redraw();
   }
 
-  onremove(vnode: any) {
+  onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
     this.flush();
   }
@@ -165,7 +165,7 @@ class AiGroups extends AdminComponent {
 class AiLocales extends AdminComponent {
   view() {
     const { settingKey, label, help } = this.attrs;
-    const installed: Record<string, string> = (app.data as any).locales || {};
+    const installed: Record<string, string> = app.data.locales || {};
     const selected = getStr(settingKey)
       .split(/[\s,]+/)
       .filter((code) => code && code in installed);
@@ -271,7 +271,7 @@ class PersonasEditor extends AdminComponent {
   timer: ReturnType<typeof setTimeout> | undefined;
   list: Persona[] = [];
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
     this.list = this.load();
   }

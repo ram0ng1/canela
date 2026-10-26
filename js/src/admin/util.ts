@@ -13,7 +13,7 @@ export type LooseAttrs = ComponentAttrs & Record<string, any>;
 
 export abstract class AdminComponent<A extends LooseAttrs = LooseAttrs> extends Component<A> {}
 
-export const settings = (): Record<string, any> => (app.data as any).settings;
+export const settings = (): Record<string, any> => app.data.settings;
 
 export const trans = (key: string, params: Record<string, any> = {}): string => {
   // `extract: true` faz o Translator devolver string, e não filhos do Mithril.
@@ -132,7 +132,7 @@ const EXTENSION_NAMES: Record<string, string> = {
   'fof-formatting': 'FoF Formatting',
 };
 
-const installedExtension = (id: string): any => (app.data as any).extensions?.[id];
+const installedExtension = (id: string): any => app.data.extensions?.[id];
 
 export const extensionName = (id: string): string => installedExtension(id)?.extra?.['flarum-extension']?.title || EXTENSION_NAMES[id] || id;
 

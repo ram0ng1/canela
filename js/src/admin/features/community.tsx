@@ -6,11 +6,12 @@ import Link from 'flarum/common/components/Link';
 import Button from 'flarum/common/components/Button';
 import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 
-import { AdminComponent, trans, getBool, getStr, saveSetting } from '../util';
+import { AdminComponent, trans, getBool, getStr, saveSetting, type LooseAttrs } from '../util';
 import { AdminNotice, SubDivider } from '../components/AdminCard';
 import AdminToggle from '../components/AdminToggle';
 import type { CardDef } from '../types';
 import AboutPagesEditor from './aboutPages';
+import type Mithril from 'mithril';
 
 const KEY = 'ramon-canela.admin.settings.community';
 
@@ -24,7 +25,7 @@ const SAVE_DELAY_MS = 600;
 export class AdminTextField extends AdminComponent {
   saveTimer: ReturnType<typeof setTimeout> | undefined;
 
-  onremove(vnode: any) {
+  onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
 
     // Sair da página no meio da pausa não pode perder o que foi digitado.
@@ -84,7 +85,7 @@ class GuidelinesPagePicker extends AdminComponent {
   pages: { id: string; title: string }[] | null = null;
   creating = false;
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
     this.load();
   }
