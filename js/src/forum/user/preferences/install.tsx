@@ -34,7 +34,7 @@ let renderTab: RenderTab | null = null;
  * A mesma página para todas as abas: trocar de aba não recria a página (nem o
  * cabeçalho do perfil), só o conteúdo, que lê a aba do endereço.
  */
-class PreferencesResolver extends UserPageResolver {
+export class PreferencesResolver extends UserPageResolver {
   makeKey() {
     return BASE_ROUTE + (this.canonicalizeUserSlug(m.route.param('username')) || '');
   }
@@ -54,15 +54,15 @@ const GuestRedirect = {
   view: () => null,
 };
 
+/**
+ * A página das rotas (../extend.ts): o SettingsPage do core (chunk) só para
+ * quem está logado; sem usuário, o `show()` dele e os extends das extensões
+ * quebrariam.
+ */
+export const PreferencesPage = () =>
+  app.session.user ? (app.routes.settings as { component: () => Promise<any> }).component() : Promise.resolve({ default: GuestRedirect });
+
 export default function installPreferences() {
-  const settings = app.routes.settings as any;
-  // O SettingsPage do core (chunk) só para quem está logado: sem usuário, o
-  // `show()` dele e os extends das extensões quebrariam.
-  const component = () => (app.session.user ? settings.component() : Promise.resolve({ default: GuestRedirect }));
-
-  app.routes[BASE_ROUTE] = { path: '/u/:username/preferences', component, resolverClass: PreferencesResolver } as any;
-  app.routes[TAB_ROUTE] = { path: '/u/:username/preferences/:tab', component, resolverClass: PreferencesResolver } as any;
-
   beforeChunk(
     (namespace, url) => namespace === 'core' && /\/forum\/components\/SettingsPage\.js/.test(url),
     () => loadTabs().then((render) => (renderTab = render))

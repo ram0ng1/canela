@@ -1,10 +1,9 @@
 /*
  * Rota e aba do "Resumo" do perfil (`/u/:username/summary`).
  *
- * A rota entra direto em `app.routes`, como o Extend.Routes faria: o
- * initializer roda antes do `mount`, que é quando o core monta o roteador. O
- * servidor já atende `/u/{username}[/{filter}]` com a página do perfil, então
- * a URL abre direto, sem rota nova no PHP.
+ * As rotas `user.summary` e `user.activity` ficam em ./extend.ts
+ * (Extend.Routes). O servidor já atende `/u/{username}[/{filter}]` com a
+ * página do perfil, então a URL abre direto, sem rota nova no PHP.
  *
  * Os links de perfil (`app.route.user`: avatar, nome nos posts, menu da
  * sessão) abrem na aba escolhida no admin (`canela.user_default_tab`): a
@@ -13,9 +12,7 @@
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import UserPage from 'flarum/forum/components/UserPage';
-import PostsUserPage from 'flarum/forum/components/PostsUserPage';
 import LinkButton from 'flarum/common/components/LinkButton';
-import UserPageResolver from 'flarum/forum/resolvers/UserPageResolver';
 import type ItemList from 'flarum/common/utils/ItemList';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
@@ -23,28 +20,14 @@ import type Mithril from 'mithril';
 import { forumBool, t } from '../utils/settings';
 
 export default function installSummary() {
-  // A página do Resumo desce só quando alguém abre a aba (chunk próprio).
-  app.routes['user.summary'] = {
-    path: '/u/:username/summary',
-    component: () => import('./UserSummaryPage'),
-    resolverClass: UserPageResolver,
-  } as any;
-
   // A configuração é lida na hora de montar o link: no initializer o
-  // `app.forum` ainda não existe.
+  // `app.forum` ainda não existe. Fica aqui, e não num `.helper()`, porque
+  // embrulha o `app.route.user` anterior (o do core ou de outra extensão).
   const userUrl = app.route.user;
   app.route.user = (user: User) =>
     app.forum && forumBool('canelaUserSummary', true) && app.forum.attribute('canelaUserDefaultTab') === 'summary'
       ? app.route('user.summary', { username: user.slug() })
       : userUrl(user);
-
-  // As postagens ganham um endereço próprio (`/u/:username/activity`):
-  // o `/u/:username` do core vira a porta de entrada e abre no Resumo.
-  app.routes['user.activity'] = {
-    path: '/u/:username/activity',
-    component: PostsUserPage,
-    resolverClass: UserPageResolver,
-  } as any;
 
   extend(UserPage.prototype, 'oninit', function () {
     const username = m.route.param('username');

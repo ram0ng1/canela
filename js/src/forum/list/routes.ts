@@ -10,6 +10,9 @@ import IndexPage from 'flarum/forum/components/IndexPage';
 import GlobalSearchState from 'flarum/forum/states/GlobalSearchState';
 import DiscussionListState from 'flarum/forum/states/DiscussionListState';
 import setRouteWithForcedRefresh from 'flarum/common/utils/setRouteWithForcedRefresh';
+import Extend from 'flarum/common/extenders';
+import type Application from 'flarum/common/Application';
+import type { IExtensionModule } from 'flarum/common/extenders/IExtender';
 
 import { isTagsEnabled } from '../utils/tags';
 import { HOT_SORT, UNREAD_SORT } from './sorts';
@@ -42,16 +45,24 @@ export function currentSortRoute(): string | null {
   return name && name in SORT_ROUTES ? name : null;
 }
 
+/** As rotas das listas (extenders do fórum, em ./extend.ts). */
+export const listRoutes = {
+  extend(app: Application, extension: IExtensionModule) {
+    const routes = new Extend.Routes();
+
+    Object.keys(PATHS).forEach((name) => routes.add(name, PATHS[name], IndexPage));
+
+    // Sem o flarum/tags não há página de categorias: /categories mostra a
+    // lista. Na hora de aplicar os extenders todas as extensões já
+    // carregaram, então o módulo do flarum/tags já está no registro.
+    const TagsPage = isTagsEnabled() ? flarum.reg.checkModule('flarum-tags', 'forum/components/TagsPage') : null;
+
+    routes.add('canela.categories', '/categories', TagsPage || IndexPage);
+    routes.extend(app, extension);
+  },
+};
+
 export default function installRoutes(): void {
-  Object.keys(PATHS).forEach((name) => {
-    app.routes[name] = { path: PATHS[name], component: IndexPage };
-  });
-
-  // Sem o flarum/tags não há página de categorias: /categories mostra a lista.
-  const TagsPage = isTagsEnabled() ? flarum.reg.checkModule('flarum-tags', 'forum/components/TagsPage') : null;
-
-  app.routes['canela.categories'] = { path: '/categories', component: TagsPage || IndexPage };
-
   // Em /top (e nas outras), a ordenação vem da rota quando a URL não traz `sort`.
   extend(GlobalSearchState.prototype, 'stickyParams', function (params: any) {
     const route = currentSortRoute();

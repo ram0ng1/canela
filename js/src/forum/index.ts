@@ -43,6 +43,10 @@ import messagesExtend from './features/messages/extend';
 import gapsExtend from './gaps/extend';
 import eventsExtend from './features/events/extend';
 import userMenuExtend from './usermenu/extend';
+import userExtend from './user/extend';
+import listExtend from './list/extend';
+import composerExtend from './features/composer/extend';
+import authExtend from './features/auth/extend';
 
 // Modelos e rotas dos recursos com backend. Cada recurso decide sozinho se
 // aparece (pela configuração que o servidor serializa), então registrar as
@@ -58,6 +62,11 @@ export const extend = [
   ...gapsExtend,
   ...eventsExtend,
   ...userMenuExtend,
+  // Rotas que antes entravam no initializer (listas, perfil, rascunhos, entrar).
+  ...listExtend,
+  ...userExtend,
+  ...composerExtend,
+  ...authExtend,
 ];
 
 app.initializers.add('ramon-canela', () => {
