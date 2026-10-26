@@ -34,8 +34,15 @@ final class UserListener
     {
         $user = $event->user;
 
+        // O Saving também dispara a cada last_seen_at (o core grava a cada
+        // poucos minutos por pessoa ativa): só a bio e o avatar mudam os
+        // emblemas de usuário (autobiographer), então só eles contam.
         if ($user->exists) {
-            $user->afterSave(fn (User $saved) => $this->grant($saved));
+            $user->afterSave(function (User $saved): void {
+                if ($saved->wasChanged(['canela_bio', 'avatar_url'])) {
+                    $this->grant($saved);
+                }
+            });
         }
     }
 

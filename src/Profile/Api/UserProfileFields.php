@@ -38,6 +38,9 @@ final class UserProfileFields
 
     private const BIRTHDAY_SHOW_YEAR = 'canelaBirthdayShowYear';
 
+    /** @var array<int, array{0: ?string, 1: ?string}> a bio renderizada de cada pessoa nesta resposta (texto, html) */
+    private array $bios = [];
+
     public function __construct(
         private readonly ProfileSettings $settings,
         private readonly BioRenderer $bio,
@@ -96,8 +99,27 @@ final class UserProfileFields
 
             Schema\Str::make('canelaBioHtml')
                 ->visible(fn () => $this->settings->fieldEnabled(ProfileSettings::BIO))
-                ->get(fn (User $user) => $this->bio->render($user->getAttribute('canela_bio'))),
+                ->get(fn (User $user) => $this->bioHtml($user)),
         ];
+    }
+
+    /**
+     * A bio de cada pessoa é renderizada uma vez por resposta: a mesma pessoa
+     * aparece várias vezes numa lista (autora, última a responder, menções).
+     */
+    private function bioHtml(User $user): ?string
+    {
+        $text = $user->getAttribute('canela_bio');
+        $cached = $this->bios[(int) $user->id] ?? null;
+
+        if ($cached !== null && $cached[0] === $text) {
+            return $cached[1];
+        }
+
+        $html = $this->bio->render($text);
+        $this->bios[(int) $user->id] = [$text, $html];
+
+        return $html;
     }
 
     /** @return array<int, Schema\Attribute> */

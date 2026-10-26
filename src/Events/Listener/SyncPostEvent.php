@@ -17,6 +17,7 @@ use Flarum\Post\CommentPost;
 use Flarum\Post\Event\Posted;
 use Flarum\Post\Event\Revised;
 use Psr\Log\LoggerInterface;
+use Ramon\Canela\Events\Api\EventBuffer;
 use Ramon\Canela\Events\CalendarEvent;
 use Ramon\Canela\Events\EventChat;
 use Ramon\Canela\Events\EventsSettings;
@@ -62,6 +63,7 @@ final class SyncPostEvent
         // Fora da tag dos eventos o `[event]` é só texto: nem evento nem canal.
         if ($data === null || ! $post->discussion || ! $this->settings->appliesTo($post->discussion)) {
             $existing?->delete();
+            EventBuffer::flush();
 
             return;
         }
@@ -81,6 +83,8 @@ final class SyncPostEvent
         }
 
         $calendarEvent->save();
+        // A resposta desta mesma requisição já vê o evento gravado.
+        EventBuffer::flush();
 
         $calendarEvent->setRelation('discussion', $post->discussion);
         $this->chat->ensureChannel($calendarEvent, $post->user);
