@@ -169,9 +169,9 @@ class BadgeGrantingTest extends TestCase
     {
         $awarded = [];
         $events = $this->app()->getContainer()->make(Dispatcher::class);
-        // Só o ouvinte do teste: o das mensagens automáticas devolve `false`
-        // quando não há mensagem para o gatilho, e um `false` interrompe a
-        // propagação no Dispatcher do Laravel — este nunca seria chamado.
+        // Só o ouvinte do teste: no Dispatcher do Laravel um ouvinte anterior
+        // que devolva `false` interrompe a propagação, e o teste mediria o
+        // ouvinte alheio em vez do disparo.
         $events->forget(BadgeAwarded::class);
         $events->listen(BadgeAwarded::class, function (BadgeAwarded $event) use (&$awarded): void {
             $awarded[] = [$event->badge->id, $event->user->id];
