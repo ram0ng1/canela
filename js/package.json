@@ -18,8 +18,10 @@
         "webpack-cli": "^6.0.1"
     },
     "scripts": {
+        "predev": "node scripts/ensure-deps.cjs",
         "dev": "webpack --mode development --watch",
         "lint": "eslint \"src/**/*.{ts,tsx}\"",
+        "prebuild": "node scripts/ensure-deps.cjs",
         "build": "npm run lint && webpack --mode production",
         "analyze": "cross-env ANALYZER=true npm run build",
         "format": "prettier --write src",
