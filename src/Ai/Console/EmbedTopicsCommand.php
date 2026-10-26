@@ -48,19 +48,47 @@ final class EmbedTopicsCommand extends Command
         $query = Discussion::query()->whereVisibleTo(new Guest());
         NullOrder::orderBy($query, 'last_posted_at', 'desc');
 
+        $limit = max(1, min(5000, (int) $this->option('limit')));
+
         if (! $this->option('all')) {
-            $query->limit(max(1, min(5000, (int) $this->option('limit'))));
+            $query->limit($limit);
         }
 
         $done = 0;
+        $seen = [];
 
         foreach ($query->cursor() as $discussion) {
+            $seen[$discussion->id] = true;
+
             try {
                 if ($related->embed($discussion)) {
                     $done++;
                 }
             } catch (Throwable $error) {
                 $this->warn(sprintf('Discussão %d: %s', $discussion->id, $error->getMessage()));
+            }
+        }
+
+        // Os tópicos antigos que ainda não têm vetor, um lote por rodada: a
+        // página não gera vetor (é uma chamada paga), então eles entram aqui.
+        if (! $this->option('all')) {
+            $missing = Discussion::query()->whereVisibleTo(new Guest())
+                ->whereNotExists(static fn ($sub) => $sub->selectRaw('1')->from('canela_ai_embeddings')->whereColumn('canela_ai_embeddings.discussion_id', 'discussions.id'))
+                ->orderByDesc('id')
+                ->limit($limit);
+
+            foreach ($missing->cursor() as $discussion) {
+                if (isset($seen[$discussion->id])) {
+                    continue;
+                }
+
+                try {
+                    if ($related->embed($discussion)) {
+                        $done++;
+                    }
+                } catch (Throwable $error) {
+                    $this->warn(sprintf('Discussão %d: %s', $discussion->id, $error->getMessage()));
+                }
             }
         }
 

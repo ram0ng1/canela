@@ -266,7 +266,7 @@ final class AiSettings
      */
     public function actorInGroups(User $actor, string $key): bool
     {
-        if ($actor->isGuest()) {
+        if ($actor->isGuest() || self::isSuspended($actor)) {
             return false;
         }
 
@@ -281,6 +281,23 @@ final class AiSettings
         }
 
         return $actor->groups->pluck('id')->map(static fn ($id): int => (int) $id)->intersect($allowed)->isNotEmpty();
+    }
+
+    /**
+     * Suspenso (flarum/suspend) não usa a IA: a suspensão tira permissões, mas
+     * não grupos, e o acesso aqui é por grupo.
+     */
+    public static function isSuspended(User $actor): bool
+    {
+        $until = $actor->getAttribute('suspended_until');
+
+        if (is_string($until) && $until !== '') {
+            $until = strtotime($until) ?: null;
+
+            return $until !== null && $until > time();
+        }
+
+        return $until instanceof \DateTimeInterface && $until > new \DateTimeImmutable();
     }
 
     /** Pode conversar com o bot, usar o ajudante do editor e perguntar na busca. */

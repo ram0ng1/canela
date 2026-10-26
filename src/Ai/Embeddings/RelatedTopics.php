@@ -55,11 +55,17 @@ final class RelatedTopics
      */
     public function related(Discussion $discussion, User $actor, int $limit = 5): array
     {
-        $candidates = $this->cache->remember('canela.ai.related.'.$discussion->id, 3600, function () use ($discussion): array {
-            $vector = $this->vectorFor($discussion);
+        $key = 'canela.ai.related.'.$discussion->id;
+        $candidates = $this->cache->get($key);
 
-            return $vector === [] ? [] : $this->nearest($discussion->id, $vector);
-        });
+        if (! is_array($candidates)) {
+            // Só o vetor já guardado: gerar o que falta (uma chamada paga) é
+            // trabalho do `canela:ai-embed` de hora em hora, nunca da página.
+            $vector = TopicEmbedding::query()->find($discussion->id)?->values() ?? [];
+            $candidates = $vector === [] ? [] : $this->nearest($discussion->id, $vector);
+            // Sem vetor ainda, a resposta vazia dura pouco: o comando logo o gera.
+            $this->cache->put($key, $candidates, $vector === [] ? 600 : 3600);
+        }
 
         if ($candidates === []) {
             return [];
@@ -116,20 +122,6 @@ final class RelatedTopics
     public function probe(): int
     {
         return count($this->request('teste'));
-    }
-
-    /**
-     * @return list<float>
-     */
-    private function vectorFor(Discussion $discussion): array
-    {
-        try {
-            $this->embed($discussion);
-        } catch (LlmException $error) {
-            error_log('[ramon/canela] embeddings: '.$error->getMessage());
-        }
-
-        return TopicEmbedding::query()->find($discussion->id)?->values() ?? [];
     }
 
     /**

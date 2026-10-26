@@ -74,6 +74,11 @@ final class ContentTranslator
     /** Quando saiu a primeira chamada deste pedido (TIME_BUDGET). */
     private ?float $firstCallAt = null;
 
+    /** O limite diário de chamadas de quem pede (o visitante, por IP), além do global. */
+    private ?string $callerKey = null;
+
+    private int $callerLimit = 0;
+
     public function __construct(
         private readonly AiSettings $settings,
         private readonly LlmFactory $llm,
@@ -138,6 +143,16 @@ final class ContentTranslator
     public static function differs(?string $source, string $target): bool
     {
         return $source !== null && $source !== 'und' && LanguageDetector::base($source) !== LanguageDetector::base($target);
+    }
+
+    /**
+     * Um teto diário de chamadas só para este pedido (`$key` identifica quem
+     * pede): um visitante sozinho não gasta o limite global do fórum todo.
+     */
+    public function limitCaller(string $key, int $perDay): void
+    {
+        $this->callerKey = 'canela-ai-translate-caller:'.$key.':'.Carbon::now()->toDateString();
+        $this->callerLimit = $perDay;
     }
 
     /** Chamadas que ainda restam hoje, ou null sem limite. */
@@ -708,6 +723,15 @@ final class ContentTranslator
 
         if ($remaining !== null && $remaining <= 0) {
             return null;
+        }
+
+        if ($this->callerKey !== null) {
+            // add() + increment(): atômico, pedidos em paralelo não passam juntos.
+            $this->cache->add($this->callerKey, 0, 2 * 86400);
+
+            if ((int) $this->cache->increment($this->callerKey) > $this->callerLimit) {
+                return null;
+            }
         }
 
         $this->calls++;

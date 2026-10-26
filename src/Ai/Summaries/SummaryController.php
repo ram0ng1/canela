@@ -85,7 +85,7 @@ final class SummaryController implements RequestHandlerInterface
             throw new RouteNotFoundException();
         }
 
-        $this->usage->countRequest($actor);
+        $this->gate->claim($actor);
 
         return NdjsonStream::response(function (callable $write) use ($discussion, $actor, $canGenerate): void {
             $result = $this->summarizer->summarize($discussion, $actor, static fn (string $piece) => $write('delta', ['text' => $piece]));

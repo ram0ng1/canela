@@ -78,7 +78,9 @@ final class ForumSearchTool implements AiTool
             }
 
             $url = $this->links->discussion($discussion);
-            $excerpt = PostText::excerpt((string) ($discussion->firstPost?->content ?? ''), 300);
+            // Primeiro post escondido pela moderação não vai para o modelo.
+            $firstPost = $discussion->firstPost;
+            $excerpt = $firstPost && $firstPost->hidden_at === null ? PostText::excerpt((string) $firstPost->content, 300) : '';
 
             $items[] = ['id' => (string) $discussion->id, 'title' => $discussion->title, 'url' => $url];
             $lines[] = sprintf(

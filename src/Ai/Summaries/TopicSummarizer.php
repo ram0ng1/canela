@@ -16,6 +16,7 @@ namespace Ramon\Canela\Ai\Summaries;
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
 use Flarum\Post\CommentPost;
+use Flarum\User\Guest;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Collection;
 use Ramon\Canela\Ai\AiSettings;
@@ -24,6 +25,7 @@ use Ramon\Canela\Ai\Llm\LlmRequest;
 use Ramon\Canela\Ai\Llm\LlmResult;
 use Ramon\Canela\Ai\Tools\PostText;
 use Ramon\Canela\Ai\TopicSummary;
+use Ramon\Canela\Support\SchemaCache;
 
 /**
  * Os resumos de IA de um tópico: o completo ("Resumir", no mapa do tópico) e
@@ -48,6 +50,7 @@ final class TopicSummarizer
     public function __construct(
         private readonly AiSettings $settings,
         private readonly LlmFactory $llm,
+        private readonly SchemaCache $schema,
     ) {
     }
 
@@ -85,7 +88,13 @@ final class TopicSummarizer
      */
     public function summarize(Discussion $discussion, User $actor, callable $onText): LlmResult
     {
-        $posts = $this->posts($discussion, $actor);
+        // O resumo fica guardado e vale para todo leitor: nasce do que um
+        // visitante vê. Num tópico fechado a visitantes (tag restrita), do que
+        // quem pediu vê, mas sem postagens à espera de aprovação.
+        $guest = new Guest();
+        $posts = Discussion::query()->whereVisibleTo($guest)->whereKey($discussion->id)->exists()
+            ? $this->posts($discussion, $guest)
+            : $this->posts($discussion, $actor, approvedOnly: true);
 
         $result = $this->llm->make()->send(new LlmRequest(
             $this->settings->mainModel(),
@@ -114,7 +123,7 @@ final class TopicSummarizer
      */
     public function gist(Discussion $discussion): ?string
     {
-        $guest = new \Flarum\User\Guest();
+        $guest = new Guest();
         $posts = $this->posts($discussion, $guest, 3, 5);
 
         if ($posts->isEmpty()) {
@@ -149,12 +158,15 @@ final class TopicSummarizer
     /**
      * @return Collection<int, CommentPost>
      */
-    private function posts(Discussion $discussion, User $actor, int $head = self::HEAD, int $tail = self::TAIL): Collection
+    private function posts(Discussion $discussion, User $actor, int $head = self::HEAD, int $tail = self::TAIL, bool $approvedOnly = false): Collection
     {
+        $approved = $approvedOnly && $this->schema->hasColumn('posts', 'is_approved');
+
         $base = fn () => $discussion->comments()
             ->whereVisibleTo($actor)
             ->whereNull('hidden_at')
             ->where('is_private', false)
+            ->when($approved, static fn ($query) => $query->where('is_approved', true))
             ->with('user');
 
         $first = $base()->orderBy('number')->limit($head)->get();

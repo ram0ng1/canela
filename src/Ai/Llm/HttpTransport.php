@@ -58,6 +58,9 @@ final class HttpTransport
             'headers' => $headers + ['Content-Type' => 'application/json', 'Accept' => $onChunk ? 'text/event-stream' : 'application/json'],
             'body' => json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
             'http_errors' => false,
+            // Sem seguir redirecionamentos: o endereço configurado é o único
+            // destino (um 30x levaria a chave para outro host, ou para a rede interna).
+            'allow_redirects' => false,
             'connect_timeout' => 15,
             'timeout' => $timeout,
             'on_headers' => static function (ResponseInterface $response) use (&$status): void {

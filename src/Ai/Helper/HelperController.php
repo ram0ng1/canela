@@ -89,7 +89,7 @@ final class HelperController implements RequestHandlerInterface
         $context = trim(mb_substr((string) ($body['context'] ?? ''), 0, 300));
         $model = in_array($mode, HelperPrompts::FAST_MODES, true) ? $this->settings->fastModel() : $this->settings->mainModel();
 
-        $this->usage->countRequest($actor);
+        $this->gate->claim($actor);
 
         if ($mode === 'titles') {
             return $this->titles($actor, $model, $text);
