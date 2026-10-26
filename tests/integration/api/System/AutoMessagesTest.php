@@ -71,6 +71,16 @@ class AutoMessagesTest extends TestCase
         ]);
     }
 
+    /**
+     * A entrega síncrona (fila `sync`) busca o sistema, o destinatário e o
+     * ator pelo id mais de uma vez na mesma requisição: um número fixo e
+     * pequeno, que não cresce com os dados.
+     */
+    protected function allowedRepeatedQueries(): array
+    {
+        return ['select * from "users" where "users"."id" = ? limit ?'];
+    }
+
     private function json(ResponseInterface $response): array
     {
         return json_decode((string) $response->getBody(), true);
@@ -141,11 +151,15 @@ class AutoMessagesTest extends TestCase
     }
 
     /**
-     * Suspender alguém manda o aviso de suspensão, com o motivo.
+     * Suspender alguém manda o aviso de suspensão, com o motivo (no texto
+     * configurado no admin).
      */
     #[Test]
     public function suspensao_manda_aviso(): void
     {
+        // O texto do admin substitui o padrão, com os marcadores preenchidos.
+        $this->setting('canela.sysmsg_silenced_by_staff_body', 'Motivo: {reason}. Até {suspended_till}.');
+
         $response = $this->send($this->request('PATCH', '/api/users/2', [
             'authenticatedAs' => 1,
             'json' => ['data' => ['type' => 'users', 'id' => '2', 'attributes' => [
@@ -159,7 +173,8 @@ class AutoMessagesTest extends TestCase
 
         $messageId = $this->database()->table('canela_system_messages')->where('user_id', 2)->value('dialog_message_id');
         $content = (string) $this->database()->table('dialog_messages')->where('id', $messageId)->value('content');
-        $this->assertStringContainsString('Spam repetido', $content);
+        $this->assertStringContainsString('Motivo: Spam repetido.', $content);
+        $this->assertStringNotContainsString('{suspended_till}', $content);
     }
 
     /**
@@ -182,6 +197,9 @@ class AutoMessagesTest extends TestCase
             ]));
 
             $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
+
+            // Fora da janela do limitador de postagens do core.
+            $this->database()->table('posts')->where('user_id', 2)->update(['created_at' => Carbon::now()->subMinute()]);
         }
 
         $this->assertSame(['custom_primeira'], $this->sentTo(2));
@@ -204,7 +222,9 @@ class AutoMessagesTest extends TestCase
             ]]],
         ]));
 
-        $this->assertEquals(422, $response->getStatusCode());
+        // 403 pela política do flarum/messages (ninguém escreve ao sistema)
+        // ou 422 pelo BlockRepliesToSystem: de um jeito ou de outro, recusada.
+        $this->assertContains($response->getStatusCode(), [403, 422]);
         $this->assertSame(1, $this->database()->table('dialog_messages')->where('dialog_id', 20)->count());
     }
 
