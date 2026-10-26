@@ -151,6 +151,14 @@ export function draftChanged(): boolean {
 }
 
 /**
+ * O salvamento em andamento, com o corpo do composer que ele grava. Dois
+ * salvamentos seguidos do mesmo composer (o autosave e o "guardar" ao fechar,
+ * por exemplo) não correm juntos: o segundo espera o primeiro e grava por cima
+ * do rascunho que ele criou, em vez de criar outro.
+ */
+let inFlight: { body: unknown; promise: Promise<FofDraft | null> } | null = null;
+
+/**
  * Salva o composer aberto no fof. Diferente do `saveDraft()` do fof, devolve a
  * promessa e só pendura o rascunho criado no composer se ele ainda é o mesmo:
  * salvar e fechar logo em seguida não deixa um rascunho velho no composer
@@ -162,36 +170,51 @@ export function saveCurrentDraft(): Promise<void> {
   if (!draftsOn() || !draftChanged() || typeof composer.data !== 'function') return Promise.resolve();
 
   const body = composer.body;
+  // O texto de agora: quem fecha o composer logo depois não muda o que se grava.
   const data = payload(composer.data());
-  const existing: FofDraft | null = composer.draft || null;
+  const current: FofDraft | null = composer.draft || null;
 
-  // Apagado (na lista, em outra aba) antes de salvar: não ressuscita.
-  if (existing && existing.id() && !existing.exists) return Promise.resolve();
+  const run = (existing: FofDraft | null): Promise<FofDraft | null> => {
+    // Apagado (na lista, em outra aba) antes de salvar: não ressuscita.
+    if (existing && existing.id() && !existing.exists) return Promise.resolve(null);
 
+    const request = existing ? existing.save(data) : (app.store.createRecord('drafts') as unknown as FofDraft).save(data);
+
+    return request
+      .then((saved: FofDraft) => {
+        saved.loadRelationships(true);
+
+        if (!existing) {
+          adjustCount(1);
+          if (composer.body === body) composer.draft = saved;
+        }
+
+        if (composer.body === body) composer.canelaDraftSavedAt = Date.now();
+
+        return saved;
+      })
+      .catch(() => {
+        if (composer.body === body) composer.canelaDraftError = true;
+
+        return null;
+      });
+  };
+
+  const previous = inFlight && inFlight.body === body ? inFlight.promise : null;
+  const promise = previous ? previous.then((saved) => run(saved || current)) : run(current);
+
+  inFlight = { body, promise };
   composer.saving = true;
   composer.canelaDraftError = false;
   m.redraw();
 
-  const request = existing ? existing.save(data) : (app.store.createRecord('drafts') as unknown as FofDraft).save(data);
+  return promise.then(() => {
+    if (inFlight?.promise !== promise) return;
 
-  return request
-    .then((saved: FofDraft) => {
-      saved.loadRelationships(true);
-
-      if (!existing) {
-        adjustCount(1);
-        if (composer.body === body) composer.draft = saved;
-      }
-
-      if (composer.body === body) composer.canelaDraftSavedAt = Date.now();
-    })
-    .catch(() => {
-      if (composer.body === body) composer.canelaDraftError = true;
-    })
-    .finally(() => {
-      composer.saving = false;
-      m.redraw();
-    });
+    inFlight = null;
+    composer.saving = false;
+    m.redraw();
+  });
 }
 
 /** Apaga o rascunho do composer aberto, se houver. */
