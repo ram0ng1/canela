@@ -196,7 +196,7 @@
 
 .CanelaBugAdmin-buttons {
   display: flex;
-  grid-column: 1 / -1;
+  grid-column: ~"1 / -1";
   gap: 0.5em;
 }
 
@@ -277,6 +277,10 @@
   }
 }
 
-.CanelaBugAdmin-buttons + .CanelaBugAdmin-buttons {
-  margin-top: 0.25em;
+.CanelaBugAdmin-aiRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.9em;
 }

@@ -364,6 +364,25 @@ export default class ReportManager extends AdminComponent {
           </div>
         )}
 
+        <div className="CanelaBugAdmin-aiRow">
+          <Button
+            className="Button"
+            icon="fas fa-wand-magic-sparkles"
+            onclick={() => this.copy(`prompt${report.id}`, () => fetchText(apiUrl(`/canela-bug-reports/${report.id}/prompt`)).then(copyText))}
+          >
+            {trans(`${KEY}.copy_prompt`, 'Copiar para IA')}
+          </Button>
+          {this.copiedNote(`prompt${report.id}`)}
+          <Button
+            className="Button"
+            icon="far fa-image"
+            onclick={() => this.copy(`image${report.id}`, () => copyImage(apiUrl(`/canela-bug-reports/${report.id}/region`)))}
+          >
+            {trans(`${KEY}.copy_image`, 'Copiar captura')}
+          </Button>
+          {this.copiedNote(`image${report.id}`)}
+        </div>
+
         <div className="CanelaBugAdmin-actions">
           <label className="CanelaBugAdmin-status">
             <span>{trans(`${KEY}.status_label`, 'Status')}</span>
@@ -389,25 +408,6 @@ export default class ReportManager extends AdminComponent {
               oninput={(e: InputEvent) => (this.notes[report.id] = (e.target as HTMLTextAreaElement).value)}
             />
           </label>
-
-          <div className="CanelaBugAdmin-buttons">
-            <Button
-              className="Button"
-              icon="fas fa-wand-magic-sparkles"
-              onclick={() => this.copy(`prompt${report.id}`, () => fetchText(apiUrl(`/canela-bug-reports/${report.id}/prompt`)).then(copyText))}
-            >
-              {trans(`${KEY}.copy_prompt`, 'Copiar para IA')}
-            </Button>
-            {this.copiedNote(`prompt${report.id}`)}
-            <Button
-              className="Button"
-              icon="far fa-image"
-              onclick={() => this.copy(`image${report.id}`, () => copyImage(apiUrl(`/canela-bug-reports/${report.id}/region`)))}
-            >
-              {trans(`${KEY}.copy_image`, 'Copiar captura')}
-            </Button>
-            {this.copiedNote(`image${report.id}`)}
-          </div>
 
           <div className="CanelaBugAdmin-buttons">
             <Button className="Button Button--primary" loading={busy} onclick={() => this.save(report, { note: this.notes[report.id] ?? '' })}>
