@@ -55,4 +55,15 @@ app.initializers.add(EXTENSION_ID, () => {
     'start',
     80
   );
+
+  // Quem pode relatar problemas (extend/bugreports.php).
+  app.registry.for(EXTENSION_ID).registerPermission(
+    {
+      icon: 'fas fa-bug',
+      label: trans(`${KEY}.bug_reports.permission`, 'Relatar problemas (marcar a tela e enviar)'),
+      permission: 'canela.reportBugs',
+    },
+    'reply',
+    40
+  );
 });

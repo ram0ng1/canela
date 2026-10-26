@@ -1,0 +1,322 @@
+// Relatar problema: o botão flutuante (canto inferior direito), a camada de
+// seleção por cima da página, o aviso de captura e os dois modais.
+
+.CanelaBugButton {
+  position: fixed;
+  right: var(--cn-space-4);
+  bottom: var(--cn-space-4);
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--cn-space-2);
+}
+
+.CanelaBugButton-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--cn-border);
+  border-radius: 50%;
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+  color: var(--cn-primary-high);
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--cn-transition-state);
+
+  &:hover,
+  .CanelaBugButton.open & {
+    background: var(--cn-accent);
+    border-color: var(--cn-accent);
+    color: var(--cn-accent-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--cn-ring);
+    outline-offset: 2px;
+  }
+}
+
+.CanelaBugButton-menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  padding: var(--cn-space-1);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+}
+
+.CanelaBugButton-item {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  color: var(--cn-primary-very-high);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  .icon {
+    width: 1.1em;
+    color: var(--cn-primary-medium);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+    outline: none;
+  }
+}
+
+// A camada de seleção cobre a tela toda; o resto da página não rola nem
+// recebe cliques enquanto ela está aberta.
+.CanelaBugSelecting,
+.CanelaBugSelecting body {
+  overflow: hidden;
+}
+
+.CanelaBugSelect {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  outline: none;
+}
+
+.CanelaBugSelect-layer {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 18, 26, 0.18);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.CanelaBugSelect-rect {
+  position: absolute;
+  border: 2px dashed var(--cn-danger);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 9999px rgba(15, 18, 26, 0.32);
+  pointer-events: none;
+}
+
+.CanelaBugSelect-bar {
+  position: absolute;
+  top: var(--cn-space-4);
+  left: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cn-space-2);
+  max-width: calc(100% - 2 * var(--cn-space-4));
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  background: var(--cn-surface);
+  box-shadow: var(--cn-shadow-dropdown);
+  transform: translateX(-50%);
+}
+
+.CanelaBugSelect-hint {
+  color: var(--cn-primary-very-high);
+  font-weight: 600;
+
+  .icon {
+    margin-right: 0.35em;
+    color: var(--cn-danger);
+  }
+}
+
+.CanelaBugToast {
+  position: fixed;
+  bottom: var(--cn-space-4);
+  left: 50%;
+  z-index: 2001;
+  padding: var(--cn-space-2) var(--cn-space-4);
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-primary-very-high);
+  color: var(--cn-background);
+  transform: translateX(-50%);
+}
+
+// O modal do envio.
+.CanelaBugModal-preview {
+  margin: 0 0 var(--cn-space-4);
+  text-align: center;
+
+  img {
+    display: block;
+    max-width: 100%;
+    max-height: 260px;
+    margin: 0 auto;
+    border: 2px dashed var(--cn-danger);
+    border-radius: var(--cn-radius);
+    object-fit: contain;
+  }
+
+  figcaption {
+    margin-top: var(--cn-space-1);
+  }
+}
+
+.CanelaBugModal-kinds {
+  margin: 0 0 var(--cn-space-4);
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: var(--cn-space-2);
+    font-weight: 600;
+  }
+}
+
+.CanelaBugModal-kindList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cn-space-2);
+}
+
+.CanelaBugModal-kind {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  color: var(--cn-primary-high);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  .icon {
+    color: var(--cn-primary-medium);
+  }
+
+  &:hover {
+    background: var(--cn-hover);
+  }
+
+  &.active {
+    border-color: var(--cn-accent);
+    background: var(--cn-accent-low);
+    color: var(--cn-primary-very-high);
+
+    .icon {
+      color: var(--cn-accent);
+    }
+  }
+}
+
+.CanelaBugModal-texts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cn-space-3);
+}
+
+@media (max-width: 767.98px) {
+  .CanelaBugModal-kindList,
+  .CanelaBugModal-texts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .CanelaBugButton {
+    right: var(--cn-space-3);
+    bottom: calc(var(--cn-space-3) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+// O status, no fórum e no admin.
+.CanelaBugStatus {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-primary-low);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+  font-weight: 600;
+  white-space: nowrap;
+
+  &--open {
+    background: var(--cn-accent-low);
+    color: var(--cn-accent);
+  }
+
+  &--in_progress,
+  &--reviewed {
+    background: var(--cn-highlight);
+    color: var(--cn-primary-very-high);
+  }
+
+  &--fixed {
+    background: var(--cn-success);
+    color: #fff;
+  }
+}
+
+// "Meus relatórios".
+.CanelaBugMine-empty {
+  color: var(--cn-primary-medium);
+  text-align: center;
+}
+
+.CanelaBugMine-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaBugMine-item {
+  display: flex;
+  gap: var(--cn-space-3);
+  padding: var(--cn-space-3) 0;
+  border-top: 1px solid var(--cn-border);
+
+  &:first-child {
+    border-top: 0;
+  }
+}
+
+.CanelaBugMine-thumb {
+  flex: none;
+  width: 96px;
+  height: 64px;
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+  object-fit: cover;
+}
+
+.CanelaBugMine-body {
+  min-width: 0;
+}
+
+.CanelaBugMine-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cn-space-2);
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+.CanelaBugMine-description {
+  margin: var(--cn-space-1) 0 0;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.CanelaBugMine-note {
+  margin: var(--cn-space-2) 0 0;
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+}
