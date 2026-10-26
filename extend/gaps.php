@@ -116,7 +116,7 @@ $extenders = [
 // O ponto de novidades por categoria só existe com o flarum/tags habilitado
 // (instalado mas desabilitado, o ApiResource registraria as rotas /api/tags).
 $extenders[] = (new Extend\Conditional())
-    ->whenExtensionEnabled('flarum-tags', static fn (): array => [
+    ->whenExtensionEnabled('flarum-tags', fn () => [
         (new Extend\ApiResource(Flarum\Tags\Api\Resource\TagResource::class))
             ->fields(TagResourceFields::class),
     ]);

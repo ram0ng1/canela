@@ -43,7 +43,7 @@ return [
     // Tempo real: só com o flarum/realtime, quem está com o tópico aberto vê
     // a contagem mudar sem recarregar. Sem ele o ouvinte nem é registrado.
     (new Extend\Conditional())
-        ->whenExtensionEnabled('flarum-realtime', static fn (): array => [
+        ->whenExtensionEnabled('flarum-realtime', fn () => [
             (new Extend\Event())->listen(Toggled::class, BroadcastMeToo::class),
         ]),
 ];

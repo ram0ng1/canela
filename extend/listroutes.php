@@ -47,7 +47,7 @@ return [
         ->get('/c/{path:.+}', 'canela.category_redirect', RedirectCategory::class),
 
     // Fixados no topo da inicial e da tag, em ordem de criação (ver a classe).
-    (new Extend\Conditional())->whenExtensionEnabled('flarum-sticky', static fn (): array => [
+    (new Extend\Conditional())->whenExtensionEnabled('flarum-sticky', fn () => [
         (new Extend\SearchDriver(DatabaseSearchDriver::class))
             ->addMutator(DiscussionSearcher::class, PinStickiedToTop::class),
     ]),

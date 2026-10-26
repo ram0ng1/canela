@@ -40,7 +40,7 @@ return [
     // As classes do fof só são citadas dentro das closures: com a extensão
     // desligada, nada disso é avaliado.
     (new Extend\Conditional())
-        ->whenExtensionEnabled('fof-polls', static fn (): array => [
+        ->whenExtensionEnabled('fof-polls', fn () => [
             (new Extend\SearchDriver(DatabaseSearchDriver::class))
                 ->addFilter(PostSearcher::class, VotedByFilter::class),
         ]),

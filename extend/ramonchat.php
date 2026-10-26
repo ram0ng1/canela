@@ -54,7 +54,7 @@ return (static function (): array {
     $oneOf = static fn (array $allowed, string $fallback) => static fn ($value) => in_array($value, $allowed, true) ? $value : $fallback;
 
     return [
-        (new Extend\Conditional())->whenExtensionEnabled('ramon-chat', static fn (): array => [
+        (new Extend\Conditional())->whenExtensionEnabled('ramon-chat', fn () => [
             $settings,
 
             (new Extend\ApiResource(ForumResource::class))
@@ -97,7 +97,7 @@ return (static function (): array {
             (new Extend\Event())
                 ->listen(MessageWasSent::class, NotifyChatActivity::class),
 
-            (new Extend\Conditional())->whenExtensionEnabled('flarum-tags', static fn (): array => [
+            (new Extend\Conditional())->whenExtensionEnabled('flarum-tags', fn () => [
                 (new Extend\Event())->listen(\Flarum\Tags\Event\Deleting::class, DeleteTagChannels::class),
             ]),
         ]),

@@ -22,7 +22,11 @@ use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Http\Middleware\AuthenticateWithHeader;
 use Flarum\Http\Middleware\AuthenticateWithSession;
+use Flarum\Post\Event\Deleting as PostDeleting;
+use Flarum\Post\Event\Hidden as PostHidden;
 use Flarum\Settings\Event\Saving;
+use Flarum\Suspend\Event\Suspended;
+use Flarum\Suspend\Event\Unsuspended;
 use Flarum\User\User;
 use Ramon\Canela\System\Access\SystemPasswordChecker;
 use Ramon\Canela\System\Access\SystemUserPolicy;
@@ -82,6 +86,23 @@ $extenders = [
             }
         }),
 
+    // Os gatilhos das extensões opcionais, só com elas habilitadas.
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-flags', fn () => [
+            (new Extend\Event())
+                ->listen(PostHidden::class, [SendAutoMessages::class, 'postHidden'])
+                ->listen(PostDeleting::class, [SendAutoMessages::class, 'postDeleting']),
+        ])
+        ->whenExtensionEnabled('flarum-suspend', fn () => [
+            (new Extend\Event())
+                ->listen(Suspended::class, [SendAutoMessages::class, 'userSuspended'])
+                ->listen(Unsuspended::class, [SendAutoMessages::class, 'userUnsuspended']),
+        ])
+        ->whenExtensionEnabled('ramon-verified', fn () => [
+            (new Extend\Event())
+                ->listen('Ramon\Verified\Event\UserVerified', [SendAutoMessages::class, 'userVerified']),
+        ]),
+
     // As personalizadas de "N dias depois do cadastro".
     (new Extend\Console())
         ->command(SendDelayedMessages::class)
@@ -106,7 +127,7 @@ $extenders[] = $settings;
 // Pelo Conditional, e não por class_exists(): com o pacote instalado mas
 // desabilitado, o ApiResource registraria as rotas /api/dialogs dele.
 $extenders[] = (new Extend\Conditional())
-    ->whenExtensionEnabled('flarum-messages', static fn (): array => [
+    ->whenExtensionEnabled('flarum-messages', fn () => [
         (new Extend\Event())
             ->listen(\Flarum\Messages\DialogMessage\Event\Creating::class, BlockRepliesToSystem::class),
 

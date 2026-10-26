@@ -12,7 +12,6 @@
 namespace Ramon\Canela;
 
 use Flarum\Extend;
-use Ramon\Canela\Support\Log;
 use Ramon\Canela\Theme\FontFamily;
 use Ramon\Canela\Theme\Loader\LoaderAdminPayload;
 use Ramon\Canela\Theme\Loader\LoaderLess;
@@ -271,56 +270,49 @@ foreach ($forumSettings as $key => [$attributeName, $default, $cast]) {
 /*
  * Os recursos com backend (marcadores, visualizações, emblemas, diretório…)
  * moram cada um em extend/<recurso>.php, que devolve a própria lista de
- * extenders. Assim cada recurso fica inteiro num lugar, e o tema base não
- * precisa saber deles.
+ * extenders. A lista é fixa, como num extend.php da FoF: um recurso que falha
+ * no boot aparece no log do Flarum em vez de sumir em silêncio.
+ *
+ * O require roda numa closure estática para cada arquivo ter o próprio escopo:
+ * direto aqui, um `$settings = …` num recurso sobrescreveria o `$settings` do
+ * tema base, que então seria registrado duas vezes (e perderia os padrões).
  */
-$features = [];
+$feature = static fn (string $name): array => require __DIR__.'/extend/'.$name.'.php';
 
-// O require roda numa closure estática para cada arquivo ter o próprio escopo:
-// direto aqui, um `$settings = …` num recurso sobrescreveria o `$settings` do
-// tema base, que então seria registrado duas vezes (e perderia os padrões).
-$requireFeature = static fn (string $file): array => require $file;
-
-// Todo arquivo em extend/ é carregado, em ordem alfabética. A lista vem só do
-// disco, nunca da requisição; quem não deve rodar em produção não entra em
-// extend/.
-$featureFiles = glob(__DIR__.'/extend/*.php') ?: [];
-
-// Recursos que dão lugar a uma extensão própria com o mesmo papel: com ela
-// habilitada, o do tema nem registra rotas, API ou configurações (e o tema
-// adapta a extensão, em thirdparty/). Duas rotas /chat derrubariam o boot.
-$yieldsTo = [
-    'chat' => 'ramon-chat',
+$features = [
+    ...$feature('activity'),
+    ...$feature('ai'),
+    ...$feature('auth'),
+    ...$feature('backgrounds'),
+    ...$feature('badges'),
+    ...$feature('bookmarks'),
+    ...$feature('bugreports'),
+    // O chat dá lugar ao ramon/chat, quando ele está habilitado: duas rotas
+    // /chat derrubariam o boot (o tema adapta a extensão, em thirdparty/).
+    (new Extend\Conditional())
+        ->whenExtensionDisabled('ramon-chat', fn () => $feature('chat')),
+    ...$feature('community'),
+    ...$feature('composer'),
+    ...$feature('cooked'),
+    ...$feature('events'),
+    ...$feature('extras'),
+    ...$feature('gaps'),
+    ...$feature('links'),
+    ...$feature('listroutes'),
+    ...$feature('messages'),
+    ...$feature('metoo'),
+    ...$feature('preferences'),
+    ...$feature('preload'),
+    ...$feature('profile'),
+    ...$feature('ramonchat'),
+    ...$feature('realtime'),
+    ...$feature('stats'),
+    ...$feature('system'),
+    ...$feature('topic'),
+    ...$feature('translation'),
+    ...$feature('usersummary'),
+    ...$feature('validation'),
 ];
-
-foreach ($featureFiles as $featureFile) {
-    $feature = basename($featureFile, '.php');
-
-    if (isset($yieldsTo[$feature])) {
-        $features[] = (new Extend\Conditional())->whenExtensionDisabled(
-            $yieldsTo[$feature],
-            static function () use ($requireFeature, $featureFile, $feature): array {
-                try {
-                    return $requireFeature($featureFile);
-                } catch (\Throwable $error) {
-                    Log::warning(sprintf('recurso %s desligado: %s', $feature, $error->getMessage()));
-
-                    return [];
-                }
-            }
-        );
-
-        continue;
-    }
-
-    // Um recurso que falha ao carregar fica de fora, e o fórum continua no ar
-    // com o resto: melhor um recurso a menos do que um erro 500 no site todo.
-    try {
-        $features = array_merge($features, $requireFeature($featureFile));
-    } catch (\Throwable $error) {
-        Log::warning(sprintf('recurso %s desligado: %s', basename($featureFile), $error->getMessage()));
-    }
-}
 
 return [
     ...$features,
@@ -373,13 +365,13 @@ return [
     // filhas das tags principais vêm com o fórum, como o `tags.parent` do
     // flarum/tags. Sem isso a relação só chegava com o pedido da própria tag,
     // depois de a página abrir, e os cartões apareciam atrasados.
-    (new Extend\Conditional())->whenExtensionEnabled('flarum-tags', static fn (): array => [
+    (new Extend\Conditional())->whenExtensionEnabled('flarum-tags', fn () => [
         (new Extend\ApiResource(\Flarum\Api\Resource\ForumResource::class))
             ->endpoint(\Flarum\Api\Endpoint\Show::class, static fn (\Flarum\Api\Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['tags.children'])),
     ]),
 
     // Wardrobe: só o tema padrão é aquecido a cada recompilação (ver LazyThemeAssets).
-    (new Extend\Conditional())->whenExtensionEnabled('ernestdefoe-wardrobe', static fn (): array => [
+    (new Extend\Conditional())->whenExtensionEnabled('ernestdefoe-wardrobe', fn () => [
         (new Extend\ServiceProvider())->register(\Ramon\Canela\Support\WardrobeServiceProvider::class),
     ]),
 

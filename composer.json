@@ -41,7 +41,9 @@
         "ernestdefoe/wardrobe": "^1.1",
         "ramon/chat": "^0.3",
         "flarum/testing": "^2.0",
-        "flarum/phpstan": "^2.0"
+        "flarum/phpstan": "^2.0",
+        "flarum/suspend": "^2.0.0",
+        "flarum/flags": "^2.0.0"
     },
     "suggest": {
         "flarum/tags": "Categories and tags in the sidebar, the discussion list and the tags page.",

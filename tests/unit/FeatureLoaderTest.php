@@ -7,9 +7,9 @@ namespace Ramon\Canela\Tests\unit;
 use PHPUnit\Framework\TestCase;
 
 /**
- * O extend.php carrega todo arquivo em extend/. Um recurso que não devolve
- * uma lista de extenders derruba o boot, e a lista de recursos nunca pode vir
- * da requisição.
+ * O extend.php carrega uma lista fixa de arquivos de extend/. Um arquivo fora
+ * da lista nunca roda, um recurso que não devolve uma lista de extenders
+ * derruba o boot, e a lista de recursos nunca pode vir da requisição.
  */
 final class FeatureLoaderTest extends TestCase
 {
@@ -33,6 +33,25 @@ final class FeatureLoaderTest extends TestCase
     {
         foreach (glob($this->root().'/extend/*.php') ?: [] as $file) {
             self::assertMatchesRegularExpression('/^\s*return\s/m', (string) file_get_contents($file), basename($file).' precisa devolver a lista de extenders');
+        }
+    }
+
+    public function test_todo_arquivo_de_recurso_esta_na_lista(): void
+    {
+        $source = (string) file_get_contents($this->root().'/extend.php');
+
+        foreach (glob($this->root().'/extend/*.php') ?: [] as $file) {
+            $name = basename($file, '.php');
+
+            self::assertStringContainsString("\$feature('$name')", $source, "extend/$name.php não está na lista do extend.php");
+        }
+
+        preg_match_all('/\$feature\(\'([a-z0-9_-]+)\'\)/', $source, $listed);
+
+        self::assertNotEmpty($listed[1]);
+
+        foreach ($listed[1] as $name) {
+            self::assertFileExists($this->root()."/extend/$name.php");
         }
     }
 
