@@ -78,10 +78,11 @@ class AutoMessagesTest extends TestCase
      */
     protected function allowedRepeatedQueries(): array
     {
-        // Nas duas grafias: aspas (SQLite, PostgreSQL) e crases (MySQL, MariaDB).
+        // Só o fim da consulta, para valer com prefixo de tabela, e nas duas
+        // grafias: aspas (SQLite, PostgreSQL) e crases (MySQL, MariaDB).
         return [
-            'select * from "users" where "users"."id" = ? limit ?',
-            'select * from `users` where `users`.`id` = ? limit ?',
+            'users"."id" = ? limit ?',
+            'users`.`id` = ? limit ?',
         ];
     }
 
