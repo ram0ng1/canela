@@ -16,7 +16,9 @@ namespace Ramon\Canela\Gaps;
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
 use Flarum\User\User;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Ramon\Canela\Stats\ReadStateVersion;
 
 /**
  * Quais categorias e etiquetas têm tópicos novos ou não lidos para quem
@@ -24,14 +26,23 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * Uma consulta só por requisição (as tags vêm todas juntas no documento do
  * fórum), e só olha as últimas duas semanas: um tópico antigo que a pessoa
- * nunca abriu não é "novidade".
+ * nunca abriu não é "novidade". O resultado fica em cache por pessoa (90 s),
+ * e ler um tópico, marcar tudo como lido ou postar o refaz na hora.
  */
 final class UnreadTags
 {
     private const DAYS = 14;
 
+    private const CACHE_TTL = 90;
+
     /** @var array<int, array<int, true>> */
-    private array $cache = [];
+    private array $memo = [];
+
+    public function __construct(
+        private readonly Cache $cache,
+        private readonly ReadStateVersion $version,
+    ) {
+    }
 
     /** @return array<int, true> ids das tags com novidade (as mães entram junto das filhas) */
     public function for(User $actor): array
@@ -40,7 +51,13 @@ final class UnreadTags
             return [];
         }
 
-        return $this->cache[(int) $actor->id] ??= $this->compute($actor);
+        $key = 'canela.unread_tags.'.$actor->id.'.'.md5(implode('|', [
+            $this->version->get((int) $actor->id),
+            (string) $actor->marked_all_as_read_at,
+            $actor->groups->pluck('id')->sort()->implode(','),
+        ]));
+
+        return $this->memo[(int) $actor->id] ??= $this->cache->remember($key, self::CACHE_TTL, fn (): array => $this->compute($actor));
     }
 
     /** @return array<int, true> */
