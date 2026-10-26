@@ -22,6 +22,7 @@ import installMessages from './features/messages';
 import installSystemUser from './features/system';
 import installEvents from './features/events';
 import installCooked from './features/cooked';
+import installBugReports from './features/bugreports';
 import installUserMenu from './usermenu';
 import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
@@ -90,6 +91,7 @@ app.initializers.add('ramon-canela', () => {
   installSystemUser();
   installEvents();
   installCooked();
+  installBugReports();
   installUserMenu();
   // A fila de revisão na página /flags (flarum/flags e approval).
   installReview();

@@ -13,6 +13,7 @@ export type GroupKey =
   | 'messages'
   | 'community'
   | 'moderation'
+  | 'bugreports'
   | 'system'
   | 'integrations'
   | 'ai';

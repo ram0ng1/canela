@@ -24,5 +24,8 @@
         "format-check": "prettier --check src",
         "check-typings": "tsc --noEmit --emitDeclarationOnly false",
         "check": "npm run format-check && npm run check-typings && npm run lint"
+    },
+    "dependencies": {
+        "html-to-image": "1.11.13"
     }
 }
