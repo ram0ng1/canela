@@ -410,7 +410,7 @@ export class ReviewPanel extends Component {
   oncreate(vnode: Mithril.VnodeDOM<any, this>) {
     super.oncreate(vnode);
 
-    const state: any = (app as any).flags;
+    const state: any = app.flags;
 
     if (app.forum.attribute('canViewFlags') && state && typeof state.load === 'function') {
       Promise.resolve(state.load())
@@ -433,7 +433,7 @@ export class ReviewPanel extends Component {
   }
 
   view() {
-    const state: any = (app as any).flags;
+    const state: any = app.flags;
     const flags: any[] = app.forum.attribute('canViewFlags') && state && typeof state.getAllItems === 'function' ? state.getAllItems() : [];
     const rows: { date: number; item: Mithril.Children }[] = [];
 

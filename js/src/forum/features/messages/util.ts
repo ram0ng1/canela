@@ -86,7 +86,7 @@ export function groupLabel(group: Group): string {
 
 /** A rota da aba "Mensagens" do perfil, existindo. */
 export function hasProfileRoute(): boolean {
-  return !!(app.routes as any)['user.messages'];
+  return !!app.routes['user.messages'];
 }
 
 /**

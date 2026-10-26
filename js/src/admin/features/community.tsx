@@ -6,11 +6,12 @@ import Link from 'flarum/common/components/Link';
 import Button from 'flarum/common/components/Button';
 import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 
-import { AdminComponent, trans, getBool, getStr, saveSetting } from '../util';
+import { AdminComponent, trans, getBool, getStr, saveSetting, type LooseAttrs } from '../util';
 import { AdminNotice, SubDivider } from '../components/AdminCard';
 import AdminToggle from '../components/AdminToggle';
 import type { CardDef } from '../types';
 import AboutPagesEditor from './aboutPages';
+import type Mithril from 'mithril';
 
 const KEY = 'ramon-canela.admin.settings.community';
 
@@ -24,7 +25,7 @@ const SAVE_DELAY_MS = 600;
 export class AdminTextField extends AdminComponent {
   saveTimer: ReturnType<typeof setTimeout> | undefined;
 
-  onremove(vnode: any) {
+  onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
 
     // Sair da página no meio da pausa não pode perder o que foi digitado.
@@ -67,12 +68,12 @@ export class AdminTextField extends AdminComponent {
   }
 }
 
-const toggle = (name: string, label: string, help: string) => (
-  <AdminToggle settingKey={`canela.${name}`} label={trans(`${KEY}.${name}_label`, label)} help={trans(`${KEY}.${name}_help`, help)} />
+const toggle = (name: string) => (
+  <AdminToggle settingKey={`canela.${name}`} label={trans(`${KEY}.${name}_label`)} help={trans(`${KEY}.${name}_help`)} />
 );
 
-const text = (name: string, label: string, help: string, extra: Record<string, any> = {}) => (
-  <AdminTextField settingKey={`canela.${name}`} label={trans(`${KEY}.${name}_label`, label)} help={trans(`${KEY}.${name}_help`, help)} {...extra} />
+const text = (name: string, extra: Record<string, any> = {}) => (
+  <AdminTextField settingKey={`canela.${name}`} label={trans(`${KEY}.${name}_label`)} help={trans(`${KEY}.${name}_help`)} {...extra} />
 );
 
 /**
@@ -84,7 +85,7 @@ class GuidelinesPagePicker extends AdminComponent {
   pages: { id: string; title: string }[] | null = null;
   creating = false;
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
     this.load();
   }
@@ -122,7 +123,7 @@ class GuidelinesPagePicker extends AdminComponent {
 
     return (
       <div className="Form-group CanelaAdmin-guidelinesPage">
-        <label>{trans(`${KEY}.guidelines_page_label`, 'Página do fof/pages')}</label>
+        <label>{trans(`${KEY}.guidelines_page_label`)}</label>
         <select
           className="FormControl"
           value={current}
@@ -133,20 +134,15 @@ class GuidelinesPagePicker extends AdminComponent {
             saveSetting({ 'canela.guidelines_page': value });
           }}
         >
-          <option value="">{trans(`${KEY}.guidelines_page_none`, 'Nenhuma: usar o texto abaixo')}</option>
+          <option value="">{trans(`${KEY}.guidelines_page_none`)}</option>
           {(this.pages || []).map((p) => (
             <option value={p.id}>{p.title}</option>
           ))}
         </select>
-        <p className="helpText">
-          {trans(
-            `${KEY}.guidelines_page_help`,
-            'Escolhida uma página, o /guidelines mostra o conteúdo dela (com a visibilidade do próprio fof/pages) e o texto abaixo deixa de valer. O conteúdo passa a ser editado em fof/pages. Com o texto vazio, a página criada parte do modelo do tema.'
-          )}
-        </p>
+        <p className="helpText">{trans(`${KEY}.guidelines_page_help`)}</p>
         {!page && (
           <Button className="Button" loading={this.creating} disabled={this.pages === null} onclick={() => this.create()}>
-            {trans(`${KEY}.guidelines_page_create`, 'Criar a página "Diretrizes" com o texto atual')}
+            {trans(`${KEY}.guidelines_page_create`)}
           </Button>
         )}
       </div>
@@ -158,56 +154,38 @@ class GuidelinesPagePicker extends AdminComponent {
 const viewLink = (path: string) => (
   <p className="CanelaAdmin-viewLink">
     <Link href={app.forum.attribute<string>('baseUrl') + path} external={true} target="_blank">
-      {trans(`${KEY}.view_page`, 'Ver a página no fórum')} <i className="fas fa-arrow-up-right-from-square" aria-hidden="true" />
+      {trans(`${KEY}.view_page`)} <i className="fas fa-arrow-up-right-from-square" aria-hidden="true" />
     </Link>
   </p>
 );
 
-const help = (name: string, fallback: string) => () => trans(`${KEY}.${name}_help`, fallback);
+const help = (name: string) => () => trans(`${KEY}.${name}_help`);
 
 const COMMUNITY_CARDS: CardDef[] = [
   {
     id: 'about',
     group: 'community',
     icon: 'fas fa-circle-info',
-    title: () => trans(`${KEY}.section_about`, 'Página Sobre'),
-    description: help(
-      'about_enabled',
-      'A página com a descrição do fórum, um texto seu, o contato, a equipe e os números do site. Ganha um link no menu "Mais" da barra lateral.'
-    ),
+    title: () => trans(`${KEY}.section_about`),
+    description: help('about_enabled'),
     keywords: 'sobre about equipe staff administradores admins moderadores moderators estatísticas stats contato contact e-mail email texto text',
     master: 'canela.about_enabled',
     body: () => (
       <>
-        {text(
-          'about_text',
-          'Texto sobre o fórum',
-          'Aparece abaixo do título. Aceita Markdown e BBCode (os que o fórum tiver ligados); se o texto tiver tags HTML, ele vai como HTML, sem formatação.',
-          { multiline: true }
-        )}
+        {text('about_text', { multiline: true })}
         <SubDivider />
-        {text('about_contact_email', 'E-mail de contato', 'Mostrado na caixa "Fale conosco". Fica público: use um endereço da equipe.', {
+        {text('about_contact_email', {
           type: 'email',
           placeholder: 'contato@exemplo.com',
         })}
-        {text('about_contact_url', 'Página de contato', 'Um endereço completo (https://…) para um formulário ou página de contato.', {
+        {text('about_contact_url', {
           type: 'url',
           placeholder: 'https://',
         })}
         <SubDivider />
-        {toggle(
-          'about_show_staff',
-          'Mostrar a equipe',
-          'As listas "Nossos administradores" e "Nossos moderadores". Grupos ocultos ficam de fora para quem não pode vê-los.'
-        )}
-        {toggle(
-          'about_show_stats',
-          'Mostrar as estatísticas do site',
-          'Discussões, postagens, cadastros, usuários ativos e curtidas nas últimas 24 horas, 7 dias, 30 dias e desde sempre.'
-        )}
-        {getBool('canela.about_show_stats') && (
-          <AdminNotice>{trans(`${KEY}.stats_notice`, 'Os números contam só o que é público e são recalculados a cada 30 minutos.')}</AdminNotice>
-        )}
+        {toggle('about_show_staff')}
+        {toggle('about_show_stats')}
+        {getBool('canela.about_show_stats') && <AdminNotice>{trans(`${KEY}.stats_notice`)}</AdminNotice>}
         {viewLink('/about')}
       </>
     ),
@@ -216,22 +194,14 @@ const COMMUNITY_CARDS: CardDef[] = [
     id: 'guidelines',
     group: 'community',
     icon: 'fas fa-scale-balanced',
-    title: () => trans(`${KEY}.guidelines_enabled_label`, 'Página Diretrizes (/guidelines)'),
-    description: help(
-      'guidelines_enabled',
-      'As regras de convivência do fórum, numa aba ao lado de Sobre e no menu "Mais" da barra lateral. /faq leva à mesma página. A página só aparece com conteúdo (o texto abaixo ou uma página do fof/pages).'
-    ),
+    title: () => trans(`${KEY}.guidelines_enabled_label`),
+    description: help('guidelines_enabled'),
     keywords: 'diretrizes guidelines faq regras rules convivência',
     master: 'canela.guidelines_enabled',
     body: () => (
       <>
         {isExtensionEnabled('fof-pages') && <GuidelinesPagePicker />}
-        {text(
-          'guidelines_text',
-          'Texto das diretrizes',
-          'Aceita Markdown e BBCode; com tags HTML, vai como HTML. Vazio e sem página do fof/pages, a página Diretrizes não aparece.',
-          { multiline: true }
-        )}
+        {text('guidelines_text', { multiline: true })}
         {viewLink('/guidelines')}
       </>
     ),
@@ -240,11 +210,8 @@ const COMMUNITY_CARDS: CardDef[] = [
     id: 'about_pages',
     group: 'community',
     icon: 'fas fa-folder-plus',
-    title: () => trans(`${KEY}.section_about_pages`, 'Páginas da área Sobre'),
-    description: help(
-      'about_pages',
-      'Acrescente quantas páginas do fof/pages quiser como abas ao lado de Sobre e Diretrizes, cada uma com o layout de regras: título, índice de seções e cartões.'
-    ),
+    title: () => trans(`${KEY}.section_about_pages`),
+    description: help('about_pages'),
     keywords: 'páginas pages fof abas tabs sobre about diretrizes guidelines extras personalizadas custom ordem order ícone icon rótulo label',
     extensions: ['fof-pages'],
     body: () => <AboutPagesEditor />,
@@ -253,31 +220,16 @@ const COMMUNITY_CARDS: CardDef[] = [
     id: 'legal',
     group: 'community',
     icon: 'fas fa-file-contract',
-    title: () => trans(`${KEY}.section_legal_links`, 'Termos e privacidade'),
+    title: () => trans(`${KEY}.section_legal_links`),
     keywords: 'termos terms tos serviço service privacidade privacy política policy fof terms',
     body: () => (
       <>
-        {text(
-          'tos_url',
-          'Endereço dos Termos de Serviço',
-          'A aba "Termos de Serviço" e o endereço /tos levam para cá. Uma política do FoF Terms com "termos" no nome tem preferência.',
-          {
-            type: 'url',
-            placeholder: 'https://',
-          }
-        )}
-        {text(
-          'privacy_url',
-          'Endereço da Política de Privacidade',
-          'A aba "Política de Privacidade" e o endereço /privacy levam para cá. Uma política do FoF Terms com "privacidade" no nome tem preferência.',
-          { type: 'url', placeholder: 'https://' }
-        )}
-        <AdminNotice>
-          {trans(
-            `${KEY}.legal_notice`,
-            'Sem endereço (aqui ou no FoF Terms), a aba não aparece. As outras políticas do FoF Terms entram como abas com o próprio nome.'
-          )}
-        </AdminNotice>
+        {text('tos_url', {
+          type: 'url',
+          placeholder: 'https://',
+        })}
+        {text('privacy_url', { type: 'url', placeholder: 'https://' })}
+        <AdminNotice>{trans(`${KEY}.legal_notice`)}</AdminNotice>
       </>
     ),
   },
@@ -285,26 +237,14 @@ const COMMUNITY_CARDS: CardDef[] = [
     id: 'directory',
     group: 'community',
     icon: 'fas fa-users',
-    title: () => trans(`${KEY}.section_directory`, 'Diretório de usuários'),
-    description: help(
-      'directory_enabled',
-      'A tabela com curtidas recebidas e dadas, discussões, respostas e último acesso de cada pessoa, por período, ordenável por coluna.'
-    ),
+    title: () => trans(`${KEY}.section_directory`),
+    description: help('directory_enabled'),
     keywords: 'usuários users diretório directory membros members curtidas likes ranking período period visitantes guests /u',
     master: 'canela.directory_enabled',
     body: () => (
       <>
-        {toggle(
-          'directory_guests',
-          'Visitantes também podem ver',
-          'Por padrão, só quem tem a permissão "Ver a lista de usuários" (em Permissões) vê o diretório e os membros dos grupos. Ligado, visitantes sem conta também veem, menos num fórum fechado.'
-        )}
-        <AdminNotice>
-          {trans(
-            `${KEY}.directory_notice`,
-            'As colunas de curtidas aparecem com a extensão Likes ligada; Visitas e Postagens lidas, com as estatísticas do tema. Ordenar por último acesso segue a permissão do core de ver quando cada um esteve online.'
-          )}
-        </AdminNotice>
+        {toggle('directory_guests')}
+        <AdminNotice>{trans(`${KEY}.directory_notice`)}</AdminNotice>
         {viewLink('/u')}
       </>
     ),
@@ -313,21 +253,14 @@ const COMMUNITY_CARDS: CardDef[] = [
     id: 'groups',
     group: 'community',
     icon: 'fas fa-user-group',
-    title: () => trans(`${KEY}.section_groups`, 'Grupos'),
-    description: help(
-      'groups_enabled',
-      'Um cartão por grupo, com ícone, cor e número de membros, e uma página para cada um com os membros. Grupos ocultos só aparecem para quem pode vê-los.'
-    ),
+    title: () => trans(`${KEY}.section_groups`),
+    description: help('groups_enabled'),
     keywords: 'grupos groups membros members atividade activity perfil profile insígnias badges /g',
     master: 'canela.groups_enabled',
     body: () => (
       <>
-        {toggle('groups_activity', 'Aba Atividade', 'As postagens recentes dos membros na página do grupo.')}
-        {toggle(
-          'groups_profile_links',
-          'Grupos do perfil levam à página do grupo',
-          'As pílulas de grupo no cartão do perfil viram links para /g/nome-do-grupo.'
-        )}
+        {toggle('groups_activity')}
+        {toggle('groups_profile_links')}
         {viewLink('/g')}
       </>
     ),

@@ -14,12 +14,7 @@ import { AdminComponent, getStr, saveSetting, trans } from '../util';
 const KEY = 'ramon-canela.admin.settings.gaps';
 const SETTING = 'canela.not_found_template';
 
-const TEMPLATES: Record<string, { name: string; help: string }> = {
-  classic: { name: 'Clássico', help: 'Lupa ao lado do título, faixa de busca e tópicos populares e recentes.' },
-  minimal: { name: 'Minimalista', help: '"404" grande, o título, a busca numa linha e o botão. Sem tópicos.' },
-  split: { name: 'Dividido', help: 'Texto, busca e tópicos recentes à esquerda; o mapa num painel à direita.' },
-  signpost: { name: 'Placa', help: 'A placa de direção no centro, a faixa de busca e listas curtas de tópicos.' },
-};
+const TEMPLATES = ['classic', 'minimal', 'split', 'signpost'];
 
 /** Esboços dos layouts: retângulos e linhas, sem texto. */
 function sketch(template: string): Mithril.Children {
@@ -94,9 +89,9 @@ export default class NotFoundPicker extends AdminComponent {
     return (
       <div className="CanelaNotFoundPicker" style={{ '--cn-np-accent': accent }}>
         <div className="Form-group">
-          <label className="CanelaAdmin-label">{trans(`${KEY}.not_found_template_label`, 'Modelo')}</label>
+          <label className="CanelaAdmin-label">{trans(`${KEY}.not_found_template_label`)}</label>
           <div className="CanelaNotFoundPicker-grid" role="radiogroup">
-            {Object.keys(TEMPLATES).map((key) => (
+            {TEMPLATES.map((key) => (
               <button
                 key={key}
                 type="button"
@@ -106,14 +101,14 @@ export default class NotFoundPicker extends AdminComponent {
                 onclick={() => this.choose(key)}
               >
                 <span className="CanelaNotFoundPicker-sketch">{sketch(key)}</span>
-                <span className="CanelaNotFoundPicker-name">{trans(`${KEY}.not_found_template_${key}`, TEMPLATES[key].name)}</span>
+                <span className="CanelaNotFoundPicker-name">{trans(`${KEY}.not_found_template_${key}`)}</span>
               </button>
             ))}
           </div>
           <p className="helpText">
-            {trans(`${KEY}.not_found_template_${current}_help`, TEMPLATES[current]?.help ?? '')}{' '}
+            {TEMPLATES.includes(current) ? trans(`${KEY}.not_found_template_${current}_help`) : ''}{' '}
             <a href={`${forum}/canela-404-preview`} target="_blank" rel="noopener">
-              {trans(`${KEY}.not_found_template_view`, 'Ver a página')}
+              {trans(`${KEY}.not_found_template_view`)}
             </a>
           </p>
         </div>

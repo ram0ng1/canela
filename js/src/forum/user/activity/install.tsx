@@ -14,15 +14,14 @@
  * - Resolvido (`user.solved`, fof/best-answer): as respostas dela escolhidas
  *   como melhor resposta.
  *
- * As rotas entram direto em `app.routes` (o initializer roda antes do
- * `mount`); o servidor já atende `/u/{username}[/{filter}]` com a página do
- * perfil. As páginas descem em chunks próprios, sob demanda.
+ * As rotas ficam em ../extend.ts (Extend.Routes); o servidor já atende
+ * `/u/{username}[/{filter}]` com a página do perfil. As páginas descem em
+ * chunks próprios, sob demanda.
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import UserPage from 'flarum/forum/components/UserPage';
 import LinkButton from 'flarum/common/components/LinkButton';
-import UserPageResolver from 'flarum/forum/resolvers/UserPageResolver';
 import type ItemList from 'flarum/common/utils/ItemList';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
@@ -49,9 +48,9 @@ export const ACTIVITY_ORDER = [
   'uploads',
 ];
 
-type Tab = 'read' | 'reactions' | 'votes' | 'solved';
+export type Tab = 'read' | 'reactions' | 'votes' | 'solved';
 
-const TABS: Record<Tab, { key: string; icon: string; load: () => Promise<any> }> = {
+export const TABS: Record<Tab, { key: string; icon: string; load: () => Promise<any> }> = {
   read: { key: 'canelaRead', icon: 'fas fa-clock-rotate-left', load: () => import('./ReadUserPage') },
   reactions: { key: 'canelaReactions', icon: 'far fa-face-smile', load: () => import('./ReactionsUserPage') },
   votes: { key: 'canelaVotes', icon: 'fas fa-check-to-slot', load: () => import('./VotesUserPage') },
@@ -100,14 +99,6 @@ export function leaveIfHidden(tab: Tab, user: User): boolean {
 }
 
 export default function installActivity() {
-  (Object.keys(TABS) as Tab[]).forEach((tab) => {
-    app.routes[`user.${tab}`] = {
-      path: `/u/:username/${tab}`,
-      component: TABS[tab].load,
-      resolverClass: UserPageResolver,
-    } as any;
-  });
-
   extend(UserPage.prototype, 'navItems', function (this: UserPage, items: ItemList<Mithril.Children>) {
     const user = this.user;
 

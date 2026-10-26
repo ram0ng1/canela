@@ -22,11 +22,9 @@ import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import UserPage from 'flarum/forum/components/UserPage';
 import LinkButton from 'flarum/common/components/LinkButton';
 import Icon from 'flarum/common/components/Icon';
-import UserPageResolver from 'flarum/forum/resolvers/UserPageResolver';
 import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
-import DraftsUserPage from './DraftsUserPage';
 import {
   allDrafts,
   discardCurrentDraft,
@@ -95,7 +93,7 @@ function startAutosave(body: any): () => void {
  */
 function restoreReplyDraft(body: any): void {
   const discussion = body.attrs?.discussion;
-  const composer: any = app.composer;
+  const composer = app.composer;
   const composerBody = composer.body;
 
   if (!discussion || body.attrs?.draft || !composer.bodyMatches('flarum/forum/components/ReplyComposer')) return;
@@ -138,19 +136,11 @@ function confirmClose(composer: ComposerState): void {
 }
 
 export default function installDrafts() {
-  // A rota existe sempre (o initializer roda antes de o fórum carregar as
-  // opções); sem rascunhos a página manda para as postagens.
-  app.routes['user.drafts'] = {
-    path: '/u/:username/drafts',
-    component: DraftsUserPage,
-    resolverClass: UserPageResolver,
-  } as any;
-
   // Pelo nome do módulo: o ComposerBody vem num pedaço carregado sob demanda.
   extend('flarum/forum/components/ComposerBody' as any, 'oninit', function (this: any) {
     if (!draftsOn() || !draftableBody()) return;
 
-    (app.composer as any).canelaDraftError = false;
+    app.composer.canelaDraftError = false;
     this.canelaStopAutosave = startAutosave(this);
     restoreReplyDraft(this);
   });

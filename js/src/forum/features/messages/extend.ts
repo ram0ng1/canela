@@ -18,8 +18,8 @@ export default [
   // O cast: a tipagem do core 2.0.1 não aceita o UserPageResolver aqui, embora
   // o próprio flarum/likes o use do mesmo jeito.
   new Extend.Routes() //
-    .add('user.messages', '/u/:username/messages', UserMessagesPage, UserPageResolver as any)
-    .add('user.messages.box', '/u/:username/messages/:box', UserMessagesPage, UserPageResolver as any),
+    .add('user.messages', '/u/:username/messages', UserMessagesPage, UserPageResolver)
+    .add('user.messages.box', '/u/:username/messages/:box', UserMessagesPage, UserPageResolver),
 
   // "Fulano reagiu à sua mensagem" (reações nas mensagens privadas).
   new Extend.Notification() //

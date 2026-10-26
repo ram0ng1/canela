@@ -249,7 +249,7 @@ function installHeader(): void {
   // A enquete do fof/polls: o botão "Adicionar enquete" do cabeçalho vira um
   // item "Criar enquete" do menu ⊕ da barra.
   addMoreAction(() => {
-    const poll = (app.composer as any).canelaPoll;
+    const poll = app.composer.canelaPoll;
 
     if (!poll || !app.composer.isVisible()) return null;
 
@@ -265,7 +265,7 @@ function installHeader(): void {
   const takePoll = (body: any, items: ItemList<Mithril.Children>) => {
     const poll: any = items.has('polls') ? items.get('polls') : null;
 
-    (app.composer as any).canelaPoll = poll?.attrs?.onclick ? { onclick: poll.attrs.onclick, hasPoll: !!body.composer?.fields?.poll } : null;
+    app.composer.canelaPoll = poll?.attrs?.onclick ? { onclick: poll.attrs.onclick, hasPoll: !!body.composer?.fields?.poll } : null;
     if (poll) items.remove('polls');
   };
 

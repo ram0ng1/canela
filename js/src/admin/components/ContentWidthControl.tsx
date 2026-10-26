@@ -1,5 +1,6 @@
 import app from 'flarum/admin/app';
-import { AdminComponent, getStr, saveSetting, trans } from '../util';
+import { AdminComponent, getStr, saveSetting, trans, type LooseAttrs } from '../util';
+import type Mithril from 'mithril';
 
 const KEY = 'ramon-canela.admin.settings';
 const MIN = 960;
@@ -9,12 +10,12 @@ const DEFAULT = 1110;
 const SCREEN = 1440;
 
 /** As opções prontas: px, ou porcentagem da área ao lado da barra lateral. */
-const PRESETS: { value: string; label: string; fallback: string }[] = [
-  { value: '1110', label: 'content_width_default', fallback: 'Padrão' },
-  { value: '1280', label: 'content_width_wide', fallback: 'Largo' },
-  { value: '1440', label: 'content_width_wider', fallback: 'Extra largo' },
-  { value: '90%', label: 'content_width_90', fallback: '90%' },
-  { value: '100%', label: 'content_width_full', fallback: 'Largura toda' },
+const PRESETS: { value: string; label: string }[] = [
+  { value: '1110', label: 'content_width_default' },
+  { value: '1280', label: 'content_width_wide' },
+  { value: '1440', label: 'content_width_wider' },
+  { value: '90%', label: 'content_width_90' },
+  { value: '100%', label: 'content_width_full' },
 ];
 
 /**
@@ -32,7 +33,7 @@ export default class ContentWidthControl extends AdminComponent {
   frame: HTMLIFrameElement | null = null;
   loaded = false;
 
-  oninit(vnode: any) {
+  oninit(vnode: Mithril.Vnode<LooseAttrs, this>) {
     super.oninit(vnode);
     const stored = getStr('canela.content_width', String(DEFAULT)).trim();
 
@@ -85,7 +86,7 @@ export default class ContentWidthControl extends AdminComponent {
 
     return (
       <div className="Form-group CanelaAdmin-contentWidth">
-        <label className="CanelaAdmin-label">{trans(`${KEY}.content_width_label`, 'Largura do conteúdo')}</label>
+        <label className="CanelaAdmin-label">{trans(`${KEY}.content_width_label`)}</label>
         <div className="CanelaAdmin-contentWidth-presets" role="radiogroup">
           {PRESETS.map((preset) => (
             <button
@@ -98,7 +99,7 @@ export default class ContentWidthControl extends AdminComponent {
                 this.set(preset.value);
               }}
             >
-              {trans(`${KEY}.${preset.label}`, preset.fallback)}
+              {trans(`${KEY}.${preset.label}`)}
             </button>
           ))}
           <button
@@ -111,7 +112,7 @@ export default class ContentWidthControl extends AdminComponent {
               this.set(String(px));
             }}
           >
-            {trans(`${KEY}.content_width_custom`, 'Personalizado')}
+            {trans(`${KEY}.content_width_custom`)}
           </button>
         </div>
         {this.custom && (
@@ -127,12 +128,7 @@ export default class ContentWidthControl extends AdminComponent {
             <span className="CanelaAdmin-contentWidth-value">{`${px}px`}</span>
           </div>
         )}
-        <p className="helpText">
-          {trans(
-            `${KEY}.content_width_help`,
-            'A largura máxima do cartão de conteúdo (lista, discussão, perfil); na discussão, a coluna dos posts cresce junto. O padrão é 1110px; 90% e Largura toda acompanham a tela. A prévia mostra o fórum de verdade numa tela de 1440px.'
-          )}
-        </p>
+        <p className="helpText">{trans(`${KEY}.content_width_help`)}</p>
 
         <div className="CanelaAdmin-contentWidth-tabs">
           {(['index', 'discussion'] as const).map((page) => (
@@ -144,9 +140,7 @@ export default class ContentWidthControl extends AdminComponent {
                 this.loaded = false;
               }}
             >
-              {page === 'index'
-                ? trans(`${KEY}.content_width_preview_index`, 'Início')
-                : trans(`${KEY}.content_width_preview_discussion`, 'Discussão')}
+              {page === 'index' ? trans(`${KEY}.content_width_preview_index`) : trans(`${KEY}.content_width_preview_discussion`)}
             </button>
           ))}
         </div>
@@ -169,7 +163,7 @@ export default class ContentWidthControl extends AdminComponent {
               />
             )}
           </div>
-          <span className="CanelaAdmin-contentWidth-caption">{trans(`${KEY}.content_width_caption`, 'Tela de 1440px')}</span>
+          <span className="CanelaAdmin-contentWidth-caption">{trans(`${KEY}.content_width_caption`)}</span>
         </div>
       </div>
     );

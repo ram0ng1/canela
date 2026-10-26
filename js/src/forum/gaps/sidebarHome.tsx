@@ -85,7 +85,7 @@ function tagsWithNews(): Set<string> {
   app.store.all<Discussion>('discussions').forEach((discussion) => {
     if (!discussion.isUnread()) return;
 
-    const tags = ((discussion as any).tags?.() || []) as any[];
+    const tags = (discussion.tags?.() || []) as any[];
 
     tags.forEach((tag) => {
       if (!tag) return;

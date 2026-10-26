@@ -42,7 +42,7 @@ export default function installAssetsAlert(): void {
   // core e o flarum/realtime chamam `app.checkAssetsRevision`).
   override(app as any, 'checkAssetsRevision', function (original: (revision: string | null) => void, ...args: unknown[]) {
     const revision = typeof args[0] === 'string' ? args[0] : null;
-    const booted = (app.data as any)?.assetsRevision;
+    const booted = app.data?.assetsRevision;
 
     // Nada de novo para esta página: o core também não faz nada.
     if (!revision || !booted || revision === booted) return original(revision);

@@ -124,7 +124,7 @@ const WARDROBE_COOKIE = 'wardrobe_theme';
  * paletas.
  */
 function wardrobe(): WardrobeData | null {
-  const data = (app.data as any).wardrobe as WardrobeData | undefined;
+  const data = app.data.wardrobe as WardrobeData | undefined;
 
   return data && data.allowUserChoice && data.themes.length > 1 ? data : null;
 }

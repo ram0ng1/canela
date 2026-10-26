@@ -19,6 +19,7 @@ import ChannelsList from './ChannelsList';
 import { chatOn, ct, readLocal, writeLocal } from '../utils';
 import { forumBool } from '../../../utils/settings';
 import type { ChatRoute } from '../types';
+import { caps } from '../flags';
 
 /** Lê a rota do chat a partir da URL da página. */
 export function parseRoute(): ChatRoute {
@@ -58,7 +59,7 @@ export default class ChatPage extends Page<IPageAttrs> {
 
     this.bodyClass = 'has-full-page-chat';
 
-    if (!app.forum.attribute<any>('canelaChat')?.enabled) {
+    if (!caps().enabled) {
       m.route.set(app.route('index'));
       return;
     }
@@ -108,10 +109,7 @@ export default class ChatPage extends Page<IPageAttrs> {
     const route = parseRoute();
     const phone = app.screen() === 'phone';
     const sidebar =
-      !phone &&
-      forumBool('canelaSidebarEnabled', true) &&
-      app.forum.attribute<any>('canelaChat')?.sidebar !== false &&
-      document.querySelector('#canela-sidebar') !== null;
+      !phone && forumBool('canelaSidebarEnabled', true) && caps().sidebar !== false && document.querySelector('#canela-sidebar') !== null;
 
     if ('channelId' in route) writeLocal('lastChannel', route.channelId);
 

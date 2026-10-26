@@ -50,7 +50,7 @@ function hasColumnWidgets(): boolean {
 
 function section(name: string): any {
   try {
-    return (flarum as any).reg.get(NAMESPACE, `forum/components/${name}`) || null;
+    return flarum.reg.get(NAMESPACE, `forum/components/${name}`) || null;
   } catch {
     return null;
   }

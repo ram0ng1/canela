@@ -31,7 +31,7 @@ export default class ResetPasswordPage extends Page<IPageAttrs> {
   }
 
   payload(): ResetPayload | null {
-    const data = (app.data as any).canelaReset as ResetPayload | undefined;
+    const data = app.data.canelaReset as ResetPayload | undefined;
 
     // Só vale o token da própria URL (o payload é o do primeiro carregamento).
     return data && data.token === m.route.param('token') ? data : null;

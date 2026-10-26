@@ -13,5 +13,5 @@ const NotificationsUserPage = () => loadMenu().then((chunk) => ({ default: chunk
 
 export default [
   new Extend.Routes() //
-    .add('user.notifications', '/u/:username/notifications', NotificationsUserPage, UserPageResolver as any),
+    .add('user.notifications', '/u/:username/notifications', NotificationsUserPage, UserPageResolver),
 ];

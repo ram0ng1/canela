@@ -20,7 +20,7 @@ function shortCode(locale: string): string {
 
 /** A mesma troca do core: logado grava a preferência; visitante grava o cookie; a página recarrega. */
 export function chooseLocale(locale: string): void {
-  if (locale === (app.data as any).locale) return;
+  if (locale === app.data.locale) return;
 
   if (app.session.user) {
     app.session.user.savePreferences({ locale }).then(() => window.location.reload());
@@ -45,8 +45,8 @@ function move(event: KeyboardEvent): void {
 }
 
 export default function LocaleSwitcher(): Mithril.Children {
-  const locales = ((app.data as any).locales || {}) as Record<string, string>;
-  const current = ((app.data as any).locale || 'en') as string;
+  const locales = (app.data.locales || {}) as Record<string, string>;
+  const current = (app.data.locale || 'en') as string;
 
   return (
     <Dropdown

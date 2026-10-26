@@ -34,7 +34,7 @@ export default class BadgeGrantsModal extends Modal<BadgeGrantsModalAttrs> {
   }
 
   title() {
-    return trans(`${KEY}.grants_title`, 'Concessões de "{badge}"', { badge: this.attrs.badge.attributes.name });
+    return trans(`${KEY}.grants_title`, { badge: this.attrs.badge.attributes.name });
   }
 
   load(offset: number): void {
@@ -57,7 +57,7 @@ export default class BadgeGrantsModal extends Modal<BadgeGrantsModalAttrs> {
       <div className="Modal-body">
         {this.error && <p className="CanelaAdmin-formError">{this.error}</p>}
         {!this.rows.length && this.loadingRows && <LoadingIndicator display="block" />}
-        {!this.rows.length && !this.loadingRows && <p className="helpText">{trans(`${KEY}.grants_none`, 'Ninguém tem este emblema.')}</p>}
+        {!this.rows.length && !this.loadingRows && <p className="helpText">{trans(`${KEY}.grants_none`)}</p>}
         {!!this.rows.length && (
           <table className="CanelaAdmin-badgesTable CanelaAdmin-grantsTable">
             <tbody>{this.rows.map((row) => this.row(row))}</tbody>
@@ -65,7 +65,7 @@ export default class BadgeGrantsModal extends Modal<BadgeGrantsModalAttrs> {
         )}
         {this.hasMore && (
           <Button className="Button" loading={this.loadingRows} onclick={() => this.load(this.rows.length)}>
-            {trans(`${KEY}.load_more`, 'Carregar mais')}
+            {trans(`${KEY}.load_more`)}
           </Button>
         )}
       </div>
@@ -85,7 +85,7 @@ export default class BadgeGrantsModal extends Modal<BadgeGrantsModalAttrs> {
         <td className="CanelaAdmin-badgeCount">{date ? date.toLocaleDateString() : ''}</td>
         <td>
           <Button className="Button Button--link CanelaAdmin-danger" loading={this.revoking.has(row.id)} onclick={() => this.revoke(row)}>
-            {trans(`${KEY}.revoke`, 'Revogar')}
+            {trans(`${KEY}.revoke`)}
           </Button>
         </td>
       </tr>
@@ -95,7 +95,7 @@ export default class BadgeGrantsModal extends Modal<BadgeGrantsModalAttrs> {
   revoke(row: GrantRow): void {
     const name = row.user?.displayName ?? '';
 
-    if (!confirm(trans(`${KEY}.revoke_confirm`, 'Revogar o emblema de {username}?', { username: name }))) return;
+    if (!confirm(trans(`${KEY}.revoke_confirm`, { username: name }))) return;
 
     this.revoking.add(row.id);
 

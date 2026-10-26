@@ -65,7 +65,7 @@ export default class BadgeEditModal extends FormModal<BadgeEditModalAttrs> {
   }
 
   title() {
-    return this.attrs.badge ? trans(`${KEY}.edit_title`, 'Editar emblema') : trans(`${KEY}.new_title`, 'Novo emblema');
+    return this.attrs.badge ? trans(`${KEY}.edit_title`) : trans(`${KEY}.new_title`);
   }
 
   isSystem(): boolean {
@@ -84,69 +84,61 @@ export default class BadgeEditModal extends FormModal<BadgeEditModalAttrs> {
           <div className="CanelaBadgeEdit-preview">
             {preview}
             <div>
-              <strong>{d.name || trans(`${KEY}.name_placeholder`, 'Nome do emblema')}</strong>
+              <strong>{d.name || trans(`${KEY}.name_placeholder`)}</strong>
               <span>{d.description}</span>
             </div>
           </div>
 
-          {system && (
-            <p className="CanelaAdmin-notice">
-              {trans(`${KEY}.system_notice`, 'Emblema do sistema: a regra automática continua valendo depois de editar.')}
-            </p>
-          )}
+          {system && <p className="CanelaAdmin-notice">{trans(`${KEY}.system_notice`)}</p>}
 
-          {this.text('name', trans(`${KEY}.field_name`, 'Nome'), { required: true, maxlength: 100 })}
-          {this.text('description', trans(`${KEY}.field_description`, 'Descrição'), { maxlength: 500 })}
-          {this.text('longDescription', trans(`${KEY}.field_long_description`, 'Descrição longa'), { maxlength: 2000, multiline: true })}
+          {this.text('name', trans(`${KEY}.field_name`), { required: true, maxlength: 100 })}
+          {this.text('description', trans(`${KEY}.field_description`), { maxlength: 500 })}
+          {this.text('longDescription', trans(`${KEY}.field_long_description`), { maxlength: 2000, multiline: true })}
 
           <div className="CanelaBadgeEdit-row">
-            {this.text('icon', trans(`${KEY}.field_icon`, 'Ícone (Font Awesome)'), {
+            {this.text('icon', trans(`${KEY}.field_icon`), {
               maxlength: 100,
               placeholder: 'fas fa-certificate',
-              help: trans(`${KEY}.field_icon_help`, 'Estilo e nome, como "fas fa-star" ou "far fa-heart".'),
+              help: trans(`${KEY}.field_icon_help`),
             })}
             {adminColumns &&
-              this.text('imageUrl', trans(`${KEY}.field_image`, 'Imagem (URL)'), {
+              this.text('imageUrl', trans(`${KEY}.field_image`), {
                 maxlength: 500,
                 placeholder: 'https://…',
-                help: trans(`${KEY}.field_image_help`, 'Opcional: no lugar do ícone. Endereço http(s) de uma imagem quadrada.'),
+                help: trans(`${KEY}.field_image_help`),
               })}
           </div>
 
           <div className="CanelaBadgeEdit-row">
             <div className="Form-group">
-              <label>{trans(`${KEY}.field_type`, 'Tipo')}</label>
+              <label>{trans(`${KEY}.field_type`)}</label>
               <Select
-                options={Object.fromEntries(TYPES.map((type) => [type, trans(`${KEY}.type_${type}`, type)]))}
+                options={Object.fromEntries(TYPES.map((type) => [type, trans(`${KEY}.type_${type}`)]))}
                 value={d.type}
                 onchange={(value: any) => (d.type = value)}
               />
             </div>
             <div className="Form-group">
-              <label>{trans(`${KEY}.field_grouping`, 'Agrupamento')}</label>
+              <label>{trans(`${KEY}.field_grouping`)}</label>
               <Select
-                options={Object.fromEntries(GROUPINGS.map((grouping) => [grouping, trans(`${KEY}.grouping_${grouping}`, grouping)]))}
+                options={Object.fromEntries(GROUPINGS.map((grouping) => [grouping, trans(`${KEY}.grouping_${grouping}`)]))}
                 value={d.grouping}
                 onchange={(value: any) => (d.grouping = value)}
               />
             </div>
           </div>
 
-          {this.toggle(
-            'enabled',
-            trans(`${KEY}.field_enabled`, 'Ligado'),
-            trans(`${KEY}.field_enabled_help`, 'Desligado, some do fórum, deixa de ser concedido e as concessões feitas ficam ocultas.')
-          )}
-          {this.toggle('listable', trans(`${KEY}.field_listable`, 'Aparece na página de emblemas'))}
-          {adminColumns && this.toggle('allowTitle', trans(`${KEY}.field_allow_title`, 'Pode ser usado como título'))}
-          {!system && this.toggle('multipleGrant', trans(`${KEY}.field_multiple`, 'Pode ser concedido várias vezes à mesma pessoa'))}
-          {!system && adminColumns && this.toggle('manualGrant', trans(`${KEY}.field_manual`, 'Concedido manualmente pela administração'))}
+          {this.toggle('enabled', trans(`${KEY}.field_enabled`), trans(`${KEY}.field_enabled_help`))}
+          {this.toggle('listable', trans(`${KEY}.field_listable`))}
+          {adminColumns && this.toggle('allowTitle', trans(`${KEY}.field_allow_title`))}
+          {!system && this.toggle('multipleGrant', trans(`${KEY}.field_multiple`))}
+          {!system && adminColumns && this.toggle('manualGrant', trans(`${KEY}.field_manual`))}
 
           {this.error && <p className="CanelaAdmin-formError">{this.error}</p>}
 
           <div className="Form-group">
             <Button className="Button Button--primary" type="submit" loading={this.loading}>
-              {this.attrs.badge ? trans(`${KEY}.save`, 'Salvar') : trans(`${KEY}.create`, 'Criar emblema')}
+              {this.attrs.badge ? trans(`${KEY}.save`) : trans(`${KEY}.create`)}
             </Button>
           </div>
         </div>

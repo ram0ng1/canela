@@ -16,13 +16,8 @@ import type { CardDef } from '../types';
 const KEY = 'ramon-canela.admin.settings.metoo';
 const TAGS_SETTING = 'canela.metoo_tags';
 
-const toggle = (name: string, label: string, help: string, extension?: string) => (
-  <AdminToggle
-    settingKey={`canela.metoo_${name}`}
-    label={trans(`${KEY}.${name}_label`, label)}
-    help={trans(`${KEY}.${name}_help`, help)}
-    extension={extension}
-  />
+const toggle = (name: string, extension?: string) => (
+  <AdminToggle settingKey={`canela.metoo_${name}`} label={trans(`${KEY}.${name}_label`)} help={trans(`${KEY}.${name}_help`)} extension={extension} />
 );
 
 interface TagRow {
@@ -102,25 +97,18 @@ class AdminTagPicker extends AdminComponent {
 
     return (
       <div className="Form-group CanelaAdmin-tagPicker">
-        <label>{trans(`${KEY}.tags_label`, 'Onde o botão aparece')}</label>
-        <p className="helpText">
-          {trans(
-            `${KEY}.tags_help`,
-            'Marque as tags de suporte (ex.: Suporte, Bug…). Nenhuma marcada vale para todas as discussões. Marcar uma tag pai inclui as filhas.'
-          )}
-        </p>
+        <label>{trans(`${KEY}.tags_label`)}</label>
+        <p className="helpText">{trans(`${KEY}.tags_help`)}</p>
 
         {!tagRows ? (
-          <p className="helpText">{trans(`${KEY}.tags_loading`, 'Carregando as tags…')}</p>
+          <p className="helpText">{trans(`${KEY}.tags_loading`)}</p>
         ) : (
           <>
             <p className="CanelaAdmin-tagPicker-summary">
-              {selected.size
-                ? trans(`${KEY}.tags_some`, '{count} selecionada(s)', { count: selected.size })
-                : trans(`${KEY}.tags_all`, 'Todas as tags')}
+              {selected.size ? trans(`${KEY}.tags_some`, { count: selected.size }) : trans(`${KEY}.tags_all`)}
               {selected.size > 0 && (
                 <button type="button" className="Button Button--link" onclick={() => save(new Set())}>
-                  {trans(`${KEY}.tags_clear`, 'Limpar (todas)')}
+                  {trans(`${KEY}.tags_clear`)}
                 </button>
               )}
             </p>
@@ -155,37 +143,16 @@ const cards: CardDef[] = [
     id: 'metoo',
     group: 'topic',
     icon: 'far fa-hand',
-    title: () => trans(`${KEY}.title`, 'Eu também (Me too)'),
-    description: () =>
-      trans(
-        `${KEY}.enabled_help`,
-        'A pílula "✋ Eu também" abaixo do primeiro post: quem tem o mesmo problema clica, a contagem aparece entre parênteses e a pessoa passa a acompanhar a discussão. O autor e as discussões trancadas veem o botão só para leitura; visitantes são levados ao login. Desligado, o botão some e a API responde 404; as marcações ficam guardadas.'
-      ),
+    title: () => trans(`${KEY}.title`),
+    description: () => trans(`${KEY}.enabled_help`),
     keywords: 'me too eu também mão hand problema compartilhado shared issue suporte support bug votar voto',
     master: 'canela.metoo_enabled',
     body: () => (
       <>
         {isExtensionEnabled('flarum-tags') && <AdminTagPicker />}
-        {toggle(
-          'hide_solved',
-          'Esconder quando a discussão tiver solução',
-          'Com a melhor resposta escolhida (FoF Best Answer), o botão some, e volta se a solução for retirada. Desligado, continua na discussão resolvida (o "várias soluções" do plugin).',
-          'fof-best-answer'
-        )}
-        {toggle(
-          'follow',
-          'Quem marca passa a seguir a discussão',
-          'Ao clicar em "Eu também", a pessoa passa a seguir a discussão (extensão Inscrições) para saber da solução. Quem já segue continua igual; desmarcar não deixa de seguir.',
-          'flarum-subscriptions'
-        )}
-        {!isExtensionEnabled('fof-best-answer') && (
-          <AdminNotice>
-            {trans(
-              `${KEY}.no_best_answer_notice`,
-              'Sem a extensão FoF Best Answer, nenhuma discussão conta como resolvida: o botão fica em todas as discussões escolhidas.'
-            )}
-          </AdminNotice>
-        )}
+        {toggle('hide_solved', 'fof-best-answer')}
+        {toggle('follow', 'flarum-subscriptions')}
+        {!isExtensionEnabled('fof-best-answer') && <AdminNotice>{trans(`${KEY}.no_best_answer_notice`)}</AdminNotice>}
       </>
     ),
   },

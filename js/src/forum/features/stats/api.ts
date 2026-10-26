@@ -1,10 +1,11 @@
 /*
- * As duas rotas próprias das estatísticas, por `fetch` e não por `app.request`.
+ * As duas rotas próprias das estatísticas.
  *
- * O `app.request` fecha o alerta de erro que estiver na tela a cada chamada;
- * estas rodam sozinhas, em segundo plano, e não podem sumir com um aviso que a
- * pessoa ainda está lendo. O `fetch` também aceita `keepalive`, o que deixa o
- * último envio de tempo de leitura sair mesmo quando a aba está fechando.
+ * A contagem vai pelo `app.request` (sem alerta: sem ela a lista só fica sem
+ * os números). Ela roda ao abrir a lista, junto com o pedido da própria
+ * lista, então fechar um alerta de erro antigo não muda nada. O tempo de
+ * leitura continua no `fetch`: só ele aceita `keepalive`, o que deixa o
+ * último envio sair mesmo quando a aba está fechando.
  */
 import app from 'flarum/forum/app';
 
@@ -29,12 +30,12 @@ export async function fetchTopicCounts(tag?: string): Promise<TopicCountsRespons
   if (preloaded) return preloaded;
 
   try {
-    const response = await fetch(apiUrl('canela-counts' + (tag ? `?tag=${encodeURIComponent(tag)}` : '')), {
-      credentials: 'same-origin',
-      headers: { Accept: 'application/json' },
+    return await app.request<TopicCountsResponse>({
+      method: 'GET',
+      url: apiUrl('canela-counts'),
+      params: tag ? { tag } : {},
+      errorHandler: () => {},
     });
-
-    return response.ok ? ((await response.json()) as TopicCountsResponse) : null;
   } catch {
     return null;
   }

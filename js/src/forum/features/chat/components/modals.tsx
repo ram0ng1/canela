@@ -13,6 +13,7 @@ import { go } from './ChannelsList';
 import { channelTitle, chatRequest, ct, pushUsers } from '../utils';
 import { allTags, isTagsEnabled, sortTags } from '../../../utils/tags';
 import type { ChatChannel } from '../types';
+import { caps } from '../flags';
 
 export interface CreateChannelModalAttrs extends IInternalModalAttrs {
   inDrawer: boolean;
@@ -83,7 +84,7 @@ export class CreateChannelModal extends Modal<CreateChannelModalAttrs> {
               oninput={(e: InputEvent) => (this.description = (e.target as HTMLTextAreaElement).value)}
             />
           </div>
-          {app.forum.attribute<any>('canelaChat')?.threads && (
+          {caps().threads && (
             <div className="Form-group">
               <Switch state={this.threading} onchange={(value: boolean) => (this.threading = value)}>
                 {ct('create_channel.threading.label')}

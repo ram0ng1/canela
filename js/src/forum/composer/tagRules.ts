@@ -91,7 +91,7 @@ export function selectableTags(discussion?: Discussion | null): RuleTag[] {
   const tags = allTags() as RuleTag[];
 
   if (discussion) {
-    const current = ((discussion as any).tags?.() || []) as RuleTag[];
+    const current = (discussion.tags?.() || []) as RuleTag[];
     return tags.filter((tag) => tag.canAddToDiscussion?.() || current.includes(tag));
   }
 

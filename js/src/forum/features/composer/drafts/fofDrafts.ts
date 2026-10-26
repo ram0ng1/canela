@@ -147,8 +147,16 @@ export function hasContent(): boolean {
 
 /** O texto mudou desde o último salvamento (o `changed()` que o fof põe no ComposerState). */
 export function draftChanged(): boolean {
-  return draftableBody() && !!(app.composer as any).changed?.();
+  return draftableBody() && !!app.composer.changed?.();
 }
+
+/**
+ * O salvamento em andamento, com o corpo do composer que ele grava. Dois
+ * salvamentos seguidos do mesmo composer (o autosave e o "guardar" ao fechar,
+ * por exemplo) não correm juntos: o segundo espera o primeiro e grava por cima
+ * do rascunho que ele criou, em vez de criar outro.
+ */
+let inFlight: { body: unknown; promise: Promise<FofDraft | null> } | null = null;
 
 /**
  * Salva o composer aberto no fof. Diferente do `saveDraft()` do fof, devolve a
@@ -157,46 +165,61 @@ export function draftChanged(): boolean {
  * seguinte (que passaria a gravar por cima dele).
  */
 export function saveCurrentDraft(): Promise<void> {
-  const composer: any = app.composer;
+  const composer = app.composer;
 
   if (!draftsOn() || !draftChanged() || typeof composer.data !== 'function') return Promise.resolve();
 
   const body = composer.body;
+  // O texto de agora: quem fecha o composer logo depois não muda o que se grava.
   const data = payload(composer.data());
-  const existing: FofDraft | null = composer.draft || null;
+  const current: FofDraft | null = composer.draft || null;
 
-  // Apagado (na lista, em outra aba) antes de salvar: não ressuscita.
-  if (existing && existing.id() && !existing.exists) return Promise.resolve();
+  const run = (existing: FofDraft | null): Promise<FofDraft | null> => {
+    // Apagado (na lista, em outra aba) antes de salvar: não ressuscita.
+    if (existing && existing.id() && !existing.exists) return Promise.resolve(null);
 
+    const request = existing ? existing.save(data) : (app.store.createRecord('drafts') as unknown as FofDraft).save(data);
+
+    return request
+      .then((saved: FofDraft) => {
+        saved.loadRelationships(true);
+
+        if (!existing) {
+          adjustCount(1);
+          if (composer.body === body) composer.draft = saved;
+        }
+
+        if (composer.body === body) composer.canelaDraftSavedAt = Date.now();
+
+        return saved;
+      })
+      .catch(() => {
+        if (composer.body === body) composer.canelaDraftError = true;
+
+        return null;
+      });
+  };
+
+  const previous = inFlight && inFlight.body === body ? inFlight.promise : null;
+  const promise = previous ? previous.then((saved) => run(saved || current)) : run(current);
+
+  inFlight = { body, promise };
   composer.saving = true;
   composer.canelaDraftError = false;
   m.redraw();
 
-  const request = existing ? existing.save(data) : (app.store.createRecord('drafts') as unknown as FofDraft).save(data);
+  return promise.then(() => {
+    if (inFlight?.promise !== promise) return;
 
-  return request
-    .then((saved: FofDraft) => {
-      saved.loadRelationships(true);
-
-      if (!existing) {
-        adjustCount(1);
-        if (composer.body === body) composer.draft = saved;
-      }
-
-      if (composer.body === body) composer.canelaDraftSavedAt = Date.now();
-    })
-    .catch(() => {
-      if (composer.body === body) composer.canelaDraftError = true;
-    })
-    .finally(() => {
-      composer.saving = false;
-      m.redraw();
-    });
+    inFlight = null;
+    composer.saving = false;
+    m.redraw();
+  });
 }
 
 /** Apaga o rascunho do composer aberto, se houver. */
 export function discardCurrentDraft(): Promise<void> {
-  const composer: any = app.composer;
+  const composer = app.composer;
   const draft: FofDraft | null = composer.draft || null;
 
   composer.draft = null;
@@ -214,7 +237,7 @@ export function discardCurrentDraft(): Promise<void> {
 
 /** O estado discreto do rodapé: salvando, salvo há pouco (até 3 s) ou nada. */
 export function draftStatus(): 'saving' | 'saved' | 'error' | null {
-  const composer: any = app.composer;
+  const composer = app.composer;
 
   if (composer.canelaDraftError) return 'error';
   if (composer.saving) return 'saving';

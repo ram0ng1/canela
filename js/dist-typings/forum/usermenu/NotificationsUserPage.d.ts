@@ -1,0 +1,9 @@
+import UserPage, { type IUserPageAttrs } from 'flarum/forum/components/UserPage';
+import type User from 'flarum/common/models/User';
+import type Mithril from 'mithril';
+export default class NotificationsUserPage<Attrs extends IUserPageAttrs = IUserPageAttrs> extends UserPage<Attrs> {
+    oninit(vnode: Mithril.Vnode<Attrs, this>): void;
+    show(user: User): void;
+    isOwnProfile(): boolean;
+    content(): Mithril.Children;
+}

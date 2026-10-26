@@ -124,7 +124,7 @@ const afterModal = <T,>(fn: () => Promise<T>): Promise<T> =>
     const run = () => fn().then(resolve, reject);
 
     setTimeout(() => {
-      if ('requestIdleCallback' in window) (window as any).requestIdleCallback(run, { timeout: 1000 });
+      if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 1000 });
       else run();
     }, 700);
   });

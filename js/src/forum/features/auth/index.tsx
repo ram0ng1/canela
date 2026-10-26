@@ -12,8 +12,7 @@ import HeaderSecondary from 'flarum/forum/components/HeaderSecondary';
 import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
-import AuthPage, { type AuthMode, goToAuth, rememberReturn } from './AuthPage';
-import ResetPasswordPage from './ResetPasswordPage';
+import { type AuthMode, goToAuth, rememberReturn } from './AuthPage';
 import { forumBool } from '../../utils/settings';
 
 export function authPagesActive(): boolean {
@@ -21,13 +20,7 @@ export function authPagesActive(): boolean {
 }
 
 export default function installAuth(): void {
-  // A página tira o modo do nome da rota (o DefaultResolver não passa attrs).
-  app.routes['canela.login'] = { path: '/login', component: AuthPage };
-  app.routes['canela.signup'] = { path: '/signup', component: AuthPage };
-  app.routes['canela.forgot'] = { path: '/forgot-password', component: AuthPage };
-  // O link do e-mail de redefinição (o servidor dá a página: extend/auth.php).
-  app.routes['resetPassword'] = { path: '/reset/:token', component: ResetPasswordPage };
-
+  // As rotas ficam em ./extend.ts.
   extend(HeaderSecondary.prototype, 'items', (items: ItemList<Mithril.Children>) => {
     if (app.session.user || !authPagesActive()) return;
 
@@ -81,7 +74,7 @@ function installModalRedirect(): void {
 }
 
 function modalMode(component: any): AuthMode | null {
-  const get = (name: string) => (flarum as any).reg.get('core', `forum/components/${name}`);
+  const get = (name: string) => flarum.reg.get('core', `forum/components/${name}`);
   const is = (Base: any) => !!Base && (component === Base || component?.prototype instanceof Base);
 
   if (is(get('SignUpModal'))) return 'signup';
