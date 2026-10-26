@@ -110,7 +110,7 @@ export default class AboutPagesEditor extends AdminComponent {
           <ol className="CanelaAdmin-aboutPagesList">
             {entries.map((entry, index) => {
               const page = byId.get(entry.id);
-              const title = page?.title || trans(`${KEY}.about_pages_missing`, 'Página #{id} (não encontrada)', { id: entry.id });
+              const title = page?.title || trans(`${KEY}.about_pages_missing`, { id: entry.id });
 
               return (
                 <li key={entry.id} className="CanelaAdmin-aboutPage">
@@ -125,7 +125,7 @@ export default class AboutPagesEditor extends AdminComponent {
                         href={`${baseUrl}/about/${page.slug ? `${page.id}-${page.slug}` : page.id}`}
                         target="_blank"
                         rel="noopener"
-                        title={trans(`${KEY}.view_page`, 'Ver a página no fórum')}
+                        title={trans(`${KEY}.view_page`)}
                       >
                         <i className="fas fa-arrow-up-right-from-square" aria-hidden="true" />
                       </a>
@@ -135,27 +135,27 @@ export default class AboutPagesEditor extends AdminComponent {
                         className="Button Button--icon Button--link"
                         icon="fas fa-arrow-up"
                         disabled={index === 0}
-                        aria-label={trans(`${KEY}.about_pages_up`, 'Subir')}
+                        aria-label={trans(`${KEY}.about_pages_up`)}
                         onclick={() => move(index, -1)}
                       />
                       <Button
                         className="Button Button--icon Button--link"
                         icon="fas fa-arrow-down"
                         disabled={index === entries.length - 1}
-                        aria-label={trans(`${KEY}.about_pages_down`, 'Descer')}
+                        aria-label={trans(`${KEY}.about_pages_down`)}
                         onclick={() => move(index, 1)}
                       />
                       <Button
                         className="Button Button--icon Button--link CanelaAdmin-aboutPageRemove"
                         icon="fas fa-xmark"
-                        aria-label={trans(`${KEY}.about_pages_remove`, 'Tirar da área Sobre')}
+                        aria-label={trans(`${KEY}.about_pages_remove`)}
                         onclick={() => this.write(entries.filter((_, i) => i !== index))}
                       />
                     </span>
                   </div>
                   <div className="CanelaAdmin-aboutPageFields">
                     <label>
-                      <span>{trans(`${KEY}.about_pages_label`, 'Rótulo da aba')}</span>
+                      <span>{trans(`${KEY}.about_pages_label`)}</span>
                       <input
                         className="FormControl"
                         type="text"
@@ -166,7 +166,7 @@ export default class AboutPagesEditor extends AdminComponent {
                       />
                     </label>
                     <label>
-                      <span>{trans(`${KEY}.about_pages_icon`, 'Ícone (opcional)')}</span>
+                      <span>{trans(`${KEY}.about_pages_icon`)}</span>
                       <input
                         className="FormControl"
                         type="text"
@@ -194,9 +194,7 @@ export default class AboutPagesEditor extends AdminComponent {
             }}
           >
             <option value="">
-              {this.pages !== null && available.length === 0
-                ? trans(`${KEY}.about_pages_none_left`, 'Todas as páginas do fof/pages já estão na lista')
-                : trans(`${KEY}.about_pages_add`, 'Adicionar uma página…')}
+              {this.pages !== null && available.length === 0 ? trans(`${KEY}.about_pages_none_left`) : trans(`${KEY}.about_pages_add`)}
             </option>
             {available.map((page) => (
               <option value={String(page.id)}>{page.title}</option>
@@ -204,12 +202,7 @@ export default class AboutPagesEditor extends AdminComponent {
           </select>
         )}
 
-        <p className="helpText">
-          {trans(
-            `${KEY}.about_pages_list_help`,
-            'Cada página vira uma aba depois de Sobre e Diretrizes, na ordem da lista, com o endereço /about/id-slug e o mesmo layout das Diretrizes. O rótulo vazio usa o título da página; o ícone é uma classe do Font Awesome. Páginas ocultas ou restritas no fof/pages só aparecem para quem pode vê-las.'
-          )}
-        </p>
+        <p className="helpText">{trans(`${KEY}.about_pages_list_help`)}</p>
       </div>
     );
   }

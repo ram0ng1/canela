@@ -95,16 +95,16 @@ export default class CustomMessagesEditor extends AdminComponent {
 
   triggers(): { key: Trigger; label: string }[] {
     const list: { key: Trigger; label: string }[] = [
-      { key: 'activated', label: trans(`${KEY}.trigger_activated`, 'Conta ativada') },
-      { key: 'group', label: trans(`${KEY}.trigger_group`, 'Entrou num grupo') },
-      { key: 'trust_level', label: trans(`${KEY}.trigger_trust_level`, 'Chegou a um nível de confiança') },
-      { key: 'badge', label: trans(`${KEY}.trigger_badge`, 'Ganhou um emblema') },
-      { key: 'first_post', label: trans(`${KEY}.trigger_first_post`, 'Publicou a primeira postagem') },
-      { key: 'anniversary', label: trans(`${KEY}.trigger_anniversary`, 'Aniversário de conta') },
+      { key: 'activated', label: trans(`${KEY}.trigger_activated`) },
+      { key: 'group', label: trans(`${KEY}.trigger_group`) },
+      { key: 'trust_level', label: trans(`${KEY}.trigger_trust_level`) },
+      { key: 'badge', label: trans(`${KEY}.trigger_badge`) },
+      { key: 'first_post', label: trans(`${KEY}.trigger_first_post`) },
+      { key: 'anniversary', label: trans(`${KEY}.trigger_anniversary`) },
     ];
 
     if (isExtensionEnabled('ramon-verified')) {
-      list.push({ key: 'verified', label: trans(`${KEY}.trigger_verified`, 'Conta verificada (ramon/verified)') });
+      list.push({ key: 'verified', label: trans(`${KEY}.trigger_verified`) });
     }
 
     return list;
@@ -120,10 +120,10 @@ export default class CustomMessagesEditor extends AdminComponent {
 
     if (trigger === 'trust_level') {
       return [
-        { value: 1, label: trans(`${KEY}.level_1`, '1 - Básico') },
-        { value: 2, label: trans(`${KEY}.level_2`, '2 - Membro') },
-        { value: 3, label: trans(`${KEY}.level_3`, '3 - Regular') },
-        { value: 4, label: trans(`${KEY}.level_4`, '4 - Líder') },
+        { value: 1, label: trans(`${KEY}.level_1`) },
+        { value: 2, label: trans(`${KEY}.level_2`) },
+        { value: 3, label: trans(`${KEY}.level_3`) },
+        { value: 4, label: trans(`${KEY}.level_4`) },
       ];
     }
 
@@ -140,7 +140,7 @@ export default class CustomMessagesEditor extends AdminComponent {
         debounce
       );
     const remove = (index: number) => {
-      if (window.confirm(trans(`${KEY}.remove_confirm`, 'Apagar esta mensagem automática?'))) {
+      if (window.confirm(trans(`${KEY}.remove_confirm`))) {
         this.write(entries.filter((_, i) => i !== index));
       }
     };
@@ -163,13 +163,13 @@ export default class CustomMessagesEditor extends AdminComponent {
     return (
       <div className="CanelaCustomMessages">
         {entries.length === 0 ? (
-          <p className="helpText">{trans(`${KEY}.empty`, 'Nenhuma mensagem personalizada ainda.')}</p>
+          <p className="helpText">{trans(`${KEY}.empty`)}</p>
         ) : (
           <ol className="CanelaCustomMessages-list">{entries.map((entry, index) => this.entryView(entry, index, update, remove))}</ol>
         )}
         {entries.length < MAX && (
           <Button className="Button" icon="fas fa-plus" onclick={add}>
-            {trans(`${KEY}.add`, 'Adicionar mensagem')}
+            {trans(`${KEY}.add`)}
           </Button>
         )}
       </div>
@@ -190,30 +190,26 @@ export default class CustomMessagesEditor extends AdminComponent {
     return (
       <li key={entry.id} className={`CanelaCustomMessage${entry.enabled ? '' : ' is-off'}`}>
         <div className="CanelaCustomMessage-head">
-          <AdminSwitch
-            state={entry.enabled}
-            label={trans(`${KEY}.enabled`, 'Ligada')}
-            onchange={(value: boolean) => update(index, { enabled: value })}
-          />
+          <AdminSwitch state={entry.enabled} label={trans(`${KEY}.enabled`)} onchange={(value: boolean) => update(index, { enabled: value })} />
           <input
             className="FormControl CanelaCustomMessage-title"
             type="text"
             maxlength={100}
             value={entry.title}
-            aria-label={trans(`${KEY}.title_label`, 'Nome da mensagem (só no admin)')}
-            placeholder={trans(`${KEY}.title_label`, 'Nome da mensagem (só no admin)')}
+            aria-label={trans(`${KEY}.title_label`)}
+            placeholder={trans(`${KEY}.title_label`)}
             oninput={(e: InputEvent) => update(index, { title: (e.target as HTMLInputElement).value }, true)}
           />
           <Button
             className="Button Button--icon Button--link CanelaCustomMessage-remove"
             icon="far fa-trash-can"
-            aria-label={trans(`${KEY}.remove`, 'Apagar')}
+            aria-label={trans(`${KEY}.remove`)}
             onclick={() => remove(index)}
           />
         </div>
 
         <div className="CanelaCustomMessage-when">
-          <label for={`${id}-trigger`}>{trans(`${KEY}.when`, 'Quando')}</label>
+          <label for={`${id}-trigger`}>{trans(`${KEY}.when`)}</label>
           <select
             id={`${id}-trigger`}
             className="FormControl"
@@ -232,10 +228,10 @@ export default class CustomMessagesEditor extends AdminComponent {
             <select
               className="FormControl"
               value={entry.value ?? ''}
-              aria-label={trans(`${KEY}.which`, 'Qual')}
+              aria-label={trans(`${KEY}.which`)}
               onchange={(e: Event) => update(index, { value: Number((e.target as HTMLSelectElement).value) || null })}
             >
-              <option value="">{trans(`${KEY}.choose`, 'Escolha…')}</option>
+              <option value="">{trans(`${KEY}.choose`)}</option>
               {/* `selected` em cada opção: os emblemas chegam depois do primeiro
                   desenho, e o `value` do select não seria reaplicado. */}
               {options.map((option) => (
@@ -254,12 +250,12 @@ export default class CustomMessagesEditor extends AdminComponent {
                 min={1}
                 max={50}
                 value={entry.value ?? ''}
-                aria-label={trans(`${KEY}.years_label`, 'Anos de conta')}
+                aria-label={trans(`${KEY}.years_label`)}
                 oninput={(e: InputEvent) =>
                   update(index, { value: Math.max(1, Math.min(50, Number((e.target as HTMLInputElement).value) || 1)) }, true)
                 }
               />
-              <span>{trans(`${KEY}.years_suffix`, 'ano(s) de conta')}</span>
+              <span>{trans(`${KEY}.years_suffix`)}</span>
             </span>
           )}
 
@@ -271,37 +267,23 @@ export default class CustomMessagesEditor extends AdminComponent {
                 min={0}
                 max={365}
                 value={entry.delay}
-                aria-label={trans(`${KEY}.delay_label`, 'Dias depois')}
+                aria-label={trans(`${KEY}.delay_label`)}
                 oninput={(e: InputEvent) =>
                   update(index, { delay: Math.max(0, Math.min(365, Number((e.target as HTMLInputElement).value) || 0)) }, true)
                 }
               />
-              <span>{trans(`${KEY}.delay_suffix`, 'dias depois (0 = na hora)')}</span>
+              <span>{trans(`${KEY}.delay_suffix`)}</span>
             </span>
           )}
         </div>
 
-        {entry.trigger === 'anniversary' && (
-          <p className="helpText">
-            {trans(
-              `${KEY}.anniversary_help`,
-              'Sai pelo agendador do Flarum no dia do aniversário de cadastro, só para aniversários depois de a mensagem ser criada.'
-            )}
-          </p>
-        )}
+        {entry.trigger === 'anniversary' && <p className="helpText">{trans(`${KEY}.anniversary_help`)}</p>}
 
-        {entry.trigger === 'activated' && entry.delay > 0 && (
-          <p className="helpText">
-            {trans(
-              `${KEY}.delay_help`,
-              'Sai pelo agendador do Flarum (php flarum schedule:run no cron), e só para quem se cadastrar depois de a mensagem ser criada.'
-            )}
-          </p>
-        )}
+        {entry.trigger === 'activated' && entry.delay > 0 && <p className="helpText">{trans(`${KEY}.delay_help`)}</p>}
 
         <div className="Form-group">
           <label className="CanelaAdmin-label" for={`${id}-subject`}>
-            {trans(`${FIELDS}.subject`, 'Assunto')}
+            {trans(`${FIELDS}.subject`)}
           </label>
           <input
             id={`${id}-subject`}
@@ -315,7 +297,7 @@ export default class CustomMessagesEditor extends AdminComponent {
 
         <div className="Form-group">
           <label className="CanelaAdmin-label" for={`${id}-body`}>
-            {trans(`${FIELDS}.body`, 'Texto')}
+            {trans(`${FIELDS}.body`)}
           </label>
           <textarea
             id={`${id}-body`}
@@ -327,7 +309,7 @@ export default class CustomMessagesEditor extends AdminComponent {
         </div>
 
         <p className="helpText CanelaSystemAdmin-variables">
-          {trans(`${FIELDS}.variables`, 'Variáveis: {list}', { list: '' }).trim()}{' '}
+          {trans(`${FIELDS}.variables`, { list: '' }).trim()}{' '}
           {variables.map((name) => (
             <code>{`%{${name}}`}</code>
           ))}

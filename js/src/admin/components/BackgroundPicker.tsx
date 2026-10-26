@@ -50,13 +50,13 @@ export default class BackgroundPicker extends AdminComponent {
   options(): Record<string, string> {
     const options: Record<string, string> = {};
 
-    if (this.target() === 'auth') options.same = trans(`${KEY}.same`, 'O mesmo do fórum');
+    if (this.target() === 'auth') options.same = trans(`${KEY}.same`);
 
-    options.tinted = trans(`${KEY}.tinted`, 'Degradê tingido com os ícones desfocados (padrão)');
-    options.gradient = trans(`${KEY}.gradient`, 'Degradê tingido, sem os ícones');
-    options.solid = trans(`${KEY}.solid`, 'Cor tingida lisa');
-    options.plain = trans(`${KEY}.plain`, 'Liso, sem tinta');
-    options.image = trans(`${KEY}.image`, 'Imagem');
+    options.tinted = trans(`${KEY}.tinted`);
+    options.gradient = trans(`${KEY}.gradient`);
+    options.solid = trans(`${KEY}.solid`);
+    options.plain = trans(`${KEY}.plain`);
+    options.image = trans(`${KEY}.image`);
 
     return options;
   }
@@ -110,12 +110,12 @@ export default class BackgroundPicker extends AdminComponent {
             {url ? (
               <div className="CanelaBackgroundPicker-preview" style={{ backgroundImage: `url(${JSON.stringify(url)})` }} />
             ) : (
-              <p className="helpText">{trans(`${KEY}.empty`, 'Nenhuma imagem enviada ainda: até lá, o fundo fica liso.')}</p>
+              <p className="helpText">{trans(`${KEY}.empty`)}</p>
             )}
             <div className="CanelaBackgroundPicker-actions">
               <label className={`Button${this.loading ? ' disabled' : ''}`}>
                 <i className="fas fa-upload Button-icon" aria-hidden="true" />
-                <span className="Button-label">{url ? trans(`${KEY}.replace`, 'Trocar imagem') : trans(`${KEY}.upload`, 'Enviar imagem')}</span>
+                <span className="Button-label">{url ? trans(`${KEY}.replace`) : trans(`${KEY}.upload`)}</span>
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp,image/gif"
@@ -126,13 +126,11 @@ export default class BackgroundPicker extends AdminComponent {
               </label>
               {url && (
                 <Button className="Button Button--danger" disabled={this.loading} onclick={() => this.remove()}>
-                  {trans(`${KEY}.remove`, 'Remover')}
+                  {trans(`${KEY}.remove`)}
                 </Button>
               )}
             </div>
-            <p className="helpText">
-              {trans(`${KEY}.image_help`, 'JPG, PNG, WebP ou GIF. Vira WebP de até 2560 × 1600 e cobre a janela inteira, atrás do conteúdo.')}
-            </p>
+            <p className="helpText">{trans(`${KEY}.image_help`)}</p>
             {this.error && <p className="CanelaBackgroundPicker-error">{this.error}</p>}
           </div>
         )}
@@ -166,7 +164,7 @@ export default class BackgroundPicker extends AdminComponent {
         app.data.settings[this.imageKey()] = attrs[key] || '';
       })
       .catch(() => {
-        this.error = trans(`${KEY}.upload_error`, 'Não foi possível enviar a imagem.');
+        this.error = trans(`${KEY}.upload_error`);
       })
       .finally(() => {
         this.loading = false;

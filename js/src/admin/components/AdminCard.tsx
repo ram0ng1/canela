@@ -26,8 +26,8 @@ export const lockReason = (card: CardDef): { text: string; extension?: string } 
     return {
       extension: missing,
       text: extensionInstalled(missing)
-        ? trans(`${KEY}.extension_disabled`, 'Precisa da extensão {name}, que está instalada mas desligada.', { name: extensionName(missing) })
-        : trans(`${KEY}.extension_missing`, 'Precisa da extensão {name}, que não está instalada.', { name: extensionName(missing) }),
+        ? trans(`${KEY}.extension_disabled`, { name: extensionName(missing) })
+        : trans(`${KEY}.extension_missing`, { name: extensionName(missing) }),
     };
   }
 
@@ -70,13 +70,11 @@ export const AdminCard: any = {
           </div>
           <span className="CanelaAdmin-card-saved" aria-live="polite">
             <i className="fas fa-check" aria-hidden="true" />
-            {trans(`${KEY}.saved`, 'Salvo')}
+            {trans(`${KEY}.saved`)}
           </span>
           {hasMaster && (
             <div className="CanelaAdmin-card-master">
-              <span className="CanelaAdmin-card-state">
-                {lock ? trans(`${KEY}.locked`, 'Indisponível') : on ? trans(`${KEY}.on`, 'Ativo') : trans(`${KEY}.off`, 'Inativo')}
-              </span>
+              <span className="CanelaAdmin-card-state">{lock ? trans(`${KEY}.locked`) : on ? trans(`${KEY}.on`) : trans(`${KEY}.off`)}</span>
               <AdminSwitch
                 state={on}
                 disabled={!!lock}
@@ -101,7 +99,7 @@ export const AdminCard: any = {
             <span>{lock.text}</span>
             {lock.extension && extensionInstalled(lock.extension) && (
               <Link className="CanelaAdmin-card-lockLink" href={app.route('extension', { id: lock.extension })}>
-                {trans(`${KEY}.open_extension`, 'Abrir a extensão')}
+                {trans(`${KEY}.open_extension`)}
               </Link>
             )}
           </div>

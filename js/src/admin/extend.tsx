@@ -25,7 +25,7 @@ export default [
     .permission(
       () => ({
         icon: 'fas fa-user-plus',
-        label: trans(`${KEY}.gaps.invite_permission`, 'Convidar pessoas (links de convite)'),
+        label: trans(`${KEY}.gaps.invite_permission`),
         permission: 'canela.createInvite',
       }),
       'start',
@@ -35,7 +35,7 @@ export default [
     .permission(
       () => ({
         icon: 'fas fa-bug',
-        label: trans(`${KEY}.bug_reports.permission`, 'Relatar problemas (marcar a tela e enviar)'),
+        label: trans(`${KEY}.bug_reports.permission`),
         permission: 'canela.reportBugs',
       }),
       'reply',

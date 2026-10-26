@@ -19,12 +19,12 @@ const HEX_COLOR = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const SCHEMES = ['light', 'dark'] as const;
 
 const SWATCHES: { key: string; label: () => string }[] = [
-  { key: 'accent', label: () => trans(`${KEY}.palette_accent`, 'Destaque') },
-  { key: 'background', label: () => trans(`${KEY}.palette_background`, 'Fundo tingido') },
-  { key: 'selected', label: () => trans(`${KEY}.palette_selected`, 'Seleção') },
-  { key: 'accent-low', label: () => trans(`${KEY}.palette_accent_low`, 'Destaque suave') },
-  { key: 'ring', label: () => trans(`${KEY}.palette_ring`, 'Anel de foco') },
-  { key: 'link', label: () => trans(`${KEY}.palette_link`, 'Link') },
+  { key: 'accent', label: () => trans(`${KEY}.palette_accent`) },
+  { key: 'background', label: () => trans(`${KEY}.palette_background`) },
+  { key: 'selected', label: () => trans(`${KEY}.palette_selected`) },
+  { key: 'accent-low', label: () => trans(`${KEY}.palette_accent_low`) },
+  { key: 'ring', label: () => trans(`${KEY}.palette_ring`) },
+  { key: 'link', label: () => trans(`${KEY}.palette_link`) },
 ];
 
 const primaryColor = (): string | null => {
@@ -40,7 +40,7 @@ export const PalettePreview: any = {
     return (
       <div className="CanelaAdmin-palette" style={color ? `--cn-preview-accent: ${color}` : undefined}>
         <div className="CanelaAdmin-colorCurrent">
-          <span className="CanelaAdmin-label">{trans(`${KEY}.colors_current`, 'Cor primária atual')}</span>
+          <span className="CanelaAdmin-label">{trans(`${KEY}.colors_current`)}</span>
           <span className="CanelaAdmin-colorChip">
             <span className="CanelaAdmin-colorDot" aria-hidden="true" />
             <code>{color ?? '-'}</code>
@@ -48,9 +48,7 @@ export const PalettePreview: any = {
         </div>
         {SCHEMES.map((scheme) => (
           <div key={scheme} className={`CanelaAdmin-paletteRow CanelaAdmin-paletteRow--${scheme}`}>
-            <span className="CanelaAdmin-paletteScheme">
-              {scheme === 'light' ? trans(`${KEY}.palette_light`, 'Claro') : trans(`${KEY}.palette_dark`, 'Escuro')}
-            </span>
+            <span className="CanelaAdmin-paletteScheme">{scheme === 'light' ? trans(`${KEY}.palette_light`) : trans(`${KEY}.palette_dark`)}</span>
             <div className="CanelaAdmin-swatches">
               {SWATCHES.map((swatch) => (
                 <span key={swatch.key} className="CanelaAdmin-swatch" data-swatch={swatch.key}>

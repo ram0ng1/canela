@@ -33,20 +33,10 @@ const presets = (): Record<string, string> => (app.data as any).canelaLoaderPres
 /** Como imagem o SVG não executa nada: a prévia do que se colou não precisa esperar o servidor. */
 const svgUrl = (svg: string): string => `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}")`;
 
-const label = (style: string): string => {
-  const fallbacks: Record<string, string> = {
-    default: 'Padrão do Flarum',
-    avocado: 'Avocado',
-    orbital: 'Órbita',
-    ring: 'Anel',
-    dots: 'Pontos',
-    bars: 'Barras',
-    pulse: 'Pulso',
-    custom: 'SVG próprio',
-  };
+/** Os estilos com nome traduzido; um desconhecido aparece pelo próprio nome. */
+const STYLES = ['default', 'avocado', 'orbital', 'ring', 'dots', 'bars', 'pulse', 'custom'];
 
-  return trans(`${KEY}.style_${style}`, fallbacks[style] ?? style);
-};
+const label = (style: string): string => (STYLES.includes(style) ? trans(`${KEY}.style_${style}`) : style);
 
 export default class LoaderPicker extends AdminComponent {
   /** O SVG que está no campo (ainda não aplicado), ou `null` = o gravado. */
@@ -62,7 +52,7 @@ export default class LoaderPicker extends AdminComponent {
     return (
       <div className="CanelaLoaderPicker">
         <div className="Form-group">
-          <label className="CanelaAdmin-label">{trans(`${KEY}.style_label`, 'Desenho')}</label>
+          <label className="CanelaAdmin-label">{trans(`${KEY}.style_label`)}</label>
           <div className="CanelaLoaderPicker-grid" role="radiogroup">
             {styles.map((key) => (
               <button
@@ -93,8 +83,8 @@ export default class LoaderPicker extends AdminComponent {
               max={SIZE.max}
               fallback={SIZE.fallback}
               suffix="%"
-              label={trans(`${KEY}.size_label`, 'Tamanho')}
-              help={trans(`${KEY}.size_help`, 'Em relação ao spinner do Flarum, de {min}% a {max}%. Nos botões o indicador acompanha o texto.', {
+              label={trans(`${KEY}.size_label`)}
+              help={trans(`${KEY}.size_help`, {
                 min: SIZE.min,
                 max: SIZE.max,
               })}
@@ -103,7 +93,7 @@ export default class LoaderPicker extends AdminComponent {
           </>
         )}
 
-        <AdminNotice>{trans(`${KEY}.notice`, 'Trocar o indicador recompila o CSS do fórum; a gravação leva alguns segundos.')}</AdminNotice>
+        <AdminNotice>{trans(`${KEY}.notice`)}</AdminNotice>
       </div>
     );
   }
@@ -142,7 +132,7 @@ export default class LoaderPicker extends AdminComponent {
       <div className="CanelaAdmin-subGroup">
         <div className="Form-group CanelaAdmin-textarea">
           <label className="CanelaAdmin-label" for="CanelaLoaderPicker-code">
-            {trans(`${KEY}.custom_label`, 'Código do SVG')}
+            {trans(`${KEY}.custom_label`)}
           </label>
           <textarea
             id="CanelaLoaderPicker-code"
@@ -156,38 +146,26 @@ export default class LoaderPicker extends AdminComponent {
               this.error = null;
             }}
           />
-          <p className="helpText">
-            {trans(
-              `${KEY}.custom_help`,
-              'Cole o código de um SVG animado ou envie um arquivo .svg (até 64 KB). Ele é limpo no servidor antes de ser salvo: saem scripts, eventos e links externos; as animações de CSS e SMIL continuam.'
-            )}
-          </p>
+          <p className="helpText">{trans(`${KEY}.custom_help`)}</p>
           {this.error && <p className="CanelaLoaderPicker-error">{this.error}</p>}
-          {!custom.trim() && <p className="helpText">{trans(`${KEY}.custom_empty`, 'Cole ou envie um SVG para usar este desenho.')}</p>}
+          {!custom.trim() && <p className="helpText">{trans(`${KEY}.custom_empty`)}</p>}
           <div className="CanelaAdmin-actions">
             <button type="button" className="Button Button--primary" disabled={!changed} onclick={() => this.applyCustom(this.draft ?? '')}>
-              {trans(`${KEY}.custom_apply`, 'Aplicar SVG')}
+              {trans(`${KEY}.custom_apply`)}
             </button>
             <label className="Button CanelaLoaderPicker-upload">
               <i className="fas fa-upload Button-icon" aria-hidden="true" />
-              <span className="Button-label">{trans(`${KEY}.custom_upload`, 'Enviar arquivo SVG')}</span>
+              <span className="Button-label">{trans(`${KEY}.custom_upload`)}</span>
               <input type="file" accept=".svg,image/svg+xml" onchange={(event: Event) => this.upload(event.target as HTMLInputElement)} />
             </label>
             {custom.trim() !== '' && (
               <button type="button" className="Button" onclick={() => this.applyCustom('')}>
-                {trans(`${KEY}.custom_clear`, 'Remover')}
+                {trans(`${KEY}.custom_clear`)}
               </button>
             )}
           </div>
         </div>
-        <AdminToggle
-          settingKey="canela.loader_tint"
-          label={trans(`${KEY}.tint_label`, 'Pintar com a cor do indicador')}
-          help={trans(
-            `${KEY}.tint_help`,
-            'O SVG vira só a forma, pintado com a cor abaixo (ou com a cor do texto, nos botões). Desligado, ficam as cores do próprio arquivo.'
-          )}
-        />
+        <AdminToggle settingKey="canela.loader_tint" label={trans(`${KEY}.tint_label`)} help={trans(`${KEY}.tint_help`)} />
       </div>
     );
   }
@@ -199,7 +177,7 @@ export default class LoaderPicker extends AdminComponent {
     return (
       <div className="Form-group">
         <label className="CanelaAdmin-label" for="CanelaLoaderPicker-color">
-          {trans(`${KEY}.color_label`, 'Cor')}
+          {trans(`${KEY}.color_label`)}
         </label>
         <div className="CanelaLoaderPicker-colorRow">
           <input
@@ -210,15 +188,10 @@ export default class LoaderPicker extends AdminComponent {
             onchange={(event: Event) => this.save('canela.loader_color', (event.target as HTMLInputElement).value)}
           />
           <button type="button" className="Button" disabled={!valid} onclick={() => this.save('canela.loader_color', '')}>
-            {trans(`${KEY}.color_primary`, 'Usar a cor do tema')}
+            {trans(`${KEY}.color_primary`)}
           </button>
         </div>
-        <p className="helpText">
-          {trans(
-            `${KEY}.color_help`,
-            'Sem cor escolhida, vale a cor de destaque do tema (a primária, ou a da tag nas páginas de tag). Nos botões o indicador segue a cor do texto do botão.'
-          )}
-        </p>
+        <p className="helpText">{trans(`${KEY}.color_help`)}</p>
       </div>
     );
   }
@@ -229,12 +202,12 @@ export default class LoaderPicker extends AdminComponent {
 
     return (
       <div className="Form-group">
-        <label className="CanelaAdmin-label">{trans(`${KEY}.preview`, 'Prévia')}</label>
+        <label className="CanelaAdmin-label">{trans(`${KEY}.preview`)}</label>
         <div className="CanelaLoaderPicker-preview" style={this.stageStyle(color)}>
           {this.sample(style, custom, Math.round(30 * scale))}
           {this.sample(style, custom, Math.round(18 * scale))}
           <span className="Button Button--primary CanelaLoaderPicker-button">
-            <span className="Button-label">{trans('core.admin.basics.submit_button', 'Salvar')}</span>
+            <span className="Button-label">{trans('core.admin.basics.submit_button')}</span>
             <span className="CanelaLoaderPicker-buttonIcon">{this.sample(style, custom, 14)}</span>
           </span>
         </div>
@@ -265,12 +238,12 @@ export default class LoaderPicker extends AdminComponent {
     this.error = null;
 
     if (svg.trim() !== '' && !/<svg[\s>]/i.test(svg)) {
-      this.error = trans(`${KEY}.custom_not_svg`, 'O arquivo não parece um SVG.');
+      this.error = trans(`${KEY}.custom_not_svg`);
       return;
     }
 
     if (new Blob([svg]).size > MAX_BYTES) {
-      this.error = trans(`${KEY}.custom_too_big`, 'O arquivo passa de 64 KB.');
+      this.error = trans(`${KEY}.custom_too_big`);
       return;
     }
 
@@ -294,7 +267,7 @@ export default class LoaderPicker extends AdminComponent {
     if (!file) return;
 
     if (file.size > MAX_BYTES) {
-      this.error = trans(`${KEY}.custom_too_big`, 'O arquivo passa de 64 KB.');
+      this.error = trans(`${KEY}.custom_too_big`);
       m.redraw();
       return;
     }

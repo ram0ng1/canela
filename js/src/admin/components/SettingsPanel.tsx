@@ -26,91 +26,86 @@ export const GROUPS: GroupDef[] = [
   {
     key: 'appearance',
     icon: 'fas fa-palette',
-    label: () => trans(`${KEY}.group_appearance`, 'Aparência'),
-    description: () => trans(`${SHELL}.group_appearance_desc`, 'Cores, fonte, superfícies, botões, ícones, banner e avisos.'),
+    label: () => trans(`${KEY}.group_appearance`),
+    description: () => trans(`${SHELL}.group_appearance_desc`),
   },
   {
     key: 'navigation',
     icon: 'fas fa-table-columns',
-    label: () => trans(`${SHELL}.group_navigation`, 'Cabeçalho e barra lateral'),
-    description: () => trans(`${SHELL}.group_navigation_desc`, 'A busca e o menu do cabeçalho, os atalhos de teclado e a barra lateral.'),
+    label: () => trans(`${SHELL}.group_navigation`),
+    description: () => trans(`${SHELL}.group_navigation_desc`),
   },
   {
     key: 'auth',
     icon: 'fas fa-right-to-bracket',
-    label: () => trans(`${SHELL}.group_auth`, 'Entrar e cadastrar'),
-    description: () => trans(`${SHELL}.group_auth_desc`, 'As páginas de entrar e de cadastro: quando aparecem, o leiaute, o fundo e os textos.'),
+    label: () => trans(`${SHELL}.group_auth`),
+    description: () => trans(`${SHELL}.group_auth_desc`),
   },
   {
     key: 'list',
     icon: 'fas fa-list',
-    label: () => trans(`${KEY}.group_list`, 'Lista de discussões'),
-    description: () => trans(`${SHELL}.group_list_desc`, 'A página inicial, as abas, as colunas, as tags e os contadores da lista.'),
+    label: () => trans(`${KEY}.group_list`),
+    description: () => trans(`${SHELL}.group_list_desc`),
   },
   {
     key: 'topic',
     icon: 'far fa-comments',
-    label: () => trans(`${KEY}.group_topic`, 'Discussão'),
-    description: () => trans(`${SHELL}.group_topic_desc`, 'As postagens, a linha do tempo, o mapa, o rodapé e os recursos de leitura.'),
+    label: () => trans(`${KEY}.group_topic`),
+    description: () => trans(`${SHELL}.group_topic_desc`),
   },
   {
     key: 'composer',
     icon: 'fas fa-pen-to-square',
-    label: () => trans(`${KEY}.group_composer`, 'Editor e busca'),
-    description: () => trans(`${SHELL}.group_composer_desc`, 'O editor, os rascunhos, as hashtags e a busca avançada.'),
+    label: () => trans(`${KEY}.group_composer`),
+    description: () => trans(`${SHELL}.group_composer_desc`),
   },
   {
     key: 'people',
     icon: 'far fa-user',
-    label: () => trans(`${SHELL}.group_people`, 'Perfil e usuários'),
-    description: () => trans(`${SHELL}.group_people_desc`, 'A página de perfil, o cartão de usuário, os campos extras e a atividade.'),
+    label: () => trans(`${SHELL}.group_people`),
+    description: () => trans(`${SHELL}.group_people_desc`),
   },
   {
     key: 'messages',
     icon: 'far fa-envelope',
-    label: () => trans(`${SHELL}.group_messages`, 'Mensagens e chat'),
-    description: () => trans(`${SHELL}.group_messages_desc`, 'As mensagens privadas e o chat em tempo real.'),
+    label: () => trans(`${SHELL}.group_messages`),
+    description: () => trans(`${SHELL}.group_messages_desc`),
   },
   {
     key: 'community',
     icon: 'fas fa-users',
-    label: () => trans(`${KEY}.group_community`, 'Comunidade'),
-    description: () => trans(`${SHELL}.group_community_desc`, 'Sobre, diretrizes, usuários, grupos, emblemas, níveis de confiança e convites.'),
+    label: () => trans(`${KEY}.group_community`),
+    description: () => trans(`${SHELL}.group_community_desc`),
   },
   {
     key: 'moderation',
     icon: 'fas fa-shield-halved',
-    label: () => trans(`${SHELL}.group_moderation`, 'Moderação'),
-    description: () => trans(`${SHELL}.group_moderation_desc`, 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'),
+    label: () => trans(`${SHELL}.group_moderation`),
+    description: () => trans(`${SHELL}.group_moderation_desc`),
   },
   {
     key: 'bugreports',
     icon: 'fas fa-bug',
-    label: () => trans(`${SHELL}.group_bugreports`, 'Relatar problemas'),
-    description: () => trans(`${SHELL}.group_bugreports_desc`, 'O botão para marcar a tela e relatar um problema, e os relatórios que chegaram.'),
+    label: () => trans(`${SHELL}.group_bugreports`),
+    description: () => trans(`${SHELL}.group_bugreports_desc`),
   },
   {
     key: 'system',
     icon: 'fas fa-robot',
-    label: () => trans(`${SHELL}.group_system`, 'Mensagens automáticas'),
-    description: () =>
-      trans(
-        `${SHELL}.group_system_desc`,
-        'O usuário do sistema e as mensagens que ele manda sozinho: boas-vindas, níveis de confiança, equipe, denúncias e suspensões.'
-      ),
+    label: () => trans(`${SHELL}.group_system`),
+    description: () => trans(`${SHELL}.group_system_desc`),
   },
   {
     key: 'integrations',
     icon: 'fas fa-puzzle-piece',
-    label: () => trans(`${SHELL}.group_integrations`, 'Integrações'),
-    description: () =>
-      trans(`${SHELL}.group_integrations_desc`, 'O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.'),
+    label: () => trans(`${SHELL}.group_integrations`),
+    description: () => trans(`${SHELL}.group_integrations_desc`),
   },
   {
     key: 'ai',
     icon: 'fas fa-wand-magic-sparkles',
-    label: () => trans(`${KEY}.group_ai`, 'IA'),
-    description: () => trans(`${SHELL}.group_ai_desc`, 'O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.'),
+    label: () => trans(`${KEY}.group_ai`),
+    description: () => trans(`${SHELL}.group_ai_desc`),
   },
 ];
 
@@ -197,12 +192,12 @@ export function createPanel(cards: CardDef[]): any {
       const { status } = saveState;
       const text =
         status === 'saving'
-          ? trans(`${SHELL}.saving`, 'Salvando…')
+          ? trans(`${SHELL}.saving`)
           : status === 'saved'
-            ? trans(`${SHELL}.saved_all`, 'Alterações salvas')
+            ? trans(`${SHELL}.saved_all`)
             : status === 'error'
-              ? trans(`${SHELL}.save_error`, 'Não foi possível salvar')
-              : trans(`${SHELL}.autosave`, 'Tudo salva sozinho');
+              ? trans(`${SHELL}.save_error`)
+              : trans(`${SHELL}.autosave`);
       const icon =
         status === 'saving'
           ? 'fas fa-circle-notch fa-spin'
@@ -232,12 +227,10 @@ export function createPanel(cards: CardDef[]): any {
           <div className="CanelaAdmin-stub-text">
             <strong>{card.title()}</strong>
             <span className="CanelaAdmin-card-group">{groupLabel(card.group)}</span>
-            <span className="CanelaAdmin-stub-reason">
-              {trans(`${SHELL}.depends_on`, 'Depende de "{name}", que está desligado.', { name: depTitle(dep) })}
-            </span>
+            <span className="CanelaAdmin-stub-reason">{trans(`${SHELL}.depends_on`, { name: depTitle(dep) })}</span>
           </div>
           <button type="button" className="Button Button--text CanelaAdmin-stub-go" onclick={() => jumpTo(ownerOf(dep))}>
-            {trans(`${SHELL}.go_enable`, 'Ir para lá')} <i className="fas fa-arrow-right" aria-hidden="true" />
+            {trans(`${SHELL}.go_enable`)} <i className="fas fa-arrow-right" aria-hidden="true" />
           </button>
         </div>
       );
@@ -272,8 +265,8 @@ export function createPanel(cards: CardDef[]): any {
                 type="search"
                 className="CanelaAdmin-searchInput"
                 value={query}
-                placeholder={trans(`${KEY}.search_placeholder`, 'Buscar configurações…')}
-                aria-label={trans(`${KEY}.search_placeholder`, 'Buscar configurações…')}
+                placeholder={trans(`${KEY}.search_placeholder`)}
+                aria-label={trans(`${KEY}.search_placeholder`)}
                 oninput={(event: InputEvent) => {
                   query = (event.target as HTMLInputElement).value;
                 }}
@@ -282,7 +275,7 @@ export function createPanel(cards: CardDef[]): any {
                 <button
                   type="button"
                   className="CanelaAdmin-searchClear"
-                  aria-label={trans(`${KEY}.search_clear`, 'Limpar busca')}
+                  aria-label={trans(`${KEY}.search_clear`)}
                   onclick={() => {
                     query = '';
                   }}
@@ -294,7 +287,7 @@ export function createPanel(cards: CardDef[]): any {
 
             <nav
               className="CanelaAdmin-nav"
-              aria-label={trans(`${KEY}.groups_aria`, 'Grupos de configurações')}
+              aria-label={trans(`${KEY}.groups_aria`)}
               oncreate={(vnode: any) => revealActive(vnode.dom)}
               onupdate={(vnode: any) => revealActive(vnode.dom)}
             >
@@ -313,10 +306,7 @@ export function createPanel(cards: CardDef[]): any {
                     <i className={g.icon} aria-hidden="true" />
                     <span className="CanelaAdmin-navLabel">{g.label()}</span>
                     {count.total > 0 && (
-                      <span
-                        className="CanelaAdmin-navCount"
-                        title={trans(`${SHELL}.active_count`, '{active} de {total} recursos ativos', { active: count.active, total: count.total })}
-                      >
+                      <span className="CanelaAdmin-navCount" title={trans(`${SHELL}.active_count`, { active: count.active, total: count.total })}>
                         {count.active}/{count.total}
                       </span>
                     )}
@@ -331,7 +321,7 @@ export function createPanel(cards: CardDef[]): any {
               <div className="CanelaAdmin-headText">
                 <h2 className="CanelaAdmin-headTitle">
                   {searching ? (
-                    trans(`${SHELL}.search_results`, 'Resultados para "{query}"', { query: query.trim() })
+                    trans(`${SHELL}.search_results`, { query: query.trim() })
                   ) : (
                     <>
                       <i className={group.icon} aria-hidden="true" />
@@ -345,7 +335,7 @@ export function createPanel(cards: CardDef[]): any {
             </div>
 
             {pool.length === 0 ? (
-              <p className="CanelaAdmin-empty">{trans(`${KEY}.search_empty`, 'Nenhuma configuração encontrada.')}</p>
+              <p className="CanelaAdmin-empty">{trans(`${KEY}.search_empty`)}</p>
             ) : (
               <div className="CanelaAdmin-cards">
                 {shown.map((card) => (
@@ -359,7 +349,7 @@ export function createPanel(cards: CardDef[]): any {
               <div className="CanelaAdmin-hidden">
                 <p className="CanelaAdmin-hidden-title">
                   <i className="far fa-eye-slash" aria-hidden="true" />
-                  {trans(`${SHELL}.hidden_title`, 'Ocultos porque dependem de algo desligado')}
+                  {trans(`${SHELL}.hidden_title`)}
                 </p>
                 <ul>
                   {hidden.map((card) => {
@@ -371,7 +361,7 @@ export function createPanel(cards: CardDef[]): any {
                           <i className={card.icon} aria-hidden="true" /> {card.title()}
                         </span>
                         <button type="button" className="CanelaAdmin-hidden-link" onclick={() => jumpTo(ownerOf(dep))}>
-                          {trans(`${SHELL}.needs`, 'precisa de "{name}"', { name: depTitle(dep) })}
+                          {trans(`${SHELL}.needs`, { name: depTitle(dep) })}
                         </button>
                       </li>
                     );

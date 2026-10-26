@@ -32,7 +32,7 @@ export const ExtensionBadge: any = {
     return (
       <span className="CanelaAdmin-extBadge">
         <i className="fas fa-plug-circle-xmark" aria-hidden="true" />
-        {trans('ramon-canela.admin.settings.shell.requires_extension', 'Precisa da extensão {name}', { name: extensionName(id) })}
+        {trans('ramon-canela.admin.settings.shell.requires_extension', { name: extensionName(id) })}
       </span>
     );
   },

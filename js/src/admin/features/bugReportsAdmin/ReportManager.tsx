@@ -49,25 +49,13 @@ interface Report {
 
 const apiUrl = (path: string) => `${((app.forum.attribute<string>('apiUrl') as string) || '/api').replace(/\/+$/, '')}${path}`;
 
-const STATUS_LABELS: Record<Status, string> = {
-  open: 'Aberto',
-  reviewed: 'Revisado',
-  in_progress: 'Em andamento',
-  fixed: 'Corrigido',
-  wontfix: 'Não será feito',
-};
+const KINDS = ['bug', 'content', 'design', 'idea'];
 
-const KIND_LABELS: Record<string, string> = {
-  bug: 'Algo não funciona',
-  content: 'Texto ou imagem',
-  design: 'Design',
-  idea: 'Ideia',
-};
-
-export const statusLabel = (status: string) => trans(`${KEY}.status_${status}`, STATUS_LABELS[status as Status] || status);
-const kindLabel = (kind: string) => trans(`${KEY}.kind_${kind}`, KIND_LABELS[kind] || kind);
+// Um valor que o painel não conhece aparece cru.
+export const statusLabel = (status: string) => ((STATUSES as readonly string[]).includes(status) ? trans(`${KEY}.status_${status}`) : status);
+const kindLabel = (kind: string) => (KINDS.includes(kind) ? trans(`${KEY}.kind_${kind}`) : kind);
 const filterLabel = (filter: Filter) =>
-  filter === 'active' ? trans(`${KEY}.filter_active`, 'Pendentes') : filter === 'all' ? trans(`${KEY}.filter_all`, 'Todos') : statusLabel(filter);
+  filter === 'active' ? trans(`${KEY}.filter_active`) : filter === 'all' ? trans(`${KEY}.filter_all`) : statusLabel(filter);
 
 const date = (iso: string) => {
   try {
@@ -130,7 +118,7 @@ export default class ReportManager extends AdminComponent {
 
     return (
       <span className={classList('CanelaBugAdmin-copied', { 'is-fail': state === 'fail' })} role="status">
-        {state === 'ok' ? trans(`${KEY}.copied`, 'Copiado!') : trans(`${KEY}.copy_failed`, 'Não deu para copiar.')}
+        {state === 'ok' ? trans(`${KEY}.copied`) : trans(`${KEY}.copy_failed`)}
       </span>
     );
   }
@@ -149,7 +137,7 @@ export default class ReportManager extends AdminComponent {
         this.perPage = payload.perPage || 20;
         this.error = null;
       })
-      .catch(() => (this.error = trans(`${KEY}.load_failed`, 'Não deu para carregar os relatórios. As migrações do tema já rodaram?')))
+      .catch(() => (this.error = trans(`${KEY}.load_failed`)))
       .finally(() => m.redraw());
   }
 
@@ -194,13 +182,8 @@ export default class ReportManager extends AdminComponent {
 
         <div className="CanelaBugAdmin-ai">
           <div className="CanelaBugAdmin-aiText">
-            <strong>{trans(`${KEY}.ai_title`, 'Corrigir com IA')}</strong>
-            <p>
-              {trans(
-                `${KEY}.ai_help`,
-                'Copie as instruções e cole no ChatGPT, Claude, Gemini ou num agente no seu editor. Elas dizem à IA como reproduzir, escrever o teste, corrigir e verificar, e levam o ambiente do fórum, os relatórios e links das capturas que abrem sem login por 7 dias.'
-              )}
-            </p>
+            <strong>{trans(`${KEY}.ai_title`)}</strong>
+            <p>{trans(`${KEY}.ai_help`)}</p>
           </div>
           <div className="CanelaBugAdmin-aiButtons">
             <Button
@@ -209,11 +192,11 @@ export default class ReportManager extends AdminComponent {
               disabled={!this.count('active')}
               onclick={() => this.copy('all', () => fetchText(apiUrl('/canela-bug-reports-export')).then(copyText))}
             >
-              {trans(`${KEY}.copy_all`, 'Copiar instruções (pendentes)')}
+              {trans(`${KEY}.copy_all`)}
             </Button>
             <a className="Button" href={apiUrl('/canela-bug-reports-export?download=1')} download>
               <i className="icon fas fa-file-arrow-down Button-icon" aria-hidden="true" />
-              <span className="Button-label">{trans(`${KEY}.export`, 'Baixar (.md)')}</span>
+              <span className="Button-label">{trans(`${KEY}.export`)}</span>
             </a>
             {this.copiedNote('all')}
           </div>
@@ -222,7 +205,7 @@ export default class ReportManager extends AdminComponent {
         {this.error && <p className="CanelaAdmin-formError">{this.error}</p>}
 
         {!this.rows.length ? (
-          <p className="CanelaBugAdmin-empty">{trans(`${KEY}.empty`, 'Nenhum relatório aqui.')}</p>
+          <p className="CanelaBugAdmin-empty">{trans(`${KEY}.empty`)}</p>
         ) : (
           <ul className="CanelaBugAdmin-list">{this.rows.map((report) => this.item(report))}</ul>
         )}
@@ -230,11 +213,11 @@ export default class ReportManager extends AdminComponent {
         {pages > 1 && (
           <div className="CanelaBugAdmin-pager">
             <Button className="Button" icon="fas fa-chevron-left" disabled={this.page <= 1} onclick={() => this.go(this.page - 1)}>
-              {trans(`${KEY}.previous`, 'Anterior')}
+              {trans(`${KEY}.previous`)}
             </Button>
-            <span>{trans(`${KEY}.page_of`, 'Página {page} de {pages}', { page: this.page, pages })}</span>
+            <span>{trans(`${KEY}.page_of`, { page: this.page, pages })}</span>
             <Button className="Button" disabled={this.page >= pages} onclick={() => this.go(this.page + 1)}>
-              {trans(`${KEY}.next`, 'Próxima')}
+              {trans(`${KEY}.next`)}
             </Button>
           </div>
         )}
@@ -260,7 +243,7 @@ export default class ReportManager extends AdminComponent {
               <span className={`CanelaBugStatus CanelaBugStatus--${report.status}`}>{statusLabel(report.status)}</span>
               <span>#{report.id}</span>
               <span>{kindLabel(report.kind)}</span>
-              <span>{report.user ? `@${report.user.username}` : trans(`${KEY}.user_gone`, 'conta removida')}</span>
+              <span>{report.user ? `@${report.user.username}` : trans(`${KEY}.user_gone`)}</span>
               <span>{date(report.createdAt)}</span>
             </span>
             <span className="CanelaBugAdmin-description">{report.description}</span>
@@ -285,11 +268,11 @@ export default class ReportManager extends AdminComponent {
       <div className="CanelaBugAdmin-detail">
         <div className="CanelaBugAdmin-images">
           <a href={apiUrl(`/canela-bug-reports/${report.id}/region`)} target="_blank" rel="noopener">
-            <img src={apiUrl(`/canela-bug-reports/${report.id}/region`)} alt={trans(`${KEY}.region_alt`, 'Área marcada')} />
+            <img src={apiUrl(`/canela-bug-reports/${report.id}/region`)} alt={trans(`${KEY}.region_alt`)} />
           </a>
           {report.hasFull && (
             <a href={apiUrl(`/canela-bug-reports/${report.id}/full`)} target="_blank" rel="noopener">
-              <img src={apiUrl(`/canela-bug-reports/${report.id}/full`)} alt={trans(`${KEY}.full_alt`, 'Tela inteira')} />
+              <img src={apiUrl(`/canela-bug-reports/${report.id}/full`)} alt={trans(`${KEY}.full_alt`)} />
             </a>
           )}
         </div>
@@ -298,15 +281,15 @@ export default class ReportManager extends AdminComponent {
 
         {(report.currentText || report.suggestedText) && (
           <dl className="CanelaBugAdmin-dl">
-            <dt>{trans(`${KEY}.current_text`, 'Texto atual')}</dt>
+            <dt>{trans(`${KEY}.current_text`)}</dt>
             <dd>{report.currentText || '—'}</dd>
-            <dt>{trans(`${KEY}.suggested_text`, 'Texto sugerido')}</dt>
+            <dt>{trans(`${KEY}.suggested_text`)}</dt>
             <dd>{report.suggestedText || '—'}</dd>
           </dl>
         )}
 
         <dl className="CanelaBugAdmin-dl">
-          <dt>{trans(`${KEY}.page`, 'Página')}</dt>
+          <dt>{trans(`${KEY}.page`)}</dt>
           <dd>
             {/^https?:\/\//i.test(report.url) ? (
               <a href={report.url} target="_blank" rel="noopener nofollow">
@@ -318,7 +301,7 @@ export default class ReportManager extends AdminComponent {
           </dd>
           {ctx.viewport && (
             <>
-              <dt>{trans(`${KEY}.viewport`, 'Tela')}</dt>
+              <dt>{trans(`${KEY}.viewport`)}</dt>
               <dd>
                 {ctx.viewport.w}×{ctx.viewport.h} @{ctx.viewport.dpr}x{ctx.theme ? ` · ${ctx.theme}` : ''}
               </dd>
@@ -326,7 +309,7 @@ export default class ReportManager extends AdminComponent {
           )}
           {ctx.userAgent && (
             <>
-              <dt>{trans(`${KEY}.browser`, 'Navegador')}</dt>
+              <dt>{trans(`${KEY}.browser`)}</dt>
               <dd>
                 {ctx.userAgent}
                 {ctx.language ? ` · ${ctx.language}` : ''}
@@ -335,7 +318,7 @@ export default class ReportManager extends AdminComponent {
           )}
           {ctx.route && (
             <>
-              <dt>{trans(`${KEY}.route`, 'Rota')}</dt>
+              <dt>{trans(`${KEY}.route`)}</dt>
               <dd>
                 <code>{ctx.route}</code>
               </dd>
@@ -345,7 +328,7 @@ export default class ReportManager extends AdminComponent {
 
         {!!ctx.elements?.length && (
           <div className="CanelaBugAdmin-block">
-            <strong>{trans(`${KEY}.elements`, 'Elementos sob a área')}</strong>
+            <strong>{trans(`${KEY}.elements`)}</strong>
             <ul>
               {ctx.elements.map((el) => (
                 <li>
@@ -359,7 +342,7 @@ export default class ReportManager extends AdminComponent {
 
         {!!ctx.consoleErrors?.length && (
           <div className="CanelaBugAdmin-block">
-            <strong>{trans(`${KEY}.console`, 'Erros do console')}</strong>
+            <strong>{trans(`${KEY}.console`)}</strong>
             <pre>{ctx.consoleErrors.map((entry) => entry.message).join('\n')}</pre>
           </div>
         )}
@@ -370,7 +353,7 @@ export default class ReportManager extends AdminComponent {
             icon="fas fa-wand-magic-sparkles"
             onclick={() => this.copy(`prompt${report.id}`, () => fetchText(apiUrl(`/canela-bug-reports/${report.id}/prompt`)).then(copyText))}
           >
-            {trans(`${KEY}.copy_prompt`, 'Copiar para IA')}
+            {trans(`${KEY}.copy_prompt`)}
           </Button>
           {this.copiedNote(`prompt${report.id}`)}
           <Button
@@ -378,14 +361,14 @@ export default class ReportManager extends AdminComponent {
             icon="far fa-image"
             onclick={() => this.copy(`image${report.id}`, () => copyImage(apiUrl(`/canela-bug-reports/${report.id}/region`)))}
           >
-            {trans(`${KEY}.copy_image`, 'Copiar captura')}
+            {trans(`${KEY}.copy_image`)}
           </Button>
           {this.copiedNote(`image${report.id}`)}
         </div>
 
         <div className="CanelaBugAdmin-actions">
           <label className="CanelaBugAdmin-status">
-            <span>{trans(`${KEY}.status_label`, 'Status')}</span>
+            <span>{trans(`${KEY}.status_label`)}</span>
             <select
               className="FormControl"
               value={report.status}
@@ -399,7 +382,7 @@ export default class ReportManager extends AdminComponent {
           </label>
 
           <label className="CanelaBugAdmin-note">
-            <span>{trans(`${KEY}.note_label`, 'Resposta para quem reportou')}</span>
+            <span>{trans(`${KEY}.note_label`)}</span>
             <textarea
               className="FormControl"
               rows={2}
@@ -411,10 +394,10 @@ export default class ReportManager extends AdminComponent {
 
           <div className="CanelaBugAdmin-buttons">
             <Button className="Button Button--primary" loading={busy} onclick={() => this.save(report, { note: this.notes[report.id] ?? '' })}>
-              {trans(`${KEY}.save_note`, 'Salvar resposta')}
+              {trans(`${KEY}.save_note`)}
             </Button>
             <Button className="Button Button--danger" icon="fas fa-trash" disabled={busy} onclick={() => this.remove(report)}>
-              {trans(`${KEY}.delete`, 'Apagar')}
+              {trans(`${KEY}.delete`)}
             </Button>
           </div>
         </div>
@@ -431,7 +414,7 @@ export default class ReportManager extends AdminComponent {
         Object.assign(report, payload.report);
         this.reload();
       })
-      .catch(() => (this.error = trans(`${KEY}.save_failed`, 'Não deu para salvar. Tente de novo.')))
+      .catch(() => (this.error = trans(`${KEY}.save_failed`)))
       .finally(() => {
         this.busy.delete(report.id);
         m.redraw();
@@ -439,7 +422,7 @@ export default class ReportManager extends AdminComponent {
   }
 
   remove(report: Report): void {
-    if (!confirm(trans(`${KEY}.delete_confirm`, 'Apagar este relatório e as capturas? Não dá para desfazer.'))) return;
+    if (!confirm(trans(`${KEY}.delete_confirm`))) return;
 
     this.busy.add(report.id);
 
@@ -449,7 +432,7 @@ export default class ReportManager extends AdminComponent {
         this.openId = null;
         this.reload();
       })
-      .catch(() => (this.error = trans(`${KEY}.save_failed`, 'Não deu para salvar. Tente de novo.')))
+      .catch(() => (this.error = trans(`${KEY}.save_failed`)))
       .finally(() => {
         this.busy.delete(report.id);
         m.redraw();

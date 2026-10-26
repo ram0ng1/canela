@@ -55,7 +55,7 @@ export const hasAdminColumns = (badge?: BadgeRow | null) => !!badge && 'manualGr
 export function errorText(error: any): string {
   const detail = error?.response?.errors?.[0]?.detail;
 
-  return typeof detail === 'string' && detail ? detail : trans(`${KEY}.request_failed`, 'Não deu certo. Tente de novo.');
+  return typeof detail === 'string' && detail ? detail : trans(`${KEY}.request_failed`);
 }
 
 /** Pedido sem o alerta automático do core: os modais mostram o erro no lugar. */

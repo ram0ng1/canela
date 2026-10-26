@@ -39,14 +39,14 @@ function actions(dirty: boolean, previews: { label: string; open: () => void }[]
         </Button>
       ))}
       <span className="CanelaDraft-spacer" />
-      {dirty && <span className="CanelaDraft-dirty">{trans(`${KEY}.dirty`, 'Alterações ainda não aplicadas')}</span>}
+      {dirty && <span className="CanelaDraft-dirty">{trans(`${KEY}.dirty`)}</span>}
       {dirty && (
         <Button className="Button" onclick={discard}>
-          {trans(`${KEY}.discard`, 'Descartar')}
+          {trans(`${KEY}.discard`)}
         </Button>
       )}
       <Button className="Button Button--primary" disabled={!dirty} onclick={apply}>
-        {trans(`${KEY}.apply`, 'Aplicar')}
+        {trans(`${KEY}.apply`)}
       </Button>
     </div>
   );
@@ -73,7 +73,7 @@ export class ForumBackgroundEditor extends AdminComponent {
         />
         {actions(
           this.draft !== saved,
-          [{ label: trans(`${KEY}.preview_forum`, 'Pré-visualizar'), open: () => openPreview('/', { forumBackground: this.draft }) }],
+          [{ label: trans(`${KEY}.preview_forum`), open: () => openPreview('/', { forumBackground: this.draft }) }],
           () => {
             app.data.settings['canela.forum_background'] = this.draft;
             saveSetting({ 'canela.forum_background': this.draft });
@@ -208,8 +208,8 @@ export class AuthPagesEditor extends AdminComponent {
         {actions(
           this.dirty(),
           [
-            { label: trans(`${KEY}.preview_login`, 'Pré-visualizar entrar'), open: () => openPreview('/login', this.previewState()) },
-            { label: trans(`${KEY}.preview_signup`, 'Pré-visualizar cadastro'), open: () => openPreview('/signup', this.previewState()) },
+            { label: trans(`${KEY}.preview_login`), open: () => openPreview('/login', this.previewState()) },
+            { label: trans(`${KEY}.preview_signup`), open: () => openPreview('/signup', this.previewState()) },
           ],
           () => this.apply(),
           () => (this.draft = savedAuth())
@@ -220,14 +220,14 @@ export class AuthPagesEditor extends AdminComponent {
 
   layoutView() {
     const layouts: Record<string, string> = {
-      card: trans(`${AUTH}.layout_card`, 'Cartão único sobre o fundo (padrão)'),
-      discourse: trans(`${AUTH}.layout_discourse`, 'Lado a lado: sem cartão, login social ao lado'),
-      split: trans(`${AUTH}.layout_split`, 'Tela dividida: painel colorido à esquerda'),
+      card: trans(`${AUTH}.layout_card`),
+      discourse: trans(`${AUTH}.layout_discourse`),
+      split: trans(`${AUTH}.layout_split`),
     };
 
     return [
       <div className="Form-group">
-        <label className="CanelaAdmin-label">{trans(`${AUTH}.layout_label`, 'Leiaute')}</label>
+        <label className="CanelaAdmin-label">{trans(`${AUTH}.layout_label`)}</label>
         <div className="CanelaAdmin-select-wrap">
           <select
             className="FormControl CanelaAdmin-select"
@@ -242,21 +242,13 @@ export class AuthPagesEditor extends AdminComponent {
           </select>
           <i className="fas fa-chevron-down CanelaAdmin-select-chevron" aria-hidden="true" />
         </div>
-        <p className="helpText">
-          {trans(
-            `${AUTH}.layout_help`,
-            'Em todos, a página fica sem o cabeçalho, só com o logo do fórum. Com login social, os botões vêm antes do formulário (no sem cartão, ao lado dele).'
-          )}
-        </p>
+        <p className="helpText">{trans(`${AUTH}.layout_help`)}</p>
       </div>,
 
       <BackgroundPicker
         target="auth"
-        label={trans(`${AUTH}.background_label`, 'Fundo das páginas de entrar e cadastrar')}
-        help={trans(
-          `${AUTH}.background_help`,
-          'Na tela dividida, a imagem vai para o painel da esquerda; os outros fundos ficam atrás do formulário.'
-        )}
+        label={trans(`${AUTH}.background_label`)}
+        help={trans(`${AUTH}.background_help`)}
         value={this.draft.background}
         onchange={(value: string) => (this.draft.background = value)}
       />,
@@ -264,31 +256,31 @@ export class AuthPagesEditor extends AdminComponent {
   }
 
   textsView() {
-    const empty = trans(`${AUTH}.text_default`, 'Vazio: o texto padrão');
+    const empty = trans(`${AUTH}.text_default`);
 
     return [
-      <h4 className="CanelaDraft-subtitle">{trans(`${AUTH}.texts_login`, 'Textos da página de entrar')}</h4>,
+      <h4 className="CanelaDraft-subtitle">{trans(`${AUTH}.texts_login`)}</h4>,
       <div className="CanelaDraft-row">
-        {this.text('canela.auth_login_title', trans(`${AUTH}.title_label`, 'Título'), empty)}
-        {this.text('canela.auth_login_subtitle', trans(`${AUTH}.subtitle_label`, 'Subtítulo (opcional)'), empty)}
+        {this.text('canela.auth_login_title', trans(`${AUTH}.title_label`), empty)}
+        {this.text('canela.auth_login_subtitle', trans(`${AUTH}.subtitle_label`), empty)}
       </div>,
 
-      <h4 className="CanelaDraft-subtitle">{trans(`${AUTH}.texts_signup`, 'Textos da página de cadastro')}</h4>,
+      <h4 className="CanelaDraft-subtitle">{trans(`${AUTH}.texts_signup`)}</h4>,
       <div className="CanelaDraft-row">
-        {this.text('canela.auth_signup_title', trans(`${AUTH}.title_label`, 'Título'), empty)}
-        {this.text('canela.auth_signup_subtitle', trans(`${AUTH}.subtitle_label`, 'Subtítulo (opcional)'), empty)}
+        {this.text('canela.auth_signup_title', trans(`${AUTH}.title_label`), empty)}
+        {this.text('canela.auth_signup_subtitle', trans(`${AUTH}.subtitle_label`), empty)}
       </div>,
 
       // Só com a tela dividida aplicada no card "Leiaute e fundo".
       this.draft.layout === 'split' && [
-        <h4 className="CanelaDraft-subtitle">{trans(`${AUTH}.texts_panel`, 'Painel da tela dividida')}</h4>,
+        <h4 className="CanelaDraft-subtitle">{trans(`${AUTH}.texts_panel`)}</h4>,
         <div className="CanelaDraft-row">
-          {this.text('canela.auth_panel_login_title', trans(`${AUTH}.panel_login_title`, 'Título no login'), empty)}
-          {this.text('canela.auth_panel_signup_title', trans(`${AUTH}.panel_signup_title`, 'Título no cadastro'), empty)}
+          {this.text('canela.auth_panel_login_title', trans(`${AUTH}.panel_login_title`), empty)}
+          {this.text('canela.auth_panel_signup_title', trans(`${AUTH}.panel_signup_title`), empty)}
         </div>,
         <div className="CanelaDraft-row">
-          {this.text('canela.auth_panel_login_text', trans(`${AUTH}.panel_login_text`, 'Texto no login'), empty, true)}
-          {this.text('canela.auth_panel_signup_text', trans(`${AUTH}.panel_signup_text`, 'Texto no cadastro'), empty, true)}
+          {this.text('canela.auth_panel_login_text', trans(`${AUTH}.panel_login_text`), empty, true)}
+          {this.text('canela.auth_panel_signup_text', trans(`${AUTH}.panel_signup_text`), empty, true)}
         </div>,
       ],
     ];
