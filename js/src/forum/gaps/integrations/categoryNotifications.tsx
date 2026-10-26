@@ -53,15 +53,18 @@ function currentLevel(tag: any): Level {
 }
 
 function choose(tag: any, level: Level): void {
-  if (saving || currentLevel(tag).value === level.value) return;
+  // O nível de antes: depois de salvar, o tag já tem o novo.
+  const previous = currentLevel(tag).value;
+
+  if (saving || previous === level.value) return;
 
   saving = true;
 
   tag
     .save({ subscription: level.value })
     .then(() => {
-      // "Silenciado e oculto" muda o que a lista de Recentes mostra.
-      if (level.value === 'hide' || currentLevel(tag).value === 'hide') app.discussions.refresh();
+      // Entrar ou sair de "Silenciado e oculto" muda o que a lista de Recentes mostra.
+      if (level.value === 'hide' || previous === 'hide') app.discussions.refresh();
     })
     .catch(() => {})
     .finally(() => {

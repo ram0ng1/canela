@@ -20,6 +20,7 @@ import ChatComposer from './ChatComposer';
 import { ChannelIcon } from './bits';
 import { channelTitle, chatRequest, ct, isSelfDm, meId, otherParticipants, displayName, pushUsers, readLocal, writeLocal } from '../utils';
 import type { ChatMessage as Message } from '../types';
+import { caps } from '../flags';
 
 export interface ChatChannelAttrs extends ComponentAttrs {
   pane: ChatPane;
@@ -281,7 +282,7 @@ export default class ChatChannel extends Component<ChatChannelAttrs> {
   // ─── Fixadas ──────────────────────────────────────────────────────────────
 
   private loadPins(): void {
-    if (!app.forum.attribute<any>('canelaChat')?.pins) return;
+    if (!caps().pins) return;
 
     chatRequest('GET', `/channels/${this.attrs.pane.channelId}/pins`, undefined, undefined, { errorHandler: () => {} })
       .then((result: any) => {
@@ -471,7 +472,7 @@ export default class ChatChannel extends Component<ChatChannelAttrs> {
   // ─── Arrastar e soltar ────────────────────────────────────────────────────
 
   private drag(e: DragEvent, delta: number): void {
-    if (!e.dataTransfer?.types.includes('Files') || !app.forum.attribute<any>('canelaChat')?.uploads || !this.attrs.pane.channel?.canPost) return;
+    if (!e.dataTransfer?.types.includes('Files') || !caps().uploads || !this.attrs.pane.channel?.canPost) return;
 
     e.preventDefault();
     this.dragging = Math.max(0, this.dragging + delta);

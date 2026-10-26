@@ -15,7 +15,7 @@ const DAY = 24 * HOUR;
 const DAYS_BEFORE_DATE = 30;
 
 function activeLocale(): string {
-  return (app.data as any).locale || document.documentElement.lang || 'en';
+  return app.data.locale || document.documentElement.lang || 'en';
 }
 
 export function formatWith(date: Date, options: Intl.DateTimeFormatOptions): string {

@@ -113,7 +113,7 @@ export default class ContentLanguageModal extends Modal<IInternalModalAttrs> {
   oninit(vnode: Mithril.Vnode<IInternalModalAttrs, this>) {
     super.oninit(vnode);
 
-    this.interfaceLocale = ((app.data as any).locale || 'en') as string;
+    this.interfaceLocale = (app.data.locale || 'en') as string;
     this.understood = [...understoodLocales()];
     this.auto = autoTranslate();
   }
@@ -127,7 +127,7 @@ export default class ContentLanguageModal extends Modal<IInternalModalAttrs> {
   }
 
   languages(): string[] {
-    const installed = Object.keys(((app.data as any).locales || {}) as Record<string, string>).map(normalize);
+    const installed = Object.keys((app.data.locales || {}) as Record<string, string>).map(normalize);
     const all = new Set([...COMMON_LANGUAGES, ...installed, ...this.understood]);
 
     return Array.from(all).sort((a, b) => languageName(a).localeCompare(languageName(b)));
@@ -138,7 +138,7 @@ export default class ContentLanguageModal extends Modal<IInternalModalAttrs> {
   }
 
   content() {
-    const locales = ((app.data as any).locales || {}) as Record<string, string>;
+    const locales = (app.data.locales || {}) as Record<string, string>;
     const chosen = this.understood;
 
     return [
@@ -252,7 +252,7 @@ export default class ContentLanguageModal extends Modal<IInternalModalAttrs> {
   save(): void {
     this.saving = true;
 
-    const localeChanged = this.interfaceLocale !== (((app.data as any).locale || 'en') as string);
+    const localeChanged = this.interfaceLocale !== ((app.data.locale || 'en') as string);
 
     saveContentLanguagePreferences(this.understood, this.auto)
       .then(() => {

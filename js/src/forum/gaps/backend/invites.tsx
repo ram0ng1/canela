@@ -68,7 +68,7 @@ function handleArrival(): void {
       if (!info.valid) return;
 
       if (info.inviter) app.alerts.show({ type: 'success' }, t('gaps.invites.invited_by', { username: info.inviter }));
-      if (info.signUpOpen) app.modal.show(() => (flarum as any).reg.asyncModuleImport('flarum/forum/components/SignUpModal'));
+      if (info.signUpOpen) app.modal.show(() => flarum.reg.asyncModuleImport('flarum/forum/components/SignUpModal'));
     })
     .catch(() => {});
 }

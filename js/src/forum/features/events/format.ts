@@ -64,7 +64,7 @@ export function relativeEventDate(start: Date, end: Date | null, ended: boolean,
   if (!ended && start.getTime() <= now.getTime() && finish.getTime() > now.getTime()) return t('events.happening_now');
 
   const diff = start.getTime() - now.getTime();
-  const locale = (app.data as any).locale || document.documentElement.lang || 'en';
+  const locale = app.data.locale || document.documentElement.lang || 'en';
   const abs = Math.abs(diff);
   let value: number;
   let unit: Intl.RelativeTimeFormatUnit;

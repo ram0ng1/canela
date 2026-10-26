@@ -277,7 +277,7 @@ export default class UserMenu extends Component<UserMenuAttrs> {
 
     // A fila de revisão: os posts sinalizados (flarum/flags), para quem os vê.
     // Mais as denúncias do chat (ramon/chat), somadas na mesma aba.
-    if ((app.forum.attribute('canViewFlags') && (app as any).flags) || chatReviewOn()) {
+    if ((app.forum.attribute('canViewFlags') && app.flags) || chatReviewOn()) {
       items.add(
         'review-queue',
         {

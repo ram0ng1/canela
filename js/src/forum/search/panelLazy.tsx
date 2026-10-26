@@ -32,7 +32,7 @@ export function preloadSearchPanel(opts?: { idle?: boolean } | Event): void {
     idleQueued = true;
 
     const run = () => load().catch(() => {});
-    const idle = (window as any).requestIdleCallback as ((cb: () => void, opts?: { timeout: number }) => number) | undefined;
+    const idle = window.requestIdleCallback as ((cb: () => void, opts?: { timeout: number }) => number) | undefined;
 
     if (idle) idle(run, { timeout: 4000 });
     else window.setTimeout(run, 2000);

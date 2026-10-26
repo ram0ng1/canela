@@ -55,5 +55,5 @@ export const thirdParty = {
 export function extModule<T = any>(namespace: string, id: string): T | null {
   if (!isExtensionEnabled(namespace)) return null;
 
-  return ((flarum as any).reg.checkModule(namespace, id) as T) || null;
+  return (flarum.reg.checkModule(namespace, id) as T) || null;
 }

@@ -27,7 +27,7 @@ export default [
     .add('canela.badge', '/badges/:id/:slug', BadgePage)
     // O servidor aceita o endereço sem o slug; o roteador precisa da rota também.
     .add('canela.badge.short', '/badges/:id', BadgePage)
-    .add('canela.user.badges', '/u/:username/badges', UserBadgesPage, UserPageResolver as any),
+    .add('canela.user.badges', '/u/:username/badges', UserBadgesPage, UserPageResolver),
 
   new Extend.Notification() //
     .add('canelaBadgeGranted', BadgeGrantedNotification),

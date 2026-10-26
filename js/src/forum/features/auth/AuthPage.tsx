@@ -219,7 +219,7 @@ export default class AuthPage extends Page<IPageAttrs> {
     app.setTitle(t(`auth.${mode}_page_title`));
     app.setTitleCount(0);
 
-    (flarum as any).reg.asyncModuleImport(MODULES[mode]).then((module: any) => {
+    flarum.reg.asyncModuleImport(MODULES[mode]).then((module: any) => {
       this.form = pageClass(mode, module.default ?? module);
       m.redraw();
     });

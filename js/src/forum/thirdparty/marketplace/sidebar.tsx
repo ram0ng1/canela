@@ -188,7 +188,7 @@ function splitLinks(links: ShopLink[]): { main: ShopLink[]; more: ShopLink[] } {
 
 /** Quantos itens o carrinho tem, do estado da própria extensão. */
 function cartCount(): number {
-  const store = (flarum as any).reg.checkModule('ramon-marketplace', 'common/utils/cartStore')?.cartStore;
+  const store = flarum.reg.checkModule('ramon-marketplace', 'common/utils/cartStore')?.cartStore;
   const state = store?.get?.();
 
   if (!state) return 0;

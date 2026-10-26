@@ -86,7 +86,7 @@ export default class UserMessagesPage<Attrs extends IUserPageAttrs = IUserPageAt
    * "Sobre", onde estão os membros da equipe.
    */
   emptyState(): Mithril.Children {
-    const aboutHref = (app.routes as any).about ? app.route('about') : app.route('index');
+    const aboutHref = app.routes.about ? app.route('about') : app.route('index');
 
     return (
       <div className="CanelaMessagesEmpty empty-state">

@@ -1,5 +1,5 @@
 /*
- * Helpers do painel do tema no admin: tradução com fallback, leitura das
+ * Helpers do painel do tema no admin: tradução, leitura das
  * configurações (que o core guarda como string), o POST que grava cada uma (com
  * o estado "Salvando…/Salvo" que o painel mostra) e o registro de dependências
  * entre as chaves.
@@ -13,9 +13,9 @@ export type LooseAttrs = ComponentAttrs & Record<string, any>;
 
 export abstract class AdminComponent<A extends LooseAttrs = LooseAttrs> extends Component<A> {}
 
-export const settings = (): Record<string, any> => (app.data as any).settings;
+export const settings = (): Record<string, any> => app.data.settings;
 
-export const trans = (key: string, fallback: string, params: Record<string, any> = {}): string => {
+export const trans = (key: string, params: Record<string, any> = {}): string => {
   // `extract: true` faz o Translator devolver string, e não filhos do Mithril.
   //
   // O try/catch é obrigatório: o formatter ICU lança SyntaxError quando uma
@@ -23,12 +23,12 @@ export const trans = (key: string, fallback: string, params: Record<string, any>
   // quebrada derrubaria a página inteira de configurações.
   try {
     const translated = app.translator?.trans(key, params, true);
-    if (typeof translated === 'string' && translated !== key) return translated;
+    if (typeof translated === 'string') return translated;
   } catch (error) {
-    console.warn(`[canela] tradução inválida em "${key}"; usando o texto padrão.`, error);
+    console.warn(`[canela] tradução inválida em "${key}".`, error);
   }
 
-  return Object.entries(params).reduce<string>((text, [name, value]) => text.replace(new RegExp(`\\{${name}\\}`, 'g'), String(value)), fallback);
+  return key;
 };
 
 export const getBool = (key: string): boolean => {
@@ -132,7 +132,7 @@ const EXTENSION_NAMES: Record<string, string> = {
   'fof-formatting': 'FoF Formatting',
 };
 
-const installedExtension = (id: string): any => (app.data as any).extensions?.[id];
+const installedExtension = (id: string): any => app.data.extensions?.[id];
 
 export const extensionName = (id: string): string => installedExtension(id)?.extra?.['flarum-extension']?.title || EXTENSION_NAMES[id] || id;
 

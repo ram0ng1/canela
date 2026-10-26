@@ -41,7 +41,7 @@ export default class GrantBadgeModal extends FormModal<GrantBadgeModalAttrs> {
   }
 
   title() {
-    return trans(`${KEY}.grant_title`, 'Conceder emblema');
+    return trans(`${KEY}.grant_title`);
   }
 
   content() {
@@ -51,17 +51,15 @@ export default class GrantBadgeModal extends FormModal<GrantBadgeModalAttrs> {
       <div className="Modal-body">
         <div className="Form">
           {!this.attrs.badges.length ? (
-            <p className="helpText">
-              {trans(`${KEY}.grant_none`, 'Nenhum emblema aceita concessão manual. Crie um emblema personalizado com essa opção.')}
-            </p>
+            <p className="helpText">{trans(`${KEY}.grant_none`)}</p>
           ) : (
             <>
               <div className="Form-group">
-                <label>{trans(`${KEY}.field_badge`, 'Emblema')}</label>
+                <label>{trans(`${KEY}.field_badge`)}</label>
                 <Select options={options} value={this.badgeId} onchange={(value: string) => (this.badgeId = value)} />
               </div>
               <div className="Form-group">
-                <label for="CanelaGrant-user">{trans(`${KEY}.field_user`, 'Usuário')}</label>
+                <label for="CanelaGrant-user">{trans(`${KEY}.field_user`)}</label>
                 <input
                   id="CanelaGrant-user"
                   className="FormControl"
@@ -69,7 +67,7 @@ export default class GrantBadgeModal extends FormModal<GrantBadgeModalAttrs> {
                   autocomplete="off"
                   required
                   value={this.username}
-                  placeholder={trans(`${KEY}.field_user_placeholder`, 'Nome de usuário')}
+                  placeholder={trans(`${KEY}.field_user_placeholder`)}
                   oninput={(event: InputEvent) => this.search((event.target as HTMLInputElement).value)}
                 />
                 <datalist id="CanelaGrant-users">
@@ -79,13 +77,13 @@ export default class GrantBadgeModal extends FormModal<GrantBadgeModalAttrs> {
                 </datalist>
               </div>
               <div className="Form-group">
-                <label for="CanelaGrant-reason">{trans(`${KEY}.field_reason`, 'Motivo (opcional)')}</label>
+                <label for="CanelaGrant-reason">{trans(`${KEY}.field_reason`)}</label>
                 <input
                   id="CanelaGrant-reason"
                   className="FormControl"
                   maxlength={500}
                   value={this.reason}
-                  placeholder={trans(`${KEY}.field_reason_placeholder`, 'Um texto curto ou o link de uma postagem')}
+                  placeholder={trans(`${KEY}.field_reason_placeholder`)}
                   oninput={(event: InputEvent) => (this.reason = (event.target as HTMLInputElement).value)}
                 />
               </div>
@@ -93,7 +91,7 @@ export default class GrantBadgeModal extends FormModal<GrantBadgeModalAttrs> {
               {this.done && <p className="CanelaAdmin-formDone">{this.done}</p>}
               <div className="Form-group">
                 <Button className="Button Button--primary" type="submit" loading={this.loading}>
-                  {trans(`${KEY}.grant_submit`, 'Conceder')}
+                  {trans(`${KEY}.grant_submit`)}
                 </Button>
               </div>
             </>
@@ -133,7 +131,7 @@ export default class GrantBadgeModal extends FormModal<GrantBadgeModalAttrs> {
       .then(() => {
         // O modal fica aberto: conceder o mesmo emblema a várias pessoas
         // seguidas é o caso comum.
-        this.done = trans(`${KEY}.grant_done`, 'Concedido a {username}.', { username });
+        this.done = trans(`${KEY}.grant_done`, { username });
         this.username = '';
         this.reason = '';
         this.attrs.ongrant();

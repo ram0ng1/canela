@@ -22,6 +22,7 @@ import { chatRequest, chatUser, composerPlaceholder, ct, displayName, emoji, meI
 import { openEmojiPicker } from '../../composer/emoji/pickerLazy';
 import { loadEmojiData, matches, normalize } from '../../composer/emoji/emojiUtils';
 import type { EmojiRow } from '../../composer/emoji-data';
+import { caps } from '../flags';
 
 export interface ChatComposerAttrs extends ComponentAttrs {
   pane: ChatPane;
@@ -81,7 +82,7 @@ export default class ChatComposer extends Component<ChatComposerAttrs> {
     const text = pane.text;
     const uploading = pane.uploads.some((u) => !u.upload && !u.error);
     const sendEnabled = !disabled && !uploading && !pane.sending && (text.trim().length > 0 || pane.uploads.some((u) => u.upload));
-    const max = app.forum.attribute<any>('canelaChat')?.maxMessageLength || 6000;
+    const max = caps().maxMessageLength || 6000;
     const tooLong = text.length > max;
 
     return (
@@ -169,7 +170,7 @@ export default class ChatComposer extends Component<ChatComposerAttrs> {
   }
 
   private dropdown(disabled: boolean): Mithril.Children {
-    if (!app.forum.attribute<any>('canelaChat')?.uploads) return null;
+    if (!caps().uploads) return null;
 
     return (
       <Dropdown
@@ -205,7 +206,7 @@ export default class ChatComposer extends Component<ChatComposerAttrs> {
   private onPaste(e: ClipboardEvent): void {
     const files = Array.from(e.clipboardData?.files || []).filter((file) => file.type.startsWith('image/'));
 
-    if (files.length && app.forum.attribute<any>('canelaChat')?.uploads) {
+    if (files.length && caps().uploads) {
       e.preventDefault();
       this.attrs.pane.addFiles(files);
     }
