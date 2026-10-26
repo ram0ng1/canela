@@ -48,4 +48,13 @@ final class FeatureLoaderTest extends TestCase
             self::assertMatchesRegularExpression('/^\s*return\s/m', (string) file_get_contents($file), basename($file).' precisa devolver a lista de extenders');
         }
     }
+
+    public function test_lista_de_recursos_nao_vem_da_requisicao(): void
+    {
+        // A lista vem só de extend/.enabled: um cabeçalho ou parâmetro que a
+        // trocasse deixaria qualquer visitante ligar ou desligar recursos.
+        $source = (string) file_get_contents($this->root().'/extend.php');
+
+        self::assertDoesNotMatchRegularExpression('/\$_(SERVER|GET|POST|REQUEST|COOKIE)\b|getallheaders\s*\(/', $source);
+    }
 }

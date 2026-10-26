@@ -282,17 +282,11 @@ $requireFeature = static fn (string $file): array => require $file;
 
 // Só carregam os recursos listados em extend/.enabled (um por linha): um
 // recurso novo entra na lista depois de testado, e o fórum nunca cai por causa
-// de um que ainda está em construção.
-//
-// Para testar um recurso sem afetar quem usa o site, a requisição manda o
-// cabeçalho `X-Canela-Probe: <recurso>[,<recurso>…]`, que vale só para ela.
+// de um que ainda está em construção. A lista vem só desse arquivo, nunca da
+// requisição: para testar um recurso, ligue-o num ambiente de testes.
 $readList = static fn (string $text): array => array_values(array_filter(array_map('trim', preg_split('/[\s,]+/', $text) ?: [])));
 $enabledFile = __DIR__.'/extend/.enabled';
 $enabled = is_file($enabledFile) ? $readList((string) file_get_contents($enabledFile)) : [];
-
-if (isset($_SERVER['HTTP_X_CANELA_PROBE'])) {
-    $enabled = $readList((string) $_SERVER['HTTP_X_CANELA_PROBE']);
-}
 
 $featureFiles = array_filter(
     glob(__DIR__.'/extend/*.php') ?: [],
