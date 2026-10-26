@@ -28,15 +28,38 @@ use Ramon\Canela\Messages\MessagesSchema;
  * o MessagesSchemaProvider instala o que falta quando o flarum/messages é
  * habilitado e, como rede, na primeira requisição sem a marca.
  *
- * (Cada teste roda numa transação; no SQLite, o DDL também volta atrás.)
+ * (Cada teste roda numa transação. No SQLite e no PostgreSQL o DDL volta
+ * atrás com ela; no MySQL e no MariaDB ele confirma a transação na hora, e o
+ * tearDown() põe o esquema de volta para os testes seguintes.)
  */
 class MessagesSchemaTest extends TestCase
 {
+    /** Onde a `dialog_user` fica enquanto o teste finge que ela não existe. */
+    private const STATE_TABLE_ASIDE = 'canela_test_dialog_user_aside';
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->extension('flarum-messages', 'ramon-canela');
+    }
+
+    protected function tearDown(): void
+    {
+        $db = $this->database();
+
+        if (! in_array($db->getDriverName(), ['sqlite', 'pgsql'], true)) {
+            $schema = $db->getSchemaBuilder();
+
+            if (! $schema->hasTable('dialog_user') && $schema->hasTable(self::STATE_TABLE_ASIDE)) {
+                $schema->rename(self::STATE_TABLE_ASIDE, 'dialog_user');
+            }
+
+            MessagesSchema::install($schema);
+            $db->table('settings')->updateOrInsert(['key' => MessagesSchema::MARKER], ['value' => MessagesSchema::VERSION]);
+        }
+
+        parent::tearDown();
     }
 
     private function dropSomeSchema(): void
@@ -125,7 +148,8 @@ class MessagesSchemaTest extends TestCase
         $schema->disableForeignKeyConstraints();
         $schema->drop(MessagesSchema::REACTIONS_TABLE);
         $schema->drop(MessagesSchema::EVENTS_TABLE);
-        $schema->drop('dialog_user');
+        // Renomeada, não apagada: no MySQL o tearDown() a devolve.
+        $schema->rename('dialog_user', self::STATE_TABLE_ASIDE);
 
         $this->assertFalse(MessagesSchema::install($schema));
         $this->assertFalse($schema->hasTable(MessagesSchema::EVENTS_TABLE));
