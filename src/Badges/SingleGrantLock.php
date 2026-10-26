@@ -32,11 +32,23 @@ use Illuminate\Contracts\Cache\Repository as Cache;
  * (ou do rollback): antes disso o outro processo não enxergaria a linha nova.
  * A conferência usa leitura com trava (`LOCK IN SHARE MODE`), que lê o último
  * dado gravado mesmo numa transação que já tirou o retrato do banco.
+ *
+ * O mesmo vale para os emblemas de concessão múltipla sem postagem
+ * (Aniversário, Novato do mês): o `post_id` é sempre NULL, o índice não
+ * barra nada, e duas cargas ao mesmo tempo (o agendador e o "Conceder agora")
+ * davam o mesmo aniversário duas vezes. Ali a conferência é pela data da
+ * concessão, que a regra calcula sempre igual para o mesmo aniversário.
+ *
+ * E a carga inteira (`backfill`) tem uma trava global própria: duas cargas
+ * não rodam juntas — a segunda desiste, porque a primeira já concede tudo.
  */
 final class SingleGrantLock
 {
     /** Validade da trava: o bastante para a transação mais longa que grava um emblema. */
     private const LOCK_SECONDS = 10;
+
+    /** Validade da trava da carga inteira: a carga mais longa de um fórum grande. */
+    private const BACKFILL_LOCK_SECONDS = 3600;
 
     public function __construct(
         private readonly Cache $cache,
@@ -49,10 +61,65 @@ final class SingleGrantLock
     /** Grava se a pessoa ainda não tem o emblema; diz se gravou. */
     public function save(UserBadge $userBadge): bool
     {
+        return $this->guarded($userBadge, static fn () => UserBadge::query()
+            ->where('badge_id', $userBadge->badge_id)
+            ->where('user_id', $userBadge->user_id));
+    }
+
+    /**
+     * Emblema de concessão múltipla sem postagem: grava se a pessoa ainda não
+     * tem uma concessão dele com a mesma data (o mesmo aniversário, o mesmo
+     * mês); diz se gravou.
+     */
+    public function saveRepeat(UserBadge $userBadge): bool
+    {
+        return $this->guarded($userBadge, static fn () => UserBadge::query()
+            ->where('badge_id', $userBadge->badge_id)
+            ->where('user_id', $userBadge->user_id)
+            ->whereNull('post_id')
+            ->where('granted_at', $userBadge->granted_at));
+    }
+
+    /**
+     * Roda a carga inteira só se nenhuma outra estiver rodando. Devolve o que
+     * `$callback` devolveu, ou null se outra carga já estava em andamento.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T|null
+     */
+    public function exclusiveBackfill(callable $callback): mixed
+    {
         $store = $this->cache->getStore();
 
         if (! $store instanceof LockProvider) {
-            return $this->saveIfMissing($userBadge);
+            return $callback();
+        }
+
+        $lock = $store->lock('canela.badge-backfill', self::BACKFILL_LOCK_SECONDS);
+
+        if (! $lock->get()) {
+            return null;
+        }
+
+        try {
+            return $callback();
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * Confere (com `$existing`) e grava atrás da trava de (emblema, pessoa).
+     *
+     * @param callable(): \Illuminate\Database\Eloquent\Builder<UserBadge> $existing
+     */
+    private function guarded(UserBadge $userBadge, callable $existing): bool
+    {
+        $store = $this->cache->getStore();
+
+        if (! $store instanceof LockProvider) {
+            return $this->saveIfMissing($userBadge, $existing);
         }
 
         $lock = $store->lock("canela.badge-grant.{$userBadge->badge_id}.{$userBadge->user_id}", self::LOCK_SECONDS);
@@ -64,7 +131,7 @@ final class SingleGrantLock
         }
 
         try {
-            $saved = $this->saveIfMissing($userBadge);
+            $saved = $this->saveIfMissing($userBadge, $existing);
         } catch (\Throwable $error) {
             $lock->release();
 
@@ -76,15 +143,10 @@ final class SingleGrantLock
         return $saved;
     }
 
-    private function saveIfMissing(UserBadge $userBadge): bool
+    /** @param callable(): \Illuminate\Database\Eloquent\Builder<UserBadge> $existing */
+    private function saveIfMissing(UserBadge $userBadge, callable $existing): bool
     {
-        $exists = UserBadge::query()
-            ->where('badge_id', $userBadge->badge_id)
-            ->where('user_id', $userBadge->user_id)
-            ->sharedLock()
-            ->exists();
-
-        if ($exists) {
+        if ($existing()->sharedLock()->exists()) {
             return false;
         }
 

@@ -249,4 +249,43 @@ class TopicViewsTest extends TestCase
 
         $this->assertSame([4, 1, 5], $ids);
     }
+
+    /**
+     * Com o fof/discussion-views instalado, `discussions.view_count` é uma
+     * coluna de verdade: a ordenação continua pela coluna do tema, sem
+     * apelido no SELECT que colida com a da outra extensão (ORDER BY ambíguo
+     * no PostgreSQL) nem troque o valor que ela hidrata no modelo.
+     */
+    #[Test]
+    public function ordena_por_visualizacoes_com_a_coluna_do_fof(): void
+    {
+        $db = $this->database();
+
+        if ($db->getDriverName() !== 'sqlite') {
+            // DDL no MySQL encerra a transação do teste.
+            $this->markTestSkipped('Altera o esquema: só com SQLite, que desfaz DDL na transação.');
+        }
+
+        $db->getSchemaBuilder()->table('discussions', fn ($table) => $table->unsignedInteger('view_count')->default(0));
+
+        $now = Carbon::now();
+        foreach ([[4, 500, 1], [5, 1, 900]] as [$id, $views, $fof]) {
+            $db->table('discussions')->insert(['id' => $id, 'title' => "Tópico $id", 'slug' => "t$id", 'user_id' => 1, 'created_at' => $now, 'last_posted_at' => $now, 'comment_count' => 1, 'last_post_number' => 1, 'canela_view_count' => $views, 'view_count' => $fof]);
+            $db->table('posts')->insert(['id' => $id, 'discussion_id' => $id, 'user_id' => 1, 'type' => 'comment', 'content' => '<t>x</t>', 'number' => 1, 'created_at' => $now]);
+        }
+        $db->table('discussions')->where('id', 1)->update(['canela_view_count' => 3, 'view_count' => 50]);
+
+        foreach (['-viewCount' => [4, 1, 5], 'viewCount' => [5, 1, 4]] as $sort => $expected) {
+            $response = $this->send($this->request('GET', '/api/discussions', ['authenticatedAs' => 2])->withQueryParams(['sort' => $sort]));
+
+            $this->assertEquals(200, $response->getStatusCode(), (string) $response->getBody());
+            $data = json_decode((string) $response->getBody(), true)['data'];
+
+            $this->assertSame($expected, array_map('intval', array_column($data, 'id')), $sort);
+
+            foreach ($data as $discussion) {
+                $this->assertSame([1 => 3, 4 => 500, 5 => 1][(int) $discussion['id']], $discussion['attributes']['viewCount']);
+            }
+        }
+    }
 }

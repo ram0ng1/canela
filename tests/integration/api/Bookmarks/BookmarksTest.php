@@ -158,6 +158,58 @@ class BookmarksTest extends TestCase
         $this->assertEquals('Nome novo', Bookmark::query()->find(1)->name);
     }
 
+    /**
+     * Dois POSTs simultâneos do mesmo marcador: o segundo passa pela checagem
+     * antes do primeiro gravar e bate no índice único. Simulado gravando a
+     * linha "da outra requisição" logo antes do INSERT — a resposta é o
+     * marcador existente, com o nome novo, e não um 500.
+     */
+    #[Test]
+    public function marcar_ao_mesmo_tempo_nao_quebra_no_indice_unico(): void
+    {
+        $this->app();
+
+        Bookmark::creating(function (Bookmark $bookmark): void {
+            if ($bookmark->post_id === 2 && ! Bookmark::query()->where('user_id', 2)->where('post_id', 2)->exists()) {
+                $this->database()->table('canela_bookmarks')->insert(['id' => 50, 'user_id' => 2, 'post_id' => 2, 'name' => 'Da outra aba', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+            }
+        });
+
+        $response = $this->send($this->request('POST', '/api/canela-bookmarks', [
+            'authenticatedAs' => 2,
+            'json' => ['data' => [
+                'type' => 'canela-bookmarks',
+                'attributes' => ['name' => 'Desta aba'],
+                'relationships' => ['post' => ['data' => ['type' => 'posts', 'id' => '2']]],
+            ]],
+        ]));
+
+        $this->assertContains($response->getStatusCode(), [200, 201], (string) $response->getBody());
+        $this->assertEquals('50', $this->body($response)['data']['id']);
+        $this->assertEquals(1, Bookmark::query()->where('user_id', 2)->where('post_id', 2)->count());
+        $this->assertEquals('Desta aba', Bookmark::query()->find(50)->name);
+    }
+
+    /**
+     * Apagar o post apaga os marcadores dele — também no SQLite, onde a
+     * cascata da chave estrangeira não roda sem o PRAGMA.
+     */
+    #[Test]
+    public function apagar_o_post_apaga_os_marcadores(): void
+    {
+        $this->prepareDatabase([
+            Bookmark::class => [
+                ['id' => 3, 'user_id' => 2, 'post_id' => 2, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ],
+        ]);
+
+        $response = $this->send($this->request('DELETE', '/api/posts/2', ['authenticatedAs' => 1]));
+
+        $this->assertEquals(204, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertEquals(0, Bookmark::query()->where('post_id', 2)->count());
+        $this->assertEquals(2, Bookmark::query()->where('post_id', 1)->count());
+    }
+
     /** Sem o post, o marcador não é criado (422). */
     #[Test]
     public function criar_sem_post_e_invalido(): void

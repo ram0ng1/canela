@@ -17,7 +17,7 @@ use Carbon\Carbon;
 use Flarum\Extension\ExtensionManager;
 use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
-use Ramon\Canela\Support\SchemaCache;
+use Ramon\Canela\Messages\MessagesSchema;
 
 /**
  * Reações nas mensagens privadas: uma reação por pessoa por mensagem
@@ -53,7 +53,9 @@ final class MessageReactions
 
     public function enabled(): bool
     {
-        return self::$exists ??= resolve(SchemaCache::class)->hasTable(self::TABLE);
+        // Só o "sim" fica guardado: o esquema pode ser instalado no meio do
+        // processo (MessagesSchema::ensure()).
+        return self::$exists ?: self::$exists = MessagesSchema::hasReactions();
     }
 
     public function usesFof(): bool

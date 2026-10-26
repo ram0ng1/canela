@@ -78,7 +78,11 @@ class AutoMessagesTest extends TestCase
      */
     protected function allowedRepeatedQueries(): array
     {
-        return ['select * from "users" where "users"."id" = ? limit ?'];
+        // Nas duas grafias: aspas (SQLite, PostgreSQL) e crases (MySQL, MariaDB).
+        return [
+            'select * from "users" where "users"."id" = ? limit ?',
+            'select * from `users` where `users`.`id` = ? limit ?',
+        ];
     }
 
     private function json(ResponseInterface $response): array

@@ -40,6 +40,13 @@ final class ProfileSettings
     /** Envio de imagem para a capa e o fundo do cartão; desligado, só por URL. */
     public const COVER_UPLOAD = 'canela.profile_cover_upload';
 
+    /**
+     * Capa e fundo do cartão por endereço externo. Desligado (o padrão), só
+     * imagens enviadas ao fórum: uma URL de outro site é carregada pelo
+     * navegador de cada visitante do perfil, e serve de pixel de rastreio.
+     */
+    public const EXTERNAL_IMAGES = 'canela.profile_external_images';
+
     public const BIO_MAX_LENGTH = 'canela.profile_bio_max_length';
 
     public const BIO_MAX_LENGTH_DEFAULT = 1000;
@@ -75,6 +82,11 @@ final class ProfileSettings
     public function coverUploadEnabled(): bool
     {
         return $this->fieldEnabled(self::COVER) && $this->bool(self::COVER_UPLOAD);
+    }
+
+    public function externalImagesAllowed(): bool
+    {
+        return $this->bool(self::EXTERNAL_IMAGES);
     }
 
     public function bioMaxLength(): int

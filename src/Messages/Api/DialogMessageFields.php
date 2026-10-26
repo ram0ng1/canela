@@ -17,6 +17,7 @@ use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Messages\DialogMessage;
 use Illuminate\Database\ConnectionInterface;
+use Ramon\Canela\Messages\Listener\ConvertToGroupConversation;
 use Ramon\Canela\Messages\MessagesSchema;
 
 /**
@@ -45,6 +46,14 @@ final class DialogMessageFields
             // Os outros destinatários (a API do flarum/messages aceita um em
             // `users`): só de escrita, lidos por CreateGroupConversation.
             Schema\Arr::make('canelaUsers')
+                ->nullable()
+                ->hidden()
+                ->writableOnCreate()
+                ->set(static fn () => null),
+
+            // "Mensagem à equipe" (o grupo escolhido no seletor): só de
+            // escrita, lido por ConvertToGroupConversation.
+            Schema\Boolean::make(ConvertToGroupConversation::ATTRIBUTE)
                 ->nullable()
                 ->hidden()
                 ->writableOnCreate()

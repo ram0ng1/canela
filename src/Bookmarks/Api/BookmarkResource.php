@@ -21,6 +21,7 @@ use Flarum\Api\Sort\SortColumn;
 use Flarum\Post\Post;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Ramon\Canela\Bookmarks\Bookmark;
 use Ramon\Canela\Bookmarks\BookmarksFeature;
 use Tobyz\JsonApiServer\Context as OriginalContext;
@@ -173,16 +174,50 @@ final class BookmarkResource extends AbstractDatabaseResource
             ->where('post_id', $model->post_id)
             ->first();
 
-        if (! $existing) {
-            return $model;
+        return $existing ? $this->mergeInto($existing, $model) : $model;
+    }
+
+    /**
+     * Dois POSTs do mesmo marcador ao mesmo tempo (duplo clique em duas abas)
+     * passam juntos pela checagem do `creating()` e o segundo bate no índice
+     * único. Em vez do 500, o segundo vira uma atualização do primeiro — o
+     * mesmo efeito do `syncWithoutDetaching` do fof/bookmarks.
+     *
+     * O INSERT vai num savepoint: no PostgreSQL, um erro dentro de uma
+     * transação em andamento invalida o resto dela.
+     */
+    #[\Override]
+    public function create(object $model, OriginalContext $context): object
+    {
+        try {
+            $model->getConnection()->transaction(static fn () => $model->save());
+        } catch (UniqueConstraintViolationException $e) {
+            /** @var Bookmark|null $existing */
+            $existing = Bookmark::query()
+                ->where('user_id', $model->user_id)
+                ->where('post_id', $model->post_id)
+                ->first();
+
+            if (! $existing) {
+                throw $e;
+            }
+
+            $model = $this->mergeInto($existing, $model);
+            $model->save();
         }
 
-        if ($model->isDirty('name')) {
-            $existing->name = $model->name;
+        return $model;
+    }
+
+    /** O nome e o lembrete que vieram agora valem sobre o marcador existente. */
+    private function mergeInto(Bookmark $existing, Bookmark $incoming): Bookmark
+    {
+        if ($incoming->isDirty('name')) {
+            $existing->name = $incoming->name;
         }
 
-        if ($model->isDirty('reminder_at')) {
-            $existing->setReminder($model->reminder_at);
+        if ($incoming->isDirty('reminder_at')) {
+            $existing->setReminder($incoming->reminder_at);
         }
 
         return $existing;

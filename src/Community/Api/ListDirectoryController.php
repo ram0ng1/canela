@@ -65,7 +65,7 @@ final class ListDirectoryController implements RequestHandlerInterface
         $period = array_key_exists($period, Directory::PERIODS) ? $period : 'all';
 
         $columns = $this->directory->columns($actor, $period);
-        $sortable = [...$columns, 'username', 'joinedAt'];
+        $sortable = $this->directory->sortable($actor, $period);
 
         $order = (string) Arr::get($params, 'order', '');
         $order = in_array($order, $sortable, true) ? $order : ($groupId === null ? $this->directory->defaultOrder() : 'username');
@@ -86,6 +86,9 @@ final class ListDirectoryController implements RequestHandlerInterface
             'included' => $this->presenter->many($result['users'], $actor),
             'meta' => [
                 'columns' => $columns,
+                // Nem toda coluna mostrada ordena (dias visitados e postagens
+                // lidas exigem ver o último acesso de todos).
+                'sortable' => $sortable,
                 'period' => $period,
                 'order' => $order,
                 'dir' => $ascending ? 'asc' : 'desc',

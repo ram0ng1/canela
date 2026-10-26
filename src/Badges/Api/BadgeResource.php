@@ -21,16 +21,17 @@ use Flarum\Api\Schema;
 use Flarum\Api\Sort\SortColumn;
 use Flarum\Foundation\ValidationException;
 use Flarum\Locale\TranslatorInterface;
+use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\JsonResponse;
 use Ramon\Canela\Badges\Badge;
-use Ramon\Canela\Badges\BadgeGranter;
 use Ramon\Canela\Badges\BadgeQueries;
 use Ramon\Canela\Badges\BadgeSettings;
 use Ramon\Canela\Badges\Capabilities;
+use Ramon\Canela\Badges\Job\RecalculateBadgesJob;
 use Ramon\Canela\Badges\SystemBadges;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
@@ -135,6 +136,8 @@ final class BadgeResource extends AbstractDatabaseResource
                 ->admin(),
             // "Conceder agora": a mesma carga do comando diário, para o admin
             // ver o resultado de um emblema recém-ligado sem esperar o agendador.
+            // Vai para a fila (202): num fórum grande a carga passaria do tempo
+            // de uma requisição. Com a fila `sync`, roda antes da resposta.
             Endpoint\Endpoint::make('canelaRecalculate')
                 ->route('POST', '/recalculate')
                 ->visible($installed)
@@ -147,9 +150,11 @@ final class BadgeResource extends AbstractDatabaseResource
                         throw new ValidationException(['badges' => $this->translator->trans('ramon-canela.api.badges_admin.first_backfill_cli')]);
                     }
 
-                    resolve(BadgeGranter::class)->backfill();
+                    // Resolvida aqui, e não no construtor: o recurso é montado no
+                    // boot (rotas da API), e a fila só interessa a este botão.
+                    resolve(Queue::class)->push(new RecalculateBadgesJob());
                 })
-                ->response(fn () => new EmptyResponse(204)),
+                ->response(fn () => new EmptyResponse(202)),
             // "Restaurar emblemas do sistema": tira a marca dos removidos e
             // recria os que faltam. Os que existem (editados ou não) ficam.
             Endpoint\Endpoint::make('canelaRestoreSystem')
@@ -179,7 +184,10 @@ final class BadgeResource extends AbstractDatabaseResource
                 ->get(fn (Badge $badge) => $badge->translated($this->translator, 'name'))
                 ->writable($isAdmin)
                 ->requiredOnCreate()
-                ->minLength(1)
+                // Pelo menos um caractere que não seja espaço: o `set()` apara,
+                // e "   " passaria pelo minLength e viraria um nome vazio.
+                ->regex('/\S/u')
+                ->validationMessages(['name.regex' => $this->translator->trans('validation.required')])
                 ->maxLength(100)
                 ->set(fn (Badge $badge, string $value) => $badge->name = trim($value)),
             Schema\Str::make('description')

@@ -11,6 +11,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
+use Ramon\Canela\Messages\MessagesSchema;
 
 /*
  * Reações nas mensagens privadas: uma por pessoa por
@@ -18,28 +19,19 @@ use Illuminate\Database\Schema\Builder;
  * ligado, ou o nome do emoji da lista padrão.
  *
  * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
- * só age se a tabela do flarum/messages existir.
+ * só age se as tabelas do flarum/messages existirem. A criação mora no
+ * MessagesSchema, idempotente: o tema ligado antes do flarum/messages tem o
+ * esquema instalado depois, quando ele é habilitado (MessagesSchemaProvider).
  */
 return [
     'up' => static function (Builder $schema): void {
-        if (! $schema->hasTable('dialog_messages') || $schema->hasTable('canela_dialog_message_reactions')) {
-            return;
-        }
-
-        $schema->create('canela_dialog_message_reactions', static function (Blueprint $table): void {
-            $table->increments('id');
-            $table->unsignedInteger('message_id');
-            $table->unsignedInteger('user_id');
-            $table->string('reaction', 64);
-            $table->dateTime('created_at');
-
-            $table->unique(['message_id', 'user_id']);
-            $table->foreign('message_id')->references('id')->on('dialog_messages')->cascadeOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-        });
+        MessagesSchema::installReactions($schema);
     },
 
     'down' => static function (Builder $schema): void {
+        // Sem esta parte, a marca de "esquema instalado" deixa de valer.
+        MessagesSchema::forget($schema->getConnection());
+
         $schema->dropIfExists('canela_dialog_message_reactions');
     },
 ];

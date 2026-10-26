@@ -15,7 +15,6 @@ namespace Ramon\Canela\Messages;
 
 use Carbon\Carbon;
 use Illuminate\Database\ConnectionInterface;
-use Ramon\Canela\Support\SchemaCache;
 
 /**
  * Os "posts de ação pequena" de uma mensagem:
@@ -50,7 +49,9 @@ final class DialogEvents
 
     public function enabled(): bool
     {
-        return self::$exists ??= resolve(SchemaCache::class)->hasTable(self::TABLE);
+        // Só o "sim" fica guardado: o esquema pode ser instalado no meio do
+        // processo (MessagesSchema::ensure()).
+        return self::$exists ?: self::$exists = MessagesSchema::hasEvents();
     }
 
     public function record(int $dialogId, int $actorId, string $type, ?int $targetUserId = null, ?int $targetGroupId = null): void

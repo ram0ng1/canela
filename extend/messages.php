@@ -18,7 +18,10 @@
  * do `whenExtensionEnabled`, e nada é registrado sem ele. As colunas novas
  * (migrations `*_messages_*`) são consultadas antes de cada uso
  * (MessagesSchema), então o recurso pode ser ligado antes da migração — só
- * fica sem arquivo e sem título até ela rodar.
+ * fica sem arquivo e sem título até ela rodar. Com o tema ligado antes do
+ * flarum/messages, as migrations não acham as tabelas dele: o
+ * MessagesSchemaProvider (fora do Conditional, para ouvir o `Enabled` do
+ * flarum/messages) instala o esquema quando ele chega.
  */
 
 use Flarum\Api\Resource\ForumResource;
@@ -50,11 +53,14 @@ use Ramon\Canela\Messages\Reactions\ReactionFields;
 use Ramon\Canela\Messages\Listener\MoveToInboxOnReply;
 use Ramon\Canela\Messages\Listener\SyncGroupMembers;
 use Ramon\Canela\Messages\MessagesSchema;
+use Ramon\Canela\Messages\MessagesSchemaProvider;
 use Ramon\Canela\Messages\Notification\SkipMutedDialogs;
 use Ramon\Canela\Messages\StaffGroups;
 use Ramon\Canela\Messages\Search\BoxFilter;
 
 return [
+    (new Extend\ServiceProvider())->register(MessagesSchemaProvider::class),
+
     (new Extend\Settings())
         ->default('canela.messages_enabled', true)
         ->serializeToForum('canelaMessagesEnabled', 'canela.messages_enabled', 'boolval'),
@@ -129,6 +135,7 @@ return [
 
             (new Extend\Event())
                 ->listen(Created::class, MoveToInboxOnReply::class)
+                ->listen(Creating::class, [ConvertToGroupConversation::class, 'creating'])
                 ->listen(Created::class, ConvertToGroupConversation::class)
                 ->listen(GroupsChanged::class, SyncGroupMembers::class)
                 ->listen(Creating::class, CreateGroupConversation::class),

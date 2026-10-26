@@ -11,6 +11,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
+use Ramon\Canela\Messages\MessagesSchema;
 
 /*
  * Mensagens de grupo e níveis de notificação:
@@ -24,25 +25,19 @@ use Illuminate\Database\Schema\Builder;
  *   participa de uma mensagem (Observando).
  *
  * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
- * só age se as tabelas do flarum/messages existirem.
+ * só age se as tabelas do flarum/messages existirem. A criação mora no
+ * MessagesSchema, idempotente: o tema ligado antes do flarum/messages tem o
+ * esquema instalado depois, quando ele é habilitado (MessagesSchemaProvider).
  */
 return [
     'up' => static function (Builder $schema): void {
-        if ($schema->hasTable('dialogs') && ! $schema->hasColumn('dialogs', 'canela_group_id')) {
-            $schema->table('dialogs', static function (Blueprint $table): void {
-                $table->unsignedInteger('canela_group_id')->nullable()->index();
-            });
-        }
-
-        if ($schema->hasTable('dialog_user') && ! $schema->hasColumn('dialog_user', 'canela_via_group')) {
-            $schema->table('dialog_user', static function (Blueprint $table): void {
-                $table->boolean('canela_via_group')->default(false);
-                $table->unsignedTinyInteger('canela_notification_level')->nullable();
-            });
-        }
+        MessagesSchema::installGroups($schema);
     },
 
     'down' => static function (Builder $schema): void {
+        // Sem esta parte, a marca de "esquema instalado" deixa de valer.
+        MessagesSchema::forget($schema->getConnection());
+
         if ($schema->hasTable('dialogs') && $schema->hasColumn('dialogs', 'canela_group_id')) {
             $schema->table('dialogs', static function (Blueprint $table): void {
                 $table->dropColumn('canela_group_id');

@@ -258,4 +258,101 @@ class DirectoryTest extends TestCase
         $this->assertTrue($member['data']['attributes']['canelaCanViewDirectory']);
         $this->assertFalse($guest['data']['attributes']['canelaCanViewDirectory']);
     }
+
+    /** Dias de visita (com postagens lidas) da Ana, que esconde que está online, e do Bruno. */
+    private function visits(): void
+    {
+        $this->prepareDatabase([
+            'canela_user_visits' => [
+                ['user_id' => 3, 'visited_at' => Carbon::now()->subDays(1)->toDateString(), 'posts_read' => 5, 'time_read' => 60],
+                ['user_id' => 3, 'visited_at' => Carbon::now()->subDays(2)->toDateString(), 'posts_read' => 5, 'time_read' => 60],
+                ['user_id' => 3, 'visited_at' => Carbon::now()->subDays(3)->toDateString(), 'posts_read' => 5, 'time_read' => 60],
+                ['user_id' => 4, 'visited_at' => Carbon::now()->subDays(1)->toDateString(), 'posts_read' => 1, 'time_read' => 60],
+            ],
+        ]);
+    }
+
+    /**
+     * Dias visitados e postagens lidas seguem a regra do "último acesso" do
+     * core em todos os períodos: de quem esconde que está online, o membro
+     * recebe null; a própria pessoa e a moderação veem o número.
+     */
+    #[Test]
+    public function presenca_de_quem_se_esconde_vem_nula(): void
+    {
+        $this->visits();
+
+        foreach (['all', 'yearly', 'quarterly', 'monthly'] as $period) {
+            $rows = $this->rows($this->json($this->directory(2, ['period' => $period])));
+
+            $this->assertArrayHasKey('daysVisited', $rows['ana'], $period);
+            $this->assertNull($rows['ana']['daysVisited'], $period);
+            $this->assertNull($rows['ana']['postsRead'], $period);
+            $this->assertSame(1, $rows['bruno']['daysVisited'], $period);
+            $this->assertSame(1, $rows['bruno']['postsRead'], $period);
+        }
+
+        // A própria requisição da Ana registra a visita de hoje.
+        $self = $this->rows($this->json($this->directory(3)));
+        $this->assertGreaterThanOrEqual(3, $self['ana']['daysVisited']);
+        $this->assertSame(15, $self['ana']['postsRead']);
+
+        $admin = $this->rows($this->json($this->directory(1)));
+        $this->assertGreaterThanOrEqual(3, $admin['ana']['daysVisited']);
+    }
+
+    /**
+     * Ordenar por dias visitados/postagens lidas revelaria a posição de quem
+     * se esconde: como `lastSeenAt`, só com user.viewLastSeenAt. A coluna
+     * continua na tabela, mas fora de `meta.sortable`.
+     */
+    #[Test]
+    public function ordem_por_presenca_exige_permissao(): void
+    {
+        $this->visits();
+
+        $member = $this->json($this->directory(2, ['order' => 'daysVisited']));
+
+        $this->assertContains('daysVisited', $member['meta']['columns']);
+        $this->assertNotContains('daysVisited', $member['meta']['sortable']);
+        $this->assertNotContains('postsRead', $member['meta']['sortable']);
+        $this->assertNotSame('daysVisited', $member['meta']['order']);
+
+        $admin = $this->json($this->directory(1, ['order' => 'daysVisited']));
+
+        $this->assertContains('daysVisited', $admin['meta']['sortable']);
+        $this->assertSame('daysVisited', $admin['meta']['order']);
+        $this->assertSame('ana', $admin['included'][0]['attributes']['username']);
+    }
+
+    /**
+     * Curtidas dadas contam só curtidas em postagens públicas de tópicos
+     * públicos — a mesma regra das recebidas.
+     */
+    #[Test]
+    public function curtidas_dadas_ignoram_conteudo_oculto(): void
+    {
+        $this->extension('flarum-likes');
+        $this->prepareDatabase([
+            Discussion::class => [
+                ['id' => 4, 'title' => 'Privado', 'created_at' => Carbon::now(), 'last_posted_at' => Carbon::now(), 'user_id' => 4, 'first_post_id' => 5, 'comment_count' => 1, 'is_private' => 1],
+            ],
+            Post::class => [
+                ['id' => 5, 'discussion_id' => 4, 'created_at' => Carbon::now(), 'user_id' => 4, 'type' => 'comment', 'content' => '<t><p>e</p></t>', 'number' => 1],
+                ['id' => 6, 'discussion_id' => 1, 'created_at' => Carbon::now(), 'user_id' => 4, 'type' => 'comment', 'content' => '<t><p>f</p></t>', 'number' => 3, 'hidden_at' => Carbon::now()],
+            ],
+            'post_likes' => [
+                ['post_id' => 1, 'user_id' => 3, 'created_at' => Carbon::now()],
+                ['post_id' => 4, 'user_id' => 4, 'created_at' => Carbon::now()],
+                ['post_id' => 5, 'user_id' => 3, 'created_at' => Carbon::now()],
+                ['post_id' => 6, 'user_id' => 3, 'created_at' => Carbon::now()],
+            ],
+        ]);
+
+        $rows = $this->rows($this->json($this->directory(2)));
+
+        $this->assertSame(1, $rows['ana']['likesGiven']);
+        $this->assertSame(0, $rows['bruno']['likesGiven']);
+        $this->assertSame(1, $rows['bruno']['likesReceived']);
+    }
 }
