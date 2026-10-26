@@ -831,7 +831,7 @@ ramon-canela:
         review_flags_help: "通報されたチャットメッセージを、投稿と一緒に日付順でテーマのレビューキュー（ページ、サイドバー、ユーザーメニュー）に表示します。通報を閲覧できる人、またはチャットのモデレーター向けです。"
         title: "チャットの追加機能（ramon/chat）"
         description: "ramon/chat にないもの：ベルの通知、ワンクリックリアクション、「新しいメッセージ」、お気に入り、メッセージのリンク、WebSocket なしの「入力中」など。拡張機能は変更しません。"
-        backend_off: "テーマの「ramonchat」機能が有効になっていません（extend/.enabled）。"
+        backend_off: "テーマの「ramonchat」機能を読み込めませんでした（PHP のエラーログを確認してください）。"
         group_reader: "読者向け"
         group_messages: "メッセージ"
         group_channels: "チャンネルと DM"

@@ -831,7 +831,7 @@ ramon-canela:
         review_flags_help: "As mensagens do chat denunciadas entram na fila de revisão do tema (página, barra lateral e menu do usuário), junto com as postagens e na ordem das datas, para quem vê as sinalizações ou modera o chat."
         title: "Recursos extras do chat (ramon/chat)"
         description: "O que falta no ramon/chat: avisos no sino, reações de um clique, \"Nova mensagem\", favoritos, link da mensagem, \"está digitando\" sem websocket e mais: sem mudar a extensão."
-        backend_off: "O recurso \"ramonchat\" do tema não está ligado (extend/.enabled)."
+        backend_off: "O recurso \"ramonchat\" do tema não carregou (veja o log de erros do PHP)."
         group_reader: "Para o leitor"
         group_messages: "Mensagens"
         group_channels: "Canais e MDs"

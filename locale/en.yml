@@ -831,7 +831,7 @@ ramon-canela:
         review_flags_help: "Reported chat messages join the theme review queue (page, sidebar and user menu), alongside posts and ordered by date, for whoever sees flags or moderates the chat."
         title: "Extra chat features (ramon/chat)"
         description: "What ramon/chat lacks: bell notifications, one-click reactions, \"New message\", starred channels, message links, \"is typing\" without websocket and more, without changing the extension."
-        backend_off: "The theme's \"ramonchat\" feature is not enabled (extend/.enabled)."
+        backend_off: "The theme's \"ramonchat\" feature did not load (check the PHP error log)."
         group_reader: "For readers"
         group_messages: "Messages"
         group_channels: "Channels and DMs"

@@ -16,7 +16,7 @@
  * para alternar com o original.
  *
  * Usa o provedor e as configurações do recurso `ai` (src/Ai), mas fica num
- * arquivo próprio para entrar no `.enabled` só depois de testado. Desligada
+ * arquivo próprio para ter as próprias rotas e campos. Desligada
  * (ou sem IA configurada, ou sem as tabelas), os campos nem aparecem e a rota
  * responde 404.
  */

@@ -280,18 +280,10 @@ $features = [];
 // tema base, que então seria registrado duas vezes (e perderia os padrões).
 $requireFeature = static fn (string $file): array => require $file;
 
-// Só carregam os recursos listados em extend/.enabled (um por linha): um
-// recurso novo entra na lista depois de testado, e o fórum nunca cai por causa
-// de um que ainda está em construção. A lista vem só desse arquivo, nunca da
-// requisição: para testar um recurso, ligue-o num ambiente de testes.
-$readList = static fn (string $text): array => array_values(array_filter(array_map('trim', preg_split('/[\s,]+/', $text) ?: [])));
-$enabledFile = __DIR__.'/extend/.enabled';
-$enabled = is_file($enabledFile) ? $readList((string) file_get_contents($enabledFile)) : [];
-
-$featureFiles = array_filter(
-    glob(__DIR__.'/extend/*.php') ?: [],
-    static fn (string $file): bool => in_array(basename($file, '.php'), $enabled, true)
-);
+// Todo arquivo em extend/ é carregado, em ordem alfabética. A lista vem só do
+// disco, nunca da requisição; quem não deve rodar em produção não entra em
+// extend/.
+$featureFiles = glob(__DIR__.'/extend/*.php') ?: [];
 
 // Recursos que dão lugar a uma extensão própria com o mesmo papel: com ela
 // habilitada, o do tema nem registra rotas, API ou configurações (e o tema
