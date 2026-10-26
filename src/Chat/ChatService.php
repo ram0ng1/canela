@@ -18,6 +18,7 @@ use Flarum\Foundation\ValidationException;
 use Flarum\Locale\TranslatorInterface;
 use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
@@ -49,7 +50,21 @@ final class ChatService
         private readonly ChatUploads $uploads,
         private readonly ConnectionInterface $db,
         private readonly TranslatorInterface $translator,
+        private readonly Cache $cache,
     ) {
+    }
+
+    /**
+     * Conta mais um uso de `$key` na janela e diz se passou do teto. O cache
+     * (e não uma contagem no banco) porque desligar e religar uma reação não
+     * deixa linha para contar.
+     */
+    private function overLimit(string $key, int $max, int $seconds): bool
+    {
+        $key = 'canela.chat.limit.'.$key;
+        $this->cache->add($key, 0, $seconds);
+
+        return (int) $this->cache->increment($key) > $max;
     }
 
     private function fail(string $field, string $key, array $params = []): never
@@ -568,6 +583,11 @@ final class ChatService
 
         $this->access->assertCanPost($channel, $actor, $membership);
 
+        // Cada reação vai por push para o canal todo: 30 a cada 10 s bastam.
+        if (! $this->access->canModerate($actor) && $this->overLimit('react.'.$actor->id, 30, 10)) {
+            $this->fail('emoji', 'too_fast');
+        }
+
         $emoji = trim($emoji);
 
         if (! self::isEmoji($emoji)) {
@@ -889,6 +909,11 @@ final class ChatService
             }
         }
 
+        // Teto de conversas novas: 10 por hora (a moderação não tem).
+        if (! $this->access->canModerate($actor) && $this->overLimit('dm.'.$actor->id, 10, 3600)) {
+            $this->fail('userIds', 'too_fast');
+        }
+
         $channel = new Channel();
         $channel->type = Channel::TYPE_DIRECT;
         $channel->is_group = $isGroup;
@@ -935,6 +960,12 @@ final class ChatService
             throw new PermissionDeniedException();
         }
 
+        // Pôr gente numa MD é mandar MD: quem perdeu essa permissão (ou com as
+        // MDs desligadas) não amplia um grupo que já existe.
+        if ($channel->isDirect() && ! $this->access->canDirectMessage($actor)) {
+            $this->fail('userIds', 'cannot_dm');
+        }
+
         $users = User::query()->whereKey(array_map('intval', $userIds) ?: [0])->get()->filter(fn (User $user) => $this->access->canUse($user));
 
         if ($channel->isDirect()) {
@@ -951,7 +982,16 @@ final class ChatService
                 continue;
             }
 
-            $member = Membership::query()->firstOrNew(['channel_id' => $channel->id, 'user_id' => $user->id]);
+            // Atributos um a um (e não firstOrNew com array): os modelos do chat
+            // não declaram $fillable, e a atribuição em massa seria recusada.
+            $member = Membership::query()->where('channel_id', $channel->id)->where('user_id', $user->id)->first();
+
+            if (! $member) {
+                $member = new Membership();
+                $member->channel_id = $channel->id;
+                $member->user_id = (int) $user->id;
+            }
+
             $member->following = true;
             $member->notification_level = $member->exists ? $member->notification_level : ($channel->isDirect() ? Membership::NOTIFY_ALWAYS : Membership::NOTIFY_MENTION);
             $member->last_read_message_id ??= $channel->last_message_id;

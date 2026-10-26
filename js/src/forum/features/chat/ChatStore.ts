@@ -64,11 +64,16 @@ export class ChatPane {
     readonly channelId: number,
     readonly threadId: number | null
   ) {
-    this.text = readLocal<string>(`draft.${this.key}`, '');
+    this.text = readLocal<string>(this.draftKey, '');
   }
 
   get key(): string {
     return this.threadId ? `t${this.threadId}` : `c${this.channelId}`;
+  }
+
+  /** O rascunho é de quem o escreveu: outra conta no mesmo navegador não o vê. */
+  get draftKey(): string {
+    return `draft.${meId()}.${this.key}`;
   }
 
   get channel(): ChatChannel | undefined {
@@ -93,7 +98,7 @@ export class ChatPane {
 
   saveDraft(text: string): void {
     this.text = text;
-    writeLocal(`draft.${this.key}`, text.trim() ? text : null);
+    writeLocal(this.draftKey, text.trim() ? text : null);
   }
 
   /** Abre a conversa: em volta da mensagem pedida, da primeira não lida, ou no fim. */

@@ -331,6 +331,8 @@ final class ChatPresenter
         }
 
         $threadsOn = $this->access->threadsOn($channel);
+        // Apagada e sem direito de ver: some o texto e o trecho também.
+        $hidden = $message->isDeleted() && ! $this->access->canSeeDeleted($message, $channel, $actor);
 
         return [
             'id' => $message->id,
@@ -338,9 +340,9 @@ final class ChatPresenter
             'threadId' => $threadsOn && $thread ? $thread->id : null,
             'isThreadOriginal' => $threadsOn && $thread !== null && $thread->original_message_id === $message->id,
             'userId' => $message->user_id,
-            'message' => $message->isDeleted() && ! $this->access->canSeeDeleted($message, $channel, $actor) ? '' : $message->message,
-            'cooked' => $message->isDeleted() && ! $this->access->canSeeDeleted($message, $channel, $actor) ? '' : $message->cooked,
-            'excerpt' => ChatFormatter::excerpt($message->cooked),
+            'message' => $hidden ? '' : $message->message,
+            'cooked' => $hidden ? '' : $message->cooked,
+            'excerpt' => $hidden ? '' : ChatFormatter::excerpt($message->cooked),
             'createdAt' => $message->created_at?->toAtomString(),
             'editedAt' => $message->edited_at?->toAtomString(),
             'deletedAt' => $message->deleted_at?->toAtomString(),
