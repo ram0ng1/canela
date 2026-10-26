@@ -15,30 +15,29 @@ namespace Ramon\Canela\BugReports\Http;
 
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
-use Flarum\Http\UrlGenerator;
-use Flarum\Settings\SettingsRepositoryInterface;
+use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\TextResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\BugReports\BugReport;
-use Ramon\Canela\BugReports\BugReportService;
 use Ramon\Canela\BugReports\BugReportsSettings;
-use Ramon\Canela\BugReports\Worklist;
+use Ramon\Canela\BugReports\PromptBuilder;
 
 /**
- * `GET /api/canela-bug-reports-export`: os relatórios em aberto como uma lista
- * em Markdown (só o admin), para baixar e entregar a quem vai corrigir.
+ * As instruções para a IA, prontas para colar ou baixar (só o admin):
+ *
+ * - `GET /api/canela-bug-reports-export`: todos os relatórios pendentes;
+ *   com `?download=1`, como arquivo .md;
+ * - `GET /api/canela-bug-reports/{id}/prompt`: um relatório só.
  */
 final class ExportController implements RequestHandlerInterface
 {
-    private const MAX = 500;
+    private const MAX = 200;
 
     public function __construct(
         private readonly BugReportsSettings $settings,
-        private readonly BugReportService $reports,
-        private readonly SettingsRepositoryInterface $config,
-        private readonly UrlGenerator $url,
+        private readonly PromptBuilder $prompts,
     ) {
     }
 
@@ -49,33 +48,29 @@ final class ExportController implements RequestHandlerInterface
             throw new RouteNotFoundException();
         }
 
-        RequestUtil::getActor($request)->assertAdmin();
+        $actor = RequestUtil::getActor($request);
+        $actor->assertAdmin();
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, BugReport> $rows */
-        $rows = BugReport::query()
-            ->with('user')
-            ->whereNotIn('status', ['fixed', 'wontfix'])
-            ->orderBy('id')
-            ->limit(self::MAX)
-            ->get();
+        $query = $request->getQueryParams();
 
-        $presented = [];
-
-        foreach ($rows as $report) {
-            $presented[] = $this->reports->present($report, true);
+        if (Arr::has($query, 'id')) {
+            $rows = [ReportController::find($request, $actor)];
+        } else {
+            /** @var \Illuminate\Database\Eloquent\Collection<int, BugReport> $rows */
+            $rows = BugReport::query()
+                ->with('user')
+                ->whereNotIn('status', ['fixed', 'wontfix'])
+                ->orderBy('id')
+                ->limit(self::MAX)
+                ->get();
         }
 
-        $api = rtrim($this->url->to('api')->base(), '/');
-        $markdown = Worklist::markdown(
-            $presented,
-            (string) $this->config->get('forum_title', 'Flarum'),
-            static fn (int $id, string $which): string => "$api/canela-bug-reports/$id/$which",
-        );
+        $headers = ['Content-Type' => 'text/markdown; charset=utf-8', 'Cache-Control' => 'no-store'];
 
-        return new TextResponse($markdown, 200, [
-            'Content-Type' => 'text/markdown; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="relatorios-'.date('Y-m-d').'.md"',
-            'Cache-Control' => 'no-store',
-        ]);
+        if (Arr::get($query, 'download')) {
+            $headers['Content-Disposition'] = 'attachment; filename="instrucoes-ia-'.date('Y-m-d').'.md"';
+        }
+
+        return new TextResponse($this->prompts->build($rows), 200, $headers);
     }
 }

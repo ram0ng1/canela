@@ -94,7 +94,11 @@ class BugButton {
           aria-expanded={this.open ? 'true' : 'false'}
           aria-label={t('bug_reports.button')}
           title={t('bug_reports.button')}
-          onclick={() => (this.open = !this.open)}
+          onclick={() => {
+            this.open = !this.open;
+            // Com o menu aberto, a captura já se prepara: o clique em "Relatar" fica instantâneo.
+            if (this.open) loadReporter().then((chunk) => chunk.warm());
+          }}
         >
           <Icon name={this.open ? 'fas fa-xmark' : 'fas fa-bug'} />
         </button>

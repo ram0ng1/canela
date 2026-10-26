@@ -20,12 +20,31 @@ namespace Ramon\Canela\BugReports;
  */
 final class Worklist
 {
+    private const PT = [
+        'open' => 'Relatórios abertos', 'summary' => '%d relatório(s) em %d página(s).', 'reports' => 'Relatórios',
+        'page' => 'Página', 'no_page' => '(sem página)', 'sent' => 'Enviado', 'by' => 'por', 'screen' => 'Tela',
+        'browser' => 'Navegador', 'region' => 'Captura da área', 'full' => 'Captura da tela', 'current' => 'Texto atual',
+        'suggested' => 'Texto sugerido', 'elements' => 'Elementos sob a área', 'console' => 'Erros do console',
+        'note' => 'Nota da equipe',
+    ];
+
+    private const EN = [
+        'open' => 'Open reports', 'summary' => '%d report(s) on %d page(s).', 'reports' => 'Reports',
+        'page' => 'Page', 'no_page' => '(no page)', 'sent' => 'Sent', 'by' => 'by', 'screen' => 'Screen',
+        'browser' => 'Browser', 'region' => 'Marked area screenshot', 'full' => 'Whole screen screenshot', 'current' => 'Current text',
+        'suggested' => 'Suggested text', 'elements' => 'Elements under the area', 'console' => 'Console errors',
+        'note' => 'Team note',
+    ];
+
     /**
      * @param list<array<string, mixed>> $reports os relatórios já apresentados para o admin
      * @param callable(int, string): string $imageUrl o endereço de cada captura
+     * @param string|null $header o começo do texto (as instruções da IA); sem ele, um título simples
      */
-    public static function markdown(array $reports, string $forumTitle, callable $imageUrl): string
+    public static function markdown(array $reports, string $forumTitle, callable $imageUrl, ?string $header = null, bool $portuguese = true): string
     {
+        $l = $portuguese ? self::PT : self::EN;
+
         $byPage = [];
 
         foreach ($reports as $report) {
@@ -35,10 +54,12 @@ final class Worklist
 
         ksort($byPage);
 
-        $out = ['# Relatórios abertos — '.self::line($forumTitle), '', count($reports).' relatório(s) em '.count($byPage).' página(s).', ''];
+        $out = $header !== null
+            ? [rtrim($header), '', '## '.$l['reports'].' ('.count($reports).')', '']
+            : ['# '.$l['open'].' — '.self::line($forumTitle), '', sprintf($l['summary'], count($reports), count($byPage)), ''];
 
         foreach ($byPage as $page => $items) {
-            $out[] = '## '.($page === '' ? '(sem página)' : $page);
+            $out[] = '### '.$l['page'].': '.($page === '' ? $l['no_page'] : $page);
             $out[] = '';
 
             foreach ($items as $report) {
@@ -46,23 +67,23 @@ final class Worklist
                 $context = (array) ($report['context'] ?? []);
                 $viewport = (array) ($context['viewport'] ?? []);
 
-                $out[] = '### #'.$id.' · '.$report['kind'].' · '.$report['status'];
+                $out[] = '#### #'.$id.' · '.$report['kind'].' · '.$report['status'];
                 $out[] = '';
-                $out[] = '- Enviado: '.($report['createdAt'] ?? '').(isset($report['user']['username']) ? ' por @'.$report['user']['username'] : '');
+                $out[] = '- '.$l['sent'].': '.($report['createdAt'] ?? '').(isset($report['user']['username']) ? ' '.$l['by'].' @'.$report['user']['username'] : '');
                 $out[] = '- URL: '.($report['url'] ?? '');
 
                 if ($viewport) {
-                    $out[] = '- Tela: '.($viewport['w'] ?? '?').'×'.($viewport['h'] ?? '?').' @'.($viewport['dpr'] ?? 1).'x';
+                    $out[] = '- '.$l['screen'].': '.($viewport['w'] ?? '?').'×'.($viewport['h'] ?? '?').' @'.($viewport['dpr'] ?? 1).'x'.(! empty($context['theme']) ? ' · '.$context['theme'] : '');
                 }
 
                 if (! empty($context['userAgent'])) {
-                    $out[] = '- Navegador: '.self::line((string) $context['userAgent']);
+                    $out[] = '- '.$l['browser'].': '.self::line((string) $context['userAgent']);
                 }
 
-                $out[] = '- Captura da área: '.$imageUrl($id, 'region');
+                $out[] = '- '.$l['region'].': '.$imageUrl($id, 'region');
 
                 if (! empty($report['hasFull'])) {
-                    $out[] = '- Captura da tela: '.$imageUrl($id, 'full');
+                    $out[] = '- '.$l['full'].': '.$imageUrl($id, 'full');
                 }
 
                 $out[] = '';
@@ -70,15 +91,15 @@ final class Worklist
                 $out[] = '';
 
                 if (! empty($report['currentText']) || ! empty($report['suggestedText'])) {
-                    $out[] = '- Texto atual: '.self::line((string) ($report['currentText'] ?? ''));
-                    $out[] = '- Texto sugerido: '.self::line((string) ($report['suggestedText'] ?? ''));
+                    $out[] = '- '.$l['current'].': '.self::line((string) ($report['currentText'] ?? ''));
+                    $out[] = '- '.$l['suggested'].': '.self::line((string) ($report['suggestedText'] ?? ''));
                     $out[] = '';
                 }
 
                 $elements = (array) ($context['elements'] ?? []);
 
                 if ($elements) {
-                    $out[] = 'Elementos sob a área:';
+                    $out[] = $l['elements'].':';
                     $out[] = '';
 
                     foreach ($elements as $element) {
@@ -92,7 +113,7 @@ final class Worklist
                 $console = (array) ($context['consoleErrors'] ?? []);
 
                 if ($console) {
-                    $out[] = 'Erros do console:';
+                    $out[] = $l['console'].':';
                     $out[] = '';
                     $out[] = '```';
 
@@ -105,7 +126,7 @@ final class Worklist
                 }
 
                 if (! empty($report['note'])) {
-                    $out[] = '- Nota da equipe: '.self::line((string) $report['note']);
+                    $out[] = '- '.$l['note'].': '.self::line((string) $report['note']);
                     $out[] = '';
                 }
             }

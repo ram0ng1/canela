@@ -10,12 +10,12 @@ import Icon from 'flarum/common/components/Icon';
 
 import { t } from '../../utils/settings';
 import { buildContext, UI_ATTR, type Rect } from './context';
-import { captureViewport, cropImage, maskImage, maskRects, toJpeg } from './capture';
+import { captureArea, captureScreen, warm } from './capture';
 import type { BugReportsOptions } from './index';
 
+export { warm };
+
 const MIN_SIDE = 12;
-/** Acima disso (em caracteres do data URL) a área vai em JPEG, para caber no envio. */
-const MAX_PNG = 3_500_000;
 
 const normalize = (a: { x: number; y: number }, b: { x: number; y: number }): Rect => ({
   x: Math.min(a.x, b.x),
@@ -114,11 +114,27 @@ function selectArea(): Promise<Rect | null | false> {
 
 let busy = false;
 
+/**
+ * Roda `fn` depois de o modal aparecer e quando o navegador estiver livre: a
+ * captura da tela inteira ocupa o navegador por um instante, e não pode
+ * atrasar o modal.
+ */
+const afterModal = <T,>(fn: () => Promise<T>): Promise<T> =>
+  new Promise((resolve, reject) => {
+    const run = () => fn().then(resolve, reject);
+
+    setTimeout(() => {
+      if ('requestIdleCallback' in window) (window as any).requestIdleCallback(run, { timeout: 1000 });
+      else run();
+    }, 700);
+  });
+
 /** Marcar, capturar e abrir o modal do envio. */
 export async function startReport(opts: BugReportsOptions): Promise<void> {
   if (busy) return;
 
   app.modal.close();
+  warm();
 
   const area = await selectArea();
 
@@ -126,34 +142,29 @@ export async function startReport(opts: BugReportsOptions): Promise<void> {
 
   busy = true;
 
+  // O aviso só aparece se a captura passar de um instante (a tela inteira).
   const toast = document.createElement('div');
+  const showToast = setTimeout(() => document.body.appendChild(toast), 250);
 
   toast.setAttribute(UI_ATTR, '');
   toast.className = 'CanelaBugToast';
   toast.textContent = t('bug_reports.capturing');
-  document.body.appendChild(toast);
 
   try {
     // Um quadro para a camada sair da tela antes da captura.
     await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
 
-    const viewport = { w: window.innerWidth, h: window.innerHeight };
-    const raw = await captureViewport();
-    const masked = await maskImage(raw, maskRects(), viewport);
-
-    let region = area ? await cropImage(masked, area, viewport) : await toJpeg(masked);
-
-    if (region.length > MAX_PNG) region = await toJpeg(region);
-
-    const full = opts.full && area ? await toJpeg(masked) : null;
     const context = buildContext(area, opts.console, String(app.current.get('routeName') || ''));
+    const [region, { default: ReportModal }] = await Promise.all([area ? captureArea(area) : captureScreen(), import('./ReportModal')]);
 
-    const { default: ReportModal } = await import('./ReportModal');
+    // A tela inteira (de referência) sai depois, enquanto a pessoa escreve.
+    const full = opts.full && area ? afterModal(() => captureScreen(1)).catch(() => null) : Promise.resolve(null);
 
     app.modal.show(ReportModal, { region, full, context, onAnother: () => startReport(opts) });
   } catch {
     app.alerts.show({ type: 'error' }, t('bug_reports.capture_failed'));
   } finally {
+    clearTimeout(showToast);
     toast.remove();
     busy = false;
   }

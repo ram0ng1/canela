@@ -44,7 +44,7 @@ ramon-canela:
         kind_content: "文章・画像"
         kind_design: "デザイン"
         kind_idea: "アイデア"
-        export: "未対応をエクスポート（Markdown）"
+        export: "ダウンロード（.md）"
         empty: "報告はありません。"
         load_failed: "報告を読み込めませんでした。テーマのマイグレーションは実行済みですか？"
         previous: "前へ"
@@ -67,6 +67,13 @@ ramon-canela:
         delete: "削除"
         delete_confirm: "この報告とキャプチャを削除しますか？元に戻せません。"
         save_failed: "保存できませんでした。もう一度お試しください。"
+        ai_title: "AIで修正"
+        ai_help: "手順をコピーして、ChatGPT、Claude、Gemini、またはエディタのエージェントに貼り付けてください。再現・テスト作成・修正・確認の進め方と、フォーラムの環境、報告、ログイン不要で7日間開けるキャプチャのリンクが含まれます。"
+        copy_all: "手順をコピー（未完了）"
+        copy_prompt: "AI用にコピー"
+        copy_image: "キャプチャをコピー"
+        copied: "コピーしました！"
+        copy_failed: "コピーできませんでした。"
       group_appearance: 外観
       group_sidebar: サイドバー
       group_header: ヘッダーとショートカット
