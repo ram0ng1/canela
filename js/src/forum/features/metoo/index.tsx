@@ -87,7 +87,8 @@ function MeTooRow(): Mithril.Component<{ discussion: Discussion; post: Post; sta
       const isClosed = !!(discussion as any).isLocked?.();
       const busy = saving.has(String(discussion.id()));
       // O visitante vê o botão ativo: o clique é que o leva ao login.
-      const disabled = busy || (!!user && (isAuthor || isClosed || !state.can));
+      // Quem já marcou sempre pode desmarcar (mesmo com o tópico trancado).
+      const disabled = busy || (!!user && !state.mine && (isAuthor || isClosed || !state.can));
 
       const label = state.count > 0 ? t('metoo.label_with_count', { label: t('metoo.label'), count: state.count }) : t('metoo.label');
       const title = isAuthor ? t('metoo.author_title') : isClosed ? t('metoo.closed_title') : t('metoo.title');
@@ -125,13 +126,13 @@ async function toggle(discussion: Discussion, state: MeTooState): Promise<void> 
 
   try {
     const apiUrl = ((app.forum.attribute<string>('apiUrl') as string) || '/api').replace(/\/+$/, '');
-    const result = await app.request<{ count: number; mine: boolean; subscription: string | null }>({
+    const result = await app.request<{ count: number; mine: boolean; can: boolean; subscription: string | null }>({
       method: 'POST',
       url: `${apiUrl}/canela-me-too`,
       body: { discussionId: id },
     });
 
-    const attributes: Record<string, unknown> = { canelaMeToo: { ...state, count: result.count, mine: result.mine } };
+    const attributes: Record<string, unknown> = { canelaMeToo: { ...state, count: result.count, mine: result.mine, can: result.can ?? state.can } };
 
     // O rodapé do tópico mostra "Seguindo" na hora.
     if (result.subscription !== null && result.subscription !== undefined) attributes.subscription = result.subscription;

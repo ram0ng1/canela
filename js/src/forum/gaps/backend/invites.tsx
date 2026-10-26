@@ -28,6 +28,11 @@ export function canInvite(): boolean {
   return gapsBackend() && forumBool('canelaInvitesEnabled', true) && !!app.session.user && !!app.forum.attribute<boolean>('canelaCanInvite');
 }
 
+/** Abre a janela: para gerar convites, ou só para revogar os que ainda existem (quem perdeu a permissão). */
+export function canManageInvites(): boolean {
+  return canInvite() || (gapsBackend() && !!app.session.user && !!app.forum.attribute<boolean>('canelaHasInvites'));
+}
+
 /** A janela de convites mora num chunk (InviteModal): desce no clique. */
 export function openInviteModal(stack = false): void {
   app.modal.show(() => import('./InviteModal'), {}, stack);
@@ -86,7 +91,7 @@ export default function installInvites(): void {
   });
 
   extend(CanelaSidebar.prototype, 'moreItems', function (items: ItemList<Mithril.Children>) {
-    if (!canInvite()) return;
+    if (!canManageInvites()) return;
 
     items.add(
       'canelaInvite',

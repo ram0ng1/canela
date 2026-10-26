@@ -53,6 +53,11 @@ export function cardBackgroundEnabled(): boolean {
   return profileField('cover');
 }
 
+/** Endereço de imagem de outro site na capa e no fundo do cartão (desligado por padrão: rastreia quem vê o perfil). */
+export function externalImagesEnabled(): boolean {
+  return cardBackgroundEnabled() && forumBool('canelaProfileExternalImages', false);
+}
+
 /** O envio de arquivo dos campos de imagem do tema (a capa interna e o fundo do cartão). */
 export function coverUploadEnabled(): boolean {
   return cardBackgroundEnabled() && forumBool('canelaProfileCoverUpload', true);

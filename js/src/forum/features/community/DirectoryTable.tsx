@@ -86,7 +86,7 @@ export default class DirectoryTable extends Component<DirectoryTableAttrs> {
 
   header(column: string, label: string, className: string): Mithril.Children {
     const { state } = this.attrs;
-    const sortable = column === 'username' || state.columns.includes(column);
+    const sortable = state.sortable.includes(column);
     const active = state.currentOrder() === column;
     const icon = COLUMN_ICONS[column];
     const content = (

@@ -25,7 +25,12 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
     draft: Draft;
     saved: Draft;
     saving: boolean;
+    /** Os títulos que a pessoa pode escolher sozinha: os emblemas que ganhou e que viram título. */
+    titleOptions: string[] | null;
     oninit(vnode: Mithril.Vnode<ProfileSettingsSectionAttrs, this>): void;
+    /** Sem poder editar o usuário, o servidor só aceita o nome de um emblema ganho que vira título. */
+    titleFromBadges(user: User): boolean;
+    loadTitleOptions(user: User): void;
     /** Lê o usuário de novo: depois de salvar, o salvo vira o ponto de partida. */
     reset(): void;
     view(): JSX.Element;
@@ -34,6 +39,8 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
     bioField(): Mithril.Children;
     birthdayField(): Mithril.Children;
     statusField(): Mithril.Children;
+    /** Sem envio e sem endereço externo, os campos de imagem não têm como receber nada. */
+    imagesAvailable(): boolean;
     coverField(user: User): Mithril.Children;
     cardField(user: User): Mithril.Children;
     dirty(): boolean;

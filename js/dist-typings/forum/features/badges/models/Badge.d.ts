@@ -14,6 +14,8 @@ export default class Badge extends Model {
     grouping(): string;
     position(): number;
     multipleGrant(): boolean;
+    /** Pode virar título no perfil de quem ganhou (só com a coluna do admin de emblemas). */
+    allowTitle(): boolean | undefined;
     system(): boolean;
     enabled(): boolean;
     listable(): boolean;

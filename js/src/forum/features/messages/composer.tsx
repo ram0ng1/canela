@@ -228,6 +228,10 @@ export default function installComposer(): void {
       data.canelaUsers = recipients.slice(1).map((user) => Number(user.id()));
     }
 
+    // "Mensagem à equipe": o grupo escolhido no seletor. O contato da equipe vai
+    // em `users` só porque a API pede alguém; sem isto a conversa fica a dois.
+    if (this.composer.fields.canelaGroup?.()) data.canelaToGroup = true;
+
     const title = String(this.composer.fields.canelaTitle?.() || '').trim();
 
     if (title) data.canelaTitle = title;

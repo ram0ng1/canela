@@ -467,6 +467,7 @@ ramon-canela:
         load_more: さらに読み込む
         revoke: 取り消す
         revoke_confirm: '{username} さんからこのバッジを取り消しますか？'
+        run_queued: "キューに追加しました。まもなくバッジが付与されます。"
       chat:
         channels_only_title: チャットチャンネル
         title: チャット
@@ -929,9 +930,11 @@ ramon-canela:
         profile_cover_label: プロフィール画像
         profile_cover_help: プロフィール上部のワイドなカバーとユーザーカードの背景です。画像がない場合、カバーにはユーザーの色が使われます。
         profile_cover_upload_label: 画像のアップロードを許可
-        profile_cover_upload_help: 画像は縮小され（カバーは 2000px、カードは 900px）、WebP に変換されて assets/canela-covers に保存されます。無効の場合は https の画像アドレスのみ受け付けます。
+        profile_cover_upload_help: 画像は縮小され（カバーは 2000px、カードは 900px）、WebP に変換されて assets/canela-covers に保存されます。無効の場合は、下で許可されていれば外部サイトの画像のみ使えます。
         cover_notice: 外部アドレスは https である必要があります。訪問者のブラウザーは画像を相手のサイトから直接読み込みます。
         cover_forumaker_notice: 'forumaker/profile-cover が有効です。プロフィールカバーはこの拡張機能から表示されます（連携 → プロフィールカバー）。カードの背景は引き続きテーマのものです。独自の背景がない場合、カードはそのカバーのサムネイルを使います。ここでアップロードしたカバーは保存されたままですが、拡張機能が有効な間は表示されません。'
+        profile_external_images_label: "外部サイトの画像を許可"
+        profile_external_images_help: "カバーとカード背景に https の画像アドレスを使えます。閲覧者のブラウザが外部サイトから直接読み込むため、そのサイトがプロフィールの閲覧者を追跡できます。"
       stats:
         section_links: リンクのクリック
         stats_links_enabled_label: リンクのクリックを数える
@@ -1143,6 +1146,7 @@ ramon-canela:
           ```
 
           詳しくは[コミュニティガイドライン](%{guidelines_url})をご確認ください。
+        reason_other: "その他"
       silenced_by_staff:
         title: "アカウント停止"
         help: "スタッフがアカウントを停止したときに送ります。停止拡張（flarum/suspend）が必要です。"
@@ -2279,6 +2283,7 @@ ramon-canela:
         sidebar: 招待
         share_button: 招待
         invited_by: '{username} さんがあなたをフォーラムに招待しました。'
+        cannot_create: "招待リンクを新たに作成することはできませんが、以下の招待は取り消せます。"
       category_notifications:
         toggle: タグの通知：{level}
         watching: ウォッチ中
@@ -2505,6 +2510,8 @@ ramon-canela:
         upload: 画像をアップロード
         remove_image: 画像を削除
         image_too_large: 画像が {max} を超えています。もっと小さい画像を選んでください。
+        title_none: "肩書きなし"
+        title_badge_help: "肩書きとして使える獲得済みバッジから選んでください。"
       moderation:
         clear_status: ステータスをクリア
         clear_images: カバー画像とカードの背景を削除
@@ -3208,12 +3215,15 @@ ramon-canela:
       invite_empty: 招待する相手を選んでください。
       invite_group_invalid: このグループはメッセージを受け取れません。
       invite_group_already: '{group} はすでにこのメッセージに参加しています。'
+      invite_unavailable: "招待できる相手がいません。メッセージを受け取れないか、返信できません。"
     profile:
       invalid_website: ウェブサイトは http:// または https:// で始まるアドレスにしてください。
       invalid_status_emoji: ステータスには絵文字を 1 つだけ使用できます。
       invalid_status_until: ステータスを消去する日時は未来の日時にしてください。
       invalid_image_url: 画像は、スペース、引用符、括弧を含まない https のアドレスにしてください。
       invalid_birthday: 生年月日は 1900 年から昨日までの間で選んでください。
+      invalid_title: "肩書きには、獲得した称号として使えるバッジの名前を指定してください。"
+      external_image_disabled: "このフォーラムではアップロードした画像のみ使用できます。外部サイトのアドレスは無効です。"
     invites:
       too_many: 有効な招待が多すぎます。新しく生成する前に、いずれかを削除してください。
     events:

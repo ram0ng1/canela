@@ -29,6 +29,8 @@ interface InviteData {
 export default class InviteModal extends FormModal<IInternalModalAttrs> {
   invites: InviteData[] | null = null;
   signUpOpen = true;
+  /** Falso para quem perdeu a permissão: a janela só lista e revoga. */
+  canCreate = true;
   creating = false;
   copiedId: number | null = null;
   maxRedemptions = Stream('1');
@@ -49,10 +51,11 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
 
   load(): void {
     app
-      .request<{ invites: InviteData[]; signUpOpen: boolean }>({ method: 'GET', url: apiUrl('/canela-invites') })
+      .request<{ invites: InviteData[]; signUpOpen: boolean; canCreate?: boolean }>({ method: 'GET', url: apiUrl('/canela-invites') })
       .then((response) => {
         this.invites = response.invites;
         this.signUpOpen = response.signUpOpen;
+        this.canCreate = response.canCreate ?? true;
       })
       .catch(() => (this.invites = []))
       .finally(() => m.redraw());
@@ -64,20 +67,26 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
         {!this.signUpOpen && <p className="CanelaInviteModal-warning">{t('gaps.invites.sign_up_closed')}</p>}
         <p className="CanelaInviteModal-help">{t('gaps.invites.help')}</p>
 
-        <div className="CanelaInviteModal-options">
-          <label>
-            {t('gaps.invites.max_redemptions')}
-            <input className="FormControl" type="number" min="1" max="100" bidi={this.maxRedemptions} />
-          </label>
-          <label>
-            {t('gaps.invites.expires_days')}
-            <input className="FormControl" type="number" min="1" max="90" bidi={this.expiresDays} />
-          </label>
-        </div>
+        {this.canCreate ? (
+          <>
+            <div className="CanelaInviteModal-options">
+              <label>
+                {t('gaps.invites.max_redemptions')}
+                <input className="FormControl" type="number" min="1" max="100" bidi={this.maxRedemptions} />
+              </label>
+              <label>
+                {t('gaps.invites.expires_days')}
+                <input className="FormControl" type="number" min="1" max="90" bidi={this.expiresDays} />
+              </label>
+            </div>
 
-        <Button className="Button Button--primary" icon="fas fa-link" loading={this.creating} type="submit">
-          {t('gaps.invites.create')}
-        </Button>
+            <Button className="Button Button--primary" icon="fas fa-link" loading={this.creating} type="submit">
+              {t('gaps.invites.create')}
+            </Button>
+          </>
+        ) : (
+          <p className="CanelaInviteModal-help">{t('gaps.invites.cannot_create')}</p>
+        )}
 
         <h4 className="CanelaInviteModal-listTitle">{t('gaps.invites.yours')}</h4>
         {this.invites === null ? <LoadingIndicator /> : this.list()}

@@ -7,6 +7,7 @@ export default class DirectoryState {
     params: DirectoryParams;
     rows: LoadedRow[];
     columns: string[];
+    sortable: string[];
     total: number | null;
     hasMore: boolean;
     loading: boolean;
