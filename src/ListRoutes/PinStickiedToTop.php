@@ -27,6 +27,15 @@ use Flarum\Tags\Search\Filter\TagFilter;
  * filtro (ou só com a tag) e ordenada por atividade, os fixados sobem, e
  * entre eles vale a ordem em que foram criados (o primeiro fixado criado
  * fica em cima), em vez da última atividade.
+ *
+ * Sem expressão no ORDER BY da tabela toda: um `CASE` ali impede o banco de
+ * usar índice, e cada lista ordenaria todos os tópicos visíveis antes do
+ * LIMIT. A consulta vira a união de duas partes, cada uma no índice do
+ * flarum/sticky: todos os tópicos por `is_sticky, last_posted_at` e só os
+ * fixados por `is_sticky, created_at`, cada uma cortada em offset + limite.
+ * A ordem final (pela data de criação dos fixados) só reordena essas poucas
+ * linhas. É o mesmo
+ * truque do flarum/sticky na lista de não lidos.
  */
 final class PinStickiedToTop
 {
@@ -69,16 +78,64 @@ final class PinStickiedToTop
         // Pela gramática (o prefixo das tabelas) e com TRUE, não 1: no
         // PostgreSQL `is_sticky` é boolean, e boolean = inteiro não existe.
         $grammar = $query->getGrammar();
-        $sticky = $grammar->wrap('discussions.is_sticky');
-        $createdAt = $grammar->wrap('discussions.created_at');
 
-        $query->orders = [
+        // Uma ordenação crua (com bindings) ou sem limite não cabe na união:
+        // fica a ordem com o CASE direto, que dá o mesmo resultado.
+        $raw = array_filter($orders, static fn (array $order): bool => ! isset($order['column'], $order['direction']));
+
+        if ($raw !== [] || $query->limit === null || $query->unions) {
+            $query->orders = [
+                ['column' => 'is_sticky', 'direction' => 'desc'],
+                // Só os fixados ganham a data de criação; os demais empatam (NULL)
+                // e seguem a ordenação pedida.
+                ['type' => 'Raw', 'sql' => 'CASE WHEN '.$grammar->wrap('discussions.is_sticky').' = TRUE THEN '.$grammar->wrap('discussions.created_at').' END ASC'],
+                ...$orders,
+            ];
+
+            return;
+        }
+
+        // O desempate pela chave, na direção da última ordem (como o
+        // AbstractSearcher faz): sem ele, o corte de cada parte poderia
+        // escolher outra linha entre empatadas.
+        $direction = 'asc';
+
+        foreach (array_reverse($orders) as $order) {
+            $direction = $order['direction'];
+            break;
+        }
+
+        $tie = ['column' => 'discussions.id', 'direction' => $direction];
+
+        // A ordem de uma união só pode citar colunas do resultado (o SQLite
+        // recusa expressões ali): a data de criação dos fixados vira uma coluna.
+        if (! $query->columns) {
+            $query->select('discussions.*');
+        }
+
+        $query->selectRaw('CASE WHEN '.$grammar->wrap('discussions.is_sticky').' = TRUE THEN '.$grammar->wrap('discussions.created_at').' END AS canela_pin_order');
+
+        $sticky = clone $query;
+        $sticky->where('discussions.is_sticky', true);
+        $sticky->orders = [['column' => 'discussions.created_at', 'direction' => 'asc'], ...$orders, $tie];
+
+        $query->orders = [['column' => 'discussions.is_sticky', 'direction' => 'desc'], ...$orders, $tie];
+
+        // A ordem da união vale sobre as colunas do resultado: sem o nome da tabela.
+        $bare = static fn (array $order): array => ['column' => (string) preg_replace('/^.*\./', '', (string) $order['column']), 'direction' => $order['direction']];
+
+        $query->union($sticky);
+        $query->unionOrders = [
             ['column' => 'is_sticky', 'direction' => 'desc'],
-            // Só os fixados ganham a data de criação; os demais empatam (NULL)
-            // e seguem a ordenação pedida.
-            ['type' => 'Raw', 'sql' => "CASE WHEN $sticky = TRUE THEN $createdAt END ASC"],
-            ...$orders,
+            ['column' => 'canela_pin_order', 'direction' => 'asc'],
+            ...array_map($bare, $orders),
         ];
+        $query->unionLimit = $query->limit;
+        $query->unionOffset = $query->offset;
+
+        // Cada parte traz o bastante para a página pedida; a união corta depois.
+        $query->limit = $sticky->limit = (int) $query->offset + (int) $query->limit;
+        $query->offset = $sticky->offset = null;
     }
 
     private function sortsByActivity(SearchCriteria $criteria): bool
