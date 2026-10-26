@@ -18,6 +18,7 @@ use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
 use Ramon\Canela\Links\LinkClicks;
+use Ramon\Canela\Support\Log;
 
 /**
  * `canelaLinks` no tópico: os "Links populares" do mapa e os cliques de cada
@@ -42,7 +43,7 @@ final class DiscussionLinksFields
                     try {
                         return $this->clicks->forDiscussion($discussion);
                     } catch (\Throwable $error) {
-                        error_log('[ramon/canela] links do tópico: '.$error->getMessage());
+                        Log::warning('links do tópico: '.$error->getMessage());
 
                         return null;
                     }

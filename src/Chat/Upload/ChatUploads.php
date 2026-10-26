@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Psr\Http\Message\UploadedFileInterface;
 use Ramon\Canela\Chat\Model\Upload;
+use Ramon\Canela\Support\Log;
+use Ramon\Canela\Support\UploadedBytes;
 
 /**
  * As imagens do chat, no disco `canela-chat` (public/assets/canela-chat).
@@ -54,9 +56,11 @@ final class ChatUploads
 
     public function store(User $actor, UploadedFileInterface $file): Upload
     {
-        $uri = (string) $file->getStream()->getMetadata('uri');
-        $image = $this->images->read($uri);
-        $mime = (string) (mime_content_type($uri) ?: $file->getClientMediaType() ?: 'image/png');
+        // Pelo fluxo do PSR-7, não pelo caminho do arquivo temporário, e o
+        // tipo sai do conteúdo.
+        $bytes = UploadedBytes::of($file);
+        $image = $this->images->read($bytes);
+        $mime = UploadedBytes::mime($bytes) ?? ($file->getClientMediaType() ?: 'image/png');
 
         $extension = match ($mime) {
             'image/jpeg' => 'jpg',
@@ -66,7 +70,7 @@ final class ChatUploads
         };
 
         $path = date('Y/m').'/'.Str::random(32).'.'.$extension;
-        $this->disk()->put($path, (string) file_get_contents($uri));
+        $this->disk()->put($path, $bytes);
 
         $upload = new Upload();
         $upload->user_id = $actor->id;
@@ -94,7 +98,7 @@ final class ChatUploads
                 $this->disk()->delete($upload->path);
             }
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] chat: não deu para apagar '.$upload->path.': '.$error->getMessage());
+            Log::warning('chat: não deu para apagar '.$upload->path.': '.$error->getMessage());
         }
     }
 

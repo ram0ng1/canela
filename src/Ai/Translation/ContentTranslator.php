@@ -30,6 +30,7 @@ use Ramon\Canela\Ai\Llm\LlmClient;
 use Ramon\Canela\Ai\Llm\LlmFactory;
 use Ramon\Canela\Ai\Llm\LlmRequest;
 use Ramon\Canela\Ai\Llm\LlmResult;
+use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
@@ -778,7 +779,7 @@ final class ContentTranslator
         try {
             $result = $this->client()->send($request);
         } catch (Throwable $error) {
-            error_log('[ramon/canela] tradução de IA falhou: '.$error->getMessage());
+            Log::warning('tradução de IA falhou: '.$error->getMessage());
 
             return null;
         }

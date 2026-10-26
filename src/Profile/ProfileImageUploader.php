@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
 use Psr\Http\Message\UploadedFileInterface;
+use Ramon\Canela\Support\UploadedBytes;
 
 /**
  * Grava a capa e o fundo do cartão no disco `canela-covers`
@@ -47,7 +48,7 @@ final class ProfileImageUploader
 
     public function upload(User $user, ProfileImage $kind, UploadedFileInterface $file): void
     {
-        $image = $this->images->read($file->getStream()->getMetadata('uri'));
+        $image = $this->images->read(UploadedBytes::of($file));
 
         // GIF animado vira o primeiro quadro: uma capa em movimento atrás do
         // nome e do avatar só atrapalha a leitura, e o GIF de 2000px pesaria

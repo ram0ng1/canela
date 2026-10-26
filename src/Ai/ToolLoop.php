@@ -17,6 +17,7 @@ use Flarum\User\User;
 use Ramon\Canela\Ai\Llm\LlmClient;
 use Ramon\Canela\Ai\Llm\LlmRequest;
 use Ramon\Canela\Ai\Tools\AiTool;
+use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
@@ -121,7 +122,7 @@ final class ToolLoop
         try {
             $output = $tool->run($call['input'], $actor);
         } catch (Throwable $exception) {
-            error_log('[ramon/canela] ferramenta de IA '.$call['name'].' falhou: '.$exception->getMessage());
+            Log::warning('ferramenta de IA '.$call['name'].' falhou: '.$exception->getMessage());
 
             return $error('A ferramenta falhou. Tente de outro jeito ou responda sem ela.');
         }

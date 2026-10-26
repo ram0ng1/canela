@@ -27,6 +27,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Links\LinkClicks;
+use Ramon\Canela\Support\Log;
 
 /**
  * GET /api/canela-user-summary/{id} — as listas do Resumo do perfil: com quem
@@ -136,7 +137,7 @@ final class ShowUserSummaryController implements RequestHandlerInterface
         try {
             return $build();
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] resumo do perfil: '.$error->getMessage());
+            Log::warning('resumo do perfil: '.$error->getMessage());
 
             return [];
         }

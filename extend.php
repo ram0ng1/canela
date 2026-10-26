@@ -12,6 +12,7 @@
 namespace Ramon\Canela;
 
 use Flarum\Extend;
+use Ramon\Canela\Support\Log;
 use Ramon\Canela\Theme\FontFamily;
 use Ramon\Canela\Theme\Loader\LoaderAdminPayload;
 use Ramon\Canela\Theme\Loader\LoaderLess;
@@ -302,7 +303,7 @@ foreach ($featureFiles as $featureFile) {
                 try {
                     return $requireFeature($featureFile);
                 } catch (\Throwable $error) {
-                    error_log(sprintf('[ramon/canela] recurso %s desligado: %s', $feature, $error->getMessage()));
+                    Log::warning(sprintf('recurso %s desligado: %s', $feature, $error->getMessage()));
 
                     return [];
                 }
@@ -317,7 +318,7 @@ foreach ($featureFiles as $featureFile) {
     try {
         $features = array_merge($features, $requireFeature($featureFile));
     } catch (\Throwable $error) {
-        error_log(sprintf('[ramon/canela] recurso %s desligado: %s', basename($featureFile), $error->getMessage()));
+        Log::warning(sprintf('recurso %s desligado: %s', basename($featureFile), $error->getMessage()));
     }
 }
 

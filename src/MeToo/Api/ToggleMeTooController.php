@@ -28,6 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\MeToo\Event\Toggled;
 use Ramon\Canela\MeToo\MeToo;
+use Ramon\Canela\Support\Log;
 
 /**
  * POST /api/canela-me-too `{discussionId}`: alterna o "Eu também" de quem
@@ -81,7 +82,7 @@ final class ToggleMeTooController implements RequestHandlerInterface
         try {
             $this->events->dispatch(new Toggled($discussion, $actor, $result['mine'], $result['count']));
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] me too: aviso da troca falhou: '.$error->getMessage());
+            Log::warning('me too: aviso da troca falhou: '.$error->getMessage());
         }
 
         return new JsonResponse($result);

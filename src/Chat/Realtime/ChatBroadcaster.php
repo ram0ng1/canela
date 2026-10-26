@@ -17,6 +17,7 @@ use Flarum\Extension\ExtensionManager;
 use Illuminate\Contracts\Queue\Queue;
 use Ramon\Canela\Chat\Model\Channel;
 use Ramon\Canela\Chat\Model\Membership;
+use Ramon\Canela\Support\Log;
 
 /**
  * Entrega em tempo real pelo websocket do flarum/realtime.
@@ -60,7 +61,7 @@ final class ChatBroadcaster
             $this->queue->push(new ChatPushJob($userIds, $payload));
         } catch (\Throwable $error) {
             // A mensagem já foi gravada: falhar a entrega não pode falhar o envio.
-            error_log('[ramon/canela] chat: entrega em tempo real falhou: '.$error->getMessage());
+            Log::warning('chat: entrega em tempo real falhou: '.$error->getMessage());
         }
     }
 

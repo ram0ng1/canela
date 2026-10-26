@@ -16,6 +16,7 @@ namespace Ramon\Canela\Bookmarks\Api;
 use Closure;
 use Illuminate\Database\QueryException;
 use Ramon\Canela\Bookmarks\Bookmark;
+use Ramon\Canela\Support\Log;
 
 /**
  * Carrega em lote os marcadores do ator para os posts de uma resposta.
@@ -77,7 +78,7 @@ final class BookmarkBuffer
         } catch (QueryException $error) {
             // Tabela ainda não migrada (o tema atualizado antes do `migrate`):
             // os posts saem sem marcador em vez de derrubar a página do tópico.
-            error_log('[ramon/canela] marcadores indisponíveis: '.$error->getMessage());
+            Log::warning('marcadores indisponíveis: '.$error->getMessage());
             $found = Bookmark::query()->getModel()->newCollection();
         }
 

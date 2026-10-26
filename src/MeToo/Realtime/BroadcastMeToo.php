@@ -15,6 +15,7 @@ namespace Ramon\Canela\MeToo\Realtime;
 
 use Illuminate\Contracts\Queue\Queue;
 use Ramon\Canela\MeToo\Event\Toggled;
+use Ramon\Canela\Support\Log;
 
 /**
  * Ouvinte de Toggled, registrado só com o flarum/realtime habilitado (ver
@@ -33,7 +34,7 @@ final class BroadcastMeToo
         try {
             $this->queue->push(new MeTooPushJob((int) $event->discussion->id, (int) $event->actor->id));
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] me too: entrega em tempo real falhou: '.$error->getMessage());
+            Log::warning('me too: entrega em tempo real falhou: '.$error->getMessage());
         }
     }
 }

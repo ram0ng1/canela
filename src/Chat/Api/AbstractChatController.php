@@ -28,6 +28,7 @@ use Ramon\Canela\Chat\ChatService;
 use Ramon\Canela\Chat\Model\Channel;
 use Ramon\Canela\Chat\Model\Message;
 use Ramon\Canela\Chat\Model\Thread;
+use Ramon\Canela\Support\Log;
 
 /**
  * Base dos endpoints `/api/chat/*`.
@@ -64,7 +65,7 @@ abstract class AbstractChatController implements RequestHandlerInterface
             // Tabela ou coluna inexistente: 42S02/42S22 no MySQL/MariaDB,
             // 42P01/42703 no PostgreSQL.
             if (in_array($error->getCode(), ['42S02', '42S22', '42P01', '42703'], true)) {
-                error_log('[ramon/canela] chat indisponível, falta migrar: '.$error->getMessage());
+                Log::warning('chat indisponível, falta migrar: '.$error->getMessage());
 
                 throw new ModelNotFoundException();
             }

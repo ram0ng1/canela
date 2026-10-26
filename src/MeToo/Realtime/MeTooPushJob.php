@@ -20,6 +20,7 @@ use Flarum\User\Guest;
 use Flarum\User\User;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Ramon\Canela\MeToo\MeToo;
+use Ramon\Canela\Support\Log;
 
 /**
  * Publica `canelaMeToo` `{discussionId, count}` pelo websocket do
@@ -127,7 +128,7 @@ final class MeTooPushJob extends AbstractJob
             if ($connectionFailed) {
                 $this->markDown($cache, $message);
             } else {
-                error_log('[ramon/canela] me too: entrega em tempo real falhou: '.$message);
+                Log::warning('me too: entrega em tempo real falhou: '.$message);
             }
         }
     }
@@ -135,6 +136,6 @@ final class MeTooPushJob extends AbstractJob
     private function markDown(Cache $cache, string $reason): void
     {
         $cache->put(self::DOWN_KEY, true, 30);
-        error_log('[ramon/canela] me too: websocket indisponível: '.$reason);
+        Log::warning('me too: websocket indisponível: '.$reason);
     }
 }
