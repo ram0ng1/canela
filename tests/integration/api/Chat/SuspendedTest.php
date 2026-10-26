@@ -11,7 +11,6 @@
 
 namespace Ramon\Canela\Tests\integration\api\Chat;
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -46,15 +45,11 @@ class SuspendedTest extends AbstractChatTestCase
 
     /**
      * Suspenso continua lendo, e o canal diz por que ele não escreve
-     * ("silenced").
-     *
-     * BUG: o flarum/suspend troca os grupos do suspenso por [Visitante], e o
-     * ChatAccess::allowed() confere `chat_allowed_groups` contra esses grupos —
-     * o suspenso perde o chat inteiro (403), e o ramo "silenced" de
-     * ChatAccess::cannotPostReason() nunca é alcançado.
+     * ("silenced"). O flarum/suspend troca os grupos de permissão do suspenso
+     * por [Visitante]; o ChatAccess::allowed() confere `chat_allowed_groups`
+     * contra os grupos de verdade dele.
      */
     #[Test]
-    #[Group('bug')]
     public function suspenso_continua_lendo(): void
     {
         $this->post(1, 3, 'Do moderador');
@@ -65,5 +60,27 @@ class SuspendedTest extends AbstractChatTestCase
 
         $this->assertEquals(200, $read);
         $this->assertEquals('silenced', $this->channelFor(1, 2)['cannotPostReason']);
+    }
+
+    /**
+     * Com o chat restrito a um grupo, o suspenso que está nele lê (pelos
+     * grupos de verdade), mas não modera; quem não está no grupo continua de
+     * fora, suspenso ou não.
+     */
+    #[Test]
+    public function suspenso_le_pelos_grupos_de_verdade(): void
+    {
+        $this->setting('canela.chat_allowed_groups', '4');
+        $this->setting('canela.chat_moderator_groups', '4');
+
+        $this->suspend(3);
+        $this->suspend(2);
+
+        [$moderator] = $this->chat('GET', '/channels/1/messages', 3);
+        [$member] = $this->chat('GET', '/channels/1/messages', 2);
+
+        $this->assertEquals(200, $moderator);
+        $this->assertEquals(403, $member);
+        $this->assertEquals('silenced', $this->channelFor(1, 3)['cannotPostReason']);
     }
 }
