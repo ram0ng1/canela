@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Tests\Unit;
 
+use Flarum\Settings\SettingsRepositoryInterface;
 use PHPUnit\Framework\TestCase;
+use Ramon\Canela\BugReports\AiPrompt;
 use Ramon\Canela\BugReports\BugReportImages;
 use Ramon\Canela\BugReports\BugReportService;
+use Ramon\Canela\BugReports\ImageLinks;
 use Ramon\Canela\BugReports\Worklist;
 
 /**
@@ -84,12 +87,92 @@ final class BugReportsTest extends TestCase
             static fn (int $id, string $which): string => "https://f.test/api/canela-bug-reports/$id/$which",
         );
 
-        self::assertSame(1, substr_count($markdown, '## /d/9'));
-        self::assertStringContainsString('## /tags', $markdown);
+        self::assertSame(1, substr_count($markdown, '### Página: /d/9'));
+        self::assertStringContainsString('### Página: /tags', $markdown);
         self::assertStringContainsString("> Quebrou\n> aqui", $markdown);
         self::assertStringContainsString('https://f.test/api/canela-bug-reports/1/full', $markdown);
         self::assertStringNotContainsString('canela-bug-reports/2/full', $markdown);
         self::assertStringContainsString('390×844 @3x', $markdown);
         self::assertSame('', Worklist::pageKey('nada'));
+    }
+
+    private function settings(): SettingsRepositoryInterface
+    {
+        return new class implements SettingsRepositoryInterface {
+            /** @var array<string, mixed> */
+            private array $values = [];
+
+            public function all(): array
+            {
+                return $this->values;
+            }
+
+            public function get(string $key, mixed $default = null): mixed
+            {
+                return $this->values[$key] ?? $default;
+            }
+
+            public function set(string $key, mixed $value): void
+            {
+                $this->values[$key] = $value;
+            }
+
+            public function delete(string $keyLike): void
+            {
+                unset($this->values[$keyLike]);
+            }
+        };
+    }
+
+    public function test_link_assinado_vale_ate_vencer_e_so_para_aquela_captura(): void
+    {
+        $links = new ImageLinks($this->settings());
+        $now = 1_800_000_000;
+
+        parse_str(ltrim($links->query(7, 'region', $now), '?'), $q);
+
+        self::assertTrue($links->valid(7, 'region', $q['exp'], $q['sig'], $now));
+        self::assertFalse($links->valid(7, 'full', $q['exp'], $q['sig'], $now), 'outra captura do mesmo relatório');
+        self::assertFalse($links->valid(8, 'region', $q['exp'], $q['sig'], $now), 'outro relatório');
+        self::assertFalse($links->valid(7, 'region', $q['exp'], $q['sig'], $now + ImageLinks::LIFETIME + 1), 'vencido');
+        self::assertFalse($links->valid(7, 'region', (int) $q['exp'] + 3600, $q['sig'], $now), 'validade trocada');
+        self::assertFalse($links->valid(7, 'region', null, null, $now));
+    }
+
+    public function test_sem_segredo_nenhum_link_vale(): void
+    {
+        $links = new ImageLinks($this->settings());
+
+        self::assertFalse($links->valid(1, 'region', time() + 60, str_repeat('a', 64)));
+    }
+
+    public function test_instrucoes_trazem_o_passo_a_passo_e_o_ambiente(): void
+    {
+        $forum = ['title' => 'Fórum', 'url' => 'https://f.test', 'flarum' => '2.0.2', 'theme' => '1.2.0', 'extensions' => ['flarum/tags 2.0.0']];
+        $pt = AiPrompt::header($forum, 3, true);
+        $en = AiPrompt::header($forum, 1, false);
+
+        self::assertStringContainsString('Corrigir 3 problemas relatados', $pt);
+        self::assertStringContainsString('Reproduza antes', $pt);
+        self::assertStringContainsString('teste que falhe', $pt);
+        self::assertStringContainsString('Flarum 2.0.2, tema ramon/canela 1.2.0', $pt);
+        self::assertStringContainsString('flarum/tags 2.0.0', $pt);
+        self::assertStringContainsString('Fix a reported problem', $en);
+        self::assertStringContainsString('Reproduce before', $en);
+    }
+
+    public function test_lista_com_instrucoes_usa_o_cabecalho(): void
+    {
+        $markdown = Worklist::markdown(
+            [['id' => 1, 'kind' => 'bug', 'status' => 'open', 'description' => 'x', 'url' => 'https://f.test/', 'context' => []]],
+            'Fórum',
+            static fn (int $id, string $which): string => "u/$id/$which",
+            "# Instruções\n",
+            false,
+        );
+
+        self::assertStringStartsWith('# Instruções', $markdown);
+        self::assertStringContainsString('## Reports (1)', $markdown);
+        self::assertStringContainsString('Marked area screenshot: u/1/region', $markdown);
     }
 }

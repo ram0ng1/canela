@@ -44,7 +44,7 @@ ramon-canela:
         kind_content: "Text or image"
         kind_design: "Design"
         kind_idea: "Idea"
-        export: "Export open reports (Markdown)"
+        export: "Download (.md)"
         empty: "No reports here."
         load_failed: "The reports could not be loaded. Have the theme migrations run?"
         previous: "Previous"
@@ -67,6 +67,13 @@ ramon-canela:
         delete: "Delete"
         delete_confirm: "Delete this report and its screenshots? This cannot be undone."
         save_failed: "Could not save. Please try again."
+        ai_title: "Fix with AI"
+        ai_help: "Copy the instructions and paste them into ChatGPT, Claude, Gemini or an agent in your editor. They tell the AI how to reproduce, write the test, fix and verify, and include the forum environment, the reports and screenshot links that open without login for 7 days."
+        copy_all: "Copy instructions (pending)"
+        copy_prompt: "Copy for AI"
+        copy_image: "Copy screenshot"
+        copied: "Copied!"
+        copy_failed: "Could not copy."
       group_appearance: Appearance
       group_sidebar: Sidebar
       group_header: Header & shortcuts

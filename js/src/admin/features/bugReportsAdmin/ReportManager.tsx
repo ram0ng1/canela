@@ -13,6 +13,7 @@ import type Mithril from 'mithril';
 
 import { AdminComponent, trans } from '../../util';
 import { AdminNotice } from '../../components/AdminCard';
+import { copyImage, copyText, fetchText } from './clipboard';
 
 export const KEY = 'ramon-canela.admin.settings.bug_reports';
 
@@ -87,11 +88,51 @@ export default class ReportManager extends AdminComponent {
   openId: number | null = null;
   notes: Record<number, string> = {};
   busy = new Set<number>();
+  /** O aviso curto ao lado do botão de copiar ("Copiado!"), por botão. */
+  copied: Record<string, 'ok' | 'fail'> = {};
+  private timer: ReturnType<typeof setInterval> | null = null;
 
   oninit(vnode: Mithril.Vnode<any, this>) {
     super.oninit(vnode);
 
     this.reload();
+
+    // Os relatórios novos aparecem sozinhos, sem recarregar a página (só com a
+    // aba à vista e sem um relatório aberto, para não mexer no que se lê).
+    this.timer = setInterval(() => {
+      if (document.visibilityState === 'visible' && this.openId === null) this.reload();
+    }, 15000);
+  }
+
+  onremove(vnode: Mithril.VnodeDOM<any, this>) {
+    super.onremove(vnode);
+
+    if (this.timer) clearInterval(this.timer);
+  }
+
+  copy(key: string, run: () => Promise<void>): void {
+    run()
+      .then(() => (this.copied[key] = 'ok'))
+      .catch(() => (this.copied[key] = 'fail'))
+      .finally(() => {
+        m.redraw();
+        setTimeout(() => {
+          delete this.copied[key];
+          m.redraw();
+        }, 2500);
+      });
+  }
+
+  copiedNote(key: string) {
+    const state = this.copied[key];
+
+    if (!state) return null;
+
+    return (
+      <span className={classList('CanelaBugAdmin-copied', { 'is-fail': state === 'fail' })} role="status">
+        {state === 'ok' ? trans(`${KEY}.copied`, 'Copiado!') : trans(`${KEY}.copy_failed`, 'Não deu para copiar.')}
+      </span>
+    );
   }
 
   reload(): void {
@@ -149,10 +190,33 @@ export default class ReportManager extends AdminComponent {
               </button>
             ))}
           </div>
-          <a className="Button" href={apiUrl('/canela-bug-reports-export')} download>
-            <i className="icon fas fa-file-arrow-down Button-icon" aria-hidden="true" />
-            <span className="Button-label">{trans(`${KEY}.export`, 'Exportar abertos (Markdown)')}</span>
-          </a>
+        </div>
+
+        <div className="CanelaBugAdmin-ai">
+          <div className="CanelaBugAdmin-aiText">
+            <strong>{trans(`${KEY}.ai_title`, 'Corrigir com IA')}</strong>
+            <p>
+              {trans(
+                `${KEY}.ai_help`,
+                'Copie as instruções e cole no ChatGPT, Claude, Gemini ou num agente no seu editor. Elas dizem à IA como reproduzir, escrever o teste, corrigir e verificar, e levam o ambiente do fórum, os relatórios e links das capturas que abrem sem login por 7 dias.'
+              )}
+            </p>
+          </div>
+          <div className="CanelaBugAdmin-aiButtons">
+            <Button
+              className="Button Button--primary"
+              icon="fas fa-wand-magic-sparkles"
+              disabled={!this.count('active')}
+              onclick={() => this.copy('all', () => fetchText(apiUrl('/canela-bug-reports-export')).then(copyText))}
+            >
+              {trans(`${KEY}.copy_all`, 'Copiar instruções (pendentes)')}
+            </Button>
+            <a className="Button" href={apiUrl('/canela-bug-reports-export?download=1')} download>
+              <i className="icon fas fa-file-arrow-down Button-icon" aria-hidden="true" />
+              <span className="Button-label">{trans(`${KEY}.export`, 'Baixar (.md)')}</span>
+            </a>
+            {this.copiedNote('all')}
+          </div>
         </div>
 
         {this.error && <p className="CanelaAdmin-formError">{this.error}</p>}
@@ -325,6 +389,25 @@ export default class ReportManager extends AdminComponent {
               oninput={(e: InputEvent) => (this.notes[report.id] = (e.target as HTMLTextAreaElement).value)}
             />
           </label>
+
+          <div className="CanelaBugAdmin-buttons">
+            <Button
+              className="Button"
+              icon="fas fa-wand-magic-sparkles"
+              onclick={() => this.copy(`prompt${report.id}`, () => fetchText(apiUrl(`/canela-bug-reports/${report.id}/prompt`)).then(copyText))}
+            >
+              {trans(`${KEY}.copy_prompt`, 'Copiar para IA')}
+            </Button>
+            {this.copiedNote(`prompt${report.id}`)}
+            <Button
+              className="Button"
+              icon="far fa-image"
+              onclick={() => this.copy(`image${report.id}`, () => copyImage(apiUrl(`/canela-bug-reports/${report.id}/region`)))}
+            >
+              {trans(`${KEY}.copy_image`, 'Copiar captura')}
+            </Button>
+            {this.copiedNote(`image${report.id}`)}
+          </div>
 
           <div className="CanelaBugAdmin-buttons">
             <Button className="Button Button--primary" loading={busy} onclick={() => this.save(report, { note: this.notes[report.id] ?? '' })}>

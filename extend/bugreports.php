@@ -52,5 +52,6 @@ return [
         ->get('/canela-bug-reports/{id:\d+}', 'canela.bug_reports.show', ReportController::class)
         ->patch('/canela-bug-reports/{id:\d+}', 'canela.bug_reports.update', ReportController::class)
         ->delete('/canela-bug-reports/{id:\d+}', 'canela.bug_reports.delete', ReportController::class)
+        ->get('/canela-bug-reports/{id:\d+}/prompt', 'canela.bug_reports.prompt', ExportController::class)
         ->get('/canela-bug-reports/{id:\d+}/{which:region|full}', 'canela.bug_reports.image', ReportImageController::class),
 ];

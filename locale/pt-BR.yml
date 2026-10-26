@@ -44,7 +44,7 @@ ramon-canela:
         kind_content: "Texto ou imagem"
         kind_design: "Design"
         kind_idea: "Ideia"
-        export: "Exportar abertos (Markdown)"
+        export: "Baixar (.md)"
         empty: "Nenhum relatório aqui."
         load_failed: "Não deu para carregar os relatórios. As migrações do tema já rodaram?"
         previous: "Anterior"
@@ -67,6 +67,13 @@ ramon-canela:
         delete: "Apagar"
         delete_confirm: "Apagar este relatório e as capturas? Não dá para desfazer."
         save_failed: "Não deu para salvar. Tente de novo."
+        ai_title: "Corrigir com IA"
+        ai_help: "Copie as instruções e cole no ChatGPT, Claude, Gemini ou num agente no seu editor. Elas dizem à IA como reproduzir, escrever o teste, corrigir e verificar, e levam o ambiente do fórum, os relatórios e links das capturas que abrem sem login por 7 dias."
+        copy_all: "Copiar instruções (pendentes)"
+        copy_prompt: "Copiar para IA"
+        copy_image: "Copiar captura"
+        copied: "Copiado!"
+        copy_failed: "Não deu para copiar."
       group_appearance: Aparência
       group_sidebar: Barra lateral
       group_header: Cabeçalho e atalhos
