@@ -16,6 +16,7 @@ namespace Ramon\Canela\Ai\Translation;
 use Closure;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\QueryException;
+use Ramon\Canela\Support\Log;
 use stdClass;
 
 /**
@@ -115,7 +116,7 @@ final class TranslationBuffer
             }
         } catch (QueryException $error) {
             // Tabelas por criar: tudo sai no original.
-            error_log('[ramon/canela] traduções indisponíveis: '.$error->getMessage());
+            Log::warning('traduções indisponíveis: '.$error->getMessage());
 
             foreach ($ids as $id) {
                 self::$loaded[$bucket][$id] = ['locale' => null, 'translation' => null];

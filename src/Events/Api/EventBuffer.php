@@ -16,6 +16,7 @@ namespace Ramon\Canela\Events\Api;
 use Closure;
 use Illuminate\Database\QueryException;
 use Ramon\Canela\Events\CalendarEvent;
+use Ramon\Canela\Support\Log;
 
 /**
  * Os eventos das primeiras postagens de uma resposta, numa consulta só: cada
@@ -59,7 +60,7 @@ final class EventBuffer
             $found = CalendarEvent::query()->with('user')->whereIn('post_id', $ids)->get()->keyBy('post_id');
         } catch (QueryException $error) {
             // Tabela por criar: as postagens saem sem evento.
-            error_log('[ramon/canela] eventos indisponíveis: '.$error->getMessage());
+            Log::warning('eventos indisponíveis: '.$error->getMessage());
             $found = collect();
         }
 

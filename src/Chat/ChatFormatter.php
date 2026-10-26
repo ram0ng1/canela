@@ -17,6 +17,7 @@ use Flarum\Extension\ExtensionManager;
 use Flarum\Formatter\Formatter;
 use Flarum\User\User;
 use Ramon\Canela\Chat\Model\Message;
+use Ramon\Canela\Support\Log;
 
 /**
  * Transforma o texto digitado no HTML da mensagem ("cooked").
@@ -95,7 +96,7 @@ final class ChatFormatter
             $xml = $this->formatter->parse($source, $context, $actor);
             $cooked = $this->formatter->render($xml, $context);
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] chat: formatação falhou, mensagem em texto puro: '.$error->getMessage());
+            Log::warning('chat: formatação falhou, mensagem em texto puro: '.$error->getMessage());
             $cooked = '<p>'.nl2br(htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')).'</p>';
         }
 

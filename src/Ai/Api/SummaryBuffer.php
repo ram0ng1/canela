@@ -16,6 +16,7 @@ namespace Ramon\Canela\Ai\Api;
 use Closure;
 use Illuminate\Database\QueryException;
 use Ramon\Canela\Ai\TopicSummary;
+use Ramon\Canela\Support\Log;
 
 /**
  * Carrega em lote os resumos dos tópicos de uma resposta da API.
@@ -63,7 +64,7 @@ final class SummaryBuffer
             $found = TopicSummary::query()->whereIn('discussion_id', $ids)->get()->keyBy('discussion_id');
         } catch (QueryException $error) {
             // Tabela por criar: os tópicos saem sem resumo, a lista continua.
-            error_log('[ramon/canela] resumos de IA indisponíveis: '.$error->getMessage());
+            Log::warning('resumos de IA indisponíveis: '.$error->getMessage());
             $found = collect();
         }
 

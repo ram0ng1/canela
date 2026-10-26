@@ -15,6 +15,7 @@ namespace Ramon\Canela\Community;
 
 use Flarum\Extension\ExtensionManager;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
@@ -110,7 +111,7 @@ final class LegalPages
             // (e limpa ao salvar): não custa uma consulta por página.
             return resolve($repository)->all();
         } catch (Throwable $error) {
-            error_log('[ramon/canela] políticas do fof/terms: '.$error->getMessage());
+            Log::warning('políticas do fof/terms: '.$error->getMessage());
 
             return [];
         }

@@ -50,7 +50,9 @@ final class NdjsonStream
                 // A resposta é gravada no fim mesmo que a pessoa feche a aba
                 // no meio: o que o provedor já cobrou não pode sumir.
                 ignore_user_abort(true);
-                @set_time_limit(300);
+                if (function_exists('set_time_limit')) {
+                    set_time_limit(300);
+                }
 
                 // O output_buffering do php.ini seguraria as linhas até juntar
                 // 4 KB; aqui cada linha precisa sair na hora.

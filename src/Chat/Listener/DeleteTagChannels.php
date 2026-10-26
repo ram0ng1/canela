@@ -17,6 +17,7 @@ use Ramon\Canela\Chat\ChatService;
 use Ramon\Canela\Chat\Model\Channel;
 use Ramon\Canela\Chat\Model\Message;
 use Ramon\Canela\Chat\Model\Thread;
+use Ramon\Canela\Support\Log;
 
 /**
  * Apagar uma tag apaga os canais dela:
@@ -47,7 +48,7 @@ final class DeleteTagChannels
             }
         } catch (\Throwable $error) {
             // Tabelas do chat ainda não migradas: apagar a tag não pode falhar por isso.
-            error_log('[ramon/canela] chat: canais da tag não apagados: '.$error->getMessage());
+            Log::warning('chat: canais da tag não apagados: '.$error->getMessage());
         }
     }
 }

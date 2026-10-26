@@ -22,6 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Ramon\Canela\Backgrounds\Backgrounds;
+use Ramon\Canela\Support\UploadedBytes;
 
 /**
  * `POST /api/canela/backgrounds/{target}` (forum ou auth): a imagem de fundo
@@ -52,7 +53,7 @@ final class UploadBackgroundController extends UploadImageController
     #[\Override]
     protected function makeImage(UploadedFileInterface $file): EncodedImageInterface|StreamInterface
     {
-        $image = $this->imageManager->read($file->getStream()->getMetadata('uri'));
+        $image = $this->imageManager->read(UploadedBytes::of($file));
 
         if ($image->isAnimated()) {
             $image->removeAnimation(0);

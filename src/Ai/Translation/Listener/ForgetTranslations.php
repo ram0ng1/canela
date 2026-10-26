@@ -18,6 +18,7 @@ use Flarum\Post\Event\Posted;
 use Flarum\Post\Event\Revised;
 use Illuminate\Contracts\Events\Dispatcher;
 use Ramon\Canela\Ai\Translation\ContentTranslator;
+use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
@@ -57,7 +58,7 @@ final class ForgetTranslations
         try {
             $callback();
         } catch (Throwable $error) {
-            error_log('[ramon/canela] traduções não apagadas: '.$error->getMessage());
+            Log::warning('traduções não apagadas: '.$error->getMessage());
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Ramon\Canela\Realtime;
 use Flarum\Post\Post;
 use Flarum\User\User;
 use Illuminate\Contracts\Queue\Queue;
+use Ramon\Canela\Support\Log;
 
 /**
  * Ouvinte das mudanças num post que o flarum/realtime avisa a todos menos a
@@ -43,7 +44,7 @@ final class EchoToActor
         try {
             $this->queue->push(new EchoToActorJob($eventName, (int) $post->id, (int) $actor->id));
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] realtime: envio a quem agiu falhou: '.$error->getMessage());
+            Log::warning('realtime: envio a quem agiu falhou: '.$error->getMessage());
         }
     }
 }

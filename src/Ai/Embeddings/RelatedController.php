@@ -25,6 +25,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Http\AiGate;
 use Ramon\Canela\Ai\Tools\TopicLinks;
+use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
@@ -72,7 +73,7 @@ final class RelatedController implements RequestHandlerInterface
         try {
             $ids = $this->related->related($discussion, $actor);
         } catch (Throwable $error) {
-            error_log('[ramon/canela] tópicos relacionados: '.$error->getMessage());
+            Log::warning('tópicos relacionados: '.$error->getMessage());
             $ids = [];
         }
 

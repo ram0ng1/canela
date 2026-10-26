@@ -15,6 +15,7 @@ namespace Ramon\Canela\Ai;
 
 use Flarum\Locale\TranslatorInterface;
 use Ramon\Canela\Ai\Llm\LlmException;
+use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
@@ -36,7 +37,7 @@ final class AiErrors
         $reason = $error instanceof LlmException ? $error->reason : 'generic';
 
         if (! $error instanceof LlmException || ! in_array($reason, ['aborted', 'rate_limit', 'overloaded'], true)) {
-            error_log(sprintf('[ramon/canela] IA: %s: %s', $error::class, $error->getMessage()));
+            Log::warning(sprintf('IA: %s: %s', $error::class, $error->getMessage()));
         }
 
         $known = ['auth', 'rate_limit', 'overloaded', 'network', 'server', 'bad_request', 'not_configured', 'aborted'];

@@ -23,6 +23,7 @@ use Ramon\Canela\Chat\Model\Mention;
 use Ramon\Canela\Chat\Model\Message;
 use Ramon\Canela\Chat\Notification\ChatMentionBlueprint;
 use Ramon\Canela\Chat\Notification\ChatMessageBlueprint;
+use Ramon\Canela\Support\Log;
 
 /**
  * Menções e notificações das mensagens.
@@ -140,7 +141,7 @@ final class ChatNotifier
         try {
             $this->notifications->sync(new ChatMentionBlueprint($sender, $data), array_values(array_column($recipients, 'user')));
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] chat: notificação de menção falhou: '.$error->getMessage());
+            Log::warning('chat: notificação de menção falhou: '.$error->getMessage());
         }
 
         return array_keys($recipients);
@@ -192,7 +193,7 @@ final class ChatNotifier
 
             $this->notifications->sync($blueprint, $users->all());
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] chat: notificação de mensagem falhou: '.$error->getMessage());
+            Log::warning('chat: notificação de mensagem falhou: '.$error->getMessage());
         }
     }
 

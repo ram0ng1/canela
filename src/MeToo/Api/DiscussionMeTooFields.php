@@ -18,6 +18,7 @@ use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
 use Ramon\Canela\MeToo\MeToo;
+use Ramon\Canela\Support\Log;
 
 /**
  * `canelaMeToo` no tópico: `{count, mine, can}`, ou null quando o botão não
@@ -48,7 +49,7 @@ final class DiscussionMeTooFields
 
                         return [...$this->meToo->stateFor($discussion, $actor), 'can' => $this->meToo->canToggle($actor, $discussion)];
                     } catch (\Throwable $error) {
-                        error_log('[ramon/canela] me too do tópico: '.$error->getMessage());
+                        Log::warning('me too do tópico: '.$error->getMessage());
 
                         return null;
                     }

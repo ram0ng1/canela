@@ -16,6 +16,7 @@ namespace Ramon\Canela\Chat\Realtime;
 use Flarum\Queue\AbstractJob;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Support\Str;
+use Ramon\Canela\Support\Log;
 
 /**
  * Publica um evento do chat nos canais `private-user={id}` de quem está
@@ -81,7 +82,7 @@ final class ChatPushJob extends AbstractJob
             }
         } catch (\Throwable $error) {
             $cache->put(self::DOWN_KEY, true, 30);
-            error_log('[ramon/canela] chat: websocket indisponível, usando polling: '.$error->getMessage());
+            Log::warning('chat: websocket indisponível, usando polling: '.$error->getMessage());
         }
     }
 }

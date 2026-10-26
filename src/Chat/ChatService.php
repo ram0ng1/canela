@@ -32,6 +32,7 @@ use Ramon\Canela\Chat\Model\ThreadMembership;
 use Ramon\Canela\Chat\Model\Upload;
 use Ramon\Canela\Chat\Realtime\ChatBroadcaster;
 use Ramon\Canela\Chat\Upload\ChatUploads;
+use Ramon\Canela\Support\Log;
 
 /**
  * As ações do chat (criar, editar e apagar mensagens, abrir mensagens
@@ -503,7 +504,7 @@ final class ChatService
                 $this->notifier->message($message, $channel, $actor, $mentioned);
             }
         } catch (\Throwable $error) {
-            error_log('[ramon/canela] chat: menções/notificações falharam: '.$error->getMessage());
+            Log::warning('chat: menções/notificações falharam: '.$error->getMessage());
         }
 
         $this->broadcaster->toChannel($channel, [

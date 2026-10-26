@@ -24,6 +24,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Ramon\Canela\Support\UploadedBytes;
 
 /**
  * O upload do logo do fórum (Administração → Aparência) aceitando SVG.
@@ -70,7 +71,7 @@ final class SvgLogoUploadController extends UploadImageController
     {
         if (! $this->svg) {
             // Como o core: 60px de altura, GIF animado preservado, o resto WebP.
-            $image = $this->imageManager->read($file->getStream()->getMetadata('uri'))->scale(height: 60);
+            $image = $this->imageManager->read(UploadedBytes::of($file))->scale(height: 60);
 
             if ($image->isAnimated()) {
                 $this->resolvedExtension = 'gif';

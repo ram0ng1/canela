@@ -20,6 +20,7 @@ use Flarum\Realtime\Push\Jobs\SendGeneratedPayloadJob;
 use Flarum\Realtime\Push\Payload\Generator;
 use Flarum\User\User;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Ramon\Canela\Support\Log;
 
 /**
  * Manda a quem agiu o mesmo aviso que o flarum/realtime manda aos outros.
@@ -93,7 +94,7 @@ final class EchoToActorJob extends AbstractJob
             if (is_a($error, 'Pusher\PusherException') || $error instanceof \GuzzleHttp\Exception\TransferException) {
                 $this->markDown($cache, $message);
             } else {
-                error_log('[ramon/canela] realtime: envio a quem agiu falhou: '.$message);
+                Log::warning('realtime: envio a quem agiu falhou: '.$message);
             }
         }
     }
@@ -101,6 +102,6 @@ final class EchoToActorJob extends AbstractJob
     private function markDown(Cache $cache, string $reason): void
     {
         $cache->put(self::DOWN_KEY, true, 30);
-        error_log('[ramon/canela] realtime: websocket indisponível: '.$reason);
+        Log::warning('realtime: websocket indisponível: '.$reason);
     }
 }
