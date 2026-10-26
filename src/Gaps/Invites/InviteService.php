@@ -28,8 +28,9 @@ use Ramon\Canela\Support\SchemaCache;
  * Os convites: gerar, listar, apagar e resgatar.
  *
  * O resgate acontece quando um cadastro chega com o código (o campo
- * `canelaInviteCode` do usuário): conta um uso, guarda quem convidou e avisa
- * quem convidou — "Fulano aceitou seu convite".
+ * `canelaInviteCode` do usuário): conta um uso e guarda quem convidou. O
+ * aviso a quem convidou — "Fulano aceitou seu convite" — sai quando a conta é
+ * ativada (NotifyInviteAccepted), e não antes de o e-mail ser confirmado.
  */
 final class InviteService
 {
@@ -94,6 +95,11 @@ final class InviteService
         ];
     }
 
+    public function hasInvites(User $actor): bool
+    {
+        return $this->enabled() && ! $actor->isGuest() && Invite::query()->where('user_id', $actor->id)->exists();
+    }
+
     /** @return list<Invite> */
     public function listFor(User $actor): array
     {
@@ -134,7 +140,31 @@ final class InviteService
 
         $invite = Invite::query()->where('code', $code)->first();
 
-        return $invite && $invite->isUsable() ? $invite : null;
+        if (! $invite || ! $invite->isUsable()) {
+            return null;
+        }
+
+        // O link vale enquanto quem convidou puder convidar: perdeu a
+        // permissão, foi suspenso ou apagou a conta, os convites param — como
+        // o fof/doorman, que confere o código no uso, e não só na criação.
+        return $this->inviterCanInvite($invite->user) ? $invite : null;
+    }
+
+    private function inviterCanInvite(?User $inviter): bool
+    {
+        if (! $inviter instanceof User) {
+            return false;
+        }
+
+        // O flarum/suspend já troca os grupos do suspenso por Visitante (sem a
+        // permissão); a data confere também com a extensão desligada.
+        $suspendedUntil = $inviter->getAttribute('suspended_until');
+
+        if ($suspendedUntil !== null && Carbon::parse($suspendedUntil)->isFuture()) {
+            return false;
+        }
+
+        return $inviter->hasPermission('canela.createInvite');
     }
 
     /**
@@ -149,7 +179,7 @@ final class InviteService
             return;
         }
 
-        $redeemed = $this->db->transaction(function () use ($invite, $user): bool {
+        $this->db->transaction(function () use ($invite, $user): bool {
             // Conta o uso só se ainda houver vaga (dois cadastros ao mesmo tempo).
             $updated = $this->db->table('canela_invites')
                 ->where('id', $invite->id)
@@ -169,8 +199,26 @@ final class InviteService
             return true;
         });
 
-        if ($redeemed && $invite->user) {
-            $this->notifications->sync(new InviteAcceptedBlueprint($user), [$invite->user]);
+        // O aviso a quem convidou espera a conta valer: sai no Activated (ou
+        // no Registered já confirmado) — NotifyInviteAccepted. O uso fica
+        // reservado desde já, para o limite valer entre cadastros simultâneos.
+    }
+
+    /**
+     * Avisa quem convidou que a pessoa entrou ("Fulano aceitou seu convite").
+     * Chamado quando a conta é ativada; sem resgate guardado, nada.
+     */
+    public function notifyAccepted(User $user): void
+    {
+        if (! $this->enabled()) {
+            return;
+        }
+
+        $inviteId = $this->db->table('canela_invite_redemptions')->where('user_id', $user->id)->value('invite_id');
+        $inviter = $inviteId ? Invite::query()->find($inviteId)?->user : null;
+
+        if ($inviter instanceof User && (int) $inviter->id !== (int) $user->id) {
+            $this->notifications->sync(new InviteAcceptedBlueprint($user), [$inviter]);
         }
     }
 }

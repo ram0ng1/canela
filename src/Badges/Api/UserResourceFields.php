@@ -17,9 +17,11 @@ use Carbon\Carbon;
 use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\User\User;
+use Illuminate\Contracts\Events\Dispatcher;
 use Ramon\Canela\Badges\BadgeGranter;
 use Ramon\Canela\Badges\BadgeSettings;
 use Ramon\Canela\Badges\TrustLevel\TrustLevel;
+use Ramon\Canela\Badges\TrustLevel\TrustLevelChanged;
 
 /**
  * O nível de confiança no usuário: `trustLevel` para todos (o perfil mostra
@@ -33,6 +35,7 @@ final class UserResourceFields
 {
     public function __construct(
         private readonly BadgeSettings $settings,
+        private readonly Dispatcher $events,
     ) {
     }
 
@@ -48,7 +51,9 @@ final class UserResourceFields
                 ->rule('min:'.TrustLevel::MIN)
                 ->rule('max:'.TrustLevel::MAX)
                 ->set(function (User $user, int $level) {
-                    if ((int) $user->getAttribute('canela_trust_level') === $level) {
+                    $from = (int) $user->getAttribute('canela_trust_level');
+
+                    if ($from === $level) {
                         return;
                     }
 
@@ -56,7 +61,13 @@ final class UserResourceFields
                     $user->setAttribute('canela_trust_level_at', Carbon::now());
                     $user->setAttribute('canela_trust_level_locked', true);
 
-                    $user->afterSave(fn (User $saved) => resolve(BadgeGranter::class)->trustLevelChanged($saved));
+                    $user->afterSave(function (User $saved) use ($from, $level): void {
+                        resolve(BadgeGranter::class)->trustLevelChanged($saved);
+
+                        // O mesmo aviso da promoção automática (Promotion::changeTo):
+                        // as mensagens automáticas de nível valem também para a escolha do admin.
+                        $this->events->dispatch(new TrustLevelChanged($saved, $from, $level));
+                    });
                 }),
 
             Schema\Boolean::make('trustLevelLocked')

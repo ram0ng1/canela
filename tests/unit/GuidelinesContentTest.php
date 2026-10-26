@@ -7,6 +7,8 @@ namespace Ramon\Canela\Tests\unit;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Locale\TranslatorInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\Guest;
+use Illuminate\Contracts\Events\Dispatcher;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\Community\Community;
 use Ramon\Canela\Community\GuidelinesPage;
@@ -23,22 +25,22 @@ final class GuidelinesContentTest extends TestCase
         $extensions = $this->createStub(ExtensionManager::class);
         $extensions->method('isEnabled')->willReturn($fofPages);
 
-        return new GuidelinesPage($settings, $extensions, $this->createStub(TranslatorInterface::class));
+        return new GuidelinesPage($settings, $extensions, $this->createStub(TranslatorInterface::class), $this->createStub(Dispatcher::class));
     }
 
     public function test_sem_texto_nem_pagina_nao_ha_conteudo(): void
     {
-        self::assertFalse($this->page([])->hasContent());
-        self::assertFalse($this->page([Community::GUIDELINES_TEXT => "  \n "])->hasContent());
+        self::assertFalse($this->page([])->hasContent(new Guest()));
+        self::assertFalse($this->page([Community::GUIDELINES_TEXT => "  \n "])->hasContent(new Guest()));
     }
 
     public function test_texto_do_admin_conta(): void
     {
-        self::assertTrue($this->page([Community::GUIDELINES_TEXT => 'Seja gentil.'])->hasContent());
+        self::assertTrue($this->page([Community::GUIDELINES_TEXT => 'Seja gentil.'])->hasContent(new Guest()));
     }
 
     public function test_pagina_sem_o_fof_pages_nao_conta(): void
     {
-        self::assertFalse($this->page([Community::GUIDELINES_PAGE => '3'])->hasContent());
+        self::assertFalse($this->page([Community::GUIDELINES_PAGE => '3'])->hasContent(new Guest()));
     }
 }

@@ -214,9 +214,16 @@ final class MessageSender
         return is_string($locale) && $locale !== '' ? $locale : null;
     }
 
+    /**
+     * Grava a mensagem (e a conversa, se for a primeira) numa transação e só
+     * depois avisa: como no `DialogMessageResource::created()` do
+     * flarum/messages, o `Created` sai com tudo já gravado. Dentro da
+     * transação, com a fila assíncrona, o trabalho da notificação podia rodar
+     * antes do commit e não achar a mensagem (ou achar a conversa sem ela).
+     */
     private function deliver(User $system, User $recipient, string $content): DialogMessage
     {
-        return $this->db->transaction(function () use ($system, $recipient, $content): DialogMessage {
+        $message = $this->db->transaction(function () use ($system, $recipient, $content): DialogMessage {
             $message = new DialogMessage();
             $message->user_id = $system->id;
             $message->setContentAttribute($content, $system);
@@ -253,9 +260,18 @@ final class MessageSender
                 $state->save();
             }
 
-            $this->events->dispatch(new DialogMessage\Event\Created($message));
-
             return $message;
         });
+
+        // A mensagem já está gravada: uma falha num ouvinte (o aviso, o
+        // e-mail) não a desfaz, e o envio é anotado — senão a mensagem "uma
+        // vez só" sairia de novo.
+        try {
+            $this->events->dispatch(new DialogMessage\Event\Created($message));
+        } catch (\Throwable $error) {
+            $this->log->error(sprintf('[ramon/canela] aviso da mensagem automática %d não enviado: %s', $message->id, $error->getMessage()));
+        }
+
+        return $message;
     }
 }

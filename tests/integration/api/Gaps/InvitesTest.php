@@ -145,7 +145,9 @@ class InvitesTest extends TestCase
     }
 
     /**
-     * Sem a permissão canela.createInvite, gerar e listar dão 403.
+     * Sem a permissão canela.createInvite, gerar dá 403 — mas listar e apagar
+     * os próprios convites continua: quem perdeu a permissão precisa poder
+     * revogar os links que já espalhou.
      */
     #[Test]
     public function sem_permissao_nao_gera_convite(): void
@@ -153,8 +155,31 @@ class InvitesTest extends TestCase
         $this->database()->table('group_permission')->where('permission', 'canela.createInvite')->delete();
 
         $this->assertEquals(403, $this->createInvite(2)->getStatusCode());
-        $this->assertEquals(403, $this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 2]))->getStatusCode());
         $this->assertEquals(0, $this->database()->table('canela_invites')->where('user_id', 2)->count());
+
+        $list = $this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 3]));
+        $this->assertEquals(200, $list->getStatusCode(), (string) $list->getBody());
+        $this->assertCount(3, $this->json($list)['invites']);
+        $this->assertFalse($this->json($list)['canCreate']);
+
+        $this->assertEquals(204, $this->send($this->request('DELETE', '/api/canela-invites/1', ['authenticatedAs' => 3]))->getStatusCode());
+        $this->assertFalse($this->database()->table('canela_invites')->where('id', 1)->exists());
+    }
+
+    /**
+     * O convite vale enquanto quem convidou puder convidar: sem a permissão,
+     * o link aparece como inválido e o cadastro com ele não conta.
+     */
+    #[Test]
+    public function convite_de_quem_perdeu_a_permissao_nao_vale(): void
+    {
+        $this->database()->table('group_permission')->where('permission', 'canela.createInvite')->delete();
+
+        $info = $this->json($this->send($this->request('GET', '/api/canela-invite-info/'.self::CODE_OF_USER_3)));
+        $this->assertFalse($info['valid']);
+
+        $this->assertEquals(201, $this->register('semvaga', self::CODE_OF_USER_3)->getStatusCode());
+        $this->assertEquals(0, $this->database()->table('canela_invites')->where('id', 1)->value('redemption_count'));
     }
 
     /**
@@ -242,23 +267,38 @@ class InvitesTest extends TestCase
         $this->assertStringNotContainsString('canelaInvite', $response->getHeaderLine('Location'));
     }
 
+    private function register(string $username, string $code): ResponseInterface
+    {
+        return $this->send(
+            $this->request('POST', '/api/users', [
+                'json' => ['data' => ['type' => 'users', 'attributes' => [
+                    'username' => $username,
+                    'password' => 'too-obscure',
+                    'email' => "$username@machine.local",
+                    'canelaInviteCode' => $code,
+                ]]],
+            ])->withAttribute('bypassCsrfToken', true)
+        );
+    }
+
+    private function inviteAccepted(int $from): bool
+    {
+        return $this->database()->table('notifications')
+            ->where('user_id', 3)
+            ->where('type', 'canelaInviteAccepted')
+            ->where('from_user_id', $from)
+            ->exists();
+    }
+
     /**
-     * Um cadastro com o código conta um uso, guarda o resgate e avisa quem
-     * convidou ("aceitou seu convite").
+     * Um cadastro com o código conta um uso e guarda o resgate na hora. O
+     * aviso a quem convidou ("aceitou seu convite") espera o e-mail ser
+     * confirmado: antes disso a conta pode nunca valer.
      */
     #[Test]
     public function cadastro_com_codigo_resgata_o_convite(): void
     {
-        $response = $this->send(
-            $this->request('POST', '/api/users', [
-                'json' => ['data' => ['type' => 'users', 'attributes' => [
-                    'username' => 'novato',
-                    'password' => 'too-obscure',
-                    'email' => 'novato@machine.local',
-                    'canelaInviteCode' => self::CODE_OF_USER_3,
-                ]]],
-            ])->withAttribute('bypassCsrfToken', true)
-        );
+        $response = $this->register('novato', self::CODE_OF_USER_3);
 
         $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
 
@@ -266,13 +306,41 @@ class InvitesTest extends TestCase
 
         $this->assertEquals(1, $this->database()->table('canela_invites')->where('id', 1)->value('redemption_count'));
         $this->assertTrue($this->database()->table('canela_invite_redemptions')->where('user_id', $newUser->id)->where('invite_id', 1)->exists());
-        $this->assertTrue(
-            $this->database()->table('notifications')
-                ->where('user_id', 3)
-                ->where('type', 'canelaInviteAccepted')
-                ->where('from_user_id', $newUser->id)
-                ->exists()
-        );
+        $this->assertFalse($this->inviteAccepted((int) $newUser->id));
+
+        $token = $this->database()->table('email_tokens')->where('user_id', $newUser->id)->value('token');
+        $this->assertNotNull($token);
+
+        $confirm = $this->send($this->request('POST', "/confirm/$token")->withAttribute('bypassCsrfToken', true));
+        $this->assertContains($confirm->getStatusCode(), [200, 302], (string) $confirm->getBody());
+
+        $this->assertTrue($this->inviteAccepted((int) $newUser->id));
+    }
+
+    /**
+     * Cadastro que já chega confirmado (o admin cria a conta): o aviso sai
+     * no próprio cadastro.
+     */
+    #[Test]
+    public function cadastro_ja_confirmado_avisa_na_hora(): void
+    {
+        $response = $this->send($this->request('POST', '/api/users', [
+            'authenticatedAs' => 1,
+            'json' => ['data' => ['type' => 'users', 'attributes' => [
+                'username' => 'confirmado',
+                'password' => 'too-obscure',
+                'email' => 'confirmado@machine.local',
+                'isEmailConfirmed' => true,
+                'canelaInviteCode' => self::CODE_OF_USER_3,
+            ]]],
+        ]));
+
+        $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
+
+        $newUser = User::query()->where('username', 'confirmado')->firstOrFail();
+
+        $this->assertTrue((bool) $newUser->is_email_confirmed);
+        $this->assertTrue($this->inviteAccepted((int) $newUser->id));
     }
 
     /**
@@ -310,5 +378,42 @@ class InvitesTest extends TestCase
         $this->assertTrue($member['canelaCanInvite']);
         $this->assertFalse($guest['canelaCanInvite']);
         $this->assertTrue($guest['canelaInvitesEnabled']);
+        $this->assertFalse($member['canelaHasInvites']);
+        $this->assertFalse($guest['canelaHasInvites']);
+    }
+
+    /**
+     * Sem a permissão, quem tem convites ainda fica sabendo (para abrir a
+     * janela e revogá-los).
+     */
+    #[Test]
+    public function forum_informa_quem_tem_convites_para_revogar(): void
+    {
+        $this->database()->table('group_permission')->where('permission', 'canela.createInvite')->delete();
+
+        $owner = $this->json($this->send($this->request('GET', '/api', ['authenticatedAs' => 3])))['data']['attributes'];
+
+        $this->assertFalse($owner['canelaCanInvite']);
+        $this->assertTrue($owner['canelaHasInvites']);
+    }
+
+    /**
+     * Quem convidou foi suspenso: os convites dele param de valer.
+     */
+    #[Test]
+    public function convite_de_suspenso_nao_vale(): void
+    {
+        $this->extension('flarum-suspend');
+        $this->prepareDatabase([
+            User::class => [
+                ['id' => 4, 'username' => 'suspensa', 'email' => 'suspensa@machine.local', 'is_email_confirmed' => 1, 'suspended_until' => Carbon::now()->addDay()],
+            ],
+            'canela_invites' => [
+                ['id' => 4, 'code' => 'SuspSuspSuspSuspSuspSuspSusp0001', 'user_id' => 4, 'max_redemptions' => 5, 'redemption_count' => 0, 'expires_at' => Carbon::now()->addDays(3), 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ],
+        ]);
+
+        $this->assertFalse($this->json($this->send($this->request('GET', '/api/canela-invite-info/SuspSuspSuspSuspSuspSuspSusp0001')))['valid']);
+        $this->assertTrue($this->json($this->send($this->request('GET', '/api/canela-invite-info/'.self::CODE_OF_USER_3)))['valid']);
     }
 }

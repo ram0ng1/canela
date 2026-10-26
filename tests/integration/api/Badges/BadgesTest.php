@@ -230,12 +230,11 @@ class BadgesTest extends TestCase
      * o emblema apareceria sem título na vitrine e na notificação. Deve ser
      * recusado (422), como um nome ausente.
      *
-     * Bug: na criação o `requiredOnCreate()` barra, mas na edição o
-     * `minLength(1)` valida o texto antes do `trim()` do `set()`, e o emblema
-     * é gravado com nome vazio.
+     * Na criação o `requiredOnCreate()` já barrava; na edição o `minLength(1)`
+     * validava o texto antes do `trim()` do `set()` — agora a regra pede um
+     * caractere que não seja espaço.
      */
     #[Test]
-    #[\PHPUnit\Framework\Attributes\Group('bug')]
     public function nome_so_de_espacos_e_recusado(): void
     {
         $create = $this->send($this->request('POST', '/api/canela-badges', [

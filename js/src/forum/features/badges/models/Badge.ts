@@ -36,6 +36,10 @@ export default class Badge extends Model {
   multipleGrant() {
     return Model.attribute<boolean>('multipleGrant').call(this);
   }
+  /** Pode virar título no perfil de quem ganhou (só com a coluna do admin de emblemas). */
+  allowTitle() {
+    return Model.attribute<boolean | undefined>('allowTitle').call(this);
+  }
   system() {
     return Model.attribute<boolean>('system').call(this);
   }

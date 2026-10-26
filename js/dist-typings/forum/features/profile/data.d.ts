@@ -24,6 +24,8 @@ export declare function internalCoverEnabled(): boolean;
  * o cartão usa a miniatura da capa dela.
  */
 export declare function cardBackgroundEnabled(): boolean;
+/** Endereço de imagem de outro site na capa e no fundo do cartão (desligado por padrão: rastreia quem vê o perfil). */
+export declare function externalImagesEnabled(): boolean;
 /** O envio de arquivo dos campos de imagem do tema (a capa interna e o fundo do cartão). */
 export declare function coverUploadEnabled(): boolean;
 /**

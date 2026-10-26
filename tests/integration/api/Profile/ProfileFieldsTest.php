@@ -17,6 +17,7 @@ use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
+use Ramon\Canela\Tests\integration\api\Badges\BadgesTest;
 
 /**
  * Os campos do perfil estendido no /api/users: bio (limite, normalização e
@@ -256,5 +257,95 @@ class ProfileFieldsTest extends TestCase
         $this->assertEquals(403, $this->update(3, 3, ['canelaBio' => 'falando mesmo suspenso'])->getStatusCode());
 
         $this->assertSame('bio do vizinho', User::find(3)->canela_bio);
+    }
+
+    /**
+     * Aniversário não vai para visitantes; os membros continuam vendo dia e mês.
+     */
+    #[Test]
+    public function aniversario_nao_vai_para_visitantes(): void
+    {
+        $this->assertArrayNotHasKey('canelaBirthday', $this->show(2, null));
+        $this->assertSame('05-17', $this->show(2, 3)['canelaBirthday']);
+    }
+
+    /**
+     * Perfil de um suspenso (como o `viewBio` do fof/user-bio): bio, site,
+     * local, status e imagens somem para os outros; o próprio e a moderação
+     * continuam vendo. Sem suspensão, todo mundo vê.
+     */
+    #[Test]
+    public function perfil_de_suspenso_so_para_ele_e_a_moderacao(): void
+    {
+        $this->extension('flarum-suspend', 'ramon-canela');
+
+        $this->database()->table('users')->where('id', 3)->update([
+            'canela_website' => 'https://spam.example.com',
+            'canela_location' => 'Lugar nenhum',
+            'canela_status_text' => 'Compre já',
+        ]);
+
+        $fields = ['canelaBioHtml', 'canelaWebsite', 'canelaLocation', 'canelaStatusText', 'canelaStatusEmoji', 'canelaCoverUrl', 'canelaCardBackgroundUrl'];
+
+        foreach ([null, 2] as $actor) {
+            $this->assertArrayHasKey('canelaWebsite', $this->show(3, $actor), 'sem suspensão, público');
+        }
+
+        $this->database()->table('users')->where('id', 3)->update(['suspended_until' => Carbon::now()->addDay()]);
+
+        foreach ([null, 2] as $actor) {
+            $attributes = $this->show(3, $actor);
+
+            foreach ($fields as $field) {
+                $this->assertArrayNotHasKey($field, $attributes, "$field de suspenso para ".($actor ?? 'visitante'));
+            }
+        }
+
+        foreach ([3, 1] as $actor) {
+            $attributes = $this->show(3, $actor);
+
+            $this->assertSame('https://spam.example.com', $attributes['canelaWebsite']);
+            $this->assertSame('<p>bio do vizinho</p>', $attributes['canelaBioHtml']);
+            $this->assertSame('Compre já', $attributes['canelaStatusText']);
+        }
+    }
+
+    /**
+     * Título escolhido pelo próprio usuário: só o nome de um emblema ligado
+     * que ele ganhou, com "pode virar título". Texto livre ("Moderador") dá
+     * 422; a moderação escreve o que quiser; tirar o título sempre vale.
+     */
+    #[Test]
+    public function titulo_proprio_so_de_emblema_ganho(): void
+    {
+        $this->prepareDatabase([
+            'canela_badges' => [
+                BadgesTest::badge(200, 'Veterano', ['allow_title' => true]),
+                BadgesTest::badge(201, 'Sem título'),
+                BadgesTest::badge(202, 'Desligado', ['allow_title' => true, 'enabled' => false]),
+                BadgesTest::badge(203, 'Não ganho', ['allow_title' => true]),
+            ],
+            'canela_user_badges' => [
+                ['id' => 1, 'user_id' => 2, 'badge_id' => 200, 'granted_at' => Carbon::now()],
+                ['id' => 2, 'user_id' => 2, 'badge_id' => 201, 'granted_at' => Carbon::now()],
+                ['id' => 3, 'user_id' => 2, 'badge_id' => 202, 'granted_at' => Carbon::now()],
+            ],
+        ]);
+
+        foreach (['Moderador', 'Sem título', 'Desligado', 'Não ganho'] as $title) {
+            $response = $this->update(2, 2, ['canelaTitle' => $title]);
+            $this->assertEquals(422, $response->getStatusCode(), "$title: ".$response->getBody());
+        }
+
+        $this->assertNull(User::find(2)->canela_title);
+
+        $this->assertEquals(200, $this->update(2, 2, ['canelaTitle' => ' Veterano '])->getStatusCode());
+        $this->assertSame('Veterano', User::find(2)->canela_title);
+
+        $this->assertEquals(200, $this->update(2, 2, ['canelaTitle' => null])->getStatusCode());
+        $this->assertNull(User::find(2)->canela_title);
+
+        $this->assertEquals(200, $this->update(2, 1, ['canelaTitle' => 'Moderador'])->getStatusCode());
+        $this->assertSame('Moderador', User::find(2)->canela_title);
     }
 }

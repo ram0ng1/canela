@@ -23,6 +23,8 @@ import {
   canEditTitle,
   fofBio,
   cardBackgroundEnabled,
+  coverUploadEnabled,
+  externalImagesEnabled,
   internalCoverEnabled,
   profileField,
   userStatus,
@@ -32,6 +34,8 @@ import { ForumakerCoverField } from '../../thirdparty/profileCover';
 import { statusUntilLabel } from './components';
 import EmojiPicker from './EmojiPicker';
 import ImageField from './ImageField';
+import type Badge from '../badges/models/Badge';
+import type UserBadge from '../badges/models/UserBadge';
 
 /** Opções do "Limpar depois de…". */
 const CLEAR_OPTIONS = ['never', '30m', '1h', '4h', 'today', 'week', 'custom'] as const;
@@ -61,10 +65,34 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
   draft!: Draft;
   saved!: Draft;
   saving = false;
+  /** Os títulos que a pessoa pode escolher sozinha: os emblemas que ganhou e que viram título. */
+  titleOptions: string[] | null = null;
 
   oninit(vnode: Mithril.Vnode<ProfileSettingsSectionAttrs, this>) {
     super.oninit(vnode);
     this.reset();
+
+    if (profileField('title') && this.titleFromBadges(this.attrs.user)) this.loadTitleOptions(this.attrs.user);
+  }
+
+  /** Sem poder editar o usuário, o servidor só aceita o nome de um emblema ganho que vira título. */
+  titleFromBadges(user: User): boolean {
+    return canEditTitle(user) && !user.canEdit();
+  }
+
+  loadTitleOptions(user: User) {
+    app.store
+      .find<UserBadge[]>('canela-user-badges', { filter: { user: user.id()! }, include: 'badge', page: { limit: 100 } } as any)
+      .then((grants) => {
+        const names = grants
+          .map((grant) => grant.badge())
+          .filter((badge): badge is Badge => !!badge && !!badge.allowTitle())
+          .map((badge) => badge.name());
+
+        this.titleOptions = Array.from(new Set(names)).sort((a, b) => a.localeCompare(b));
+      })
+      .catch(() => (this.titleOptions = []))
+      .finally(() => m.redraw());
   }
 
   /** Lê o usuário de novo: depois de salvar, o salvo vira o ponto de partida. */
@@ -104,8 +132,8 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
         {profileField('birthday') && this.birthdayField()}
         {profileField('status') && this.statusField()}
         {/* Com a forumaker/profile-cover a capa larga é dela (o editor dela no lugar do campo da capa); o fundo do cartão continua do tema. */}
-        {thirdParty.profileCover() ? <ForumakerCoverField user={user} /> : internalCoverEnabled() && this.coverField(user)}
-        {cardBackgroundEnabled() && this.cardField(user)}
+        {thirdParty.profileCover() ? <ForumakerCoverField user={user} /> : internalCoverEnabled() && this.imagesAvailable() && this.coverField(user)}
+        {cardBackgroundEnabled() && this.imagesAvailable() && this.cardField(user)}
 
         <div className="Form-group CanelaProfileSettings-actions">
           <Button type="submit" className="Button Button--primary" loading={this.saving} disabled={!this.dirty()}>
@@ -131,6 +159,31 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
           <p className="helpText">{t('profile.settings.title_locked')}</p>
         </div>
       ) : null;
+    }
+
+    if (this.titleFromBadges(user)) {
+      const options = this.titleOptions ?? [];
+      // O título que já existe (dado pela moderação) continua na lista até a pessoa trocar.
+      const values = this.saved.title && !options.includes(this.saved.title) ? [this.saved.title, ...options] : options;
+
+      return (
+        <div className="Form-group">
+          <label for="CanelaProfile-title">{t('profile.settings.title_label')}</label>
+          <select
+            id="CanelaProfile-title"
+            className="FormControl"
+            disabled={this.titleOptions === null}
+            value={this.draft.title}
+            onchange={(event: Event) => (this.draft.title = (event.target as HTMLSelectElement).value)}
+          >
+            <option value="">{t('profile.settings.title_none')}</option>
+            {values.map((name) => (
+              <option value={name}>{name}</option>
+            ))}
+          </select>
+          <p className="helpText">{t('profile.settings.title_badge_help')}</p>
+        </div>
+      );
     }
 
     return this.textField(
@@ -273,6 +326,11 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
         )}
       </div>
     );
+  }
+
+  /** Sem envio e sem endereço externo, os campos de imagem não têm como receber nada. */
+  imagesAvailable(): boolean {
+    return coverUploadEnabled() || externalImagesEnabled();
   }
 
   coverField(user: User): Mithril.Children {

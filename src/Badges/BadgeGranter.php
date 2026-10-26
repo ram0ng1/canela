@@ -86,6 +86,22 @@ final class BadgeGranter
             return 0;
         }
 
+        // Uma carga por vez no fórum inteiro: o agendador e o "Conceder agora"
+        // juntos davam o mesmo aniversário duas vezes (ver SingleGrantLock).
+        $granted = $this->singleGrant->exclusiveBackfill(fn (): int => $this->runBackfill($full, $progress));
+
+        if ($granted === null) {
+            $this->logger->info('[canela] carga de emblemas já em andamento em outro processo: esta foi pulada.');
+
+            return 0;
+        }
+
+        return $granted;
+    }
+
+    /** @param (callable(Badge, int): void)|null $progress */
+    private function runBackfill(bool $full, ?callable $progress): int
+    {
         // A primeira carga é sempre completa, e calada (sem notificações): o
         // que ela concede é o histórico do fórum, não uma conquista de agora.
         // Os eventos (post, curtida…) notificam desde o começo.
@@ -136,6 +152,10 @@ final class BadgeGranter
 
         if ($badge->enabled && $this->settings->badgesEnabled()) {
             $this->notifications->sync(new BadgeGrantedBlueprint($badge, $userBadge), [$user]);
+
+            // Como no fof/badges: a concessão manual também é "ganhou agora"
+            // (as mensagens automáticas de "ganhou o emblema" saem daqui).
+            $this->events->dispatch(new BadgeAwarded($badge, $userBadge, $user));
         }
 
         return $userBadge;
@@ -215,9 +235,12 @@ final class BadgeGranter
                 // Numa transação própria (um SAVEPOINT, se já houver uma aberta):
                 // no PostgreSQL um erro aborta a transação inteira, e sem o
                 // savepoint tudo o que viesse depois deste `catch` falharia.
-                $saved = $userBadge->getConnection()->transaction(
-                    fn (): bool => $badge->multiple_grant ? $userBadge->save() : $this->singleGrant->save($userBadge)
-                );
+                $saved = $userBadge->getConnection()->transaction(fn (): bool => match (true) {
+                    ! $badge->multiple_grant => $this->singleGrant->save($userBadge),
+                    // Sem postagem, o índice único não barra (NULL): a trava confere a data.
+                    $userBadge->post_id === null => $this->singleGrant->saveRepeat($userBadge),
+                    default => $userBadge->save(),
+                });
 
                 if (! $saved) {
                     // Outro processo concedeu no meio do caminho (ver SingleGrantLock).

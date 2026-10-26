@@ -119,6 +119,74 @@ class PinStickiedToTopTest extends TestCase
         $this->assertSame([2, 1, 3, 4], $this->ids(['sort' => '-lastPostedAt']));
     }
 
+    /** A pessoa 2 já leu o fixado 1 até o fim. */
+    private function readStickyOne(): void
+    {
+        $this->prepareDatabase([
+            'discussion_user' => [
+                ['discussion_id' => 1, 'user_id' => 2, 'last_read_post_number' => 1, 'last_read_at' => Carbon::now()],
+            ],
+        ]);
+    }
+
+    /**
+     * "Recentes" com "fixar só os não lidos" (o padrão do flarum/sticky): o
+     * fixado já lido não sobe, fica no lugar da atividade — a mesma regra da
+     * ordenação padrão, que o flarum/sticky aplica sozinho.
+     */
+    #[Test]
+    public function recentes_com_so_nao_lidos_nao_fixa_os_lidos(): void
+    {
+        $this->setting('flarum-sticky.only_sticky_unread_discussions', true);
+        $this->readStickyOne();
+
+        $this->assertSame([2, 3, 1, 4], $this->ids(['sort' => '-lastPostedAt']));
+
+        $first = $this->ids(['sort' => '-lastPostedAt', 'page' => ['limit' => 2, 'offset' => 0]]);
+        $second = $this->ids(['sort' => '-lastPostedAt', 'page' => ['limit' => 2, 'offset' => 2]]);
+
+        $this->assertSame([2, 3], $first);
+        $this->assertSame([1, 4], $second);
+    }
+
+    /**
+     * "Marcar tudo como lido" depois da última atividade dos fixados: nenhum
+     * é mais não lido, e nenhum sobe.
+     */
+    #[Test]
+    public function recentes_depois_de_marcar_tudo_como_lido_nao_fixa(): void
+    {
+        $this->setting('flarum-sticky.only_sticky_unread_discussions', true);
+        $this->database()->table('users')->where('id', 2)->update(['marked_all_as_read_at' => Carbon::now()->addMinute()]);
+
+        $this->assertSame([3, 1, 4, 2], $this->ids(['sort' => '-lastPostedAt']));
+    }
+
+    /**
+     * Fixando todos (sem "só os não lidos"), o fixado lido sobe também.
+     */
+    #[Test]
+    public function recentes_fixando_todos_fixa_os_lidos(): void
+    {
+        $this->setting('flarum-sticky.only_sticky_unread_discussions', false);
+        $this->readStickyOne();
+
+        $this->assertSame([2, 1, 3, 4], $this->ids(['sort' => '-lastPostedAt']));
+    }
+
+    /**
+     * Na página da tag, os fixados sempre sobem (como no flarum/sticky),
+     * lidos ou não.
+     */
+    #[Test]
+    public function pagina_da_tag_fixa_mesmo_lido(): void
+    {
+        $this->setting('flarum-sticky.only_sticky_unread_discussions', true);
+        $this->readStickyOne();
+
+        $this->assertSame([1, 3, 4], $this->ids(['filter' => ['tag' => 'geral'], 'sort' => '-lastPostedAt']));
+    }
+
     /**
      * Outra ordenação (ex.: mais respostas) não fixa nada.
      */

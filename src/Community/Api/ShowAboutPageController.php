@@ -24,8 +24,8 @@ use Ramon\Canela\Community\AboutPages;
 /**
  * GET /api/canela-about-pages/{id}: uma das abas extras da área Sobre. Só
  * responde pelas páginas da lista do admin, e com a visibilidade do fof/pages;
- * qualquer outra (ou sem o fof/pages) é 404, para o endpoint não virar um
- * jeito de ler páginas fora da área.
+ * qualquer outra (ou sem o fof/pages, ou com o Sobre desligado) é 404, para
+ * o endpoint não virar um jeito de ler páginas fora da área.
  */
 final class ShowAboutPageController implements RequestHandlerInterface
 {

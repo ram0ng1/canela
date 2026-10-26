@@ -10,6 +10,8 @@ use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Post\Post;
 use Flarum\User\User;
+use Illuminate\Contracts\Cache\LockProvider;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
@@ -45,6 +47,11 @@ final class RecordReadTimeController implements RequestHandlerInterface
 
     private const MAX_POSTS_PER_CALL = 50;
 
+    /** A trava do crédito por pessoa: o trabalho dentro dela leva milissegundos. */
+    private const LOCK_SECONDS = 10;
+
+    private const LOCK_WAIT_SECONDS = 3;
+
     /** Quantas postagens lidas hoje o cache lembra para não contar de novo. */
     private const MAX_REMEMBERED_POSTS = 2000;
 
@@ -71,12 +78,40 @@ final class RecordReadTimeController implements RequestHandlerInterface
         // se não existisse — o mesmo que a API faz no Show.
         $discussion = Discussion::query()->whereVisibleTo($actor)->findOrFail((int) Arr::get($body, 'discussionId'));
 
-        $seconds = $this->creditedSeconds((int) $actor->id, (int) Arr::get($body, 'seconds', 0));
-        $posts = $this->creditedPosts((int) $actor->id, $discussion, (array) Arr::get($body, 'postIds', []), $actor);
+        [$seconds, $posts] = $this->locked((int) $actor->id, fn (): array => [
+            $this->creditedSeconds((int) $actor->id, (int) Arr::get($body, 'seconds', 0)),
+            $this->creditedPosts((int) $actor->id, $discussion, (array) Arr::get($body, 'postIds', []), $actor),
+        ]);
 
         $this->visits->addReading($actor, $seconds, $posts, (new Visitor($request))->isMobile());
 
         return new EmptyResponse(204);
+    }
+
+    /**
+     * O relógio e a lista de postagens do dia são ler-somar-gravar no cache:
+     * duas abas enviando juntas leriam o mesmo relógio e as duas ganhariam o
+     * crédito inteiro. Uma trava curta por pessoa enfileira os envios. Sem
+     * trava disponível no cache, segue como antes; sem conseguir a trava a
+     * tempo, o envio não credita nada — o próximo cobre o tempo, porque o
+     * relógio só avança o que foi creditado.
+     *
+     * @param callable(): array{int, int} $credit
+     * @return array{int, int}
+     */
+    private function locked(int $userId, callable $credit): array
+    {
+        $store = $this->cache->getStore();
+
+        if (! $store instanceof LockProvider) {
+            return $credit();
+        }
+
+        try {
+            return $store->lock("canela.stats.read_lock.$userId", self::LOCK_SECONDS)->block(self::LOCK_WAIT_SECONDS, $credit);
+        } catch (LockTimeoutException) {
+            return [0, 0];
+        }
     }
 
     private function creditedSeconds(int $userId, int $claimed): int

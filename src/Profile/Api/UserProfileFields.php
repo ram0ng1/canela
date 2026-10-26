@@ -10,6 +10,9 @@ use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Locale\TranslatorInterface;
 use Flarum\User\User;
+use Ramon\Canela\Badges\Badge;
+use Ramon\Canela\Badges\BadgeSettings;
+use Ramon\Canela\Badges\Capabilities;
 use Ramon\Canela\Profile\BioRenderer;
 use Ramon\Canela\Profile\ProfileImage;
 use Ramon\Canela\Profile\ProfileImageUploader;
@@ -18,9 +21,19 @@ use Ramon\Canela\Profile\ProfileSettings;
 /**
  * Os campos do perfil estendido no UserResource.
  *
- * Leitura pública (é o que aparece no perfil e no cartão), exceto a data de
- * nascimento completa, que só o dono e a moderação veem — os outros recebem
- * só dia e mês, a menos que o usuário escolha mostrar o ano.
+ * Leitura pública (é o que aparece no perfil e no cartão), com três
+ * exceções:
+ * - o perfil de um suspenso (bio, site, local, status e imagens) só o dono e
+ *   a moderação veem (`canelaViewProfile`, ProfilePolicy);
+ * - o aniversário não vai para visitantes, e a data completa só o dono e a
+ *   moderação veem — os outros membros recebem só dia e mês, a menos que o
+ *   usuário escolha mostrar o ano;
+ * - imagem por endereço externo só sai com `canela.profile_external_images`
+ *   ligado (desligado, a gravação é recusada e o que já estava gravado some).
+ *
+ * O título, quando o próprio usuário escolhe (sem `edit` sobre ele), só pode
+ * ser o nome de um emblema que ele ganhou com "pode virar título" ligado,
+ * como no Discourse; a moderação escreve o que quiser.
  *
  * Escrita: o próprio usuário e quem tem `user.edit` (ProfilePolicy). Campo
  * desligado no admin some da API nos dois sentidos.
@@ -41,11 +54,16 @@ final class UserProfileFields
     /** @var array<int, array{0: ?string, 1: ?string}> a bio renderizada de cada pessoa nesta resposta (texto, html) */
     private array $bios = [];
 
+    /** @var array<string, bool> quem pode ver o perfil de quem nesta resposta ("ator:usuário:suspensão") */
+    private array $viewable = [];
+
     public function __construct(
         private readonly ProfileSettings $settings,
         private readonly BioRenderer $bio,
         private readonly ProfileImageUploader $images,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly Capabilities $badges,
+        private readonly BadgeSettings $badgeSettings,
     ) {
     }
 
@@ -89,7 +107,8 @@ final class UserProfileFields
             Schema\Str::make('canelaBio')
                 ->property('canela_bio')
                 ->visible(fn (User $user, Context $context) => $this->settings->fieldEnabled(ProfileSettings::BIO)
-                    && ($context->getActor()->id === $user->id || $context->getActor()->can('canelaEditProfile', $user)))
+                    && ($context->getActor()->id === $user->id || $context->getActor()->can('canelaEditProfile', $user))
+                    && $this->viewable($user, $context))
                 ->writable(fn (User $user, Context $context) => $this->canWrite(ProfileSettings::BIO, $user, $context))
                 ->nullable()
                 ->maxLength($max)
@@ -98,7 +117,7 @@ final class UserProfileFields
                 }),
 
             Schema\Str::make('canelaBioHtml')
-                ->visible(fn () => $this->settings->fieldEnabled(ProfileSettings::BIO))
+                ->visible(fn (User $user, Context $context) => $this->settings->fieldEnabled(ProfileSettings::BIO) && $this->viewable($user, $context))
                 ->get(fn (User $user) => $this->bioHtml($user)),
         ];
     }
@@ -128,7 +147,7 @@ final class UserProfileFields
         return [
             Schema\Str::make('canelaLocation')
                 ->property('canela_location')
-                ->visible(fn () => $this->settings->fieldEnabled(ProfileSettings::LOCATION))
+                ->visible(fn (User $user, Context $context) => $this->settings->fieldEnabled(ProfileSettings::LOCATION) && $this->viewable($user, $context))
                 ->writable(fn (User $user, Context $context) => $this->canWrite(ProfileSettings::LOCATION, $user, $context))
                 ->nullable()
                 ->maxLength(100)
@@ -136,7 +155,7 @@ final class UserProfileFields
 
             Schema\Str::make('canelaWebsite')
                 ->property('canela_website')
-                ->visible(fn () => $this->settings->fieldEnabled(ProfileSettings::WEBSITE))
+                ->visible(fn (User $user, Context $context) => $this->settings->fieldEnabled(ProfileSettings::WEBSITE) && $this->viewable($user, $context))
                 ->writable(fn (User $user, Context $context) => $this->canWrite(ProfileSettings::WEBSITE, $user, $context))
                 ->nullable()
                 ->maxLength(255)
@@ -156,6 +175,20 @@ final class UserProfileFields
                 ->writable(fn (User $user, Context $context) => $context->updating() && $context->getActor()->can('canelaEditTitle', $user))
                 ->nullable()
                 ->maxLength(60)
+                // Quem escolhe o próprio título (sem `edit` sobre o usuário) só
+                // usa o nome de um emblema que ganhou e que pode virar título:
+                // texto livre deixava qualquer um se chamar "Moderador".
+                ->rule(fn (Context $context, mixed $user) => function (string $attribute, mixed $value, \Closure $fail) use ($context, $user): void {
+                    $title = is_string($value) ? self::singleLine($value) : null;
+
+                    if ($title === null || ! $user instanceof User || $context->getActor()->can('edit', $user)) {
+                        return;
+                    }
+
+                    if (! in_array($title, $this->badgeTitles($user), true)) {
+                        $fail($this->trans('invalid_title'));
+                    }
+                })
                 ->set(fn (User $user, ?string $value) => $user->setAttribute('canela_title', self::singleLine($value))),
         ];
     }
@@ -169,7 +202,7 @@ final class UserProfileFields
      */
     private function statusFields(): array
     {
-        $enabled = fn () => $this->settings->fieldEnabled(ProfileSettings::STATUS);
+        $enabled = fn (User $user, Context $context) => $this->settings->fieldEnabled(ProfileSettings::STATUS) && $this->viewable($user, $context);
         $writable = fn (User $user, Context $context) => $this->canWrite(ProfileSettings::STATUS, $user, $context);
 
         return [
@@ -208,7 +241,7 @@ final class UserProfileFields
     private function imageFields(): array
     {
         return array_map(fn (ProfileImage $kind) => Schema\Str::make($kind->attribute())
-            ->visible(fn () => $this->settings->fieldEnabled(ProfileSettings::COVER))
+            ->visible(fn (User $user, Context $context) => $this->settings->fieldEnabled(ProfileSettings::COVER) && $this->viewable($user, $context))
             ->writable(fn (User $user, Context $context) => $this->canWrite(ProfileSettings::COVER, $user, $context))
             ->nullable()
             ->maxLength(255)
@@ -216,11 +249,38 @@ final class UserProfileFields
             // conteúdo misto (bloqueado ou com aviso no navegador).
             ->rule('url:https')
             ->rule('not_regex:'.self::CSS_UNSAFE_URL)
+            // Endereço de outro site só com a opção ligada no admin; a URL do
+            // arquivo já enviado (que o fórum devolve e o formulário reenvia)
+            // continua valendo.
+            ->rule(fn (Context $context, mixed $user) => function (string $attribute, mixed $value, \Closure $fail) use ($user, $kind): void {
+                $url = is_string($value) ? self::singleLine($value) : null;
+
+                if ($url === null || $this->settings->externalImagesAllowed()) {
+                    return;
+                }
+
+                $stored = $user instanceof User ? $user->getAttribute($kind->column()) : null;
+
+                if (is_string($stored) && ! ProfileImageUploader::isExternal($stored) && $url === $this->images->url($stored)) {
+                    return;
+                }
+
+                $fail($this->trans('external_image_disabled'));
+            })
             ->validationMessages([
                 $kind->attribute().'.url' => $this->trans('invalid_image_url'),
                 $kind->attribute().'.not_regex' => $this->trans('invalid_image_url'),
             ])
-            ->get(fn (User $user) => $this->images->url($user->getAttribute($kind->column())))
+            ->get(function (User $user) use ($kind): ?string {
+                $stored = $user->getAttribute($kind->column());
+
+                // Gravada antes de o admin desligar os endereços externos: não sai mais.
+                if (is_string($stored) && ProfileImageUploader::isExternal($stored) && ! $this->settings->externalImagesAllowed()) {
+                    return null;
+                }
+
+                return $this->images->url($stored);
+            })
             ->set(function (User $user, ?string $value) use ($kind) {
                 $value = self::singleLine($value);
 
@@ -242,9 +302,11 @@ final class UserProfileFields
         $writable = fn (User $user, Context $context) => $this->canWrite(ProfileSettings::BIRTHDAY, $user, $context);
 
         return [
-            // Público: "MM-DD", ou "AAAA-MM-DD" se o usuário mostrar o ano.
+            // Para os membros: "MM-DD", ou "AAAA-MM-DD" se o usuário mostrar o
+            // ano. Visitante não recebe: dia e mês de nascimento ajudam a
+            // descobrir a data completa de alguém, e não servem a quem não participa.
             Schema\Str::make('canelaBirthday')
-                ->visible($enabled)
+                ->visible(fn (User $user, Context $context) => $enabled() && ! $context->getActor()->isGuest())
                 ->get(function (User $user): ?string {
                     $date = $user->getAttribute('canela_birthday');
 
@@ -285,6 +347,44 @@ final class UserProfileFields
         return $context->updating()
             && $this->settings->fieldEnabled($field)
             && $context->getActor()->can('canelaEditProfile', $user);
+    }
+
+    /** `canelaViewProfile` (ProfilePolicy), uma vez por pessoa nesta resposta. */
+    private function viewable(User $user, Context $context): bool
+    {
+        $actor = $context->getActor();
+        $key = $actor->id.':'.$user->id.':'.(string) $user->getAttribute('suspended_until');
+
+        return $this->viewable[$key] ??= $actor->can('canelaViewProfile', $user);
+    }
+
+    /**
+     * Os títulos que a pessoa pode escolher sozinha: o nome de cada emblema
+     * ligado, que ela ganhou, com "pode virar título". Vale o nome gravado e
+     * o traduzido (os emblemas do sistema aparecem no idioma de quem lê).
+     *
+     * @return list<string>
+     */
+    private function badgeTitles(User $user): array
+    {
+        if (! $this->badgeSettings->badgesEnabled() || ! $this->badges->installed() || ! $this->badges->adminColumns()) {
+            return [];
+        }
+
+        $titles = [];
+
+        $badges = Badge::query()
+            ->where('enabled', true)
+            ->where('allow_title', true)
+            ->whereHas('userBadges', fn ($query) => $query->where('user_id', $user->id))
+            ->get();
+
+        foreach ($badges as $badge) {
+            $titles[] = (string) self::singleLine($badge->name);
+            $titles[] = (string) self::singleLine($badge->translated($this->translator, 'name'));
+        }
+
+        return array_values(array_unique(array_filter($titles)));
     }
 
     private function isOwnerOrEditor(User $user, Context $context): bool

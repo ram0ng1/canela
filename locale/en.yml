@@ -467,6 +467,7 @@ ramon-canela:
         load_more: Load more
         revoke: Revoke
         revoke_confirm: Revoke this badge from {username}?
+        run_queued: "Queued: badges will be granted in a moment."
       chat:
         channels_only_title: Chat channels
         title: Chat
@@ -929,9 +930,11 @@ ramon-canela:
         profile_cover_label: Profile images
         profile_cover_help: A wide cover at the top of the profile and a background for the user card. Without an image, the cover uses the user's color.
         profile_cover_upload_label: Allow image uploads
-        profile_cover_upload_help: Images are downscaled (cover to 2000px, card to 900px), converted to WebP and stored in assets/canela-covers. When off, only an https image address is accepted.
+        profile_cover_upload_help: Images are downscaled (cover to 2000px, card to 900px), converted to WebP and stored in assets/canela-covers. When off, images from other sites (if allowed below) are the only option.
         cover_notice: External addresses must be https. Visitors' browsers load the image straight from the other site.
         cover_forumaker_notice: 'forumaker/profile-cover is active: the profile cover comes from it (Integrations → Profile cover). The card background still belongs to the theme; without one of its own, the card uses the thumbnail of that cover. A cover uploaded here stays stored, but is not shown while it is in charge.'
+        profile_external_images_label: "Allow images from other sites"
+        profile_external_images_help: "Accepts an https image address for the cover and card background. The visitor's browser loads it straight from the other site, which can then track who views the profile."
       stats:
         section_links: Link clicks
         stats_links_enabled_label: Count link clicks
@@ -1143,6 +1146,7 @@ ramon-canela:
           ```
 
           Please review our [community guidelines](%{guidelines_url}) for details.
+        reason_other: "Other"
       silenced_by_staff:
         title: "Account suspended"
         help: "When staff suspends the account. Needs the Suspend extension (flarum/suspend)."
@@ -2279,6 +2283,7 @@ ramon-canela:
         sidebar: Invite
         share_button: Invite
         invited_by: '{username} invited you to the forum.'
+        cannot_create: "You can no longer generate invitations, but you can still revoke the ones below."
       category_notifications:
         toggle: 'Tag notifications: {level}'
         watching: Watching
@@ -2505,6 +2510,8 @@ ramon-canela:
         upload: Upload image
         remove_image: Remove image
         image_too_large: The image is larger than {max}. Please choose a smaller one.
+        title_none: "No title"
+        title_badge_help: "Pick one of your badges that can be used as a title."
       moderation:
         clear_status: Clear status
         clear_images: Remove cover and card background
@@ -3208,12 +3215,15 @@ ramon-canela:
       invite_empty: Choose someone to invite.
       invite_group_invalid: This group can not receive messages.
       invite_group_already: '{group} is already in this message.'
+      invite_unavailable: "None of these people can be invited: they can't receive or reply to messages."
     profile:
       invalid_website: The website must be an address starting with http:// or https://.
       invalid_status_emoji: The status accepts a single emoji.
       invalid_status_until: The date to clear the status must be in the future.
       invalid_image_url: The image must be an https address with no spaces, quotes or parentheses.
       invalid_birthday: Pick a date of birth between 1900 and yesterday.
+      invalid_title: "The title must be the name of a badge you earned that can be used as a title."
+      external_image_disabled: "This forum only accepts uploaded images; addresses from other sites are turned off."
     invites:
       too_many: You already have too many active invitations. Delete one before generating another.
     events:

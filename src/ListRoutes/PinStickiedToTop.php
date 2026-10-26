@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\ListRoutes;
 
+use Carbon\Carbon;
 use Flarum\Search\Database\DatabaseSearchState;
 use Flarum\Search\SearchCriteria;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -62,9 +63,16 @@ final class PinStickiedToTop
                 return;
             }
 
-            // Na ordenação padrão com "só os não lidos", o próprio flarum/sticky
-            // monta uma união e reordena: mexer nas ordens aqui a quebraria.
-            if ($criteria->sortIsDefault && $this->settings->get('flarum-sticky.only_sticky_unread_discussions')) {
+            // "Fixar só os não lidos" (flarum-sticky.only_sticky_unread_discussions)
+            // vale na inicial em qualquer ordenação por atividade. Na padrão, o
+            // próprio flarum/sticky monta a união dele (mexer aqui a quebraria);
+            // na "Recentes" (`-lastPostedAt` explícito) ele não roda, e a mesma
+            // regra é aplicada aqui — senão os fixados já lidos subiriam.
+            if ($this->settings->get('flarum-sticky.only_sticky_unread_discussions')) {
+                if (! $criteria->sortIsDefault) {
+                    $this->pinUnreadStickiedToTop($state);
+                }
+
                 return;
             }
         }
@@ -135,6 +143,82 @@ final class PinStickiedToTop
 
         // Cada parte traz o bastante para a página pedida; a união corta depois.
         $query->limit = $sticky->limit = (int) $query->offset + (int) $query->limit;
+        $query->offset = $sticky->offset = null;
+    }
+
+    /**
+     * O que o flarum/sticky faz na ordenação padrão com "só os não lidos"
+     * (PinStickiedDiscussionsToTop): os fixados que o ator ainda não leu sobem
+     * (entre eles, em ordem de criação, como no resto do tema), os já lidos
+     * ficam no lugar da atividade. Uma união com só os fixados, para a
+     * marcação `is_unread_sticky` não custar uma ordenação da tabela.
+     */
+    private function pinUnreadStickiedToTop(DatabaseSearchState $state): void
+    {
+        $query = $state->getQuery()->getQuery();
+        $actor = $state->getActor();
+
+        if ($query->unions) {
+            return;
+        }
+
+        if (! $query->columns) {
+            $query->select('discussions.*');
+        }
+
+        $sticky = clone $query;
+        $sticky->where('discussions.is_sticky', true);
+        $sticky->orders = null;
+
+        $grammar = $query->getGrammar();
+        $markedAllAsReadAt = $actor->marked_all_as_read_at ?: Carbon::createFromTimestamp(0);
+
+        foreach ([$sticky, $query] as $q) {
+            $read = $q->newQuery()
+                ->selectRaw('1')
+                ->from('discussion_user as sticky')
+                ->whereColumn('sticky.discussion_id', 'discussions.id')
+                ->where('sticky.user_id', '=', $actor->id)
+                ->whereColumn('sticky.last_read_post_number', '>=', 'discussions.last_post_number');
+
+            // Os bindings à mão, na ordem do SQL (como o flarum/sticky faz).
+            $unread = '('.$grammar->wrap('discussions.is_sticky').' = TRUE and not exists ('.$read->toSql().') and '.$grammar->wrap('discussions.last_posted_at').' > ?)';
+            $bindings = [...$read->getBindings(), $markedAllAsReadAt->format('Y-m-d H:i:s')];
+
+            $q->selectRaw("$unread as is_unread_sticky", $bindings);
+            // Entre os fixados que sobem, a mesma ordem de criação do resto
+            // do tema; os outros empatam (NULL) e seguem a atividade.
+            $q->selectRaw("CASE WHEN $unread THEN ".$grammar->wrap('discussions.created_at').' END as canela_pin_order', $bindings);
+        }
+
+        $orders = is_array($query->orders) ? $query->orders : [];
+        $direction = 'asc';
+
+        foreach (array_reverse($orders) as $order) {
+            $direction = $order['direction'] ?? $direction;
+            break;
+        }
+
+        // Com desempate em cada parte, para o corte não escolher outra linha
+        // entre empatadas; na parte dos fixados, os não lidos primeiro, para
+        // nenhum deles ficar fora do corte atrás de fixados já lidos.
+        $tie = ['column' => 'discussions.id', 'direction' => $direction];
+        $query->orders = [...$orders, $tie];
+        $sticky->orders = [['column' => 'is_unread_sticky', 'direction' => 'desc'], ...$orders, $tie];
+
+        $query->union($sticky);
+        // A ordem da união vale sobre as colunas do resultado: sem o nome da tabela.
+        $query->unionOrders = [
+            ['column' => 'is_unread_sticky', 'direction' => 'desc'],
+            ['column' => 'canela_pin_order', 'direction' => 'asc'],
+            ...array_map(static fn (array $order): array => isset($order['column'])
+                ? ['column' => (string) preg_replace('/^.*\./', '', (string) $order['column']), 'direction' => $order['direction']]
+                : $order, $orders),
+        ];
+        $query->unionLimit = $query->limit;
+        $query->unionOffset = $query->offset;
+
+        $query->limit = $sticky->limit = $query->limit === null ? null : (int) $query->offset + (int) $query->limit;
         $query->offset = $sticky->offset = null;
     }
 

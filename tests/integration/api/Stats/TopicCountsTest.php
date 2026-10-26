@@ -171,13 +171,16 @@ class TopicCountsTest extends TestCase
     #[Test]
     public function visitante_nao_registra_tempo_de_leitura(): void
     {
+        // Comparado com o antes: no MySQL, outro teste pode ter deixado visitas.
+        $before = $this->database()->table('canela_user_visits')->count();
+
         $response = $this->send($this->request('POST', '/api/canela-read-time', [
             'json' => ['discussionId' => 1, 'seconds' => 30, 'postIds' => [11]],
         ]));
 
         // 400 (sem token CSRF de sessão) ou 401 (sem conta): nunca grava.
         $this->assertContains($response->getStatusCode(), [400, 401]);
-        $this->assertSame(0, $this->database()->table('canela_user_visits')->count());
+        $this->assertSame($before, $this->database()->table('canela_user_visits')->count());
     }
 
     /**
@@ -200,6 +203,38 @@ class TopicCountsTest extends TestCase
         $this->assertLessThanOrEqual(60, (int) $row->time_read);
         $this->assertGreaterThan(0, (int) $row->time_read);
         $this->assertSame(3, (int) $row->posts_read);
+    }
+
+    /**
+     * O crédito é ler-somar-gravar no cache: com outro envio da mesma pessoa
+     * em andamento (a trava dela ocupada), este espera e, sem a trava, não
+     * credita nada — em vez de as duas abas ganharem o crédito inteiro. Livre
+     * a trava, o próximo envio credita normalmente.
+     */
+    #[Test]
+    public function tempo_de_leitura_e_creditado_um_envio_por_vez(): void
+    {
+        $this->app();
+        $store = $this->app()->getContainer()->make(\Illuminate\Contracts\Cache\Repository::class)->getStore();
+        $this->assertInstanceOf(\Illuminate\Contracts\Cache\LockProvider::class, $store);
+
+        $lock = $store->lock('canela.stats.read_lock.2', 30);
+        $this->assertTrue($lock->get());
+
+        $send = fn () => $this->send($this->request('POST', '/api/canela-read-time', [
+            'authenticatedAs' => 2,
+            'json' => ['discussionId' => 2, 'seconds' => 30, 'postIds' => [21]],
+        ]));
+
+        $this->assertEquals(204, $send()->getStatusCode());
+        $this->assertSame(0, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('time_read'));
+        $this->assertSame(0, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('posts_read'));
+
+        $lock->release();
+
+        $this->assertEquals(204, $send()->getStatusCode());
+        $this->assertSame(30, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('time_read'));
+        $this->assertSame(1, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('posts_read'));
     }
 
     /**

@@ -49,11 +49,12 @@ use Ramon\Canela\System\Messages\MessageSender;
  * - nível de confiança 1 e 2: na promoção;
  * - equipe e grupos: ao entrar no grupo Admin ou Moderadores (ou em outro);
  * - post denunciado: quando a equipe oculta ou apaga um post com denúncias
- *   (flarum/flags);
+ *   da comunidade (flarum/flags);
  * - suspensão: ao suspender e ao tirar a suspensão (flarum/suspend);
  * - as personalizadas do admin (CustomMessages): conta ativada, grupo, nível
- *   de confiança, emblema e primeira postagem. As de "N dias depois do
- *   cadastro" saem pelo agendador (SendDelayedMessages).
+ *   de confiança, emblema e primeira postagem (a primeira visível: um post
+ *   retido pelo flarum/approval conta quando é aprovado). As de "N dias
+ *   depois do cadastro" saem pelo agendador (SendDelayedMessages).
  *
  * Os eventos das extensões opcionais (flarum/flags e flarum/suspend) só são
  * ouvidos com a classe presente, e pelo nome: o tema não depende delas. As
@@ -76,13 +77,24 @@ final class SendAutoMessages
 
     public function subscribe(Dispatcher $events): void
     {
-        $events->listen(Registered::class, fn (Registered $event) => $event->user->is_email_confirmed && $this->activated($event->user));
-        $events->listen(Activated::class, fn (Activated $event) => $this->activated($event->user));
+        // Ouvintes sem retorno: no dispatcher do Illuminate, um ouvinte que
+        // devolve `false` para a propagação, e os ouvintes seguintes do
+        // mesmo evento (de outras extensões) não rodariam.
+        $events->listen(Registered::class, function (Registered $event): void {
+            if ($event->user->is_email_confirmed) {
+                $this->activated($event->user);
+            }
+        });
+        $events->listen(Activated::class, function (Activated $event): void {
+            $this->activated($event->user);
+        });
         $events->listen(GroupsChanged::class, $this->groupsChanged(...));
         $events->listen(TrustLevelChanged::class, $this->trustLevelChanged(...));
-        $events->listen(BadgeAwarded::class, fn (BadgeAwarded $event) => $this->custom($event->user, 'badge', (int) $event->badge->id, [
-            'badge_name' => (string) ($event->badge->translated($this->translator, 'name') ?? $event->badge->name),
-        ]));
+        $events->listen(BadgeAwarded::class, function (BadgeAwarded $event): void {
+            $this->custom($event->user, 'badge', (int) $event->badge->id, [
+                'badge_name' => (string) ($event->badge->translated($this->translator, 'name') ?? $event->badge->name),
+            ]);
+        });
         $events->listen(Posted::class, $this->posted(...));
     }
 
@@ -186,20 +198,77 @@ final class SendAutoMessages
     /** A primeira postagem de alguém (comentário visível, em discussão ou resposta). */
     public function posted(Posted $event): void
     {
-        $post = $event->post;
+        $this->firstPost($event->post);
+    }
+
+    /**
+     * O post retido pelo flarum/approval foi aprovado: só agora ele aparece, e
+     * pode ser a primeira postagem visível (ligado no extend/system.php).
+     */
+    public function postApproved(object $event): void
+    {
+        if (isset($event->post) && $event->post instanceof Post) {
+            $this->firstPost($event->post);
+        }
+    }
+
+    /**
+     * A personalizada de "primeira postagem", quando `$post` é o primeiro
+     * comentário visível de quem escreveu. Como no fof/gamification e afins,
+     * o que não está à vista não conta: o post à espera de aprovação, o
+     * oculto e o privado (fof/byobu e afins) — nem para sair agora, nem na
+     * contagem. O envio é uma vez só por pessoa (sendCustom).
+     */
+    public function firstPost(Post $post): void
+    {
         $user = $post->user;
 
-        if (! $user || ! $this->customs->for('first_post')) {
+        if (! $user || ! $post instanceof CommentPost || ! $this->visible($post) || ! $this->customs->for('first_post')) {
             return;
         }
 
         // Só interessa saber se há uma ou mais de uma: no máximo duas linhas
         // lidas, e não a contagem de todas as postagens de quem escreve muito.
-        $count = \count($this->db->table('posts')->where('user_id', $user->id)->where('type', 'comment')->limit(2)->pluck('id')->all());
+        $query = $this->db->table('posts')
+            ->join('discussions', 'discussions.id', '=', 'posts.discussion_id')
+            ->where('posts.user_id', $user->id)
+            ->where('posts.type', 'comment')
+            ->whereNull('posts.hidden_at')
+            ->where('posts.is_private', false)
+            ->whereNull('discussions.hidden_at')
+            ->where('discussions.is_private', false);
+
+        if ($this->schema->hasColumn('posts', 'is_approved')) {
+            $query->where('posts.is_approved', true);
+        }
+
+        $count = \count($query->limit(2)->pluck('posts.id')->all());
 
         if ($count === 1) {
             $this->custom($user, 'first_post', null, ['url' => '/d/'.$post->discussion_id.'/'.$post->number]);
         }
+    }
+
+    /**
+     * O post está à vista de todos: aprovado (a coluna só existe com o
+     * flarum/approval), não oculto, não privado, numa discussão também
+     * pública.
+     */
+    private function visible(Post $post): bool
+    {
+        $approved = $post->getAttribute('is_approved');
+
+        if ($approved !== null && ! (bool) $approved) {
+            return false;
+        }
+
+        if ($post->hidden_at !== null || (bool) $post->is_private) {
+            return false;
+        }
+
+        $discussion = $post->discussion;
+
+        return ! $discussion || ($discussion->hidden_at === null && ! (bool) $discussion->is_private);
     }
 
     /**
@@ -222,6 +291,13 @@ final class SendAutoMessages
     /**
      * Um post com denúncias saiu do ar pela mão da equipe. Quem ocultou o próprio
      * post não recebe nada.
+     *
+     * Só contam as denúncias da comunidade (`type = 'user'`, as do
+     * flarum/flags): o flarum/approval marca o post à espera de aprovação com
+     * uma denúncia `approval`, e antispam (akismet e afins) com a dele — quem
+     * teve o post retido ou barrado como spam não foi "denunciado pela
+     * comunidade". O texto livre de quem denunciou (`reason_detail`) nunca
+     * vai na mensagem: ele pode identificar quem denunciou. Vão só os motivos.
      */
     public function flaggedPostRemoved(Post $post, ?User $actor): bool
     {
@@ -231,8 +307,8 @@ final class SendAutoMessages
             return false;
         }
 
-        /** @var Collection<int, object{reason: ?string, reason_detail: ?string}> $flags */
-        $flags = $this->db->table('flags')->where('post_id', $post->id)->get(['reason', 'reason_detail']);
+        /** @var Collection<int, ?string> $flags */
+        $flags = $this->db->table('flags')->where('post_id', $post->id)->where('type', 'user')->pluck('reason');
 
         if ($flags->isEmpty()) {
             return false;
@@ -240,8 +316,7 @@ final class SendAutoMessages
 
         $locale = $author->getPreference('locale') ?: $this->settings->get('default_locale');
         $reasons = $flags
-            ->map(fn (object $flag) => $this->flagReason($flag->reason, $flag->reason_detail, is_string($locale) ? $locale : null))
-            ->filter()
+            ->map(fn (?string $reason) => $this->flagReason($reason, is_string($locale) ? $locale : null))
             ->unique()
             ->map(fn (string $reason) => '- '.$reason)
             ->implode("\n");
@@ -278,18 +353,20 @@ final class SendAutoMessages
             && $this->db->table('canela_invite_redemptions')->where('user_id', $user->id)->exists();
     }
 
-    private function flagReason(?string $reason, ?string $detail, ?string $locale): string
+    /**
+     * O nome do motivo no idioma de quem recebe. Sem motivo da lista (o
+     * "Outro" do flarum/flags, que só tem o texto livre de quem denunciou),
+     * um "Outro" do tema — o texto livre não vai.
+     */
+    private function flagReason(?string $reason, ?string $locale): string
     {
-        $detail = trim((string) $detail);
-
-        if (! $reason) {
-            return $detail;
+        if (! $reason || $reason === 'other') {
+            return $this->translator->trans(AutoMessages::translationKey(AutoMessages::FLAGS_AGREED, 'reason_other'), [], null, $locale);
         }
 
         $key = 'flarum-flags.forum.flag_post.reason_'.$reason.'_label';
         $label = $this->translator->trans($key, [], null, $locale);
-        $label = $label === $key ? $reason : $label;
 
-        return $detail !== '' ? $label.': '.$detail : $label;
+        return $label === $key ? $reason : $label;
     }
 }

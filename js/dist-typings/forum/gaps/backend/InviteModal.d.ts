@@ -14,6 +14,8 @@ interface InviteData {
 export default class InviteModal extends FormModal<IInternalModalAttrs> {
     invites: InviteData[] | null;
     signUpOpen: boolean;
+    /** Falso para quem perdeu a permissão: a janela só lista e revoga. */
+    canCreate: boolean;
     creating: boolean;
     copiedId: number | null;
     maxRedemptions: any;

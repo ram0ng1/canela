@@ -81,10 +81,12 @@ const PROFILE_CARDS: CardDef[] = [
     body: () => (
       <>
         {toggle('profile_cover_upload')}
+        {toggle('profile_external_images')}
         {extensionOn('forumaker-profile-cover') && getBool('canela.thirdparty_profile_cover') && (
           <AdminNotice icon="fas fa-panorama">{trans(`${KEY}.cover_forumaker_notice`)}</AdminNotice>
         )}
-        <AdminNotice>{trans(`${KEY}.cover_notice`)}</AdminNotice>
+        {/* O aviso sobre imagens de outros sites só vale com elas permitidas. */}
+        {getBool('canela.profile_external_images') && <AdminNotice>{trans(`${KEY}.cover_notice`)}</AdminNotice>}
       </>
     ),
   },

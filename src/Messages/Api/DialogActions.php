@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Foundation\ValidationException;
+use Flarum\Messages\Access\MessagingPermission;
 use Flarum\Messages\Dialog;
 use Flarum\Messages\DialogMessage;
 use Flarum\Messages\Job\SendMessageNotificationsJob;
@@ -100,8 +101,23 @@ final class DialogActions
                 }
 
                 $members = $db->table(MessagesSchema::STATE_TABLE)->where('dialog_id', $dialog->id)->pluck('user_id')->map(fn ($id) => (int) $id)->all();
-                $users = User::whereVisibleTo($actor)->whereIn('id', array_diff($ids, $members))->get()
-                    ->filter(fn (User $user) => $actor->can('message', $user));
+                $candidates = array_values(array_diff($ids, $members));
+
+                // As regras do flarum/messages e do CreateGroupConversation para
+                // cada pessoa nova: visível, pode receber mensagem de quem
+                // convida e conseguiria responder (a não ser que quem convida
+                // possa escrever a quem não tem a permissão).
+                $canMessageAnyone = MessagingPermission::canMessageUsersWithoutPermission($actor);
+                $users = User::whereVisibleTo($actor)->whereIn('id', $candidates)->get()
+                    ->filter(fn (User $user) => $actor->can('message', $user)
+                        && ($canMessageAnyone || MessagingPermission::canReply($user)));
+
+                // Pediu gente de fora e nenhuma pode entrar: não há convite a
+                // fazer. Só quem já participa (clique duplo, duas abas) não é
+                // erro: nada muda.
+                if ($candidates && $users->isEmpty() && ! $groupId) {
+                    throw new ValidationException(['userIds' => $translator->trans('ramon-canela.api.messages.invite_unavailable')]);
+                }
 
                 // "pm_reached_recipients_limit": a equipe que entra pelo grupo não conta.
                 if (count($members) + $users->count() > self::MAX_RECIPIENTS && ! $groupId) {
@@ -112,6 +128,7 @@ final class DialogActions
                 // dela): a leitura começa logo antes dela.
                 $before = (int) DialogMessage::query()->where('dialog_id', $dialog->id)->where('id', '<', (int) $dialog->last_message_id)->max('id');
                 $now = Carbon::now();
+                $added = 0;
 
                 // Um por um e sem erro na repetição: dois convites iguais ao
                 // mesmo tempo (clique duplo, duas abas) batiam no índice único
@@ -126,13 +143,23 @@ final class DialogActions
                     ]);
 
                     if ($inserted > 0) {
+                        $added++;
                         $events->record((int) $dialog->id, (int) $actor->id, DialogEvents::INVITED_USER, (int) $user->id);
                     }
                 }
 
+                // Ninguém entrou (nem a equipe): a conversa fica como estava —
+                // uma conversa a dois continua `direct`, e ninguém é avisado de
+                // novo da última mensagem.
+                if ($added === 0 && ! $groupId) {
+                    return;
+                }
+
                 // Mais de duas pessoas: o flarum/messages não reaproveita mais
                 // a conversa para "mensagem nova" entre duas delas.
-                $db->table(MessagesSchema::DIALOG_TABLE)->where('id', $dialog->id)->update(['type' => MessagesSchema::GROUP_TYPE]);
+                if ($added > 0) {
+                    $db->table(MessagesSchema::DIALOG_TABLE)->where('id', $dialog->id)->update(['type' => MessagesSchema::GROUP_TYPE]);
+                }
 
                 $last = $dialog->last_message_id ? DialogMessage::find($dialog->last_message_id) : null;
 

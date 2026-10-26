@@ -22,14 +22,17 @@ export interface DirectoryRow {
     postCount?: number;
     likesReceived?: number;
     likesGiven?: number;
-    daysVisited?: number;
-    postsRead?: number;
+    /** null: a pessoa esconde que está online e quem vê não tem `viewLastSeenAt`. */
+    daysVisited?: number | null;
+    postsRead?: number | null;
 }
 export interface DirectoryPayload {
     data: DirectoryRow[];
     included: any[];
     meta: {
         columns: string[];
+        /** As colunas que quem vê pode usar para ordenar (presença exige `viewLastSeenAt`). */
+        sortable?: string[];
         period: PeriodKey;
         order: string;
         dir: 'asc' | 'desc';

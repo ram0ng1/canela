@@ -21,12 +21,20 @@ use Flarum\Search\SearchCriteria;
  *
  * Quando a listagem passa pelo buscador (página inicial, busca, tags), o core
  * ignora a coluna declarada no SortColumn e ordena por `snake_case` do nome —
- * `view_count`, que não existe: a coluna é `canela_view_count`. Um apelido no
- * SELECT dá a esse nome um valor, e o ORDER BY do core passa a funcionar.
+ * `view_count`, que não é nossa: a coluna é `canela_view_count`, e
+ * `view_count` é justamente a coluna real do fof/discussion-views. Os
+ * mutadores rodam depois do applySort, então aqui só trocamos a coluna da
+ * cláusula de ordenação que o core já montou, qualificada pela tabela — sem
+ * apelido no SELECT, que colidiria com a coluna da outra extensão (ORDER BY
+ * ambíguo no PostgreSQL e o valor errado hidratado no modelo).
  */
 final class SortByViewsMutator
 {
     public const SORT = 'viewCount';
+
+    private const CORE_COLUMN = 'view_count';
+
+    private const COLUMN = 'discussions.canela_view_count';
 
     public function __invoke(DatabaseSearchState $state, SearchCriteria $criteria): void
     {
@@ -34,14 +42,16 @@ final class SortByViewsMutator
             return;
         }
 
-        $query = $state->getQuery();
+        $base = $state->getQuery()->getQuery();
 
-        // Com o SELECT vazio, o addSelect deixaria só o apelido e o modelo
-        // perderia as próprias colunas.
-        if (empty($query->getQuery()->columns)) {
-            $query->select('discussions.*');
+        if (empty($base->orders)) {
+            return;
         }
 
-        $query->addSelect('discussions.canela_view_count as view_count');
+        foreach ($base->orders as $i => $order) {
+            if (($order['column'] ?? null) === self::CORE_COLUMN) {
+                $base->orders[$i]['column'] = self::COLUMN;
+            }
+        }
     }
 }

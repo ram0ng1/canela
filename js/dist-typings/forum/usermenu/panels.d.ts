@@ -74,8 +74,6 @@ export declare class MessagesPanel extends Component {
     view(): string | number | boolean | Mithril.Vnode<any, any> | Mithril.ChildArray | JSX.Element[] | null | undefined;
 }
 export declare class BookmarksPanel extends Component {
-    bookmarks: any[];
-    loading: boolean;
     oninit(vnode: Mithril.Vnode<any, this>): void;
     view(): string | number | boolean | Mithril.Vnode<any, any> | Mithril.ChildArray | JSX.Element[] | null | undefined;
 }

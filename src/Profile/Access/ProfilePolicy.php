@@ -17,6 +17,10 @@ use Ramon\Canela\Profile\ProfileSettings;
  *   bio e o site seriam o jeito de continuar falando enquanto suspenso.
  * - `canelaEditTitle`: o título é uma distinção. Quando o admin tira do
  *   usuário a escolha, só a moderação define.
+ * - `canelaViewProfile`: quem vê a bio, o site, o local, o status e as
+ *   imagens. Todos, menos no perfil de um suspenso — ali só ele e a
+ *   moderação, como o `viewBio` do fof/user-bio: a bio e o site de quem foi
+ *   suspenso por spam continuariam no ar.
  *
  * Nos dois casos, quem não se encaixa recebe `deny()` em vez de `null`: o
  * Gate do core libera tudo para o admin quando nenhuma política decide, e
@@ -60,10 +64,20 @@ final class ProfilePolicy extends AbstractPolicy
         return $actor->can('edit', $user) ? $this->allow() : $this->deny();
     }
 
-    /** A coluna só existe com o flarum/suspend; sem ele, ninguém está suspenso. */
-    private function isSuspended(User $actor): bool
+    public function canelaViewProfile(User $actor, User $user): string
     {
-        $until = $actor->getAttribute('suspended_until');
+        // O caso comum primeiro: sem suspensão, nenhuma outra checagem.
+        if (! $this->isSuspended($user) || $actor->id === $user->id) {
+            return $this->allow();
+        }
+
+        return $actor->can('edit', $user) ? $this->allow() : $this->deny();
+    }
+
+    /** A coluna só existe com o flarum/suspend; sem ele, ninguém está suspenso. */
+    private function isSuspended(User $user): bool
+    {
+        $until = $user->getAttribute('suspended_until');
 
         if ($until === null) {
             return false;

@@ -55,7 +55,7 @@ class RecalculateButton extends AdminComponent {
         >
           {trans(`${KEY}.run_now`)}
         </Button>
-        {this.done && <span className="CanelaAdmin-badgesRunDone">{trans(`${KEY}.run_done`)}</span>}
+        {this.done && <span className="CanelaAdmin-badgesRunDone">{trans(`${KEY}.run_queued`)}</span>}
         <p className="helpText">{trans(`${KEY}.run_help`)}</p>
       </div>
     );

@@ -11,7 +11,7 @@ import Button from 'flarum/common/components/Button';
 import type User from 'flarum/common/models/User';
 
 import { t } from '../../utils/settings';
-import { coverUploadEnabled, cssImage } from './data';
+import { coverUploadEnabled, cssImage, externalImagesEnabled } from './data';
 
 export type ImageKind = 'cover' | 'card-background';
 
@@ -70,16 +70,18 @@ export default class ImageField extends Component<ImageFieldAttrs> {
           )}
         </div>
 
-        <input
-          id={id}
-          className="FormControl"
-          type="url"
-          inputmode="url"
-          maxlength={255}
-          placeholder="https://"
-          value={value}
-          oninput={(event: InputEvent) => this.attrs.oninput((event.target as HTMLInputElement).value)}
-        />
+        {externalImagesEnabled() && (
+          <input
+            id={id}
+            className="FormControl"
+            type="url"
+            inputmode="url"
+            maxlength={255}
+            placeholder="https://"
+            value={value}
+            oninput={(event: InputEvent) => this.attrs.oninput((event.target as HTMLInputElement).value)}
+          />
+        )}
         {help && <p className="helpText">{help}</p>}
       </div>
     );

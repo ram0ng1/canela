@@ -26,6 +26,7 @@ use Ramon\Canela\Profile\Access\ProfilePolicy;
 use Ramon\Canela\Profile\Api\ProfileImageEndpoints;
 use Ramon\Canela\Profile\Api\UserProfileFields;
 use Ramon\Canela\Profile\Listener\DeleteProfileImages;
+use Ramon\Canela\Profile\Listener\DeleteReplacedProfileImages;
 use Ramon\Canela\Profile\ProfileImageUploader;
 use Ramon\Canela\Profile\ProfileSettings;
 
@@ -39,6 +40,10 @@ return (static function (): array {
         ->serializeToForum('canelaProfileTitleSelf', ProfileSettings::TITLE_SELF, 'boolval')
         ->default(ProfileSettings::COVER_UPLOAD, true)
         ->serializeToForum('canelaProfileCoverUpload', ProfileSettings::COVER_UPLOAD, 'boolval')
+        // Desligado: capa e fundo do cartão só por envio (sem pixel de
+        // rastreio de outro site no perfil). O fórum esconde o campo de URL.
+        ->default(ProfileSettings::EXTERNAL_IMAGES, false)
+        ->serializeToForum('canelaProfileExternalImages', ProfileSettings::EXTERNAL_IMAGES, 'boolval')
         ->default(ProfileSettings::BIO_MAX_LENGTH, ProfileSettings::BIO_MAX_LENGTH_DEFAULT)
         ->serializeToForum('canelaProfileBioMaxLength', ProfileSettings::BIO_MAX_LENGTH, 'intval');
 
@@ -72,6 +77,9 @@ return (static function (): array {
             ]),
 
         (new Extend\Event())
-            ->listen(Deleted::class, DeleteProfileImages::class),
+            ->listen(Deleted::class, DeleteProfileImages::class)
+            // A anonimização do flarum/gdpr zera as colunas direto no modelo:
+            // o arquivo que elas apontavam vai junto.
+            ->listen('eloquent.saved: '.User::class, DeleteReplacedProfileImages::class),
     ];
 })();

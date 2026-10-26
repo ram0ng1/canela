@@ -20,6 +20,7 @@
 
 use Flarum\Api\Resource\PostResource;
 use Flarum\Extend;
+use Flarum\Post\Event\Deleted as PostDeleted;
 use Ramon\Canela\Bookmarks\Access\BookmarkPolicy;
 use Ramon\Canela\Bookmarks\Access\ScopeBookmarkVisibility;
 use Ramon\Canela\Bookmarks\Api\BookmarkResource;
@@ -28,6 +29,7 @@ use Ramon\Canela\Bookmarks\Bookmark;
 use Ramon\Canela\Bookmarks\BookmarksFeature;
 use Ramon\Canela\Bookmarks\Console\ReminderSchedule;
 use Ramon\Canela\Bookmarks\Console\SendBookmarkReminders;
+use Ramon\Canela\Bookmarks\Listener\DeleteBookmarksOnPostDeletion;
 use Ramon\Canela\Bookmarks\Notification\BookmarkReminderBlueprint;
 
 return [
@@ -46,6 +48,11 @@ return [
     // Notificações, como qualquer outro tipo.
     (new Extend\Notification())
         ->type(BookmarkReminderBlueprint::class, ['alert']),
+
+    // Post apagado leva os marcadores junto, também no SQLite sem chaves
+    // estrangeiras ligadas.
+    (new Extend\Event())
+        ->listen(PostDeleted::class, DeleteBookmarksOnPostDeletion::class),
 
     (new Extend\Console())
         ->command(SendBookmarkReminders::class)

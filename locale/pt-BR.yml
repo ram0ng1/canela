@@ -467,6 +467,7 @@ ramon-canela:
         load_more: Carregar mais
         revoke: Revogar
         revoke_confirm: Revogar o emblema de {username}?
+        run_queued: "Na fila: os emblemas saem em instantes."
       chat:
         channels_only_title: Canais do chat
         title: Chat
@@ -929,9 +930,11 @@ ramon-canela:
         profile_cover_label: Imagens do perfil
         profile_cover_help: Uma capa larga no topo do perfil e um fundo para o cartão de usuário. Sem imagem, a capa usa a cor do usuário.
         profile_cover_upload_label: Permitir envio de imagem
-        profile_cover_upload_help: As imagens são reduzidas (a capa a 2000px, o cartão a 900px), convertidas para WebP e guardadas em assets/canela-covers. Desligado, só se aceita o endereço https de uma imagem.
+        profile_cover_upload_help: As imagens são reduzidas (a capa a 2000px, o cartão a 900px), convertidas para WebP e guardadas em assets/canela-covers. Desligado, só valem imagens de outros sites, se permitidas abaixo.
         cover_notice: Endereços externos precisam ser https. O navegador de quem visita o perfil busca a imagem direto no outro site.
         cover_forumaker_notice: 'A forumaker/profile-cover está ativa: a capa do perfil vem dela (Integrações → Capa do perfil). O fundo do cartão continua do tema; sem um fundo próprio, o cartão usa a miniatura da capa dela. A capa enviada aqui fica guardada, mas não aparece enquanto ela mandar.'
+        profile_external_images_label: "Permitir imagens de outros sites"
+        profile_external_images_help: "Aceita o endereço https de uma imagem para a capa e o fundo do cartão. O navegador de quem visita busca a imagem direto no outro site, que pode rastrear quem viu o perfil."
       stats:
         section_links: Cliques em links
         stats_links_enabled_label: Contar cliques em links
@@ -1143,6 +1146,7 @@ ramon-canela:
           ```
 
           Veja as nossas [diretrizes da comunidade](%{guidelines_url}) para mais detalhes.
+        reason_other: "Outro"
       silenced_by_staff:
         title: "Conta suspensa"
         help: "Quando a equipe suspende a conta. Precisa da extensão Suspensão (flarum/suspend)."
@@ -2279,6 +2283,7 @@ ramon-canela:
         sidebar: Convidar
         share_button: Convidar
         invited_by: '{username} convidou você para o fórum.'
+        cannot_create: "Você não pode mais gerar convites, mas ainda pode revogar os abaixo."
       category_notifications:
         toggle: 'Notificações da tag: {level}'
         watching: Acompanhando
@@ -2505,6 +2510,8 @@ ramon-canela:
         upload: Enviar imagem
         remove_image: Remover imagem
         image_too_large: A imagem passa de {max}. Escolha uma menor.
+        title_none: "Sem título"
+        title_badge_help: "Escolha um dos seus emblemas que pode virar título."
       moderation:
         clear_status: Limpar o status
         clear_images: Remover a capa e o fundo do cartão
@@ -3208,12 +3215,15 @@ ramon-canela:
       invite_empty: Escolha alguém para convidar.
       invite_group_invalid: Este grupo não recebe mensagens.
       invite_group_already: '{group} já participa desta mensagem.'
+      invite_unavailable: "Ninguém aqui pode ser convidado: não pode receber ou responder mensagens."
     profile:
       invalid_website: O site precisa ser um endereço que comece com http:// ou https://.
       invalid_status_emoji: O status aceita um único emoji.
       invalid_status_until: A data para limpar o status precisa estar no futuro.
       invalid_image_url: A imagem precisa ser um endereço https, sem espaços, aspas ou parênteses.
       invalid_birthday: Escolha uma data de nascimento entre 1900 e ontem.
+      invalid_title: "O título precisa ser o nome de um emblema que você ganhou e que pode virar título."
+      external_image_disabled: "Este fórum só aceita imagens enviadas; endereços de outros sites estão desligados."
     invites:
       too_many: Você já tem convites ativos demais. Apague algum antes de gerar outro.
     events:

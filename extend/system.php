@@ -19,6 +19,7 @@ use Flarum\Api\Context;
 use Flarum\Api\Resource\ForumResource;
 use Flarum\Api\Resource\UserResource;
 use Flarum\Api\Schema;
+use Flarum\Approval\Event\PostWasApproved;
 use Flarum\Extend;
 use Flarum\Http\Middleware\AuthenticateWithHeader;
 use Flarum\Http\Middleware\AuthenticateWithSession;
@@ -92,6 +93,12 @@ $extenders = [
             (new Extend\Event())
                 ->listen(PostHidden::class, [SendAutoMessages::class, 'postHidden'])
                 ->listen(PostDeleting::class, [SendAutoMessages::class, 'postDeleting']),
+        ])
+        // O post retido pela aprovação conta como primeira postagem quando é
+        // aprovado (no `Posted` ele ainda não estava à vista).
+        ->whenExtensionEnabled('flarum-approval', fn () => [
+            (new Extend\Event())
+                ->listen(PostWasApproved::class, [SendAutoMessages::class, 'postApproved']),
         ])
         ->whenExtensionEnabled('flarum-suspend', fn () => [
             (new Extend\Event())

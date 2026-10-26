@@ -241,7 +241,7 @@ final class BadgeQueries
         $likes = $this->likeCounts();
 
         if ($scope->postIds !== null) {
-            $likes->whereIn('post_id', $scope->postIds);
+            $likes->whereIn('post_likes.post_id', $scope->postIds);
         }
 
         $query = $this->badgePosts()
@@ -695,12 +695,18 @@ final class BadgeQueries
             ->where('discussions.is_private', false);
     }
 
+    /**
+     * Curtidas por postagem, sem as do próprio autor: curtir o próprio post
+     * não rende emblema (como a "Primeira curtida" e o "Novato do mês").
+     */
     private function likeCounts(): Builder
     {
         return $this->db->table('post_likes')
-            ->select('post_id')
+            ->join('posts as canela_liked', 'canela_liked.id', '=', 'post_likes.post_id')
+            ->whereColumn('post_likes.user_id', '!=', 'canela_liked.user_id')
+            ->select('post_likes.post_id')
             ->selectRaw('COUNT(*) AS like_count')
-            ->groupBy('post_id');
+            ->groupBy('post_likes.post_id');
     }
 
     private function selectFirstLikeDate(Builder $query): void

@@ -11,6 +11,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
+use Ramon\Canela\Messages\MessagesSchema;
 
 /*
  * As visualizações da mensagem (a coluna "Visualizações" da lista de
@@ -19,20 +20,19 @@ use Illuminate\Database\Schema\Builder;
  * sem somar nada a cada página.
  *
  * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
- * só age se a tabela do flarum/messages existir.
+ * só age se as tabelas do flarum/messages existirem. A criação mora no
+ * MessagesSchema, idempotente: o tema ligado antes do flarum/messages tem o
+ * esquema instalado depois, quando ele é habilitado (MessagesSchemaProvider).
  */
 return [
     'up' => static function (Builder $schema): void {
-        if (! $schema->hasTable('dialogs') || $schema->hasColumn('dialogs', 'canela_view_count')) {
-            return;
-        }
-
-        $schema->table('dialogs', static function (Blueprint $table): void {
-            $table->unsignedInteger('canela_view_count')->default(0);
-        });
+        MessagesSchema::installViews($schema);
     },
 
     'down' => static function (Builder $schema): void {
+        // Sem esta parte, a marca de "esquema instalado" deixa de valer.
+        MessagesSchema::forget($schema->getConnection());
+
         if (! $schema->hasTable('dialogs') || ! $schema->hasColumn('dialogs', 'canela_view_count')) {
             return;
         }

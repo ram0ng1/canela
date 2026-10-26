@@ -13,15 +13,16 @@ namespace Ramon\Canela\Tests\integration\api\System;
 
 use Carbon\Carbon;
 use Flarum\Discussion\Discussion;
+use Flarum\Extend;
 use Flarum\Messages\Dialog;
 use Flarum\Messages\DialogMessage;
 use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use Flarum\User\Event\Registered;
 use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
-use Ramon\Canela\Tests\integration\api\Messages\RerunsMessagesMigrations;
 
 /**
  * As mensagens automáticas do usuário do sistema (boas-vindas, suspensão,
@@ -33,13 +34,11 @@ use Ramon\Canela\Tests\integration\api\Messages\RerunsMessagesMigrations;
 class AutoMessagesTest extends TestCase
 {
     use RetrievesAuthorizedUsers;
-    use RerunsMessagesMigrations;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->rerunMessagesMigrations();
         $this->extension('flarum-messages', 'flarum-suspend', 'ramon-canela');
 
         $this->setting('canela.system_user_id', '5');
@@ -58,9 +57,12 @@ class AutoMessagesTest extends TestCase
             DialogMessage::class => [
                 ['id' => 201, 'dialog_id' => 20, 'user_id' => 5, 'content' => '<t>Aviso</t>', 'number' => 1, 'created_at' => $past],
             ],
+            // Com `id` (conversa × 100 + pessoa), como no core: no MySQL as
+            // migrations do primeiro teste confirmam a transação e as linhas
+            // ficam; o id deixa o prepareDatabase() sobrescrevê-las.
             'dialog_user' => [
-                ['dialog_id' => 20, 'user_id' => 2, 'joined_at' => $past, 'last_read_message_id' => 0],
-                ['dialog_id' => 20, 'user_id' => 5, 'joined_at' => $past, 'last_read_message_id' => 201],
+                ['id' => 2002, 'dialog_id' => 20, 'user_id' => 2, 'joined_at' => $past, 'last_read_message_id' => 0],
+                ['id' => 2005, 'dialog_id' => 20, 'user_id' => 5, 'joined_at' => $past, 'last_read_message_id' => 201],
             ],
             Discussion::class => [
                 ['id' => 1, 'title' => 'Tópico', 'user_id' => 1, 'created_at' => $past, 'last_posted_at' => $past, 'comment_count' => 1, 'first_post_id' => 1, 'last_post_number' => 1],
@@ -128,6 +130,27 @@ class AutoMessagesTest extends TestCase
         $members = $this->database()->table('dialog_user')->where('dialog_id', $message->dialog_id)->pluck('user_id')->map(fn ($v) => (int) $v)->all();
         $this->assertEqualsCanonicalizing([5, $id], $members);
     }
+
+    /**
+     * Os ouvintes do tema não interrompem o `Registered`: um ouvinte que
+     * devolve `false` para a propagação no Illuminate, e os de outras
+     * extensões (o e-mail de ativação, por exemplo) deixariam de rodar.
+     */
+    #[Test]
+    public function cadastro_continua_para_os_outros_ouvintes(): void
+    {
+        self::$registered = 0;
+
+        $this->extend((new Extend\Event())->listen(Registered::class, static function (): void {
+            self::$registered++;
+        }));
+
+        $this->createUser();
+
+        $this->assertSame(1, self::$registered);
+    }
+
+    public static int $registered = 0;
 
     /**
      * Boas-vindas desligadas no admin: nada sai.
@@ -239,13 +262,16 @@ class AutoMessagesTest extends TestCase
     #[Test]
     public function ninguem_escreve_ao_sistema(): void
     {
+        // Comparado com o antes: no MySQL, outro teste pode ter deixado mensagens.
+        $before = $this->database()->table('dialog_messages')->where('user_id', 2)->count();
+
         $response = $this->send($this->request('POST', '/api/dialog-messages', [
             'authenticatedAs' => 2,
             'json' => ['data' => ['type' => 'dialog-messages', 'attributes' => ['content' => 'Oi, sistema', 'users' => [['id' => 5]]]]],
         ]));
 
         $this->assertContains($response->getStatusCode(), [403, 422]);
-        $this->assertSame(0, $this->database()->table('dialog_messages')->where('user_id', 2)->count());
+        $this->assertSame($before, $this->database()->table('dialog_messages')->where('user_id', 2)->count());
     }
 
     /**

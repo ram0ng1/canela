@@ -195,6 +195,7 @@ class ProfileImagesTest extends TestCase
     public function envio_desligado_mantem_capa_por_url(): void
     {
         $this->setting('canela.profile_cover_upload', false);
+        $this->setting('canela.profile_external_images', true);
 
         $this->assertEquals(404, $this->upload(2, 2)->getStatusCode());
 
@@ -223,10 +224,91 @@ class ProfileImagesTest extends TestCase
     #[Test]
     public function url_da_capa_e_validada(): void
     {
+        $this->setting('canela.profile_external_images', true);
+
         $this->assertEquals(422, $this->updateUrl(2, 2, 'http://example.com/a.jpg')->getStatusCode());
         $this->assertEquals(422, $this->updateUrl(2, 2, 'javascript:alert(1)')->getStatusCode());
         $this->assertEquals(422, $this->updateUrl(2, 2, 'https://example.com/a.jpg");background:url(x')->getStatusCode());
 
         $this->assertNull(User::find(2)->canela_cover_url);
+    }
+
+    /**
+     * Endereço externo desligado (o padrão, canela.profile_external_images):
+     * colar a URL de outro site dá 422 — ela seria um pixel de rastreio em
+     * cada visita ao perfil — e a que já estava gravada não sai na API. O
+     * envio continua valendo.
+     */
+    #[Test]
+    public function endereco_externo_desligado_por_padrao(): void
+    {
+        $response = $this->updateUrl(2, 2, 'https://example.com/pixel.gif');
+        $this->assertEquals(422, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertNull(User::find(2)->canela_cover_url);
+
+        $this->assertNull($this->attributes(3, 2)['canelaCoverUrl']);
+
+        $upload = $this->upload(2, 2);
+        $this->assertEquals(200, $upload->getStatusCode(), (string) $upload->getBody());
+        $this->assertNotNull(json_decode((string) $upload->getBody(), true)['data']['attributes']['canelaCoverUrl']);
+
+        $this->assertEquals(200, $this->updateUrl(2, 2, null)->getStatusCode(), 'apagar continua valendo');
+        $this->assertNull(User::find(2)->canela_cover_url);
+    }
+
+    /** Ligado no admin, o endereço externo grava e aparece. */
+    #[Test]
+    public function endereco_externo_ligado_no_admin(): void
+    {
+        $this->setting('canela.profile_external_images', true);
+
+        $this->assertSame('https://example.com/capa.jpg', $this->attributes(3, 2)['canelaCoverUrl']);
+        $this->assertEquals(200, $this->updateUrl(2, 2, 'https://example.com/minha.jpg')->getStatusCode());
+        $this->assertSame('https://example.com/minha.jpg', User::find(2)->canela_cover_url);
+    }
+
+    /**
+     * O fórum sabe se aceita endereço externo, para esconder o campo de URL.
+     */
+    #[Test]
+    public function forum_sabe_se_aceita_endereco_externo(): void
+    {
+        $forum = json_decode((string) $this->send($this->request('GET', '/api'))->getBody(), true)['data']['attributes'];
+
+        $this->assertFalse($forum['canelaProfileExternalImages']);
+    }
+
+    /**
+     * A anonimização do flarum/gdpr zera as colunas direto no modelo e salva:
+     * o arquivo enviado vai junto (antes ficava em public/assets para sempre).
+     */
+    #[Test]
+    public function coluna_zerada_fora_da_api_apaga_o_arquivo(): void
+    {
+        $this->upload(2, 2);
+        $this->upload(2, 2, 'canela-card-background');
+        $user = User::find(2);
+        $cover = $user->canela_cover_url;
+        $card = $user->canela_card_bg_url;
+
+        /** @var \Illuminate\Contracts\Filesystem\Factory $disks */
+        $disks = $this->app()->getContainer()->make('filesystem');
+        $this->assertTrue($disks->disk('canela-covers')->exists($cover));
+        $this->assertTrue($disks->disk('canela-covers')->exists($card));
+
+        // O que o Data\User::anonymize() do flarum/gdpr faz com as colunas.
+        $user->canela_cover_url = null;
+        $user->canela_card_bg_url = null;
+        $user->save();
+
+        $this->assertFalse($disks->disk('canela-covers')->exists($cover));
+        $this->assertFalse($disks->disk('canela-covers')->exists($card));
+    }
+
+    private function attributes(int $userId, ?int $actor): array
+    {
+        $response = $this->send($this->request('GET', "/api/users/$userId", $actor ? ['authenticatedAs' => $actor] : []));
+
+        return json_decode((string) $response->getBody(), true)['data']['attributes'];
     }
 }

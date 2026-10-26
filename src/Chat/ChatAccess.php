@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ramon\Canela\Chat;
 
 use Flarum\Extension\ExtensionManager;
+use Flarum\Group\Group;
 use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -71,10 +72,52 @@ final class ChatAccess
         return (bool) array_intersect($this->settings->groups($key), $actor->permissionGroupIds());
     }
 
-    /** Se o ator pode usar o chat, ignorando a preferência pessoal (o admin vê o que está ligado). */
+    /**
+     * Se o ator pode usar o chat, ignorando a preferência pessoal (o admin vê o que está ligado).
+     *
+     * Para o suspenso, valem os grupos de verdade dele: o flarum/suspend troca
+     * os grupos de permissão por [Visitante], e com eles a pessoa perderia até
+     * a leitura. Suspenso lê; quem barra a escrita é o isSuspended() (motivo
+     * "silenced"). Moderar, criar canal e mandar MD seguem com os grupos de
+     * permissão — suspenso não faz nada disso.
+     */
     public function allowed(User $actor): bool
     {
-        return $this->settings->enabled() && ! $actor->isGuest() && $this->inGroups($actor, ChatSettings::ALLOWED_GROUPS);
+        if (! $this->settings->enabled() || $actor->isGuest()) {
+            return false;
+        }
+
+        if ($this->isSuspended($actor)) {
+            $groups = $this->realGroupIds($actor);
+
+            // Administrador suspenso também lê: o inGroups() libera admin sempre.
+            return in_array(Group::ADMINISTRATOR_ID, $groups, true)
+                || array_intersect($this->settings->groups(ChatSettings::ALLOWED_GROUPS), $groups) !== [];
+        }
+
+        return $this->inGroups($actor, ChatSettings::ALLOWED_GROUPS);
+    }
+
+    /**
+     * Os grupos da pessoa sem os processadores de grupo (o do flarum/suspend
+     * entre eles): Visitante, Membro com o e-mail confirmado e os grupos da
+     * relação — o mesmo cálculo do User::permissionGroupIds() do core.
+     *
+     * @return list<int>
+     */
+    private function realGroupIds(User $actor): array
+    {
+        $ids = [Group::GUEST_ID];
+
+        if ($actor->is_email_confirmed) {
+            $ids[] = Group::MEMBER_ID;
+
+            foreach ($actor->groups as $group) {
+                $ids[] = (int) $group->id;
+            }
+        }
+
+        return $ids;
     }
 
     public function canUse(User $actor): bool

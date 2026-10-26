@@ -54,6 +54,9 @@ final class Directory
      */
     public const CACHE_TTL = 120;
 
+    /** As colunas que dizem quando a pessoa passou por aqui. */
+    private const PRESENCE = ['daysVisited', 'postsRead'];
+
     /** A tabela de visitas do recurso "stats" do tema, quando ele existe. */
     private const VISITS_TABLE = 'canela_user_visits';
 
@@ -111,6 +114,39 @@ final class Directory
     }
 
     /**
+     * As colunas pelas quais o ator pode ordenar. Dias visitados e postagens
+     * lidas mudam a cada visita: ordenar por elas revelaria a posição de quem
+     * esconde que está online mesmo com o número escondido na linha. Como o
+     * core faz com `lastSeenAt` (e o fof/user-directory com as suas), só quem
+     * pode ver o "último acesso" de todo mundo ordena por elas.
+     *
+     * @return list<string>
+     */
+    public function sortable(User $actor, string $period = 'all'): array
+    {
+        $columns = $this->columns($actor, $period);
+
+        if (! $this->canSortByLastSeen($actor)) {
+            $columns = array_values(array_diff($columns, self::PRESENCE));
+        }
+
+        return [...$columns, 'username', 'joinedAt'];
+    }
+
+    /**
+     * A mesma regra do `lastSeenAt` do UserResource do core (e do resumo do
+     * perfil, em Stats\Api\UserResourceFields): os números de presença de quem
+     * esconde que está online só aparecem para a própria pessoa e para quem
+     * pode ver o último acesso dela.
+     */
+    public function canSeePresenceOf(User $actor, User $user): bool
+    {
+        return (bool) $user->getPreference('discloseOnline')
+            || ($actor->id !== null && (int) $actor->id === (int) $user->id)
+            || $actor->can('viewLastSeenAt', $user);
+    }
+
+    /**
      * Dias visitados de hoje ou da semana dizem quem passou por aqui — o mesmo
      * que "último acesso", que quem esconde que está online não mostra. Nos
      * períodos curtos, as colunas de visita ficam com a mesma permissão.
@@ -142,7 +178,7 @@ final class Directory
             $this->canSeeVisits($actor, $period),
         ]));
 
-        /** @var array{ids: list<int>, stats: array<int, array<string, int>>, total: int, hasMore: bool} $cached */
+        /** @var array{ids: list<int>, stats: array<int, array<string, int|null>>, total: int, hasMore: bool} $cached */
         $cached = $this->cache->remember($key, self::CACHE_TTL, function () use ($actor, $period, $order, $ascending, $search, $page, $groupId): array {
             $result = $this->compute($actor, $period, $order, $ascending, $search, $page, $groupId);
             $stats = [];
@@ -164,8 +200,12 @@ final class Directory
                 continue;
             }
 
+            // O cache guarda os números de todos; a privacidade é aplicada a
+            // cada leitura, para a preferência valer assim que muda.
+            $hidePresence = ! $this->canSeePresenceOf($actor, $user);
+
             foreach ($cached['stats'][$id] ?? [] as $column => $value) {
-                $user->setAttribute(self::alias($column), $value);
+                $user->setAttribute(self::alias($column), $hidePresence && in_array($column, self::PRESENCE, true) ? null : $value);
             }
 
             $rows[] = $user;
@@ -246,20 +286,25 @@ final class Directory
     }
 
     /**
-     * Os números de um usuário que veio de `query()`.
+     * Os números de um usuário que veio de `query()`. Uma coluna escondida
+     * pela privacidade vem como null (e não ausente): a linha mostra "—" em
+     * vez de zero.
      *
-     * @return array<string, int>
+     * @return array<string, int|null>
      */
     public function stats(User $user): array
     {
         $stats = [];
+        $attributes = $user->getAttributes();
 
         foreach (['topicCount', 'postCount', 'likesReceived', 'likesGiven', 'daysVisited', 'postsRead'] as $column) {
-            $value = $user->getAttribute(self::alias($column));
+            $alias = self::alias($column);
 
-            if ($value !== null) {
-                $stats[$column] = (int) $value;
+            if (! array_key_exists($alias, $attributes)) {
+                continue;
             }
+
+            $stats[$column] = $attributes[$alias] === null ? null : (int) $attributes[$alias];
         }
 
         return $stats;
@@ -333,9 +378,15 @@ final class Directory
             ->groupBy('posts.user_id');
     }
 
+    /**
+     * A mesma visibilidade das curtidas recebidas (e das curtidas dadas do
+     * resumo do perfil): só curtidas em postagens públicas de tópicos
+     * públicos — a curtida num tópico privado não é da conta de ninguém.
+     */
     private function likesGiven(?Carbon $since): QueryBuilder
     {
-        return $this->db->table('post_likes')
+        return $this->publicPosts()
+            ->join('post_likes', 'post_likes.post_id', '=', 'posts.id')
             ->select('post_likes.user_id')
             ->selectRaw('COUNT(*) as aggregate')
             ->when($since, fn (QueryBuilder $query) => $query->where('post_likes.created_at', '>=', $since))

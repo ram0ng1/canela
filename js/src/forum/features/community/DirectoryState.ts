@@ -14,6 +14,7 @@ export default class DirectoryState {
   params: DirectoryParams;
   rows: LoadedRow[] = [];
   columns: string[] = [];
+  sortable: string[] = [];
   total: number | null = null;
   hasMore = false;
   loading = false;
@@ -75,6 +76,7 @@ export default class DirectoryState {
 
         this.rows = payload.meta.page > 1 ? [...this.rows, ...rows] : rows;
         this.columns = payload.meta.columns;
+        this.sortable = payload.meta.sortable ?? [...payload.meta.columns, 'username', 'joinedAt'];
         this.total = payload.meta.total;
         this.hasMore = payload.meta.hasMore;
 

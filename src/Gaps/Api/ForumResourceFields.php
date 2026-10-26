@@ -19,7 +19,7 @@ use Ramon\Canela\Gaps\Invites\InviteService;
 
 /**
  * O que o fórum precisa saber do backend dos recursos (gaps) para quem está
- * vendo: se pode gerar convites.
+ * vendo: se pode gerar convites e se tem convites para revogar.
  */
 final class ForumResourceFields
 {
@@ -33,6 +33,10 @@ final class ForumResourceFields
         return [
             Schema\Boolean::make('canelaCanInvite')
                 ->get(fn (object $forum, Context $context) => $this->invites->canCreate($context->getActor())),
+            // Quem não pode mais convidar, mas ainda tem convites: o fórum
+            // mostra a janela só para listar e revogar.
+            Schema\Boolean::make('canelaHasInvites')
+                ->get(fn (object $forum, Context $context) => $this->invites->hasInvites($context->getActor())),
         ];
     }
 }
