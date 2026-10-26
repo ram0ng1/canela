@@ -271,7 +271,7 @@ final class MessagesSchema
             $table->string('reaction', 64);
             $table->dateTime('created_at');
 
-            $table->unique(['message_id', 'user_id']);
+            $table->unique(['message_id', 'user_id'], 'canela_dmr_message_user_unique');
             $table->foreign('message_id')->references('id')->on('dialog_messages')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });

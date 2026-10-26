@@ -5,12 +5,10 @@ name: Backend (Flarum)
 # integração com flarum/testing) em MySQL, MariaDB, PostgreSQL e SQLite, com e
 # sem prefixo de tabela, e `composer analyse:phpstan`. O ci.yml continua com o
 # que é só do tema (matriz contra o core dev, auditoria, JS, traduções).
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-  workflow_dispatch:
+#
+# Como na FoF: o workflow reutilizável roda no `push` (inclusive dos branches
+# dos PRs deste repositório) e só usa o `pull_request` para PRs de fork.
+on: [workflow_dispatch, push, pull_request]
 
 # Nega tudo ao GITHUB_TOKEN por padrão; o workflow reutilizado só lê o código.
 permissions:
