@@ -18,6 +18,8 @@ use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Illuminate\Contracts\Cache\LockProvider;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
@@ -47,6 +49,9 @@ final class LinkClicks
     private const TOPIC_LINKS_LIMIT = 30;
 
     private const TOPIC_POSTS_SCANNED = 1000;
+
+    /** Teto de links distintos guardados por tópico: o mapa só mostra os primeiros. */
+    private const TOPIC_LINKS_SCANNED = 200;
 
     private const CACHE_TTL = 600;
 
@@ -193,9 +198,11 @@ final class LinkClicks
     {
         $key = sprintf('canela.links.topic.%d.%s', $discussion->id, md5($discussion->last_posted_at.'|'.$discussion->comment_count));
 
-        return $this->cache->remember($key, self::CACHE_TTL, function () use ($discussion): array {
+        $build = fn (): array => $this->cache->remember($key, self::CACHE_TTL, function () use ($discussion): array {
             $links = [];
 
+            // Em lotes de 100 (e não as mil de uma vez): o XML de cada postagem
+            // pode ter dezenas de KB, e tudo junto estoura a memória.
             $posts = $this->db->table('posts')
                 ->where('discussion_id', $discussion->id)
                 ->where('type', 'comment')
@@ -205,7 +212,7 @@ final class LinkClicks
                 ->orderBy('number')
                 ->limit(self::TOPIC_POSTS_SCANNED)
                 ->select('id', 'number', 'content')
-                ->get();
+                ->lazy(100);
 
             foreach ($posts as $post) {
                 foreach (self::extract($post->content) as $link) {
@@ -220,11 +227,29 @@ final class LinkClicks
                         'postId' => (string) $post->id,
                         'postNumber' => (int) $post->number,
                     ];
+
+                    if (count($links) >= self::TOPIC_LINKS_SCANNED) {
+                        break 2;
+                    }
                 }
             }
 
             return array_values($links);
         });
+
+        // Uma resposta nova invalida a chave para todos: com a trava, só uma
+        // requisição remonta a lista, e as outras esperam e leem o cache.
+        $store = $this->cache->getStore();
+
+        if (! $store instanceof LockProvider) {
+            return $build();
+        }
+
+        try {
+            return $store->lock('canela.links.topic.'.$discussion->id, 10)->block(5, $build);
+        } catch (LockTimeoutException) {
+            return $build();
+        }
     }
 
     /**

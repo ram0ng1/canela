@@ -49,7 +49,9 @@ final class SvgSanitizer
 
     public static function sanitize(string $svg, bool $allowAnimation = false): ?string
     {
-        if (trim($svg) === '' || stripos($svg, '<!ENTITY') !== false || stripos($svg, '<!DOCTYPE') !== false) {
+        // Byte nulo = UTF-16/UTF-32: a busca por `<!ENTITY` abaixo não vê o
+        // texto nessas codificações, e o libxml leria o DTD mesmo assim.
+        if (trim($svg) === '' || str_contains($svg, "\0") || stripos($svg, '<!ENTITY') !== false || stripos($svg, '<!DOCTYPE') !== false) {
             return null;
         }
 
@@ -62,6 +64,13 @@ final class SvgSanitizer
         $root = $document->documentElement;
 
         if (! $loaded || ! $root || strtolower($root->localName) !== 'svg') {
+            return null;
+        }
+
+        // Segunda barreira, já no documento lido: nada de DTD, e só UTF-8.
+        $encoding = strtolower((string) $document->xmlEncoding);
+
+        if ($document->doctype !== null || ($encoding !== '' && $encoding !== 'utf-8')) {
             return null;
         }
 

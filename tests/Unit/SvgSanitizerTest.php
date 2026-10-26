@@ -69,4 +69,14 @@ final class SvgSanitizerTest extends TestCase
         self::assertStringNotContainsString('evil.test', $out);
         self::assertStringContainsString('<rect width="1"/>', $out);
     }
+
+    /** Em UTF-16 a busca por `<!ENTITY` não acha nada: a recusa vem do byte nulo e do DTD já lido. */
+    public function test_recusa_utf16_e_outras_codificacoes(): void
+    {
+        $svg = '<?xml version="1.0" encoding="UTF-16"?><!DOCTYPE svg [<!ENTITY a "x">]><svg xmlns="http://www.w3.org/2000/svg"><text>&a;</text></svg>';
+
+        self::assertNull(SvgSanitizer::sanitize("\xFF\xFE".mb_convert_encoding($svg, 'UTF-16LE', 'UTF-8')));
+        self::assertNull(SvgSanitizer::sanitize('<?xml version="1.0" encoding="ISO-8859-1"?><svg xmlns="http://www.w3.org/2000/svg"><rect width="1"/></svg>'));
+        self::assertNotNull(SvgSanitizer::sanitize('<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg"><rect width="1"/></svg>'));
+    }
 }
