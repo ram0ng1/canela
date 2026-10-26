@@ -18,6 +18,9 @@ use Illuminate\Database\Schema\Builder;
  * Fica na própria tabela de discussões (e não somado de canela_topic_views a
  * cada listagem) porque a lista mostra e ordena por ele: uma coluna com índice
  * é o único jeito de ordenar milhares de tópicos sem um GROUP BY por página.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * cria também um índice, que o Migration::addColumns não cria.
  */
 return [
     'up' => static function (Builder $schema): void {

@@ -16,6 +16,9 @@ use Illuminate\Database\Schema\Builder;
  * e os controladores só consultam as tabelas com a marca: o tema atualizado
  * antes do `migrate` não derruba a lista de tópicos. A marca é uma
  * configuração, que o Flarum já carrega — nenhuma consulta a mais.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * grava uma configuração, não muda o esquema.
  */
 return [
     'up' => static function (Builder $schema): void {

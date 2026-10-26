@@ -20,6 +20,9 @@ use Ramon\Canela\Topic\MarkUnread;
  * nova que a de "marcar tudo", faz ele voltar a contar.
  *
  * A marca `canela.marked_unread_schema` diz ao código que a coluna existe.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * precisa ser idempotente e também grava uma configuração.
  */
 return [
     'up' => static function (Builder $schema): void {

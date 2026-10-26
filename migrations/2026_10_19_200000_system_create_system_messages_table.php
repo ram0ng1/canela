@@ -17,6 +17,9 @@ use Ramon\Canela\System\Messages\MessageSender;
  * As mensagens automáticas enviadas: as de boas-vindas e de nível saem uma
  * vez só por pessoa, e é esta tabela que lembra. A marca
  * `canela.system_messages_schema` diz ao código que ela existe.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * precisa ser idempotente e também grava uma configuração.
  */
 return [
     'up' => static function (Builder $schema): void {

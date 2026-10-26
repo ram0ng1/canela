@@ -22,6 +22,9 @@ use Illuminate\Database\Schema\Builder;
  * - `dialog_user.canela_notification_level`: Observando (3), Acompanhando (2),
  *   Normal (1) ou Silenciado (0); vazio é o padrão para quem
  *   participa de uma mensagem (Observando).
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * só age se as tabelas do flarum/messages existirem.
  */
 return [
     'up' => static function (Builder $schema): void {

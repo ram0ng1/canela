@@ -26,6 +26,9 @@ use Illuminate\Database\Schema\Builder;
  *
  * Uma migração só, com a marca no fim: os campos da API só aparecem quando as
  * quatro tabelas existem.
+ *
+ * Escrita à mão, sem os auxiliares de Flarum\Database\Migration, porque
+ * precisa ser idempotente (só cria as tabelas que faltam).
  */
 return [
     'up' => static function (Builder $schema): void {
