@@ -18,6 +18,7 @@ use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Ramon\Canela\Stats\ReadStateVersion;
 use Ramon\Canela\Topic\MarkUnread;
 
 /**
@@ -76,6 +77,9 @@ final class DiscussionMarkUnreadField
                             }
 
                             $state->save();
+
+                            // As contagens de não lidos dessa pessoa estão em cache: o tópico volta a contar já.
+                            resolve(ReadStateVersion::class)->bump((int) $actor->id);
                         }
                     });
                 }),

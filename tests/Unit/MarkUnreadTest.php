@@ -13,7 +13,10 @@ use Illuminate\Database\ConnectionResolver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Cache\ArrayStore;
+use Illuminate\Cache\Repository;
 use PHPUnit\Framework\TestCase;
+use Ramon\Canela\Stats\ReadStateVersion;
 use Ramon\Canela\Stats\StatsSettings;
 use Ramon\Canela\Stats\TopicCounter;
 use Ramon\Canela\Tests\Support\ArraySettings;
@@ -77,7 +80,8 @@ final class MarkUnreadTest extends TestCase
     private function unreadIds(bool $schemaReady): array
     {
         $settings = new ArraySettings($schemaReady ? [MarkUnread::SCHEMA => '1'] : []);
-        $counter = new TopicCounter(new StatsSettings($settings), $this->createStub(ExtensionManager::class), $settings);
+        $cache = new Repository(new ArrayStore());
+        $counter = new TopicCounter(new StatsSettings($settings), $this->createStub(ExtensionManager::class), $settings, $cache, new ReadStateVersion($cache));
 
         $actor = new User();
         $actor->id = 7;
@@ -85,8 +89,14 @@ final class MarkUnreadTest extends TestCase
 
         $query = Discussion::query();
         $counter->constrainUnread($query, $actor);
+        $ids = $query->orderBy('discussions.id')->pluck('discussions.id')->map(static fn ($id): int => (int) $id)->all();
 
-        return $query->orderBy('discussions.id')->pluck('discussions.id')->map(static fn ($id): int => (int) $id)->all();
+        // A contagem parte do estado de leitura (outra consulta): o resultado tem de ser o mesmo.
+        $byState = Discussion::query();
+        $counter->unreadByState($byState, $actor);
+        self::assertSame($ids, $byState->orderBy('discussions.id')->pluck('discussions.id')->map(static fn ($id): int => (int) $id)->all());
+
+        return $ids;
     }
 
     public function test_marcado_como_nao_lido_depois_de_marcar_tudo_volta(): void

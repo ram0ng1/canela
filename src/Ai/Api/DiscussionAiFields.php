@@ -37,18 +37,26 @@ final class DiscussionAiFields
     ) {
     }
 
+    /** @var array<string, bool|int> o que vale para a resposta toda, calculado uma vez */
+    private array $memo = [];
+
+    private function once(string $key, callable $compute): bool|int
+    {
+        return $this->memo[$key] ??= $compute();
+    }
+
     public function __invoke(): array
     {
         $summary = static fn (Discussion $discussion) => SummaryBuffer::defer($discussion->id);
         // Abaixo do "Mínimo de postagens para resumir", a discussão não tem
         // resumo nenhum: nem o curto da lista, nem o botão (mesmo que um
         // resumo tenha sido gerado quando o mínimo era menor).
-        $bigEnough = fn (Discussion $discussion): bool => (int) $discussion->comment_count >= $this->settings->int(AiSettings::SUMMARY_MIN_POSTS, 1, 1000);
+        $bigEnough = fn (Discussion $discussion): bool => (int) $discussion->comment_count >= $this->once('min', fn (): int => $this->settings->int(AiSettings::SUMMARY_MIN_POSTS, 1, 1000));
 
         return [
             Schema\Str::make('canelaAiGist')
                 ->nullable()
-                ->visible(fn (): bool => $this->settings->feature(AiSettings::GISTS))
+                ->visible(fn (): bool => (bool) $this->once('gists', fn (): bool => $this->settings->feature(AiSettings::GISTS)))
                 ->get(static function (Discussion $discussion) use ($summary, $bigEnough) {
                     if (! $bigEnough($discussion)) {
                         return null;
@@ -60,7 +68,7 @@ final class DiscussionAiFields
                 }),
 
             Schema\Boolean::make('canelaAiHasSummary')
-                ->visible(fn (): bool => $this->settings->feature(AiSettings::SUMMARY))
+                ->visible(fn (): bool => (bool) $this->once('summary', fn (): bool => $this->settings->feature(AiSettings::SUMMARY)))
                 ->get(static function (Discussion $discussion) use ($summary, $bigEnough) {
                     if (! $bigEnough($discussion)) {
                         return false;
@@ -76,7 +84,7 @@ final class DiscussionAiFields
                 }),
 
             Schema\Boolean::make('canelaAiSummarizable')
-                ->visible(fn (): bool => $this->settings->feature(AiSettings::SUMMARY))
+                ->visible(fn (): bool => (bool) $this->once('summary', fn (): bool => $this->settings->feature(AiSettings::SUMMARY)))
                 ->get(static fn (Discussion $discussion): bool => $bigEnough($discussion)),
         ];
     }

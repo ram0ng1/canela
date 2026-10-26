@@ -35,6 +35,7 @@ use Ramon\Canela\Stats\Api\RecordTopicView;
 use Ramon\Canela\Stats\Api\ShowTopicViewStats;
 use Ramon\Canela\Stats\Api\UserResourceFields;
 use Ramon\Canela\Stats\Http\RecordVisitMiddleware;
+use Ramon\Canela\Stats\Listener\BumpReadState;
 use Ramon\Canela\Stats\Search\SortByViewsMutator;
 use Ramon\Canela\Stats\StatsSettings;
 use Ramon\Canela\Stats\Search\NewFilter;
@@ -92,6 +93,10 @@ return [
 
     // O dia de visita conta tanto ao carregar a página quanto ao navegar só
     // pela API (a aba que ficou aberta de um dia para o outro).
+    // Ler, marcar tudo como lido ou postar invalida as contagens em cache
+    // (novos, não lidos e o ponto das categorias) daquela pessoa.
+    (new Extend\Event())->subscribe(BumpReadState::class),
+
     (new Extend\Middleware('forum'))->add(RecordVisitMiddleware::class),
     (new Extend\Middleware('api'))->add(RecordVisitMiddleware::class),
 ];

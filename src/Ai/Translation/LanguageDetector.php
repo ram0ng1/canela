@@ -36,6 +36,15 @@ final class LanguageDetector
 
     private const MIN_HITS = 3;
 
+    /**
+     * Quanto do texto a detecção lê: o começo basta para saber a língua, e
+     * uma postagem longa (até 64 KB de XML) não passa inteira pelas
+     * expressões regulares a cada leitura.
+     */
+    private const SAMPLE_BYTES = 6000;
+
+    private const SAMPLE_CHARS = 1500;
+
     /** @var array<string, array<string, true>>|null */
     private static ?array $words = null;
 
@@ -44,7 +53,7 @@ final class LanguageDetector
      */
     public function detect(string $text): ?string
     {
-        $text = self::plain($text);
+        $text = mb_substr(self::plain(mb_strcut($text, 0, self::SAMPLE_BYTES)), 0, self::SAMPLE_CHARS);
 
         if (mb_strlen($text) < 12) {
             return null;

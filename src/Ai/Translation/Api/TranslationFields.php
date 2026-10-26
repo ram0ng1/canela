@@ -45,6 +45,9 @@ final class TranslationFields
     /** @var array{0: int, 1: bool}|null a geração do lote e se ainda há chamadas hoje */
     private ?array $budget = null;
 
+    /** O hash do conteúdo de cada postagem nesta resposta (os três campos usam o mesmo). */
+    private array $hashes = [];
+
     public function __construct(
         private readonly AiSettings $settings,
         private readonly ContentTranslator $translator,
@@ -125,7 +128,7 @@ final class TranslationFields
         $resolve = $this->buffer->post((int) $post->id, $target);
 
         return function () use ($post, $target, $resolve, $pick) {
-            $hash = ContentTranslator::postHash($post);
+            $hash = $this->hashes[spl_object_id($post)] ??= ContentTranslator::postHash($post);
             $key = "post:{$post->id}:{$target}:{$hash}:".TranslationBuffer::$generation;
 
             if (! isset($this->states[$key])) {

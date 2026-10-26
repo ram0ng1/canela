@@ -79,6 +79,9 @@ final class ContentTranslator
 
     private int $callerLimit = 0;
 
+    /** O idioma alvo desta requisição, calculado uma vez (false = ainda não calculado). */
+    private string|false|null $target = false;
+
     public function __construct(
         private readonly AiSettings $settings,
         private readonly LlmFactory $llm,
@@ -106,13 +109,17 @@ final class ContentTranslator
      */
     public function target(): ?string
     {
+        if ($this->target !== false) {
+            return $this->target;
+        }
+
         if (! $this->settings->translationReady()) {
-            return null;
+            return $this->target = null;
         }
 
         $locale = $this->locales->getLocale();
 
-        return in_array($locale, $this->targets(), true) ? $locale : null;
+        return $this->target = in_array($locale, $this->targets(), true) ? $locale : null;
     }
 
     public static function postHash(Post $post): string
@@ -277,6 +284,26 @@ final class ContentTranslator
         }
 
         return $out;
+    }
+
+    /**
+     * Detecta e guarda o idioma de uma postagem nova ou editada (só a
+     * heurística, sem chamar a IA): a leitura do tópico já encontra o idioma
+     * pronto e não precisa detectar a cada visita.
+     */
+    public function rememberLocale(Post $post): void
+    {
+        if (! $post instanceof CommentPost || ! $this->settings->translationReady()) {
+            return;
+        }
+
+        $found = $this->detector->detect((string) ($post->getAttributes()['content'] ?? ''));
+
+        // Sem idioma claro, nada fica gravado: a tradução decide (com a IA) quando alguém pedir.
+        if ($found !== null) {
+            $this->storeLocale((int) $post->id, $found, 'heuristic', self::postHash($post));
+            TranslationBuffer::flush();
+        }
     }
 
     /** Some com as traduções e o idioma detectado de uma postagem (editada). */

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Events\Api;
 
+use Closure;
 use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
@@ -40,15 +41,19 @@ final class EventFields
             Schema\Arr::make('canelaEvent')
                 ->nullable()
                 ->visible(static fn (Post $post): bool => (int) $post->number === 1 && resolve(EventsSettings::class)->enabled())
-                ->get(static function (Post $post, Context $context): ?array {
-                    /** @var CalendarEvent|null $event */
-                    $event = CalendarEvent::query()->with('user')->where('post_id', $post->id)->first();
+                ->get(static function (Post $post, Context $context): Closure {
+                    // Em lote: uma consulta para todas as primeiras postagens da resposta.
+                    $resolve = EventBuffer::defer((int) $post->id);
 
-                    if (! $event || ! $post->discussion || ! resolve(EventsSettings::class)->appliesTo($post->discussion)) {
-                        return null;
-                    }
+                    return static function () use ($resolve, $post, $context): ?array {
+                        $event = $resolve();
 
-                    return resolve(EventPresenter::class)->full($event, $context->getActor());
+                        if (! $event || ! $post->discussion || ! resolve(EventsSettings::class)->appliesTo($post->discussion)) {
+                            return null;
+                        }
+
+                        return resolve(EventPresenter::class)->full($event, $context->getActor());
+                    };
                 }),
         ];
     }

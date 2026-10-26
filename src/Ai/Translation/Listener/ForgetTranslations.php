@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ramon\Canela\Ai\Translation\Listener;
 
 use Flarum\Discussion\Event\Renamed;
+use Flarum\Post\Event\Posted;
 use Flarum\Post\Event\Revised;
 use Illuminate\Contracts\Events\Dispatcher;
 use Ramon\Canela\Ai\Translation\ContentTranslator;
@@ -34,7 +35,15 @@ final class ForgetTranslations
     public function subscribe(Dispatcher $events): void
     {
         $events->listen(Revised::class, function (Revised $event): void {
-            $this->safely(fn () => $this->translator->forgetPost($event->post));
+            $this->safely(function () use ($event): void {
+                $this->translator->forgetPost($event->post);
+                $this->translator->rememberLocale($event->post);
+            });
+        });
+        // O idioma de cada postagem nova fica gravado na hora: a leitura do
+        // tópico não detecta de novo a cada visita.
+        $events->listen(Posted::class, function (Posted $event): void {
+            $this->safely(fn () => $this->translator->rememberLocale($event->post));
         });
 
         $events->listen(Renamed::class, function (Renamed $event): void {

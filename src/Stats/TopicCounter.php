@@ -9,6 +9,7 @@ use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Ramon\Canela\Topic\MarkUnread;
@@ -28,10 +29,15 @@ final class TopicCounter
 {
     public const LIMIT = 100;
 
+    /** As contas ficam em cache por pessoa: a lista pede de novo a cada volta para ela. */
+    private const CACHE_TTL = 60;
+
     public function __construct(
         private readonly StatsSettings $settings,
         private readonly ExtensionManager $extensions,
         private readonly SettingsRepositoryInterface $repository,
+        private readonly Cache $cache,
+        private readonly ReadStateVersion $version,
     ) {
     }
 
@@ -75,10 +81,30 @@ final class TopicCounter
             return $this->counted[$key];
         }
 
+        // A versão muda quando a pessoa lê, marca tudo como lido ou posta; a
+        // data do "marcar tudo" e os grupos entram por garantia. Tópicos novos
+        // dos outros aparecem quando o cache vence (um minuto).
+        $cacheKey = 'canela.counts.'.$actor->id.'.'.md5(implode('|', [
+            implode(',', $tagIds),
+            $this->version->get((int) $actor->id),
+            (string) $actor->marked_all_as_read_at,
+            $actor->groups->pluck('id')->sort()->implode(','),
+            $this->settings->newDays(),
+        ]));
+
+        return $this->counted[$key] = $this->cache->remember($cacheKey, self::CACHE_TTL, fn (): array => $this->query($actor, $tagIds));
+    }
+
+    /**
+     * @param int[] $tagIds
+     * @return array{new: int, unread: int}
+     */
+    private function query(User $actor, array $tagIds): array
+    {
         $new = $this->baseQuery($actor, $tagIds);
         $this->constrainNew($new, $actor);
         $unread = $this->baseQuery($actor, $tagIds);
-        $this->constrainUnread($unread, $actor);
+        $this->unreadByState($unread, $actor);
 
         // Cada parte com o próprio LIMIT (a gramática põe as partes entre parênteses).
         $part = static fn (Builder $query, string $kind): QueryBuilder => $query->toBase()
@@ -88,7 +114,32 @@ final class TopicCounter
 
         $kinds = $part($new, 'new')->unionAll($part($unread, 'unread'))->pluck('canela_kind')->countBy()->all();
 
-        return $this->counted[$key] = ['new' => (int) ($kinds['new'] ?? 0), 'unread' => (int) ($kinds['unread'] ?? 0)];
+        return ['new' => (int) ($kinds['new'] ?? 0), 'unread' => (int) ($kinds['unread'] ?? 0)];
+    }
+
+    /**
+     * A mesma regra de {@see self::constrainUnread()}, mas partindo do estado
+     * de leitura da pessoa (discussion_user pelo user_id) em vez de um EXISTS
+     * por tópico: o banco lê só os tópicos que ela já abriu, e não o fórum
+     * inteiro até achar LIMIT não lidos. Numa subconsulta à parte, para os
+     * escopos de visibilidade das extensões não verem colunas repetidas.
+     */
+    public function unreadByState(Builder $query, User $actor): void
+    {
+        $markUnread = $actor->marked_all_as_read_at && MarkUnread::ready($this->repository);
+
+        $query->whereIn('discussions.id', fn (QueryBuilder $state) => $state
+            ->select('canela_state.discussion_id')
+            ->from('discussion_user as canela_state')
+            ->join('discussions as canela_read', 'canela_read.id', '=', 'canela_state.discussion_id')
+            ->where('canela_state.user_id', $actor->id)
+            ->whereNotNull('canela_state.last_read_post_number')
+            ->whereColumn('canela_state.last_read_post_number', '<', 'canela_read.last_post_number')
+            ->when($actor->marked_all_as_read_at, fn (QueryBuilder $state, $markedAt) => $state->where(
+                fn (QueryBuilder $state) => $state
+                    ->where('canela_read.last_posted_at', '>', $markedAt)
+                    ->when($markUnread, fn (QueryBuilder $state) => $state->orWhere('canela_state.'.MarkUnread::COLUMN, '>', $markedAt))
+            )));
     }
 
     /**

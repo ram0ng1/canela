@@ -19,8 +19,9 @@ use Illuminate\Database\Query\Builder;
 
 /**
  * As contagens de leitura de um usuário: não lidas,
- * menções não lidas e fios não lidos de cada canal — três consultas agrupadas,
- * para todos os canais de uma vez, em vez de três por canal.
+ * menções não lidas e fios não lidos de cada canal — poucas consultas para
+ * todos os canais de uma vez, em vez de três por canal. As não lidas param em
+ * CAP (a interface mostra "99+").
  *
  * "Não lida" é toda mensagem depois da última lida, de outra pessoa, que não
  * esteja apagada e que apareça na conversa principal: com os fios ligados, as
@@ -28,6 +29,16 @@ use Illuminate\Database\Query\Builder;
  */
 final class UnreadCounter
 {
+    /**
+     * O teto de cada contagem de não lidas: o número só aparece até "99+", e
+     * contar além disso a cada consulta de estado (a cada 15 s por aba)
+     * recontaria o histórico de quem nunca leu um canal movimentado.
+     */
+    public const CAP = 100;
+
+    /** Quantos canais ou fios vão numa consulta só. */
+    private const CHUNK = 50;
+
     public function __construct(
         private readonly ConnectionInterface $db,
         private readonly ChatSettings $settings,
@@ -53,24 +64,31 @@ final class UnreadCounter
         $actorId = (int) $actor->id;
         $threadsGlobal = $this->settings->bool(ChatSettings::THREADS_ENABLED);
 
-        $unread = $this->db->table('canela_chat_messages as m')
-            ->join('canela_chat_memberships as mb', function ($join) use ($actorId) {
-                $join->on('mb.channel_id', '=', 'm.channel_id')->where('mb.user_id', '=', $actorId);
-            })
-            ->join('canela_chat_channels as c', 'c.id', '=', 'm.channel_id')
-            ->leftJoin('canela_chat_threads as t', 't.id', '=', 'm.thread_id')
-            ->whereIn('m.channel_id', $channelIds)
-            ->whereNull('m.deleted_at')
-            ->where(fn (Builder $q) => $q->whereNull('m.user_id')->orWhere('m.user_id', '<>', $actorId))
-            ->where(fn (Builder $q) => $q->whereNull('mb.last_read_message_id')->orWhereColumn('m.id', '>', 'mb.last_read_message_id'))
-            ->where(fn (Builder $q) => $this->mainStream($q, $threadsGlobal))
-            ->groupBy('m.channel_id')
-            ->selectRaw('count(*) as aggregate')
-            ->addSelect('m.channel_id')
-            ->get();
+        // A última lida de cada canal vem antes, como número: com ela fixa, a
+        // contagem de cada canal percorre só o trecho novo do índice
+        // (channel_id, id) e para em CAP, em vez de recontar o histórico todo.
+        $reads = $this->db->table('canela_chat_memberships')
+            ->where('user_id', $actorId)
+            ->whereIn('channel_id', $channelIds)
+            ->pluck('last_read_message_id', 'channel_id')
+            ->all();
 
-        foreach ($unread as $row) {
-            $result[(int) $row->channel_id]['unread'] = (int) $row->aggregate;
+        $unread = $this->bounded(array_keys($reads), function (int $channelId) use ($reads, $actorId, $threadsGlobal): Builder {
+            $lastRead = $reads[$channelId] ?? null;
+
+            return $this->db->table('canela_chat_messages as m')
+                ->join('canela_chat_channels as c', 'c.id', '=', 'm.channel_id')
+                ->leftJoin('canela_chat_threads as t', 't.id', '=', 'm.thread_id')
+                ->where('m.channel_id', $channelId)
+                ->when($lastRead !== null, static fn (Builder $q) => $q->where('m.id', '>', (int) $lastRead))
+                ->whereNull('m.deleted_at')
+                ->where(fn (Builder $q) => $q->whereNull('m.user_id')->orWhere('m.user_id', '<>', $actorId))
+                ->where(fn (Builder $q) => $this->mainStream($q, $threadsGlobal))
+                ->select('m.channel_id as gid');
+        });
+
+        foreach ($unread as $channelId => $count) {
+            $result[$channelId]['unread'] = $count;
         }
 
         $mentions = $this->db->table('canela_chat_mentions as mn')
@@ -160,22 +178,66 @@ final class UnreadCounter
 
         $actorId = (int) $actor->id;
 
-        return $this->db->table('canela_chat_messages as m')
-            ->join('canela_chat_threads as t', 't.id', '=', 'm.thread_id')
-            ->join('canela_chat_thread_memberships as tm', function ($join) use ($actorId) {
-                $join->on('tm.thread_id', '=', 'm.thread_id')->where('tm.user_id', '=', $actorId);
-            })
-            ->whereIn('m.thread_id', $threadIds)
-            ->whereColumn('m.id', '<>', 't.original_message_id')
-            ->whereNull('m.deleted_at')
-            ->where(fn (Builder $q) => $q->whereNull('m.user_id')->orWhere('m.user_id', '<>', $actorId))
-            ->where(fn (Builder $q) => $q->whereNull('tm.last_read_message_id')->orWhereColumn('m.id', '>', 'tm.last_read_message_id'))
-            ->groupBy('m.thread_id')
-            ->selectRaw('count(*) as aggregate')
-            ->addSelect('m.thread_id')
-            ->get()
-            ->mapWithKeys(static fn ($row) => [(int) $row->thread_id => (int) $row->aggregate])
+        // Como no canal: a última lida de cada fio primeiro, e a contagem de
+        // cada um percorre só o trecho novo do índice (thread_id, id), até CAP.
+        $reads = $this->db->table('canela_chat_thread_memberships')
+            ->where('user_id', $actorId)
+            ->whereIn('thread_id', $threadIds)
+            ->pluck('last_read_message_id', 'thread_id')
             ->all();
+
+        return $this->bounded(array_keys($reads), function (int $threadId) use ($reads, $actorId): Builder {
+            $lastRead = $reads[$threadId] ?? null;
+
+            return $this->db->table('canela_chat_messages as m')
+                ->join('canela_chat_threads as t', 't.id', '=', 'm.thread_id')
+                ->where('m.thread_id', $threadId)
+                ->when($lastRead !== null, static fn (Builder $q) => $q->where('m.id', '>', (int) $lastRead))
+                ->whereColumn('m.id', '<>', 't.original_message_id')
+                ->whereNull('m.deleted_at')
+                ->where(fn (Builder $q) => $q->whereNull('m.user_id')->orWhere('m.user_id', '<>', $actorId))
+                ->select('m.thread_id as gid');
+        });
+    }
+
+    /**
+     * Conta até CAP linhas por id, numa consulta só: uma subconsulta limitada
+     * por id, unidas (UNION ALL) e agrupadas por fora. Em lotes de CHUNK ids.
+     *
+     * @param int[] $ids
+     * @param callable(int): Builder $rowsFor as linhas de um id, com a coluna `gid`
+     * @return array<int, int>
+     */
+    private function bounded(array $ids, callable $rowsFor): array
+    {
+        $counts = [];
+
+        foreach (array_chunk(array_values(array_unique(array_map('intval', $ids))), self::CHUNK) as $chunk) {
+            $union = null;
+
+            foreach ($chunk as $id) {
+                $rows = $rowsFor($id)->orderByDesc('m.id')->limit(self::CAP);
+                $union = $union ? $union->unionAll($rows) : $rows;
+            }
+
+            if (! $union) {
+                continue;
+            }
+
+            // newQuery() do próprio builder: a interface da conexão não tem query().
+            $grouped = $union->newQuery()
+                ->fromSub($union, 'u')
+                ->groupBy('u.gid')
+                ->selectRaw('count(*) as aggregate')
+                ->addSelect('u.gid')
+                ->get();
+
+            foreach ($grouped as $row) {
+                $counts[(int) $row->gid] = (int) $row->aggregate;
+            }
+        }
+
+        return $counts;
     }
 
     /**
