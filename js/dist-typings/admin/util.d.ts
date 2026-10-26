@@ -4,7 +4,7 @@ export type LooseAttrs = ComponentAttrs & Record<string, any>;
 export declare abstract class AdminComponent<A extends LooseAttrs = LooseAttrs> extends Component<A> {
 }
 export declare const settings: () => Record<string, any>;
-export declare const trans: (key: string, fallback: string, params?: Record<string, any>) => string;
+export declare const trans: (key: string, params?: Record<string, any>) => string;
 export declare const getBool: (key: string) => boolean;
 export declare const getStr: (key: string, fallback?: string) => string;
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';

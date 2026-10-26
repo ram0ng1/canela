@@ -1,5 +1,6 @@
-import { AdminComponent } from '../util';
+import { AdminComponent, type LooseAttrs } from '../util';
 import type { CardDef } from '../types';
+import type Mithril from 'mithril';
 /**
  * Texto que salva sozinho, um tempo depois de a pessoa parar de digitar —
  * uma requisição por pausa, não por tecla. O valor vai para `app.data` na
@@ -7,7 +8,7 @@ import type { CardDef } from '../types';
  */
 export declare class AdminTextField extends AdminComponent {
     saveTimer: ReturnType<typeof setTimeout> | undefined;
-    onremove(vnode: any): void;
+    onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>): void;
     view(): JSX.Element;
     store(value: string): void;
     flush(): void;

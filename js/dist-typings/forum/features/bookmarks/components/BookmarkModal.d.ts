@@ -27,6 +27,10 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
     /**
      * O lembrete a gravar: `undefined` mantém o atual, `null` tira, uma data
      * troca. `false` quando o horário personalizado é inválido.
+     *
+     * Só vai no PATCH o que a pessoa mudou: sem atalho escolhido, ou "Nenhum"
+     * sem lembrete pendente (o que já passou e foi enviado), o campo fica de
+     * fora e o histórico do lembrete continua no marcador.
      */
     chosenReminder(): Date | null | undefined | false;
     onsubmit(e: SubmitEvent): void;

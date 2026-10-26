@@ -1,4 +1,5 @@
-import { AdminComponent } from '../util';
+import { AdminComponent, type LooseAttrs } from '../util';
+import type Mithril from 'mithril';
 type Trigger = 'activated' | 'group' | 'trust_level' | 'badge' | 'first_post' | 'verified' | 'anniversary';
 interface Entry {
     id: string;
@@ -17,8 +18,8 @@ export default class CustomMessagesEditor extends AdminComponent {
         name: string;
     }[] | null;
     saveTimer: ReturnType<typeof setTimeout> | undefined;
-    oninit(vnode: any): void;
-    onremove(vnode: any): void;
+    oninit(vnode: Mithril.Vnode<LooseAttrs, this>): void;
+    onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>): void;
     write(entries: Entry[], debounce?: boolean): void;
     flush(): void;
     triggers(): {

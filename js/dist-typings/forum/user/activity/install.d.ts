@@ -5,7 +5,12 @@ import type User from 'flarum/common/models/User';
  * depois; as de outras extensões, no fim.
  */
 export declare const ACTIVITY_ORDER: string[];
-type Tab = 'read' | 'reactions' | 'votes' | 'solved';
+export type Tab = 'read' | 'reactions' | 'votes' | 'solved';
+export declare const TABS: Record<Tab, {
+    key: string;
+    icon: string;
+    load: () => Promise<any>;
+}>;
 /** Lidos (e o que mais for pessoal): a própria pessoa ou quem administra. */
 export declare function canSeePrivate(user: User): boolean;
 /**
@@ -17,4 +22,3 @@ export declare function activityTabOn(tab: Tab, user: User): boolean;
 /** A aba digitada à mão sem poder vê-la volta para as postagens. */
 export declare function leaveIfHidden(tab: Tab, user: User): boolean;
 export default function installActivity(): void;
-export {};

@@ -1,4 +1,5 @@
-import { AdminComponent } from '../util';
+import { AdminComponent, type LooseAttrs } from '../util';
+import type Mithril from 'mithril';
 /**
  * Largura do cartão de conteúdo (--cn-main-max): opções prontas (padrão,
  * largo, 90%, largura toda) ou um valor manual em px, com a prévia do fórum
@@ -13,7 +14,7 @@ export default class ContentWidthControl extends AdminComponent {
     discussionPath: string | null;
     frame: HTMLIFrameElement | null;
     loaded: boolean;
-    oninit(vnode: any): void;
+    oninit(vnode: Mithril.Vnode<LooseAttrs, this>): void;
     previewUrl(): string | null;
     /** Reduz a "tela" de 1440px à largura disponível. */
     fit(box: HTMLElement): void;
