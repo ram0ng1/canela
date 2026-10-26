@@ -233,14 +233,27 @@ final class ChatService
         return $membership;
     }
 
+    /** A versão dos canais automáticos: muda quando um deles muda, e todos voltam a conferir. */
+    private const AUTO_JOIN_VERSION = 'canela.chat.autojoin.version';
+
+    /** De quanto em quanto tempo cada pessoa confere de novo (o estado é consultado a cada 15 s). */
+    private const AUTO_JOIN_TTL = 86400;
+
     /**
      * Os canais com "Adicionar usuários automaticamente" que o ator enxerga e
      * nos quais nunca entrou. Acontece quando a pessoa abre o fórum — sem agendador
-     * e sem varrer todos os usuários de uma vez.
+     * e sem varrer todos os usuários de uma vez. Uma vez por dia por pessoa, ou
+     * logo depois que um canal automático é criado ou mudado.
      */
     public function autoJoin(User $actor): void
     {
         if (! $this->access->canUse($actor)) {
+            return;
+        }
+
+        $key = 'canela.chat.autojoin.'.$actor->id.'.'.(int) $this->cache->get(self::AUTO_JOIN_VERSION, 0);
+
+        if (! $this->cache->add($key, 1, self::AUTO_JOIN_TTL)) {
             return;
         }
 
@@ -723,7 +736,17 @@ final class ChatService
             $this->follow($channel, $actor);
         });
 
+        if ($channel->auto_join) {
+            $this->autoJoinChanged();
+        }
+
         return $channel;
+    }
+
+    /** Um canal automático mudou: na próxima consulta de estado, cada pessoa confere de novo. */
+    private function autoJoinChanged(): void
+    {
+        $this->cache->forever(self::AUTO_JOIN_VERSION, (int) $this->cache->get(self::AUTO_JOIN_VERSION, 0) + 1);
     }
 
     /** @param array<string, mixed> $attributes */
@@ -765,7 +788,15 @@ final class ChatService
             }
         }
 
+        // Virou automático, ou um automático mudou de status ou de tag: quem
+        // ainda não está nele confere de novo na próxima consulta de estado.
+        $autoJoin = $channel->auto_join && $channel->isDirty(['auto_join', 'status', 'tag_id']);
+
         $channel->save();
+
+        if ($autoJoin) {
+            $this->autoJoinChanged();
+        }
 
         $this->broadcaster->toChannel($channel, ['type' => 'channel.updated']);
 
