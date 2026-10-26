@@ -26,7 +26,8 @@ export const apiUrl = (path: string) => `${((app.forum.attribute<string>('apiUrl
 
 export interface ReportModalAttrs extends IFormModalAttrs {
   region: string;
-  full: string | null;
+  /** A tela inteira, que fica pronta em segundo plano. */
+  full: Promise<string | null>;
   context: ReportContext;
   onAnother: () => void;
 }
@@ -147,29 +148,31 @@ export default class ReportModal extends FormModal<ReportModalAttrs> {
 
     this.loading = true;
 
-    app
-      .request({
-        method: 'POST',
-        url: apiUrl('/canela-bug-reports'),
-        body: {
-          kind: this.kind,
-          description: this.description,
-          currentText: this.kind === 'content' ? this.currentText : '',
-          suggestedText: this.kind === 'content' ? this.suggestedText : '',
-          region: this.attrs.region,
-          full: this.attrs.full,
-          context: this.attrs.context,
-        },
-        errorHandler: (error: any) => {
-          this.loading = false;
-          this.alertAttrs = { type: 'error', content: error?.response?.errors?.[0]?.detail || t('bug_reports.send_failed') } as any;
-          m.redraw();
-        },
-      })
-      .then(() => {
-        this.hide();
-        app.alerts.show({ type: 'success' }, t('bug_reports.sent'));
-      })
-      .catch(() => {});
+    this.attrs.full.then((full) =>
+      app
+        .request({
+          method: 'POST',
+          url: apiUrl('/canela-bug-reports'),
+          body: {
+            kind: this.kind,
+            description: this.description,
+            currentText: this.kind === 'content' ? this.currentText : '',
+            suggestedText: this.kind === 'content' ? this.suggestedText : '',
+            region: this.attrs.region,
+            full,
+            context: this.attrs.context,
+          },
+          errorHandler: (error: any) => {
+            this.loading = false;
+            this.alertAttrs = { type: 'error', content: error?.response?.errors?.[0]?.detail || t('bug_reports.send_failed') } as any;
+            m.redraw();
+          },
+        })
+        .then(() => {
+          this.hide();
+          app.alerts.show({ type: 'success' }, t('bug_reports.sent'));
+        })
+        .catch(() => {})
+    );
   }
 }
