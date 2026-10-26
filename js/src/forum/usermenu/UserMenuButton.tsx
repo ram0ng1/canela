@@ -20,12 +20,17 @@ import type Mithril from 'mithril';
 import { userMenu } from './state';
 import { umText } from './text';
 import { loadMenu } from './lazy';
+import { warmMenu, warmWhenIdle } from './warm';
 import { lazyComponent } from '../utils/lazy';
 import { chatReviewCount } from '../thirdparty/ramonChat/features/flags';
 
-// O menu aberto vem num chunk; o ponteiro ou o foco no avatar já o pede.
+// O menu aberto vem num chunk; o ponteiro, o foco ou o toque no avatar já o pede,
 const UserMenu = lazyComponent(() => loadMenu().then((chunk) => chunk.UserMenu));
-const preload = () => void loadMenu().catch(() => {});
+// e as listas de todas as abas (warm.ts), para o clique já achar tudo.
+const preload = () => {
+  void loadMenu().catch(() => {});
+  warmMenu();
+};
 
 export default class UserMenuButton extends Component {
   view() {
@@ -100,6 +105,14 @@ export default class UserMenuButton extends Component {
 
       return !!child;
     });
+  }
+
+  oncreate(vnode: Mithril.VnodeDOM<any, this>) {
+    super.oncreate(vnode);
+
+    // O chunk do menu e as notificações (a aba padrão) chegam antes do
+    // primeiro clique, também no celular, onde não há ponteiro sobre o avatar.
+    warmWhenIdle(() => void loadMenu().catch(() => {}));
   }
 
   onupdate(vnode: Mithril.VnodeDOM<any, this>) {

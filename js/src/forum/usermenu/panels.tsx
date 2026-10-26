@@ -30,6 +30,7 @@ import {
 } from './notifications';
 import { menuIcon } from './icons';
 import { userMenu } from './state';
+import { bookmarks, warmBookmarks, warmDialogs, warmFlags } from './warm';
 import { isExtensionEnabled } from '../utils/settings';
 import { umText } from './text';
 import { messageStaff } from '../features/messages/util';
@@ -278,18 +279,14 @@ export class MessagesPanel extends Component {
 
     const state: any = (app as any).dialogs;
 
-    this.ready = !!state && typeof state.getPages === 'function' && state.getPages().length > 0;
+    this.ready = !state || (typeof state.getPages === 'function' && state.getPages().length > 0);
 
-    if (state && typeof state.load === 'function') {
-      Promise.resolve(state.load())
-        .catch(() => {})
-        .finally(() => {
-          this.ready = true;
-          m.redraw();
-        });
-    } else {
+    // Normalmente já veio ao apontar o avatar (warm.ts); com a lista na tela,
+    // só revalida.
+    warmDialogs().finally(() => {
       this.ready = true;
-    }
+      m.redraw();
+    });
   }
 
   view() {
@@ -338,24 +335,11 @@ export class MessagesPanel extends Component {
 // ---------------------------------------------------------------------
 
 export class BookmarksPanel extends Component {
-  bookmarks: any[] = [];
-  loading = true;
-
   oninit(vnode: Mithril.Vnode<any, this>) {
     super.oninit(vnode);
 
-    const include = ['post', 'post.discussion', 'post.user'];
-
-    app.store
-      .find<any[]>('canela-bookmarks', { include: include.join(','), page: { limit: 20 } } as any)
-      .then((results: any) => {
-        this.bookmarks = Array.isArray(results) ? results.slice() : [];
-      })
-      .catch(() => {})
-      .finally(() => {
-        this.loading = false;
-        m.redraw();
-      });
+    // Os guardados aparecem já: o menu, ao abrir, revalidou a lista (warm.ts).
+    void warmBookmarks();
   }
 
   view() {
@@ -363,7 +347,7 @@ export class BookmarksPanel extends Component {
 
     const items = [
       ...reminders.map((notification) => NotificationItem(notification)),
-      ...this.bookmarks.map((bookmark) => {
+      ...bookmarks.items.map((bookmark: any) => {
         const post: Post | null = bookmark.post?.() || null;
 
         if (!post) return null;
@@ -382,7 +366,7 @@ export class BookmarksPanel extends Component {
       }),
     ].filter(Boolean);
 
-    if (!items.length) return this.loading ? Spinner() : emptyStates.bookmarks();
+    if (!items.length) return !bookmarks.loaded ? Spinner() : emptyStates.bookmarks();
 
     const user = app.session.user!;
 
@@ -410,14 +394,8 @@ export class ReviewPanel extends Component {
   oncreate(vnode: Mithril.VnodeDOM<any, this>) {
     super.oncreate(vnode);
 
-    const state: any = app.flags;
-
-    if (app.forum.attribute('canViewFlags') && state && typeof state.load === 'function') {
-      Promise.resolve(state.load())
-        // A API marcou a fila como vista (`read_flags_at`): a bandeira do avatar sai.
-        .then(() => app.session.user?.pushAttributes({ newFlagCount: 0 }))
-        .catch(() => {});
-    }
+    // A fila, sem esvaziar a que já está na tela (warm.ts).
+    void warmFlags().then(() => m.redraw());
 
     if (chatReviewOn()) {
       this.chatLoading = true;

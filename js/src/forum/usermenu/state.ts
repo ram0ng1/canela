@@ -4,7 +4,7 @@
  * os ouvintes globais (Esc, clique fora) precisam ler e mudar o mesmo valor —
  * e porque o cabeçalho pode ser redesenhado do zero ao trocar de página.
  */
-import app from 'flarum/forum/app';
+import { warmMenu } from './warm';
 
 export const DEFAULT_TAB = 'all-notifications';
 
@@ -24,9 +24,10 @@ class UserMenuState {
     this.tab = DEFAULT_TAB;
     this.route = m.route.get();
 
-    // Como o NotificationsDropdown do core: carregar a lista zera o contador
-    // de novas (o número do avatar). Um erro já foi mostrado pelo pedido.
-    Promise.resolve(app.notifications.load()).catch(() => {});
+    // As listas já vieram ao apontar o avatar ou com a página ociosa; aqui,
+    // a primeira busca de quem não apontou ou a revalidação, sem esvaziar a
+    // lista que está na tela (warm.ts).
+    warmMenu(true);
   }
 
   close(restoreFocus = false): void {
