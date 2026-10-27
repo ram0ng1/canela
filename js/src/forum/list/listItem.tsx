@@ -28,6 +28,7 @@ import { fullDate, shortAge } from '../utils/dates';
 import { discussionBadges } from '../utils/tags';
 import { activityCold, discussionViews, repliesHeat, viewsHeat } from './metrics';
 import { viewsNumber } from '../utils/views';
+import { typingPill } from '../motion/typing';
 
 /** Chaves do infoItems que a linha nova desenha em outro lugar (ou dispensa). */
 const MOVED_INFO = ['tags', 'terminalPost', 'excerpt'];
@@ -116,6 +117,13 @@ export default function installListItem(): void {
       info.has('excerpt') && (searching || forumBool('canelaListExcerpts', true)) ? excerptView(this, info.get('excerpt'), searching) : null;
 
     MOVED_INFO.forEach((key) => info.remove(key));
+
+    // O "alguém está digitando" do realtime: a pílula do tema, com o rótulo dele.
+    if (info.has('realtimeTyping')) {
+      const original: any = info.get('realtimeTyping');
+
+      info.setContent('realtimeTyping', typingPill(String(original?.attrs?.['aria-label'] || t('list.typing'))));
+    }
 
     // statsItems de extensões (curtidas, por exemplo) não têm coluna própria:
     // vão para a linha das etiquetas. A contagem de respostas já é coluna.

@@ -2,8 +2,14 @@
  * "Fulano está digitando…" do flarum-realtime com as reticências que ondulam
  * (`.presence-users .wave .dot`, 1,8s): os três
  * pontos sobem um depois do outro, no lugar do ícone "…" pulsando.
+ *
+ * Na lista de tópicos, o ponto pulsante do realtime (`fas fa-ellipsis-h
+ * fa-beat`, na cor primária) vira uma pílula discreta no estilo das
+ * etiquetas: a caneta e as mesmas reticências (`typingPill`, usada pela linha
+ * da lista em list/listItem.tsx).
  */
 import { extend } from 'flarum/common/extend';
+import Icon from 'flarum/common/components/Icon';
 import type Mithril from 'mithril';
 
 function wave() {
@@ -12,6 +18,16 @@ function wave() {
       <span className="CanelaWave-dot">.</span>
       <span className="CanelaWave-dot">.</span>
       <span className="CanelaWave-dot">.</span>
+    </span>
+  );
+}
+
+/** A pílula "alguém está digitando" da lista de tópicos. */
+export function typingPill(label: string): Mithril.Children {
+  return (
+    <span className="CanelaTyping" role="status" aria-label={label} title={label}>
+      <Icon name="fas fa-pen" className="CanelaTyping-icon" />
+      {wave()}
     </span>
   );
 }
