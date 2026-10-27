@@ -250,7 +250,7 @@ export default class NewMessageModal extends Modal<IInternalModalAttrs> {
       // O nome do grupo, pelo endpoint do tema (o ramon/chat não deixa o membro renomear).
       if (id && name && users.length >= 2 && feature('group_name')) {
         const renamed = await app
-          .request<any>({ method: 'POST', url: apiUrl(`/canela-ramon-chat/channels/${id}/name`), body: { data: { attributes: { name } } } })
+          .request<any>({ method: 'POST', url: apiUrl(`/chat-channels/${id}/canela-name`), body: { data: { attributes: { name } } } })
           .catch(() => null);
 
         if (renamed) id = this.adopt(renamed) || id;
@@ -273,7 +273,7 @@ export default class NewMessageModal extends Modal<IInternalModalAttrs> {
     this.busy = true;
 
     try {
-      const payload = await app.request<any>({ method: 'POST', url: apiUrl('/canela-ramon-chat/self') });
+      const payload = await app.request<any>({ method: 'POST', url: apiUrl('/chat-channels/canela-self') });
       const id = this.adopt(payload);
 
       this.hide();

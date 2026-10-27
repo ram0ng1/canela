@@ -37,6 +37,9 @@ $bootstrapper = new Bootstrapper(['env' => 'testing'], [
     'flarum-suspend',
     'flarum-messages',
     'fof-pages',
+    // Só para os testes da integração com o ramon/chat (src/RamonChat): as
+    // tabelas dele já ficam prontas, e ligar a extensão num teste não roda DDL.
+    'ramon-chat',
     'ramon-canela',
 ]);
 

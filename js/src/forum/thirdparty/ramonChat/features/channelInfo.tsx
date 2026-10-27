@@ -42,7 +42,7 @@ function nameSection(modal: any, channel: any): Mithril.Children {
     try {
       const payload = await app.request<any>({
         method: 'POST',
-        url: apiUrl(`/canela-ramon-chat/channels/${channel.id()}/name`),
+        url: apiUrl(`/chat-channels/${channel.id()}/canela-name`),
         body: { data: { attributes: { name: modal.__canelaName } } },
       });
 
