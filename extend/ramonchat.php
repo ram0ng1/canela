@@ -28,8 +28,9 @@ use Flarum\Api\Context;
 use Flarum\Api\Resource\ForumResource;
 use Flarum\Api\Schema;
 use Flarum\Extend;
-use Ramon\Canela\RamonChat\Api\RenameChannelController;
-use Ramon\Canela\RamonChat\Api\SelfChannelController;
+use Ramon\Canela\RamonChat\Access\RenameChannelPolicy;
+use Ramon\Canela\RamonChat\Api\RenameChannel;
+use Ramon\Canela\RamonChat\Api\SelfChannel;
 use Ramon\Canela\RamonChat\Api\TypingController;
 use Ramon\Canela\RamonChat\Http\RamonChatMiddleware;
 use Ramon\Canela\RamonChat\Listener\DeleteTagChannels;
@@ -37,7 +38,9 @@ use Ramon\Canela\RamonChat\Listener\NotifyChatActivity;
 use Ramon\Canela\RamonChat\Notification\ChatMentionBlueprint;
 use Ramon\Canela\RamonChat\Notification\ChatMessageBlueprint;
 use Ramon\Canela\RamonChat\RamonChatSettings;
+use Ramon\Chat\Api\Resource\ChannelResource;
 use Ramon\Chat\Api\Resource\MessageResource;
+use Ramon\Chat\Channel;
 use Ramon\Chat\Event\MessageWasSent;
 use Ramon\Chat\Message;
 
@@ -83,9 +86,18 @@ return (static function (): array {
                     ? array_values(array_unique(array_filter(array_map('intval', array_slice($value, 0, 200)), static fn (int $id): bool => $id > 0)))
                     : [], []),
 
+            // A MD consigo mesmo e o nome do chat em grupo: endpoints de ação no
+            // recurso de canais do ramon/chat (`/api/chat-channels/...`).
+            (new Extend\ApiResource(ChannelResource::class))
+                ->endpoints(static fn (): array => [SelfChannel::endpoint(), RenameChannel::endpoint()]),
+
+            (new Extend\Policy())
+                ->modelPolicy(Channel::class, RenameChannelPolicy::class),
+
+            // O "está digitando" sem websocket é uma consulta a cada poucos
+            // segundos: fica um controller, que só confere a participação
+            // (uma consulta indexada), sem a visibilidade inteira do canal.
             (new Extend\Routes('api'))
-                ->post('/canela-ramon-chat/self', 'canela.ramonchat.self', SelfChannelController::class)
-                ->post('/canela-ramon-chat/channels/{id:\d+}/name', 'canela.ramonchat.name', RenameChannelController::class)
                 ->get('/canela-ramon-chat/channels/{id:\d+}/typing', 'canela.ramonchat.typing', TypingController::class),
 
             (new Extend\Middleware('api'))->add(RamonChatMiddleware::class),

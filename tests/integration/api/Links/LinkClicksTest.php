@@ -226,4 +226,28 @@ class LinkClicksTest extends TestCase
 
         $this->assertArrayNotHasKey('canelaLinks', $json['data'][0]['attributes']);
     }
+
+    /**
+     * Fora do formato (postagem que não é número, endereço que não é texto
+     * ou longo demais, nada no corpo): nada é gravado, e a resposta continua
+     * o 204 de sempre.
+     */
+    #[Test]
+    public function clique_fora_do_formato_nao_conta_e_responde_204(): void
+    {
+        $bodies = [
+            ['post_id' => 'um', 'url' => self::LINK],
+            ['post_id' => 1, 'url' => [self::LINK]],
+            ['post_id' => 1, 'url' => 'https://exemplo.example/'.str_repeat('a', 2000)],
+            [],
+        ];
+
+        foreach ($bodies as $body) {
+            $response = $this->send($this->request('POST', '/api/canela-link-click', ['authenticatedAs' => 2, 'json' => $body])->withHeader('User-Agent', self::BROWSER));
+
+            $this->assertEquals(204, $response->getStatusCode(), json_encode($body));
+        }
+
+        $this->assertSame(0, $this->clicks());
+    }
 }

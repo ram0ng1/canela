@@ -1,0 +1,109 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of ramon/canela.
+ *
+ * Copyright (c) 2026 Ramon Guilherme.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Ramon\Canela\MeToo\Api;
+
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
+use Flarum\Discussion\Discussion;
+use Flarum\Http\Exception\RouteNotFoundException;
+use Flarum\Post\Exception\FloodingException;
+use Flarum\User\Exception\PermissionDeniedException;
+use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Events\Dispatcher;
+use Laminas\Diactoros\Response\JsonResponse;
+use Ramon\Canela\MeToo\Access\MeTooPolicy;
+use Ramon\Canela\MeToo\Event\Toggled;
+use Ramon\Canela\MeToo\MeToo;
+use Ramon\Canela\Support\Log;
+
+/**
+ * `POST /api/discussions/{id}/canela-me-too`: alterna o "Eu também" de quem
+ * chama e devolve a contagem nova, se marcou, se ainda pode marcar e a
+ * inscrição no tópico (para o botão de notificações do rodapé mudar junto).
+ *
+ * Um endpoint de ação no recurso de tópicos: o `{id}` passa pela busca do
+ * recurso, com a visibilidade de quem pede — tópico inexistente ou que a
+ * pessoa não vê, 404.
+ *
+ * Recurso desligado, 404; visitante, 401 (o fórum abre o login antes de chegar
+ * aqui); sem poder marcar (MeTooPolicy), 403 — menos para tirar o próprio
+ * voto, que vale sempre; mais de 5 trocas na hora, 429.
+ */
+final class ToggleMeToo
+{
+    public function __construct(
+        private readonly MeToo $meToo,
+        private readonly Cache $cache,
+        private readonly Dispatcher $events,
+    ) {
+    }
+
+    public static function endpoint(): Endpoint\Endpoint
+    {
+        return Endpoint\Endpoint::make('canela.meToo')
+            ->route('POST', '/{id}/canela-me-too')
+            ->action(static fn (Context $context): array => resolve(self::class)->toggle($context))
+            ->response(static fn (Context $context, array $result): JsonResponse => new JsonResponse($result));
+    }
+
+    /** @return array{count: int, mine: bool, subscription: string|null, can: bool} */
+    public function toggle(Context $context): array
+    {
+        if (! $this->meToo->enabled()) {
+            throw new RouteNotFoundException();
+        }
+
+        $actor = $context->getActor();
+        $actor->assertRegistered();
+
+        /** @var Discussion $discussion */
+        $discussion = $context->model;
+
+        // Quem não pode mais marcar (tópico trancado, resolvido, sem
+        // permissão) ainda tira o próprio voto: o voto é dele.
+        $canToggle = $actor->can(MeTooPolicy::ABILITY, $discussion);
+
+        if (! $canToggle && ! $this->meToo->stateFor($discussion, $actor)['mine']) {
+            throw new PermissionDeniedException();
+        }
+
+        if (! $actor->isAdmin() && ! $this->withinRate((int) $actor->id, (int) $discussion->id)) {
+            throw new FloodingException();
+        }
+
+        $result = $this->meToo->toggle($discussion, $actor, removeOnly: ! $canToggle);
+
+        // Quem ouve (a entrega em tempo real, com o flarum/realtime) não pode
+        // desfazer o clique: a marcação já está gravada e a resposta sai igual.
+        try {
+            $this->events->dispatch(new Toggled($discussion, $actor, $result['mine'], $result['count']));
+        } catch (\Throwable $error) {
+            Log::warning('me too: aviso da troca falhou: '.$error->getMessage());
+        }
+
+        // `can` junto: depois de tirar o voto num tópico trancado, o botão
+        // apaga (não dá para marcar de novo).
+        return [...$result, 'can' => $canToggle];
+    }
+
+    /** Janela fixa de uma hora: a chave muda a cada hora e vence sozinha. */
+    private function withinRate(int $userId, int $discussionId): bool
+    {
+        $key = sprintf('canela.metoo.rate.%d.%d.%d', $userId, $discussionId, intdiv(time(), MeToo::RATE_WINDOW));
+
+        $this->cache->add($key, 0, MeToo::RATE_WINDOW + 60);
+
+        return (int) $this->cache->increment($key) <= MeToo::RATE_LIMIT;
+    }
+}

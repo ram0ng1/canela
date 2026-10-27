@@ -6,7 +6,7 @@
  * categoria, data e trecho) com a linha da reação: o emoji e o avatar de
  * quem reagiu.
  *
- * A ordem e a visibilidade vêm de `/api/canela-user-reactions`
+ * A ordem e a visibilidade vêm de `/api/users/{id}/canela-reactions`
  * (extend/activity.php); os posts, de `/api/posts?filter[id]=…`.
  */
 import app from 'flarum/forum/app';
@@ -146,8 +146,8 @@ export default class ReactionsUserPage<Attrs extends IUserPageAttrs = IUserPageA
     try {
       const page = await app.request<{ data: Row[]; hasMore: boolean }>({
         method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/canela-user-reactions',
-        params: { username: this.user.slug(), offset: this.rows.length, limit: PAGE_SIZE },
+        url: `${app.forum.attribute('apiUrl')}/users/${this.user.id()}/canela-reactions`,
+        params: { page: { offset: this.rows.length, limit: PAGE_SIZE } },
       });
 
       const ids = [...new Set(page.data.map((row) => String(row.postId)))].filter((id) => !app.store.getById('posts', id));

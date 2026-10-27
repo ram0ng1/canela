@@ -13,26 +13,15 @@ import type Mithril from 'mithril';
 import { copyText } from '../utils/clipboard';
 import { t } from '../../utils/settings';
 import { fullDate } from '../../utils/dates';
-import { apiUrl } from './invites';
-
-interface InviteData {
-  id: number;
-  code: string;
-  url: string;
-  maxRedemptions: number;
-  redemptionCount: number;
-  expiresAt: string | null;
-  createdAt: string | null;
-  usable: boolean;
-}
+import type Invite from './Invite';
 
 export default class InviteModal extends FormModal<IInternalModalAttrs> {
-  invites: InviteData[] | null = null;
+  invites: Invite[] | null = null;
   signUpOpen = true;
   /** Falso para quem perdeu a permissão: a janela só lista e revoga. */
   canCreate = true;
   creating = false;
-  copiedId: number | null = null;
+  copiedId: string | null = null;
   maxRedemptions = Stream('1');
   expiresDays = Stream('7');
 
@@ -50,12 +39,14 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
   }
 
   load(): void {
-    app
-      .request<{ invites: InviteData[]; signUpOpen: boolean; canCreate?: boolean }>({ method: 'GET', url: apiUrl('/canela-invites') })
-      .then((response) => {
-        this.invites = response.invites;
-        this.signUpOpen = response.signUpOpen;
-        this.canCreate = response.canCreate ?? true;
+    app.store
+      .find<Invite[]>('canela-invites')
+      .then((invites) => {
+        const meta = (invites.payload?.meta || {}) as { signUpOpen?: boolean; canCreate?: boolean };
+
+        this.invites = [...invites];
+        this.signUpOpen = meta.signUpOpen ?? true;
+        this.canCreate = meta.canCreate ?? true;
       })
       .catch(() => (this.invites = []))
       .finally(() => m.redraw());
@@ -100,26 +91,26 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
     return (
       <ul className="CanelaInviteModal-list">
         {this.invites.map((invite) => (
-          <li className={invite.usable ? '' : 'CanelaInviteModal-item--used'}>
+          <li className={invite.usable() ? '' : 'CanelaInviteModal-item--used'}>
             <input
               className="FormControl"
               type="text"
               readonly
-              value={invite.url}
+              value={invite.url()}
               onfocus={(event: FocusEvent) => (event.target as HTMLInputElement).select()}
             />
             <span className="CanelaInviteModal-meta">
-              {t('gaps.invites.uses', { used: invite.redemptionCount, max: invite.maxRedemptions })}
-              {invite.expiresAt && [' · ', t('gaps.invites.expires', { date: fullDate(new Date(invite.expiresAt)) })]}
+              {t('gaps.invites.uses', { used: invite.redemptionCount(), max: invite.maxRedemptions() })}
+              {invite.expiresAt() && [' · ', t('gaps.invites.expires', { date: fullDate(invite.expiresAt()!) })]}
             </span>
             <Button
               className="Button Button--icon"
-              icon={this.copiedId === invite.id ? 'fas fa-check' : 'far fa-copy'}
+              icon={this.copiedId === invite.id() ? 'fas fa-check' : 'far fa-copy'}
               aria-label={t('gaps.share.copy')}
               title={t('gaps.share.copy')}
               onclick={() =>
-                copyText(invite.url).then((ok) => {
-                  this.copiedId = ok ? invite.id : null;
+                copyText(invite.url()).then((ok) => {
+                  this.copiedId = ok ? invite.id()! : null;
                   m.redraw();
                 })
               }
@@ -137,11 +128,11 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
     );
   }
 
-  remove(invite: InviteData): void {
-    app
-      .request({ method: 'DELETE', url: apiUrl(`/canela-invites/${invite.id}`) })
+  remove(invite: Invite): void {
+    invite
+      .delete()
       .then(() => {
-        this.invites = (this.invites || []).filter((item) => item.id !== invite.id);
+        this.invites = (this.invites || []).filter((item) => item !== invite);
       })
       .catch(() => {})
       .finally(() => m.redraw());
@@ -154,16 +145,13 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
 
     this.creating = true;
 
-    app
-      .request<{ invite: InviteData }>({
-        method: 'POST',
-        url: apiUrl('/canela-invites'),
-        body: { maxRedemptions: parseInt(this.maxRedemptions(), 10) || 1, expiresDays: parseInt(this.expiresDays(), 10) || 7 },
-      })
-      .then((response) => {
-        this.invites = [response.invite, ...(this.invites || [])];
-        copyText(response.invite.url).then((ok) => {
-          this.copiedId = ok ? response.invite.id : null;
+    app.store
+      .createRecord<Invite>('canela-invites')
+      .save({ maxRedemptions: parseInt(this.maxRedemptions(), 10) || 1, expiresDays: parseInt(this.expiresDays(), 10) || 7 })
+      .then((invite) => {
+        this.invites = [invite, ...(this.invites || [])];
+        copyText(invite.url()).then((ok) => {
+          this.copiedId = ok ? invite.id()! : null;
           m.redraw();
         });
       })

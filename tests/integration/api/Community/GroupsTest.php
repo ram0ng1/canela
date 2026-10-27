@@ -23,7 +23,8 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * As páginas de grupo (/g e /g/:nome): a lista de membros (o diretório
- * filtrado por grupo), a aba "Atividade" e a contagem de membros — com os
+ * filtrado por grupo), a aba "Atividade" (`/api/posts?filter[canelaGroup]=`)
+ * e a contagem de membros — com os
  * grupos ocultos e os pseudo-grupos (Visitantes, Membros) fora do alcance.
  */
 class GroupsTest extends TestCase
@@ -71,9 +72,21 @@ class GroupsTest extends TestCase
         return $this->send($request->withQueryParams(['group' => (string) $groupId]));
     }
 
-    private function activity(int $groupId, ?int $actor): ResponseInterface
+    private function activity(int $groupId, ?int $actor, array $page = []): ResponseInterface
     {
-        return $this->send($this->request('GET', "/api/canela-groups/$groupId/activity", $actor ? ['authenticatedAs' => $actor] : []));
+        $request = $this->request('GET', '/api/posts', $actor ? ['authenticatedAs' => $actor] : []);
+
+        return $this->send($request->withQueryParams([
+            'filter' => ['canelaGroup' => (string) $groupId],
+            'sort' => '-createdAt',
+            ...($page ? ['page' => $page] : []),
+        ]));
+    }
+
+    /** @return list<string> os ids das postagens da atividade, na ordem */
+    private function activityIds(array $body): array
+    {
+        return array_column($body['data'], 'id');
     }
 
     private function body(ResponseInterface $response): array
@@ -152,11 +165,11 @@ class GroupsTest extends TestCase
     {
         $body = $this->body($this->activity(6, 2));
 
-        $this->assertSame(['1'], $body['data']);
-        $this->assertFalse($body['meta']['hasMore']);
+        $this->assertSame(['1'], $this->activityIds($body));
+        $this->assertArrayNotHasKey('next', $body['links'] ?? []);
 
         // O admin vê o tópico oculto.
-        $this->assertSame(['3', '1'], $this->body($this->activity(6, 1))['data']);
+        $this->assertSame(['3', '1'], $this->activityIds($this->body($this->activity(6, 1))));
     }
 
     /**
@@ -238,6 +251,39 @@ class GroupsTest extends TestCase
     {
         $this->setting('canela.directory_guests', true);
 
-        $this->assertSame(['1'], $this->body($this->activity(6, null))['data']);
+        $this->assertSame(['1'], $this->activityIds($this->body($this->activity(6, null))));
+    }
+    /**
+     * A atividade pagina como o /api/posts: `links.next` enquanto houver mais.
+     * Só respostas e primeiras postagens contam (nada de avisos do tópico).
+     */
+    #[Test]
+    public function atividade_pagina_e_so_conta_comentarios(): void
+    {
+        $this->prepareDatabase([
+            Post::class => [
+                ['id' => 4, 'discussion_id' => 1, 'created_at' => Carbon::now()->subMinutes(30), 'user_id' => 4, 'type' => 'discussionRenamed', 'content' => '["Antes","Depois"]', 'number' => 3],
+                ['id' => 5, 'discussion_id' => 1, 'created_at' => Carbon::now()->subMinutes(10), 'user_id' => 4, 'type' => 'comment', 'content' => '<t><p>d</p></t>', 'number' => 4],
+            ],
+        ]);
+
+        $first = $this->body($this->activity(6, 2, ['limit' => 1]));
+        $second = $this->body($this->activity(6, 2, ['limit' => 1, 'offset' => 1]));
+
+        $this->assertSame(['5'], $this->activityIds($first));
+        $this->assertArrayHasKey('next', $first['links']);
+        $this->assertSame(['1'], $this->activityIds($second));
+        $this->assertArrayNotHasKey('next', $second['links'] ?? []);
+        $this->assertNotContains('4', $this->activityIds($this->body($this->activity(6, 1))));
+    }
+
+    /** Um grupo que não é número é recusado (422), e um que não existe é 404. */
+    #[Test]
+    public function atividade_com_grupo_invalido(): void
+    {
+        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 1])->withQueryParams(['filter' => ['canelaGroup' => 'equipe']]));
+
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(404, $this->activity(99, 1)->getStatusCode());
     }
 }

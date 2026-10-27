@@ -19,6 +19,8 @@ export default abstract class RulesPage extends CommunityPage {
     /** A aba de AboutNav que fica marcada. */
     abstract activeTab(): string;
     load(): void;
+    /** O HTML e o título na resposta da API (as Diretrizes já vêm assim). */
+    parse(response: unknown): RulesPayload;
     /** Depois de carregar (a página extra troca o título da aba do navegador). */
     loaded(_data: RulesPayload): void;
     content(): Mithril.Children;

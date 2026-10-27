@@ -1,14 +1,17 @@
 /*
  * Acesso aos endpoints das páginas de comunidade (/api/canela-about,
- * /api/canela-directory, /api/canela-groups/:id/activity).
+ * /api/canela-directory e a atividade do grupo, no /api/posts).
  *
- * Eles não são recursos do JSON:API — o "Sobre" junta números, texto e
- * equipe numa resposta só —, mas os usuários vêm no formato de recurso
+ * O "Sobre" e o diretório não são recursos do JSON:API — o "Sobre" junta
+ * números, texto e equipe numa resposta só, e o diretório, usuários com
+ * colunas calculadas —, mas os usuários vêm no formato de recurso
  * (`type: users`) e entram no store. Assim o Avatar, o `username()` e as
  * rotas de perfil do core funcionam com eles como com qualquer outro usuário.
  */
 import app from 'flarum/forum/app';
 import type User from 'flarum/common/models/User';
+import type Post from 'flarum/common/models/Post';
+import type { ApiResponsePlural } from 'flarum/common/Store';
 
 export type PeriodKey = 'all' | 'yearly' | 'quarterly' | 'monthly' | 'weekly' | 'daily';
 
@@ -96,6 +99,20 @@ export function fetchDirectory(params: DirectoryParams): Promise<DirectoryPayloa
   return app.request<DirectoryPayload>({ method: 'GET', url: apiUrl('/canela-directory'), params: query });
 }
 
-export function fetchGroupActivity(groupId: string, page: number): Promise<{ data: string[]; meta: { page: number; hasMore: boolean } }> {
-  return app.request({ method: 'GET', url: apiUrl(`/canela-groups/${groupId}/activity`), params: { page } });
+/** Postagens por página na aba "Atividade" do grupo. */
+export const GROUP_ACTIVITY_PAGE = 20;
+
+/**
+ * A aba "Atividade" do grupo: o /api/posts do core com o filtro
+ * `canelaGroup` (GroupActivityFilter no PHP), da mais nova para a mais
+ * antiga. Cada postagem chega com tudo o que as extensões acrescentam, e
+ * `links.next` diz se há mais.
+ */
+export function fetchGroupActivity(groupId: string, offset: number): Promise<ApiResponsePlural<Post>> {
+  return app.store.find<Post[]>('posts', {
+    filter: { canelaGroup: groupId },
+    sort: '-createdAt',
+    include: 'user,discussion',
+    page: { offset, limit: GROUP_ACTIVITY_PAGE },
+  });
 }

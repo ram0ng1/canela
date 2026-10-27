@@ -18,12 +18,13 @@
  */
 
 use Flarum\Api\Resource\ForumResource;
+use Flarum\Api\Resource\UserResource;
 use Flarum\Discussion\Search\DiscussionSearcher;
 use Flarum\Extend;
 use Flarum\Post\Filter\PostSearcher;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Ramon\Canela\Activity\Api\ForumActivityFields;
-use Ramon\Canela\Activity\Api\ListReactionsController;
+use Ramon\Canela\Activity\Api\ListReactions;
 use Ramon\Canela\Activity\Search\ReadByFilter;
 use Ramon\Canela\Activity\Search\VotedByFilter;
 
@@ -34,8 +35,9 @@ return [
     (new Extend\ApiResource(ForumResource::class))
         ->fields(ForumActivityFields::class),
 
-    (new Extend\Routes('api'))
-        ->get('/canela-user-reactions', 'canela.activity.reactions', ListReactionsController::class),
+    // `GET /api/users/{id}/canela-reactions`.
+    (new Extend\ApiResource(UserResource::class))
+        ->endpoints(static fn (): array => [ListReactions::endpoint()]),
 
     // As classes do fof só são citadas dentro das closures: com a extensão
     // desligada, nada disso é avaliado.

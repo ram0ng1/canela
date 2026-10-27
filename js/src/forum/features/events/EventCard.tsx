@@ -28,7 +28,7 @@ import type Mithril from 'mithril';
 
 import { downloadIcs, googleCalendarUrl } from './calendar';
 import { eventRange, monthShort, readerZone, recurrenceLabel } from './format';
-import { apiUrl, eventsSettings, personModel, postEvent, type EventData, type RsvpStatus } from './model';
+import { apiUrl, eventFromDocument, eventsSettings, personModel, postEvent, type EventData, type EventsDocument, type RsvpStatus } from './model';
 import { openChannel } from '../../thirdparty/ramonChat/bridge';
 import { t } from '../../utils/settings';
 
@@ -41,13 +41,14 @@ export interface EventCardAttrs extends ComponentAttrs {
 const InviteesModal = () => import('./InviteesModal');
 
 export async function rsvp(post: Post, event: EventData, status: RsvpStatus | null): Promise<void> {
-  const payload = await app.request<{ event: EventData }>({
+  const payload = await app.request<EventsDocument>({
     method: 'POST',
     url: apiUrl(`/canela-events/${event.id}/rsvp`),
-    body: { status },
+    body: { data: { type: 'canela-events', id: String(event.id), attributes: { status } } },
   });
+  const card = payload ? eventFromDocument(payload) : null;
 
-  if (payload?.event) post.pushAttributes({ canelaEvent: payload.event });
+  if (card) post.pushAttributes({ canelaEvent: card });
 }
 
 export default class EventCard extends Component<EventCardAttrs> {

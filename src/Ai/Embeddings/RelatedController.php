@@ -36,6 +36,11 @@ use Throwable;
  *
  * Uma falha da API de embeddings devolve a lista vazia: a seção some, e a
  * página do tópico nunca quebra por causa dela.
+ *
+ * Continua um controller, com este caminho e este formato: a página do tópico
+ * o pré-carrega, e o resultado vem de um serviço externo (embeddings), não de
+ * um modelo com recurso próprio. O tópico passa pela visibilidade de quem
+ * pede (404 para o que não se vê).
  */
 final class RelatedController implements RequestHandlerInterface
 {

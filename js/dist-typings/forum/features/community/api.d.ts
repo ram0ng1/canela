@@ -1,4 +1,6 @@
 import type User from 'flarum/common/models/User';
+import type Post from 'flarum/common/models/Post';
+import type { ApiResponsePlural } from 'flarum/common/Store';
 export type PeriodKey = 'all' | 'yearly' | 'quarterly' | 'monthly' | 'weekly' | 'daily';
 export declare const PERIODS: PeriodKey[];
 export type StatPeriod = 'day' | 'week' | 'month' | 'all';
@@ -54,10 +56,12 @@ export interface DirectoryParams {
 export declare function pushUsers(resources: any[]): Record<string, User>;
 export declare function fetchAbout(): Promise<AboutPayload>;
 export declare function fetchDirectory(params: DirectoryParams): Promise<DirectoryPayload>;
-export declare function fetchGroupActivity(groupId: string, page: number): Promise<{
-    data: string[];
-    meta: {
-        page: number;
-        hasMore: boolean;
-    };
-}>;
+/** Postagens por página na aba "Atividade" do grupo. */
+export declare const GROUP_ACTIVITY_PAGE = 20;
+/**
+ * A aba "Atividade" do grupo: o /api/posts do core com o filtro
+ * `canelaGroup` (GroupActivityFilter no PHP), da mais nova para a mais
+ * antiga. Cada postagem chega com tudo o que as extensões acrescentam, e
+ * `links.next` diz se há mais.
+ */
+export declare function fetchGroupActivity(groupId: string, offset: number): Promise<ApiResponsePlural<Post>>;

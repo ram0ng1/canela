@@ -30,6 +30,10 @@ use Ramon\Canela\Community\GuidelinesPage;
  * fof/pages e uma página escolhida no admin, o conteúdo dela
  * (com a visibilidade do próprio fof/pages); senão o texto do admin. Sem
  * nenhum dos dois, 404: o modelo do tema só serve para criar a página.
+ *
+ * Não é um recurso JSON:API: o conteúdo vem de uma página do fof/pages ou de
+ * uma configuração, conforme o fórum. Criar a página fica no
+ * AboutPageResource (`POST /api/canela-about-pages/guidelines`).
  */
 final class ShowGuidelinesController implements RequestHandlerInterface
 {

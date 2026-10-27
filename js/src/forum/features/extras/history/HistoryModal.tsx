@@ -96,7 +96,7 @@ export default class HistoryModal<A extends IInternalModalAttrs = HistoryModalAt
     return app
       .request<{ data: VersionList }>({
         method: 'GET',
-        url: `${apiUrl}/canela/posts/${post.id()}/revisions`,
+        url: `${apiUrl}/posts/${post.id()}/canela-revisions`,
       })
       .then((response) => response.data);
   }

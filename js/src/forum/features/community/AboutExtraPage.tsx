@@ -7,7 +7,8 @@ import { t } from '../../utils/settings';
 /**
  * Uma aba extra da área Sobre (/about/{id-slug}): uma página do fof/pages
  * escolhida no admin, no mesmo layout das Diretrizes. O id vem na frente do
- * parâmetro, como no /d/{id} do core; o slug é só enfeite.
+ * parâmetro, como no /d/{id} do core; o slug é só enfeite. O conteúdo vem do
+ * recurso `canela-about-pages` (GET /api/canela-about-pages/{id}).
  */
 export default class AboutExtraPage extends RulesPage {
   pageId(): number {
@@ -35,6 +36,13 @@ export default class AboutExtraPage extends RulesPage {
 
   activeTab(): string {
     return aboutPageTab(this.pageId());
+  }
+
+  /** A página vem como recurso `canela-about-pages`: o HTML e o título estão nos atributos. */
+  parse(response: unknown): RulesPayload {
+    const attributes = (response as { data?: { attributes?: { html?: string; title?: string } } } | null)?.data?.attributes;
+
+    return { html: attributes?.html ?? null, title: attributes?.title };
   }
 
   loaded(data: RulesPayload): void {

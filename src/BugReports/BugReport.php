@@ -15,6 +15,7 @@ namespace Ramon\Canela\BugReports;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -41,6 +42,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 final class BugReport extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     public const KINDS = ['bug', 'content', 'design', 'idea'];
 
     public const STATUSES = ['open', 'reviewed', 'in_progress', 'fixed', 'wontfix'];

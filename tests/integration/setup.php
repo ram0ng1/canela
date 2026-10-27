@@ -11,6 +11,7 @@
 
 use Flarum\Testing\integration\Setup\Bootstrapper;
 use Flarum\Testing\integration\Setup\SetupScript;
+use Ramon\Canela\Tests\integration\RamonChatSchema;
 
 require __DIR__.'/../../vendor/autoload.php';
 
@@ -37,6 +38,10 @@ $bootstrapper = new Bootstrapper(['env' => 'testing'], [
     'flarum-suspend',
     'flarum-messages',
     'fof-pages',
+    // Só para os testes da integração com o ramon/chat (src/RamonChat): as
+    // tabelas dele já ficam prontas, e ligar a extensão num teste não roda DDL.
+    // Fora no banco em que ele não instala (RamonChatSchema).
+    ...(RamonChatSchema::unsupportedReason() === null ? ['ramon-chat'] : []),
     'ramon-canela',
 ]);
 

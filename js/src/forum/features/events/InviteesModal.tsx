@@ -1,6 +1,7 @@
 /*
  * "Participantes": quem respondeu ao evento, em abas (Vou, Interessados, Não
- * vou). Cada aba pede a lista ao abrir (GET /api/canela-events/{id}/invitees?status=…).
+ * vou). Cada aba pede a lista ao abrir (GET /api/canela-events/{id}/invitees?filter[status]=…),
+ * que traz as pessoas como `users` só com o público e as contagens em `meta`.
  */
 import app from 'flarum/forum/app';
 import Modal, { type IInternalModalAttrs } from 'flarum/common/components/Modal';
@@ -10,7 +11,7 @@ import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import classList from 'flarum/common/utils/classList';
 import type Mithril from 'mithril';
 
-import { apiUrl, personModel, type EventData, type EventPerson, type RsvpStatus } from './model';
+import { apiUrl, personModel, type EventData, type EventPerson, type EventsDocument, type RsvpStatus } from './model';
 import { t } from '../../utils/settings';
 
 export interface InviteesModalAttrs extends IInternalModalAttrs {
@@ -46,14 +47,16 @@ export default class InviteesModal extends Modal<InviteesModalAttrs> {
     if (this.lists[status]) return;
 
     app
-      .request<{ users: EventPerson[]; counts: Record<string, number> }>({
+      .request<EventsDocument>({
         method: 'GET',
         url: apiUrl(`/canela-events/${this.attrs.event.id}/invitees`),
-        params: { status },
+        params: { filter: { status } },
       })
       .then((payload) => {
-        this.lists[status] = payload.users || [];
-        this.counts = payload.counts || this.counts;
+        const people = Array.isArray(payload.data) ? payload.data : [];
+
+        this.lists[status] = people.map((user) => ({ ...(user.attributes || {}), id: user.id }) as EventPerson);
+        this.counts = payload.meta?.counts || this.counts;
         m.redraw();
       })
       .catch(() => {

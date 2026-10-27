@@ -15,6 +15,7 @@ namespace Ramon\Canela\Gaps\Invites;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -32,6 +33,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 final class Invite extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     protected $table = 'canela_invites';
 
     public $timestamps = true;

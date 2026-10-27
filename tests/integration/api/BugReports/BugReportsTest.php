@@ -63,7 +63,7 @@ class BugReportsTest extends TestCase
     {
         return $this->send($this->request('POST', '/api/canela-bug-reports', [
             'authenticatedAs' => $actor,
-            'json' => array_merge([
+            'json' => ['data' => ['type' => 'canela-bug-reports', 'attributes' => array_merge([
                 'kind' => 'content',
                 'description' => 'O botão está cortado',
                 'region' => self::png(),
@@ -73,15 +73,29 @@ class BugReportsTest extends TestCase
                     'title' => 'Tópico',
                     'viewport' => ['w' => 1280, 'h' => 800, 'dpr' => 2],
                 ],
-            ], $overrides),
+            ], $overrides)]],
         ]));
+    }
+
+    private function patch(int $actor, int $id, array $attributes)
+    {
+        return $this->send($this->request('PATCH', "/api/canela-bug-reports/$id", [
+            'authenticatedAs' => $actor,
+            'json' => ['data' => ['type' => 'canela-bug-reports', 'id' => (string) $id, 'attributes' => $attributes]],
+        ]));
+    }
+
+    /** @return list<int> os ids da lista, na ordem */
+    private function ids(array $body): array
+    {
+        return array_map('intval', array_column($body['data'], 'id'));
     }
 
     private function createdId($response): int
     {
         $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
 
-        return (int) $this->body($response)['report']['id'];
+        return (int) $this->body($response)['data']['id'];
     }
 
     /** Desligado (o padrão), todas as rotas respondem 404. */
@@ -179,15 +193,19 @@ class BugReportsTest extends TestCase
 
         $user = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 2])));
 
-        $this->assertEquals([$mine], array_column($user['reports'], 'id'));
-        $this->assertArrayNotHasKey('user', $user['reports'][0]);
-        $this->assertArrayNotHasKey('context', $user['reports'][0]);
+        $this->assertSame([$mine], $this->ids($user));
+        $this->assertArrayNotHasKey('user', $user['data'][0]['relationships'] ?? []);
+        $this->assertArrayNotHasKey('context', $user['data'][0]['attributes']);
 
-        $admin = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])));
+        $admin = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])->withQueryParams(['include' => 'user'])));
 
-        $this->assertEquals(2, $admin['total']);
-        $this->assertEquals(['open' => 2], $admin['counts']);
-        $this->assertEquals('outro', $admin['reports'][0]['user']['username']);
+        $this->assertEquals(2, $admin['meta']['page']['total']);
+        $this->assertEquals(['open' => 2], $admin['meta']['counts']);
+        $this->assertArrayHasKey('context', $admin['data'][0]['attributes']);
+
+        $sender = $admin['data'][0]['relationships']['user']['data']['id'];
+        $users = array_column(array_filter($admin['included'], static fn (array $item) => $item['type'] === 'users'), 'attributes', 'id');
+        $this->assertEquals('outro', $users[$sender]['username']);
     }
 
     /** O filtro de status do admin: `active` deixa de fora os resolvidos. */
@@ -196,13 +214,15 @@ class BugReportsTest extends TestCase
     {
         $fixed = $this->createdId($this->report(2));
         $open = $this->createdId($this->report(2));
-        $this->send($this->request('PATCH', "/api/canela-bug-reports/$fixed", ['authenticatedAs' => 1, 'json' => ['status' => 'fixed']]));
+        $this->assertEquals(200, $this->patch(1, $fixed, ['status' => 'fixed'])->getStatusCode());
 
-        $active = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])->withQueryParams(['status' => 'active'])));
-        $done = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])->withQueryParams(['status' => 'fixed'])));
+        $active = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])->withQueryParams(['filter' => ['status' => 'active']])));
+        $done = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])->withQueryParams(['filter' => ['status' => 'fixed']])));
 
-        $this->assertEquals([$open], array_column($active['reports'], 'id'));
-        $this->assertEquals([$fixed], array_column($done['reports'], 'id'));
+        $this->assertSame([$open], $this->ids($active));
+        $this->assertSame([$fixed], $this->ids($done));
+        // As contagens das abas não dependem do filtro de status.
+        $this->assertEquals(['open' => 1, 'fixed' => 1], $active['meta']['counts']);
     }
 
     /** O relatório de outra pessoa responde como inexistente (404). */
@@ -216,27 +236,27 @@ class BugReportsTest extends TestCase
 
         $admin = $this->body($this->send($this->request('GET', "/api/canela-bug-reports/$id", ['authenticatedAs' => 1])));
 
-        $this->assertArrayHasKey('context', $admin['report']);
+        $this->assertArrayHasKey('context', $admin['data']['attributes']);
     }
 
-    /** Só o admin muda status e nota; um status desconhecido é ignorado. */
+    /** Só o admin muda status e nota; um status desconhecido é recusado (422) e nada muda. */
     #[Test]
     public function so_admin_atualiza(): void
     {
         $id = $this->createdId($this->report(2));
 
-        $owner = $this->send($this->request('PATCH', "/api/canela-bug-reports/$id", ['authenticatedAs' => 2, 'json' => ['status' => 'fixed']]));
+        $owner = $this->patch(2, $id, ['status' => 'fixed']);
 
         $this->assertEquals(403, $owner->getStatusCode());
         $this->assertEquals('open', BugReport::query()->find($id)->status);
 
-        $admin = $this->send($this->request('PATCH', "/api/canela-bug-reports/$id", ['authenticatedAs' => 1, 'json' => ['status' => 'in_progress', 'note' => 'Vendo isso']]));
+        $admin = $this->patch(1, $id, ['status' => 'in_progress', 'note' => 'Vendo isso']);
 
         $this->assertEquals(200, $admin->getStatusCode());
-        $this->assertEquals('in_progress', $this->body($admin)['report']['status']);
-        $this->assertEquals('Vendo isso', $this->body($admin)['report']['note']);
+        $this->assertEquals('in_progress', $this->body($admin)['data']['attributes']['status']);
+        $this->assertEquals('Vendo isso', $this->body($admin)['data']['attributes']['note']);
 
-        $this->send($this->request('PATCH', "/api/canela-bug-reports/$id", ['authenticatedAs' => 1, 'json' => ['status' => 'hackeado']]));
+        $this->assertEquals(422, $this->patch(1, $id, ['status' => 'hackeado'])->getStatusCode());
 
         $this->assertEquals('in_progress', BugReport::query()->find($id)->status);
     }
@@ -324,5 +344,91 @@ class BugReportsTest extends TestCase
 
         $this->assertEquals(200, $one->getStatusCode());
         $this->assertEquals(403, $this->send($this->request('GET', "/api/canela-bug-reports/$id/prompt", ['authenticatedAs' => 2]))->getStatusCode());
+    }
+    /**
+     * A policy: quem reportou e o admin veem; só o admin muda, apaga e
+     * exporta (também sem um relatório, para a exportação de todos).
+     */
+    #[Test]
+    public function policy_dos_relatorios(): void
+    {
+        $id = $this->createdId($this->report(2));
+
+        $report = BugReport::query()->findOrFail($id);
+        $admin = User::query()->findOrFail(1);
+        $owner = User::query()->findOrFail(2);
+        $other = User::query()->findOrFail(3);
+
+        $this->assertTrue($owner->can('view', $report));
+        $this->assertFalse($other->can('view', $report));
+        $this->assertTrue($admin->can('view', $report));
+
+        foreach (['edit', 'delete', 'export'] as $ability) {
+            $this->assertTrue($admin->can($ability, $report), $ability);
+            $this->assertFalse($owner->can($ability, $report), $ability);
+        }
+
+        $this->assertTrue($admin->can('export', BugReport::class));
+        $this->assertFalse($owner->can('export', BugReport::class));
+
+        $this->assertSame([$id], BugReport::whereVisibleTo($owner)->pluck('id')->all());
+        $this->assertSame([], BugReport::whereVisibleTo($other)->pluck('id')->all());
+    }
+
+    /**
+     * A validação dos campos: descrição e textos com teto, a captura
+     * obrigatória e, ao enviar, nada de status nem nota (são do admin).
+     */
+    #[Test]
+    public function validacao_dos_campos(): void
+    {
+        $this->assertEquals(422, $this->report(2, ['description' => str_repeat('a', 4001)])->getStatusCode());
+        $this->assertEquals(422, $this->report(2, ['currentText' => str_repeat('a', 2001)])->getStatusCode());
+        $this->assertEquals(422, $this->report(2, ['region' => null])->getStatusCode());
+        $this->assertEquals(403, $this->report(2, ['status' => 'fixed'])->getStatusCode());
+        $this->assertEquals(403, $this->report(2, ['note' => 'Já resolvido'])->getStatusCode());
+        $this->assertEquals(0, BugReport::query()->count());
+
+        $id = $this->createdId($this->report(2));
+
+        $this->assertEquals(422, $this->patch(1, $id, ['note' => str_repeat('a', 2001)])->getStatusCode());
+        // Depois de enviado, o texto não muda (nem pelo admin).
+        $this->assertEquals(403, $this->patch(1, $id, ['description' => 'Outro texto'])->getStatusCode());
+        $this->assertEquals('O botão está cortado', BugReport::query()->find($id)->description);
+    }
+
+    /** A captura inteira desligada no admin fica de fora, mesmo enviada. */
+    #[Test]
+    public function captura_inteira_desligada_fica_de_fora(): void
+    {
+        $this->setting('canela.bug_reports_full', '0');
+
+        $id = $this->createdId($this->report(2));
+
+        $this->assertNull(BugReport::query()->find($id)->full_path);
+        $this->assertFalse($this->body($this->send($this->request('GET', "/api/canela-bug-reports/$id", ['authenticatedAs' => 2])))['data']['attributes']['hasFull']);
+    }
+
+    /** `filter[mine]`: o admin vê só os que ele mesmo enviou. */
+    #[Test]
+    public function admin_filtra_os_proprios(): void
+    {
+        $this->createdId($this->report(2));
+        $own = $this->createdId($this->report(1));
+
+        $mine = $this->body($this->send($this->request('GET', '/api/canela-bug-reports', ['authenticatedAs' => 1])->withQueryParams(['filter' => ['mine' => '1']])));
+
+        $this->assertSame([$own], $this->ids($mine));
+        $this->assertEquals(['open' => 1], $mine['meta']['counts']);
+    }
+
+    /** As instruções de um relatório alheio: para quem não é admin, nem existe (404). */
+    #[Test]
+    public function instrucoes_de_relatorio_alheio(): void
+    {
+        $id = $this->createdId($this->report(2));
+
+        $this->assertEquals(404, $this->send($this->request('GET', "/api/canela-bug-reports/$id/prompt", ['authenticatedAs' => 3]))->getStatusCode());
+        $this->assertStringContainsString('O botão está cortado', (string) $this->send($this->request('GET', "/api/canela-bug-reports/$id/prompt", ['authenticatedAs' => 1]))->getBody());
     }
 }

@@ -66,7 +66,7 @@ final class ForumAiFields
         }
 
         $actor = $context->getActor();
-        $canUse = $this->settings->canUse($actor);
+        $canUse = $actor->can(AiSettings::USE_PERMISSION);
 
         return [
             'bot' => $this->settings->bool(AiSettings::BOT),
@@ -78,7 +78,7 @@ final class ForumAiFields
             'gists' => $this->settings->bool(AiSettings::GISTS),
             'related' => $this->settings->feature(AiSettings::RELATED),
             'canUse' => $canUse,
-            'canSummarize' => $this->settings->canSummarize($actor),
+            'canSummarize' => $actor->can(AiSettings::SUMMARIZE_PERMISSION),
             'remaining' => $canUse ? $this->usage->remaining($actor) : null,
             'personas' => $canUse ? array_map(static fn (array $persona): array => [
                 'id' => $persona['id'],

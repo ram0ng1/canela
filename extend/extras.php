@@ -29,7 +29,8 @@ use Flarum\Post\Post;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Ramon\Canela\Extras\Banner\BannerHtml;
 use Ramon\Canela\Extras\Extras;
-use Ramon\Canela\Extras\History\ListRevisionsController;
+use Ramon\Canela\Extras\History\ListRevisions;
+use Ramon\Canela\Extras\History\PostHistoryPolicy;
 use Ramon\Canela\Extras\History\PostRevision;
 use Ramon\Canela\Extras\History\PostRevisionFields;
 use Ramon\Canela\Extras\History\RecordRevision;
@@ -99,12 +100,15 @@ return [
     (new Extend\Model(Post::class))
         ->hasMany('canelaRevisions', PostRevision::class, 'post_id'),
 
+    // O número de edições na postagem e as versões (`GET /posts/{id}/canela-revisions`).
     (new Extend\ApiResource(PostResource::class))
-        ->fields(PostRevisionFields::class),
+        ->fields(PostRevisionFields::class)
+        ->endpoints(static fn (): array => [ListRevisions::endpoint()]),
+
+    // Quem abre o histórico: `$actor->can('canelaViewHistory', $post)`.
+    (new Extend\Policy())
+        ->modelPolicy(Post::class, PostHistoryPolicy::class),
 
     (new Extend\Event())
         ->listen(Revised::class, RecordRevision::class),
-
-    (new Extend\Routes('api'))
-        ->get('/canela/posts/{id}/revisions', 'canela.posts.revisions', ListRevisionsController::class),
 ];

@@ -10,26 +10,17 @@ import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
 import { apiUrl, KIND_ICONS, type Kind } from './ReportModal';
-
-interface MyReport {
-  id: number;
-  kind: Kind;
-  status: string;
-  description: string;
-  note: string | null;
-  url: string;
-  createdAt: string;
-}
+import { reportsFrom, type BugReportData, type BugReportsDocument } from '../../../common/bugReports';
 
 export default class MyReportsModal extends Modal<IInternalModalAttrs> {
-  private reports: MyReport[] | null = null;
+  private reports: BugReportData[] | null = null;
 
   oninit(vnode: Mithril.Vnode<IInternalModalAttrs, this>) {
     super.oninit(vnode);
 
     app
-      .request<{ reports: MyReport[] }>({ method: 'GET', url: apiUrl('/canela-bug-reports'), params: { mine: 1 } })
-      .then((payload) => (this.reports = payload.reports || []))
+      .request<BugReportsDocument>({ method: 'GET', url: apiUrl('/canela-bug-reports'), params: { filter: { mine: 1 } } })
+      .then((document) => (this.reports = reportsFrom(document)))
       .catch(() => (this.reports = []))
       .finally(() => m.redraw());
   }
@@ -57,7 +48,8 @@ export default class MyReportsModal extends Modal<IInternalModalAttrs> {
                 <div className="CanelaBugMine-meta">
                   <span className={`CanelaBugStatus CanelaBugStatus--${report.status}`}>{t(`bug_reports.status_${report.status}`)}</span>
                   <span className="CanelaBugMine-kind">
-                    <i className={`icon ${KIND_ICONS[report.kind] || KIND_ICONS.bug}`} aria-hidden="true" /> {t(`bug_reports.kind_${report.kind}`)}
+                    <i className={`icon ${KIND_ICONS[report.kind as Kind] || KIND_ICONS.bug}`} aria-hidden="true" />{' '}
+                    {t(`bug_reports.kind_${report.kind}`)}
                   </span>
                   <span className="CanelaBugMine-date">{humanTime(new Date(report.createdAt))}</span>
                 </div>

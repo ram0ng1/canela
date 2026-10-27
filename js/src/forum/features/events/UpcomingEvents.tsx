@@ -10,7 +10,7 @@ import Link from 'flarum/common/components/Link';
 import type Mithril from 'mithril';
 
 import { monthShort, timeOf } from './format';
-import { apiUrl, type UpcomingItem } from './model';
+import { apiUrl, upcomingFromDocument, type EventsDocument, type UpcomingItem } from './model';
 import { EVENTS_ROUTE } from './route';
 import { t } from '../../utils/settings';
 
@@ -22,10 +22,34 @@ export interface UpcomingEventsAttrs extends ComponentAttrs {
 let cache: { at: number; items: UpcomingItem[] } | null = null;
 let pending: Promise<UpcomingItem[]> | null = null;
 
-export function loadUpcoming(params: Record<string, string | number> = {}): Promise<UpcomingItem[]> {
+export interface UpcomingParams {
+  /** AAAA-MM-DD; sem ela, de agora. */
+  from?: string;
+  /** AAAA-MM-DD; sem ela, um ano depois de `from`. */
+  to?: string;
+  /** Quantas ocorrências (não eventos), até 200. */
+  limit?: number;
+}
+
+export function loadUpcoming({ from, to, limit }: UpcomingParams = {}): Promise<UpcomingItem[]> {
+  const filter: Record<string, string> = {};
+
+  if (from) filter.from = from;
+  if (to) filter.to = to;
+
   return app
-    .request<{ events: UpcomingItem[] }>({ method: 'GET', url: apiUrl('/canela-events'), params })
-    .then((payload) => payload.events || [])
+    .request<EventsDocument>({
+      method: 'GET',
+      url: apiUrl('/canela-events'),
+      params: {
+        filter,
+        page: limit ? { limit } : {},
+        include: 'discussion',
+        // Da discussão, só o que a linha mostra (o título) e o link (o slug).
+        fields: { discussions: 'title,slug' },
+      },
+    })
+    .then((payload) => upcomingFromDocument(payload))
     .catch(() => []);
 }
 

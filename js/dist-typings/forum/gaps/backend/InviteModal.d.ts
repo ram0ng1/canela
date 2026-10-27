@@ -1,23 +1,14 @@
 import type { IInternalModalAttrs } from 'flarum/common/components/Modal';
 import FormModal from 'flarum/common/components/FormModal';
 import type Mithril from 'mithril';
-interface InviteData {
-    id: number;
-    code: string;
-    url: string;
-    maxRedemptions: number;
-    redemptionCount: number;
-    expiresAt: string | null;
-    createdAt: string | null;
-    usable: boolean;
-}
+import type Invite from './Invite';
 export default class InviteModal extends FormModal<IInternalModalAttrs> {
-    invites: InviteData[] | null;
+    invites: Invite[] | null;
     signUpOpen: boolean;
     /** Falso para quem perdeu a permissão: a janela só lista e revoga. */
     canCreate: boolean;
     creating: boolean;
-    copiedId: number | null;
+    copiedId: string | null;
     maxRedemptions: any;
     expiresDays: any;
     oninit(vnode: Mithril.Vnode<IInternalModalAttrs, this>): void;
@@ -26,7 +17,6 @@ export default class InviteModal extends FormModal<IInternalModalAttrs> {
     load(): void;
     content(): Mithril.Children;
     list(): Mithril.Children;
-    remove(invite: InviteData): void;
+    remove(invite: Invite): void;
     onsubmit(event: SubmitEvent): void;
 }
-export {};

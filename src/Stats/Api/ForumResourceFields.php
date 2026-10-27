@@ -15,7 +15,7 @@ use Ramon\Canela\Stats\TopicCounter;
  * No ForumResource (e não no usuário) porque ele é serializado uma vez por
  * carga de página: o usuário atual aparece em qualquer listagem em que tenha
  * postado, e cada aparição refaria as duas contagens. Depois da carga, o
- * front-end atualiza os números por GET /api/canela-counts.
+ * front-end atualiza os números por GET /api/forums/canela-counts (ShowTopicCounts).
  */
 final class ForumResourceFields
 {

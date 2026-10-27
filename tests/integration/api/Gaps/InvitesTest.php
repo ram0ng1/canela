@@ -59,12 +59,27 @@ class InvitesTest extends TestCase
         return json_decode((string) $response->getBody(), true) ?? [];
     }
 
-    private function createInvite(int $actor, array $body = []): ResponseInterface
+    private function createInvite(?int $actor, array $attributes = []): ResponseInterface
     {
+        // O visitante passa do CSRF, para a resposta ser a da API (401), e não a do token.
         return $this->send($this->request('POST', '/api/canela-invites', [
-            'authenticatedAs' => $actor,
-            'json' => $body,
-        ]));
+            ...($actor ? ['authenticatedAs' => $actor] : []),
+            'json' => ['data' => ['type' => 'canela-invites', 'attributes' => $attributes]],
+        ])->withAttribute('bypassCsrfToken', true));
+    }
+
+    /** O convite criado, como o recurso o devolve (os atributos e o id). */
+    private function created(ResponseInterface $response): array
+    {
+        $data = $this->json($response)['data'];
+
+        return ['id' => $data['id']] + $data['attributes'];
+    }
+
+    /** @return list<array<string, mixed>> os convites da lista, com o id */
+    private function listed(ResponseInterface $response): array
+    {
+        return array_map(static fn (array $item) => ['id' => $item['id']] + $item['attributes'], $this->json($response)['data']);
     }
 
     /**
@@ -89,7 +104,7 @@ class InvitesTest extends TestCase
 
         $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
 
-        $invite = $this->json($response)['invite'];
+        $invite = $this->created($response);
 
         $this->assertMatchesRegularExpression('/^[A-Za-z0-9]{32}$/', $invite['code']);
         $this->assertStringEndsWith('/invites/'.$invite['code'], $invite['url']);
@@ -111,14 +126,14 @@ class InvitesTest extends TestCase
 
         $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
 
-        $invite = $this->json($response)['invite'];
+        $invite = $this->created($response);
 
         $this->assertSame(100, $invite['maxRedemptions']);
 
         $days = Carbon::now()->diffInDays(Carbon::parse($invite['expiresAt']));
         $this->assertEqualsWithDelta(90, $days, 1);
 
-        $invite = $this->json($this->createInvite(2, ['maxRedemptions' => -4, 'expiresDays' => 0]))['invite'];
+        $invite = $this->created($this->createInvite(2, ['maxRedemptions' => -4, 'expiresDays' => 0]));
 
         $this->assertSame(1, $invite['maxRedemptions']);
         $this->assertEqualsWithDelta(1, Carbon::now()->diffInDays(Carbon::parse($invite['expiresAt'])), 1);
@@ -159,8 +174,8 @@ class InvitesTest extends TestCase
 
         $list = $this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 3]));
         $this->assertEquals(200, $list->getStatusCode(), (string) $list->getBody());
-        $this->assertCount(3, $this->json($list)['invites']);
-        $this->assertFalse($this->json($list)['canCreate']);
+        $this->assertCount(3, $this->listed($list));
+        $this->assertFalse($this->json($list)['meta']['canCreate']);
 
         $this->assertEquals(204, $this->send($this->request('DELETE', '/api/canela-invites/1', ['authenticatedAs' => 3]))->getStatusCode());
         $this->assertFalse($this->database()->table('canela_invites')->where('id', 1)->exists());
@@ -203,8 +218,8 @@ class InvitesTest extends TestCase
     {
         $this->createInvite(2);
 
-        $mine = $this->json($this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 2])))['invites'];
-        $theirs = $this->json($this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 3])))['invites'];
+        $mine = $this->listed($this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 2])));
+        $theirs = $this->listed($this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 3])));
 
         $this->assertCount(1, $mine);
         $this->assertCount(3, $theirs);
@@ -227,6 +242,87 @@ class InvitesTest extends TestCase
 
         $this->assertEquals(204, $response->getStatusCode());
         $this->assertFalse($this->database()->table('canela_invites')->where('id', 1)->exists());
+    }
+
+    /**
+     * Nem o administrador apaga o convite de outra pessoa: a policy nega com
+     * forceDeny, e o escopo o deixa de fora (404).
+     */
+    #[Test]
+    public function administrador_nao_apaga_convite_alheio(): void
+    {
+        $response = $this->send($this->request('DELETE', '/api/canela-invites/1', ['authenticatedAs' => 1]));
+
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertTrue($this->database()->table('canela_invites')->where('id', 1)->exists());
+
+        $this->app();
+        $invite = \Ramon\Canela\Gaps\Invites\Invite::query()->findOrFail(1);
+
+        $this->assertFalse(User::query()->findOrFail(1)->can('delete', $invite));
+        $this->assertFalse(User::query()->findOrFail(2)->can('delete', $invite));
+        $this->assertTrue(User::query()->findOrFail(3)->can('delete', $invite));
+        $this->assertTrue(User::query()->findOrFail(3)->can('view', $invite));
+    }
+
+    /**
+     * Visitante não gera convites (401) nem apaga: para ele, nenhum convite
+     * existe (404), como para quem não é o dono.
+     */
+    #[Test]
+    public function visitante_nao_gera_nem_apaga(): void
+    {
+        $this->assertEquals(401, $this->createInvite(null)->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('DELETE', '/api/canela-invites/1')->withAttribute('bypassCsrfToken', true))->getStatusCode());
+        $this->assertEquals(3, $this->database()->table('canela_invites')->count());
+    }
+
+    /**
+     * Usos e validade têm de ser números inteiros: outra coisa é 422, e nada
+     * é gravado.
+     */
+    #[Test]
+    public function usos_e_validade_precisam_ser_inteiros(): void
+    {
+        $this->assertEquals(422, $this->createInvite(2, ['maxRedemptions' => 'muitos'])->getStatusCode());
+        $this->assertEquals(422, $this->createInvite(2, ['expiresDays' => 'sempre'])->getStatusCode());
+        $this->assertEquals(422, $this->createInvite(2, ['maxRedemptions' => 1.5])->getStatusCode());
+        $this->assertEquals(0, $this->database()->table('canela_invites')->where('user_id', 2)->count());
+    }
+
+    /**
+     * Sem os campos, o convite vale um uso e a validade padrão do admin; o
+     * código e o dono não se escolhem pela API.
+     */
+    #[Test]
+    public function padroes_e_campos_que_nao_se_escolhem(): void
+    {
+        $this->setting('canela.invites_expire_days', 5);
+
+        // Código e usos já contados são só de leitura: 403, nada gravado.
+        $this->assertEquals(403, $this->createInvite(2, ['code' => 'EscolhidoEscolhidoEscolhido00001'])->getStatusCode());
+        $this->assertEquals(403, $this->createInvite(2, ['redemptionCount' => 7])->getStatusCode());
+        $this->assertEquals(0, $this->database()->table('canela_invites')->where('user_id', 2)->count());
+
+        $invite = $this->created($this->createInvite(2));
+
+        $this->assertSame(1, $invite['maxRedemptions']);
+        $this->assertSame(0, $invite['redemptionCount']);
+        $this->assertEqualsWithDelta(5, Carbon::now()->diffInDays(Carbon::parse($invite['expiresAt'])), 1);
+        $this->assertEquals(2, $this->database()->table('canela_invites')->where('id', $invite['id'])->value('user_id'));
+    }
+
+    /**
+     * A lista vem do mais novo para o mais antigo, com `meta.signUpOpen`.
+     */
+    #[Test]
+    public function lista_do_mais_novo_ao_mais_antigo(): void
+    {
+        $response = $this->send($this->request('GET', '/api/canela-invites', ['authenticatedAs' => 3]));
+
+        $this->assertSame(['3', '2', '1'], array_column($this->listed($response), 'id'));
+        $this->assertArrayHasKey('signUpOpen', $this->json($response)['meta']);
+        $this->assertTrue($this->json($response)['meta']['canCreate']);
     }
 
     /**
