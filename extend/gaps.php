@@ -38,8 +38,11 @@ use Ramon\Canela\Gaps\Api\TagResourceFields;
 use Ramon\Canela\Gaps\Formatter\LocalDates;
 use Ramon\Canela\Gaps\GapsServiceProvider;
 use Ramon\Canela\Gaps\GapsSettings;
+use Ramon\Canela\Gaps\Invites\Access\InvitePolicy;
+use Ramon\Canela\Gaps\Invites\Access\ScopeInviteVisibility;
+use Ramon\Canela\Gaps\Invites\Api\InviteResource;
 use Ramon\Canela\Gaps\Invites\Http\InviteInfoController;
-use Ramon\Canela\Gaps\Invites\Http\InvitesController;
+use Ramon\Canela\Gaps\Invites\Invite;
 use Ramon\Canela\Gaps\Invites\Http\RedeemInviteController;
 use Ramon\Canela\Gaps\Invites\UserResourceFields;
 use Ramon\Canela\Gaps\Listener\NotifyInviteAccepted;
@@ -101,10 +104,18 @@ $extenders = [
     (new Extend\ApiResource(UserResource::class))
         ->fields(UserResourceFields::class),
 
+    // Gerar, listar e apagar: o recurso JSON:API, com o escopo do dono e a
+    // policy. A informação pública do código continua um controlador: ela
+    // responde por códigos que não existem (`valid: false`), sem modelo.
+    new Extend\ApiResource(InviteResource::class),
+
+    (new Extend\ModelVisibility(Invite::class))
+        ->scope(ScopeInviteVisibility::class),
+
+    (new Extend\Policy())
+        ->modelPolicy(Invite::class, InvitePolicy::class),
+
     (new Extend\Routes('api'))
-        ->get('/canela-invites', 'canela.invites.index', InvitesController::class)
-        ->post('/canela-invites', 'canela.invites.create', InvitesController::class)
-        ->delete('/canela-invites/{id:\d+}', 'canela.invites.delete', InvitesController::class)
         ->get('/canela-invite-info/{code:[A-Za-z0-9]+}', 'canela.invites.info', InviteInfoController::class),
 
     (new Extend\Routes('forum'))

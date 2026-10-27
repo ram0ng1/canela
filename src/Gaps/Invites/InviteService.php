@@ -25,7 +25,8 @@ use Ramon\Canela\Gaps\Notification\InviteAcceptedBlueprint;
 use Ramon\Canela\Support\SchemaCache;
 
 /**
- * Os convites: gerar, listar, apagar e resgatar.
+ * As regras dos convites (limites, validade, quem pode gerar) e o resgate.
+ * Gerar, listar e apagar ficam no InviteResource, que usa estas regras.
  *
  * O resgate acontece quando um cadastro chega com o código (o campo
  * `canelaInviteCode` do usuário): conta um uso e guarda quem convidou. O
@@ -38,6 +39,8 @@ final class InviteService
     public const MAX_ACTIVE = 20;
 
     public const MAX_REDEMPTIONS = 100;
+
+    public const MAX_DAYS = 90;
 
     private ?bool $tablesExist = null;
 
@@ -80,56 +83,36 @@ final class InviteService
         return $this->url->to('forum')->route('canela.invite', ['code' => $invite->code]);
     }
 
-    /** @return array<string, mixed> */
-    public function present(Invite $invite): array
-    {
-        return [
-            'id' => $invite->id,
-            'code' => $invite->code,
-            'url' => $this->link($invite),
-            'maxRedemptions' => $invite->max_redemptions,
-            'redemptionCount' => $invite->redemption_count,
-            'expiresAt' => $invite->expires_at?->toAtomString(),
-            'createdAt' => $invite->created_at?->toAtomString(),
-            'usable' => $invite->isUsable(),
-        ];
-    }
-
     public function hasInvites(User $actor): bool
     {
         return $this->enabled() && ! $actor->isGuest() && Invite::query()->where('user_id', $actor->id)->exists();
     }
 
-    /** @return list<Invite> */
-    public function listFor(User $actor): array
+    /** Os convites que ainda valem (dentro da validade e com usos sobrando). */
+    public function activeCount(User $actor): int
     {
-        $query = Invite::query()->where('user_id', $actor->id)->latest('id');
-        $query->limit(50);
-
-        return $query->get()->values()->all();
-    }
-
-    public function create(User $actor, int $maxRedemptions, ?int $days): Invite
-    {
-        $active = Invite::query()
+        return Invite::query()
             ->where('user_id', $actor->id)
             ->whereColumn('redemption_count', '<', 'max_redemptions')
             ->where(fn ($query) => $query->whereNull('expires_at')->orWhere('expires_at', '>', Carbon::now()))
             ->count();
+    }
 
-        if ($active >= self::MAX_ACTIVE) {
-            throw new \RuntimeException('too_many_invites');
-        }
+    /** Usos pedidos, presos à faixa 1–MAX_REDEMPTIONS em vez de gravados como vieram. */
+    public static function clampRedemptions(int $requested): int
+    {
+        return max(1, min(self::MAX_REDEMPTIONS, $requested));
+    }
 
-        $invite = new Invite();
-        $invite->code = Str::random(32);
-        $invite->user_id = (int) $actor->id;
-        $invite->max_redemptions = max(1, min(self::MAX_REDEMPTIONS, $maxRedemptions));
-        $invite->redemption_count = 0;
-        $invite->expires_at = Carbon::now()->addDays(max(1, min(90, $days ?? $this->gaps->inviteDays())));
-        $invite->save();
+    /** A validade a partir de agora: os dias pedidos (1–MAX_DAYS) ou o padrão do admin. */
+    public function expiry(?int $days): Carbon
+    {
+        return Carbon::now()->addDays(max(1, min(self::MAX_DAYS, $days ?? $this->gaps->inviteDays())));
+    }
 
-        return $invite;
+    public static function newCode(): string
+    {
+        return Str::random(32);
     }
 
     public function findUsable(string $code): ?Invite
