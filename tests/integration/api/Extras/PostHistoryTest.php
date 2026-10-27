@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * Histórico de edições: cada edição guarda a versão anterior, e
- * `GET /api/canela/posts/{id}/revisions` lista as versões para quem pode
+ * `GET /api/posts/{id}/canela-revisions` lista as versões para quem pode
  * vê-las — todos que veem o post (público, o padrão) ou só o autor e quem
  * pode editá-lo. Desligado, nada é gravado e a rota não existe.
  *
@@ -70,7 +70,7 @@ class PostHistoryTest extends TestCase
 
     private function revisions(int $postId, ?int $as = null): ResponseInterface
     {
-        return $this->send($this->request('GET', "/api/canela/posts/$postId/revisions", $as ? ['authenticatedAs' => $as] : []));
+        return $this->send($this->request('GET', "/api/posts/$postId/canela-revisions", $as ? ['authenticatedAs' => $as] : []));
     }
 
     /**
@@ -185,6 +185,21 @@ class PostHistoryTest extends TestCase
         $this->assertEquals(404, $this->revisions(1, 2)->getStatusCode());
 
         $attributes = json_decode((string) $this->send($this->request('GET', '/api/posts/1', ['authenticatedAs' => 2]))->getBody(), true)['data']['attributes'];
+        $this->assertArrayNotHasKey('canelaRevisionCount', $attributes);
+    }
+
+    /**
+     * A regra é a PostHistoryPolicy (`canelaViewHistory`), com `forceDeny`
+     * quando o recurso está desligado: nem o administrador abre o histórico.
+     */
+    #[Test]
+    public function desligado_vale_tambem_para_o_administrador(): void
+    {
+        $this->setting('canela.post_history_enabled', false);
+
+        $this->assertEquals(404, $this->revisions(2, 1)->getStatusCode());
+
+        $attributes = json_decode((string) $this->send($this->request('GET', '/api/posts/2', ['authenticatedAs' => 1]))->getBody(), true)['data']['attributes'];
         $this->assertArrayNotHasKey('canelaRevisionCount', $attributes);
     }
 }
