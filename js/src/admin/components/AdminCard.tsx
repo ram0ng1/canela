@@ -36,7 +36,8 @@ export const lockReason = (card: CardDef): { text: string; extension?: string } 
   return reason ? { text: reason } : null;
 };
 
-let savingMaster: string | null = null;
+/** As chaves de cabeçalho sendo gravadas agora (mais de um card pode estar salvando). */
+const savingMasters = new Set<string>();
 
 export const AdminCard: any = {
   view({ attrs: { card, groupLabel } }: { attrs: { card: CardDef; groupLabel?: string } }) {
@@ -45,7 +46,10 @@ export const AdminCard: any = {
     const on = hasMaster ? !lock && getBool(card.master!) : !lock;
     const titleId = `CanelaAdmin-card-${card.id}-title`;
     const descId = `CanelaAdmin-card-${card.id}-desc`;
-    const body = on && card.body ? card.body() : null;
+    // Ao ligar, o miolo só aparece depois que a chave foi gravada: o que ele
+    // busca ao abrir (a lista de relatos, por exemplo) chegaria antes do
+    // salvamento e acharia o recurso ainda desligado (404).
+    const body = on && !savingMasters.has(card.master ?? '') && card.body ? card.body() : null;
 
     return (
       <section
@@ -78,13 +82,15 @@ export const AdminCard: any = {
               <AdminSwitch
                 state={on}
                 disabled={!!lock}
-                saving={savingMaster === card.master}
+                saving={savingMasters.has(card.master!)}
                 label={card.title()}
                 describedBy={card.description ? descId : undefined}
                 onchange={(checked: boolean) => {
-                  savingMaster = card.master!;
-                  setBool(card.master!, checked).finally(() => {
-                    savingMaster = null;
+                  const key = card.master!;
+
+                  savingMasters.add(key);
+                  setBool(key, checked).finally(() => {
+                    savingMasters.delete(key);
                     m.redraw();
                   });
                 }}
