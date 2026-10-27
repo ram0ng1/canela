@@ -20,6 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Stats\Http\Visitor;
 use Ramon\Canela\Stats\StatsSettings;
+use Ramon\Canela\Stats\Validation\ReadTimeValidator;
 use Ramon\Canela\Stats\VisitRecorder;
 
 /**
@@ -33,6 +34,11 @@ use Ramon\Canela\Stats\VisitRecorder;
  * - as postagens precisam ser do tópico informado e visíveis para quem envia,
  *   e cada uma conta uma vez por dia;
  * - o dia inteiro tem teto (VisitRecorder).
+ *
+ * Continua um controller, e não um endpoint do recurso de tópicos: o fórum
+ * manda por \`fetch\` com \`keepalive\` (o último envio sai mesmo com a aba
+ * fechando), um beacon que ninguém lê. O formato passa pelo
+ * ReadTimeValidator; só quem entrou envia (401).
  */
 final class RecordReadTimeController implements RequestHandlerInterface
 {
@@ -58,7 +64,8 @@ final class RecordReadTimeController implements RequestHandlerInterface
     public function __construct(
         private readonly StatsSettings $settings,
         private readonly VisitRecorder $visits,
-        private readonly Cache $cache
+        private readonly Cache $cache,
+        private readonly ReadTimeValidator $validator,
     ) {
     }
 
@@ -73,6 +80,11 @@ final class RecordReadTimeController implements RequestHandlerInterface
         $actor->assertRegistered();
 
         $body = (array) $request->getParsedBody();
+        $this->validator->assertValid([
+            'discussionId' => Arr::get($body, 'discussionId'),
+            'seconds' => Arr::get($body, 'seconds'),
+            'postIds' => Arr::get($body, 'postIds'),
+        ]);
 
         // findOrFail: um tópico que a pessoa não pode ver responde 404, como
         // se não existisse — o mesmo que a API faz no Show.

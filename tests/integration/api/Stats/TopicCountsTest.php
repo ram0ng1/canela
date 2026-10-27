@@ -88,7 +88,7 @@ class TopicCountsTest extends TestCase
     #[Test]
     public function visitante_nao_pode_ver_as_contagens(): void
     {
-        $response = $this->send($this->request('GET', '/api/canela-counts'));
+        $response = $this->send($this->request('GET', '/api/forums/canela-counts'));
 
         $this->assertEquals(401, $response->getStatusCode());
     }
@@ -100,7 +100,7 @@ class TopicCountsTest extends TestCase
     #[Test]
     public function contagens_seguem_a_regra_e_a_visibilidade(): void
     {
-        $response = $this->send($this->request('GET', '/api/canela-counts', ['authenticatedAs' => 2]));
+        $response = $this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2]));
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertSame(['new' => 1, 'unread' => 1, 'limit' => 100], $this->json($response));
@@ -131,7 +131,7 @@ class TopicCountsTest extends TestCase
         $this->setting('canela.stats_new_days', 1);
         $this->database()->table('discussions')->where('id', 1)->update(['created_at' => Carbon::now()->subDays(3)]);
 
-        $response = $this->send($this->request('GET', '/api/canela-counts', ['authenticatedAs' => 2]));
+        $response = $this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2]));
 
         $this->assertSame(0, $this->json($response)['new']);
     }
@@ -159,7 +159,7 @@ class TopicCountsTest extends TestCase
     {
         $this->setting('canela.stats_counts_enabled', false);
 
-        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela-counts', ['authenticatedAs' => 2]))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2]))->getStatusCode());
 
         $attributes = $this->json($this->send($this->request('GET', '/api', ['authenticatedAs' => 2])))['data']['attributes'];
         $this->assertArrayNotHasKey('canelaNewCount', $attributes);
@@ -269,5 +269,56 @@ class TopicCountsTest extends TestCase
         ]));
 
         $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * Com `filter[tag]`, só o que está na tag e nas filhas dela; tag que não
+     * existe não conta nada.
+     */
+    #[Test]
+    public function contagens_de_uma_tag_e_das_filhas(): void
+    {
+        $this->extension('flarum-tags', 'ramon-canela');
+        $this->prepareDatabase([
+            'tags' => [
+                ['id' => 10, 'name' => 'Suporte', 'slug' => 'suporte', 'position' => 0],
+                ['id' => 11, 'name' => 'Instalação', 'slug' => 'instalacao', 'position' => 0, 'parent_id' => 10],
+                ['id' => 12, 'name' => 'Geral', 'slug' => 'geral', 'position' => 1],
+            ],
+            'discussion_tag' => [
+                ['discussion_id' => 1, 'tag_id' => 12],
+                ['discussion_id' => 2, 'tag_id' => 11],
+            ],
+        ]);
+
+        $counts = fn (string $tag) => $this->json($this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2])
+            ->withQueryParams(['filter' => ['tag' => $tag]])));
+
+        $this->assertSame(['new' => 0, 'unread' => 1, 'limit' => 100], $counts('suporte'));
+        $this->assertSame(['new' => 1, 'unread' => 0, 'limit' => 100], $counts('geral'));
+        $this->assertSame(['new' => 0, 'unread' => 0, 'limit' => 100], $counts('nao-existe'));
+    }
+
+    /** `filter[tag]` que não é texto: 422. */
+    #[Test]
+    public function filtro_de_tag_invalido_responde_422(): void
+    {
+        $response = $this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2])
+            ->withQueryParams(['filter' => ['tag' => ['a', 'b']]]));
+
+        $this->assertEquals(422, $response->getStatusCode());
+    }
+
+    /** Tempo de leitura com o envio fora do formato (sem tópico, listas que não são listas): 422, nada somado. */
+    #[Test]
+    public function tempo_de_leitura_fora_do_formato_responde_422(): void
+    {
+        foreach ([['seconds' => 30], ['discussionId' => 'abc'], ['discussionId' => 2, 'postIds' => 'todos'], ['discussionId' => 2, 'seconds' => 'muito']] as $json) {
+            $response = $this->send($this->request('POST', '/api/canela-read-time', ['authenticatedAs' => 2, 'json' => $json]));
+
+            $this->assertEquals(422, $response->getStatusCode(), json_encode($json));
+        }
+
+        $this->assertSame(0, (int) $this->database()->table('canela_user_visits')->where('user_id', 2)->sum('time_read'));
     }
 }
