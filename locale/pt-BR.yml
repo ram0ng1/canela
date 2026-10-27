@@ -469,12 +469,16 @@ ramon-canela:
         revoke_confirm: Revogar o emblema de {username}?
         run_queued: "Na fila: os emblemas saem em instantes."
       chat:
+        permissions_notice: "Quem pode usar o chat, abrir mensagens diretas, criar canais públicos e moderar fica em Permissões (itens \"Chat\"). Os administradores sempre podem."
+        permission_use: "Usar o chat"
+        permission_direct_message: "Abrir mensagens diretas no chat"
+        permission_create_channel: "Criar canais públicos no chat"
+        permission_moderate: "Moderar o chat (apagar mensagens, fixar, fechar e arquivar canais)"
         channels_only_title: Canais do chat
         title: Chat
         channels_title: Canais e mensagens diretas
         limits_title: Mensagens, anexos e retenção
         needs_chat: Ligue o chat para configurar.
-        admins_always: Os administradores sempre podem.
         realtime_on: As mensagens chegam em tempo real pelo websocket do flarum/realtime ("php flarum realtime:serve" precisa estar rodando). Se ele cair, o chat passa sozinho a perguntar ao servidor a cada poucos segundos.
         realtime_off: Sem o flarum/realtime, o chat pergunta ao servidor a cada poucos segundos se há mensagens novas. Funciona, mas com um pequeno atraso e mais requisições. Para tempo real, ative o flarum/realtime e rode "php flarum realtime:serve".
         retention_notice: A limpeza roda pelo agendador do Flarum ("php flarum schedule:run" no cron a cada minuto) e também apaga as imagens enviadas que nunca viraram mensagem.
@@ -483,18 +487,10 @@ ramon-canela:
         chat_enabled_label: Chat
         chat_enabled_help: 'O chat do tema: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse; as mensagens ficam guardadas.'
         replaced_by_ramon_chat: "O ramon/chat está habilitado: ele substitui o chat do tema, que fica desligado. O tema adapta o visual e a barra lateral dele."
-        chat_allowed_groups_label: Quem pode usar o chat
-        chat_allowed_groups_help: Os grupos que veem o chat. Cada pessoa ainda pode desligá-lo nas próprias configurações.
         chat_sidebar_label: Seções na barra lateral
         chat_sidebar_help: As seções "Canais" e "Mensagens diretas" na barra lateral, abaixo das tags, com as não lidas e as menções.
-        chat_create_channel_groups_label: Quem cria canais públicos
-        chat_create_channel_groups_help: Além dos administradores. Um canal pode ficar ligado a uma tag, e aí só quem enxerga a tag enxerga o canal.
-        chat_moderator_groups_label: Quem modera o chat
-        chat_moderator_groups_help: Apagam e restauram mensagens dos outros, fixam mensagens e fecham, arquivam ou excluem canais. As mensagens diretas não têm moderação, ninguém lê as conversas dos outros.
         chat_dm_enabled_label: Mensagens diretas
         chat_dm_enabled_help: Conversas privadas entre duas pessoas ou em grupo, abertas por "Nova mensagem" ou pelo botão "Chat" do perfil.
-        chat_dm_groups_label: Quem pode abrir mensagens diretas
-        chat_dm_groups_help: Grupos cujos membros podem iniciar mensagens diretas.
         chat_dm_max_users_label: Participantes por conversa
         chat_dm_max_users_help: O máximo de pessoas num chat em grupo, contando quem cria.
         chat_threads_enabled_label: Fios

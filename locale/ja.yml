@@ -469,12 +469,16 @@ ramon-canela:
         revoke_confirm: '{username} さんからこのバッジを取り消しますか？'
         run_queued: "キューに追加しました。まもなくバッジが付与されます。"
       chat:
+        permissions_notice: "チャットの利用、ダイレクトメッセージの開始、公開チャンネルの作成、モデレーションができるユーザーは「権限」（「チャット」の項目）で設定します。管理者は常に可能です。"
+        permission_use: "チャットを利用"
+        permission_direct_message: "チャットでダイレクトメッセージを開始"
+        permission_create_channel: "チャットの公開チャンネルを作成"
+        permission_moderate: "チャットをモデレート（メッセージの削除、固定、チャンネルのクローズとアーカイブ）"
         channels_only_title: チャットチャンネル
         title: チャット
         channels_title: チャンネルとダイレクトメッセージ
         limits_title: メッセージ、アップロード、保存期間
         needs_chat: これを設定するにはチャットを有効にしてください。
-        admins_always: 管理者は常に可能です。
         realtime_on: メッセージは flarum/realtime の WebSocket を通じてリアルタイムに届きます（「php flarum realtime:serve」が実行中である必要があります）。停止した場合、チャットは数秒ごとにサーバーへ問い合わせる方式に切り替わります。
         realtime_off: flarum/realtime がない場合、チャットは数秒ごとにサーバーへ新しいメッセージを問い合わせます。少し遅延があり、リクエストも増えますが動作します。リアルタイムにするには flarum/realtime を有効にして「php flarum realtime:serve」を実行してください。
         retention_notice: 削除処理は Flarum のスケジューラー（cron で毎分「php flarum schedule:run」）で実行され、メッセージにならなかったアップロード画像も削除されます。
@@ -483,18 +487,10 @@ ramon-canela:
         chat_enabled_label: チャット
         chat_enabled_help: テーマのチャット：公開チャンネル（単独またはタグに紐づけ）、ダイレクトメッセージ、スレッド、リアクション、メンション、画像に対応し、ヘッダーのアイコン、隅のドロワー、/chat ページを備えます。オフにするとフォーラムからすべて消え、API は機能が存在しないかのように応答します。メッセージは保持されます。
         replaced_by_ramon_chat: "ramon/chat が有効です。テーマのチャットの代わりに使われ、テーマのチャットはオフになります。テーマはその見た目とサイドバーを調整します。"
-        chat_allowed_groups_label: チャットを利用できるユーザー
-        chat_allowed_groups_help: チャットが表示されるグループ。各ユーザーは自分の設定でチャットをオフにすることもできます。
         chat_sidebar_label: サイドバーのセクション
         chat_sidebar_help: サイドバーのタグの下にある「チャンネル」と「ダイレクトメッセージ」のセクション（未読とメンション付き）。
-        chat_create_channel_groups_label: 公開チャンネルを作成できるユーザー
-        chat_create_channel_groups_help: 管理者に加えて。チャンネルはタグに紐づけることができ、その場合はタグを閲覧できるユーザーだけがチャンネルを閲覧できます。
-        chat_moderator_groups_label: チャットをモデレートできるユーザー
-        chat_moderator_groups_help: 他のユーザーのメッセージの削除と復元、メッセージの固定、チャンネルのクローズ・アーカイブ・削除ができます。ダイレクトメッセージにモデレーションはなく、他人の会話を読むことは誰にもできません。
         chat_dm_enabled_label: ダイレクトメッセージ
         chat_dm_enabled_help: 2人またはグループでの非公開の会話。「新規メッセージ」またはプロフィールの「チャット」ボタンから開始します。
-        chat_dm_groups_label: ダイレクトメッセージを開始できるユーザー
-        chat_dm_groups_help: ダイレクトメッセージを開始できるグループ。
         chat_dm_max_users_label: 1つの会話の参加者数
         chat_dm_max_users_help: グループチャットの最大人数（作成者を含む）。
         chat_threads_enabled_label: スレッド

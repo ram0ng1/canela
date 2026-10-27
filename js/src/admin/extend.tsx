@@ -40,5 +40,44 @@ export default [
       }),
       'reply',
       40
+    )
+    // O chat (extend/chat.php): quem usa, abre MD, cria canais e modera. A
+    // migration semeou cada uma com os grupos que as configurações antigas
+    // tinham; os administradores sempre podem.
+    .permission(
+      () => ({
+        icon: 'far fa-message',
+        label: trans(`${KEY}.chat.permission_use`),
+        permission: 'canela.chat.use',
+      }),
+      'view',
+      40
+    )
+    .permission(
+      () => ({
+        icon: 'far fa-comments',
+        label: trans(`${KEY}.chat.permission_direct_message`),
+        permission: 'canela.chat.directMessage',
+      }),
+      'start',
+      70
+    )
+    .permission(
+      () => ({
+        icon: 'fas fa-hashtag',
+        label: trans(`${KEY}.chat.permission_create_channel`),
+        permission: 'canela.chat.createChannel',
+      }),
+      'start',
+      60
+    )
+    .permission(
+      () => ({
+        icon: 'fas fa-shield-halved',
+        label: trans(`${KEY}.chat.permission_moderate`),
+        permission: 'canela.chat.moderate',
+      }),
+      'moderate',
+      40
     ),
 ];
