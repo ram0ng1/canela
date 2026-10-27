@@ -31,9 +31,10 @@ use Flarum\Discussion\Discussion;
 use Flarum\Extend;
 use Flarum\Post\Event\Posted;
 use Flarum\Post\Event\Revised;
-use Ramon\Canela\Events\Api\EventController;
+use Ramon\Canela\Events\Access\CalendarEventPolicy;
+use Ramon\Canela\Events\Access\ScopeCalendarEventVisibility;
+use Ramon\Canela\Events\Api\CalendarEventResource;
 use Ramon\Canela\Events\Api\EventFields;
-use Ramon\Canela\Events\Api\UpcomingController;
 use Ramon\Canela\Events\CalendarEvent;
 use Ramon\Canela\Events\Console\ReminderSchedule;
 use Ramon\Canela\Events\Console\SendEventReminders;
@@ -85,10 +86,15 @@ return [
     (new Extend\Frontend('forum'))
         ->route('/events', 'canela.events'),
 
-    (new Extend\Routes('api'))
-        ->get('/canela-events', 'canela.events.upcoming', UpcomingController::class)
-        ->get('/canela-events/{id:\d+}/invitees', 'canela.events.invitees', EventController::class)
-        ->post('/canela-events/{id:\d+}/rsvp', 'canela.events.rsvp', EventController::class),
+    // A agenda, o cartão, a presença e os convidados: o recurso JSON:API, com
+    // a visibilidade da discussão e a habilidade de responder (policy).
+    new Extend\ApiResource(CalendarEventResource::class),
+
+    (new Extend\ModelVisibility(CalendarEvent::class))
+        ->scope(ScopeCalendarEventVisibility::class),
+
+    (new Extend\Policy())
+        ->modelPolicy(CalendarEvent::class, CalendarEventPolicy::class),
 
     // Só o alerta, ligado por padrão; cada pessoa desliga em Configurações.
     (new Extend\Notification())
