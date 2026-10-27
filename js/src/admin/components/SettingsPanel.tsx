@@ -60,6 +60,12 @@ export const GROUPS: GroupDef[] = [
     description: () => trans(`${SHELL}.group_composer_desc`),
   },
   {
+    key: 'templates',
+    icon: 'fas fa-file-lines',
+    label: () => trans(`${SHELL}.group_templates`),
+    description: () => trans(`${SHELL}.group_templates_desc`),
+  },
+  {
     key: 'people',
     icon: 'far fa-user',
     label: () => trans(`${SHELL}.group_people`),

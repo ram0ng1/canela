@@ -63,7 +63,7 @@ export function splitPreviewVisible(): boolean {
 }
 
 /** O nó (no vdom da view) com a classe dada, procurando em profundidade. */
-function findByClass(vnode: any, className: string): any {
+export function findByClass(vnode: any, className: string): any {
   if (!vnode || typeof vnode !== 'object') return null;
   if (Array.isArray(vnode)) {
     for (const child of vnode) {

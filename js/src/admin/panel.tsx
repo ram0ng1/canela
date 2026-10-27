@@ -68,6 +68,7 @@ const ORDER: string[] = [
   'event-posts',
   // Editor e busca
   'composer',
+  'templates',
   'drafts',
   'hashtags',
   'search-page',

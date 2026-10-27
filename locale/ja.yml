@@ -27,6 +27,54 @@ ramon-canela:
       user_default_tab_help: "アバターや名前をクリックしたときに、プロフィールで最初に開くタブ。"
       user_default_tab_activity: "アクティビティ（投稿）、Flarum と同じ"
       user_default_tab_summary: "概要"
+      templates:
+        title: "エディターのテンプレート"
+        description: "新しいトピックを書き始めるときにエディターに入る文章を、カテゴリーやタグごと（またはすべて）に用意します。種類は2つ: 自由に書き換えられる「入力済みの文章」と、二重波かっこで示した項目だけを埋めてほかの文章は固定される「フォーム」です（サポートフォーラム向き）。同じカテゴリーに複数あると、エディターに選択メニューが出ます。"
+        notice: "テンプレートは新しいトピックに適用されます。本文はMarkdownで書き、フォームの各項目は {example} のように二重波かっこで示してください。各項目のラベル・種類・選択肢は本文のすぐ下で設定します。"
+        count: "{count, plural, other {# 件のテンプレート}}"
+        new: "新しいテンプレート"
+        editing: "「{name}」を編集中"
+        edit: "編集"
+        delete: "削除"
+        delete_confirm: "テンプレート「{name}」を削除しますか？ 投稿済みのトピックは変わりません。"
+        save: "保存"
+        cancel: "キャンセル"
+        empty: "テンプレートはまだありません。「新しいテンプレート」から作成してください。"
+        load_failed: "テンプレートを読み込めませんでした。テーマのマイグレーションは実行済みですか？"
+        save_failed: "テンプレートを保存できませんでした。"
+        name_label: "名前"
+        name_placeholder: "例: サポート依頼"
+        kind_label: "種類"
+        kind_text: "入力済みの文章"
+        kind_text_help: "文章がエディターに入り、書く人が自由に変更できます。"
+        kind_form: "フォーム"
+        kind_form_help: "二重波かっこの項目だけを埋め、ほかの文章は固定されます。"
+        tags_label: "適用先"
+        tags_help: "テンプレートを表示するカテゴリーとタグを選びます。何も選ばなければ、すべての新しいトピックに適用されます。"
+        tags_all: "すべてのカテゴリー"
+        tags_missing: "Tags拡張がないため、テンプレートはすべての新しいトピックに適用されます。"
+        required_label: "自由入力を許可しない"
+        required_help: "このテンプレートの適用先では必ずテンプレートを使います。選択メニューから「自由入力」が消えます。"
+        position_label: "順序"
+        position_help: "数字が小さいものが選択メニューで先に表示されます。"
+        body_label: "本文"
+        body_help: "Markdownです。フォームでは {example} のような二重波かっこの項目が入力欄になり、まわりの文章はそのまま投稿されます。"
+        example_field: "バージョン"
+        example_field_2: "内容"
+        fields_heading: "フォームの項目"
+        fields_help: "本文の二重波かっこの項目ごとに1つ、本文に出てくる順です。項目を増減するには本文を書き換えてください。"
+        fields_empty: "項目はまだありません。本文に {example} のように名前を二重波かっこで書いてください。"
+        field_label: "ラベル"
+        field_type: "種類"
+        field_type_text: "短い文章"
+        field_type_textarea: "長い文章"
+        field_type_select: "選択肢"
+        field_placeholder: "入力欄内のヒント"
+        field_description: "入力欄の下の説明"
+        field_required: "必須"
+        field_options: "選択肢"
+        field_options_help: "1行に1つ。"
+        badge_required: "自由入力なし"
       bug_reports:
         permission: "問題を報告（画面を囲んで送信）"
         title: "問題の報告"
@@ -249,6 +297,8 @@ ramon-canela:
         group_moderation_desc: 'スタッフ向けツール：一括操作、編集履歴、投稿者への通知。'
         group_bugreports: "問題の報告"
         group_bugreports_desc: "画面を囲んで問題を報告するボタンと、届いた報告。"
+        group_templates: "エディターのテンプレート"
+        group_templates_desc: "新しいトピックの最初に入る文章をカテゴリーごとに: 入力済みの文章か、項目だけを埋めるフォームです。"
         group_integrations_desc: サードパーティ拡張機能向けのテーマのデザインです。それぞれ対応する拡張機能が有効な場合のみ動作します。
         group_ai_desc: プロバイダー、ボット、投稿エディターのアシスタント、要約、関連スレッド。
         group_system: "自動メッセージ"
@@ -2301,6 +2351,7 @@ ramon-canela:
         privacy: プライバシー
         custom_title: リンク
     list:
+      typing: "誰かが入力中…"
       topic: スレッド
       replies: 返信数
       views: 閲覧数
@@ -2983,6 +3034,18 @@ ramon-canela:
     system_user:
       no_replies: "これはシステムの自動会話です。返信は届きません。"
       conversation_note: "システムの自動メッセージです。返信はできません。"
+    templates:
+      picker_label: "テンプレート"
+      choose: "テンプレートを選ぶ…"
+      free_text: "自由入力"
+      kind_text: "文章"
+      kind_form: "フォーム"
+      form_hint: "下の項目を入力してください。ほかの文章は固定で、プレビューに表示されます。"
+      select_placeholder: "選択…"
+      replace_confirm: "書いた内容をテンプレートの文章に置き換えますか？"
+      load_failed: "テンプレートを読み込めませんでした。もう一度お試しください。"
+      missing_required: "投稿する前に「{field}」を入力してください。"
+      choose_required: "投稿する前にテンプレートを選んでください。"
     bug_reports:
       button: "問題を報告"
       menu_report: "このページの問題を報告"

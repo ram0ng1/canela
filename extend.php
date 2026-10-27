@@ -308,6 +308,7 @@ $features = [
     ...$feature('realtime'),
     ...$feature('stats'),
     ...$feature('system'),
+    ...$feature('templates'),
     ...$feature('topic'),
     ...$feature('translation'),
     ...$feature('usersummary'),

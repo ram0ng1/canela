@@ -27,6 +27,54 @@ ramon-canela:
       user_default_tab_help: "Which tab the profile opens on when someone clicks an avatar or name."
       user_default_tab_activity: "Activity (posts), as in Flarum"
       user_default_tab_summary: "Summary"
+      templates:
+        title: "Composer templates"
+        description: "The text a new topic starts with in the composer, per category or tag (or everywhere). Two kinds: pre-filled text, which the writer can change freely, and a form, where only the fields marked with double braces are filled in and the rest of the text stays fixed, handy for support forums. With several templates in a category, the composer shows a picker."
+        notice: "Templates apply to new topics. Write the text in Markdown and mark each form field with double braces, like {example}: the label, type and options of each one are set right below the text."
+        count: "{count, plural, =0 {No templates} one {# template} other {# templates}}"
+        new: "New template"
+        editing: "Editing \"{name}\""
+        edit: "Edit"
+        delete: "Delete"
+        delete_confirm: "Delete the template \"{name}\"? Topics already posted do not change."
+        save: "Save"
+        cancel: "Cancel"
+        empty: "No templates yet. Create the first one with \"New template\"."
+        load_failed: "Could not load the templates. Have the theme's migrations run?"
+        save_failed: "Could not save the template."
+        name_label: "Name"
+        name_placeholder: "E.g. Support request"
+        kind_label: "Kind"
+        kind_text: "Pre-filled text"
+        kind_text_help: "The text goes into the composer and the writer changes whatever they want."
+        kind_form: "Form"
+        kind_form_help: "Only the fields in double braces are filled in; the rest of the text stays fixed."
+        tags_label: "Where it applies"
+        tags_help: "Tick the categories and tags where the template shows up. None ticked: every new topic."
+        tags_all: "All categories"
+        tags_missing: "Without the Tags extension, the template applies to every new topic."
+        required_label: "No free text"
+        required_help: "Where this template applies, writers must use a template: the \"Free text\" option leaves the picker."
+        position_label: "Order"
+        position_help: "Lower numbers come first in the picker."
+        body_label: "Text"
+        body_help: "Markdown. In a form, each field in double braces, like {example}, becomes a field to fill in; the text around it is posted as is."
+        example_field: "Version"
+        example_field_2: "Description"
+        fields_heading: "Form fields"
+        fields_help: "One per field in double braces in the text, in the order they appear. Edit the text to add or remove fields."
+        fields_empty: "No fields yet: write a name in double braces in the text, like {example}."
+        field_label: "Label"
+        field_type: "Type"
+        field_type_text: "Short text"
+        field_type_textarea: "Long text"
+        field_type_select: "Option list"
+        field_placeholder: "Hint inside the field"
+        field_description: "Help below the field"
+        field_required: "Required"
+        field_options: "Options"
+        field_options_help: "One per line."
+        badge_required: "No free text"
       bug_reports:
         permission: "Report problems (mark the screen and send)"
         title: "Report a problem"
@@ -249,6 +297,8 @@ ramon-canela:
         group_moderation_desc: 'Staff tools: bulk actions, edit history and notices to the author.'
         group_bugreports: "Problem reports"
         group_bugreports_desc: "The button to mark the screen and report a problem, and the reports that came in."
+        group_templates: "Composer templates"
+        group_templates_desc: "The text a new topic starts with, per category: pre-filled, or a form where only the fields are filled in."
         group_integrations_desc: The theme look for third-party extensions. Each one only works with its extension enabled.
         group_ai_desc: Provider, bot, composer helper, summaries and related discussions.
         group_system: "Automated messages"
@@ -2301,6 +2351,7 @@ ramon-canela:
         privacy: Privacy
         custom_title: Links
     list:
+      typing: "Someone is typing…"
       topic: Discussion
       replies: Replies
       views: Views
@@ -2983,6 +3034,18 @@ ramon-canela:
     system_user:
       no_replies: "This is an automated system conversation: replies are not delivered."
       conversation_note: "Automated system messages. Replies are not possible."
+    templates:
+      picker_label: "Template"
+      choose: "Choose a template…"
+      free_text: "Free text"
+      kind_text: "Text"
+      kind_form: "Form"
+      form_hint: "Fill in the fields below. The rest of the text is fixed and shows in the preview."
+      select_placeholder: "Choose…"
+      replace_confirm: "Replace what you wrote with the template text?"
+      load_failed: "Could not load the template. Try again."
+      missing_required: "Fill in the \"{field}\" field before posting."
+      choose_required: "Choose a template before posting."
     bug_reports:
       button: "Report a problem"
       menu_report: "Report a problem on this page"

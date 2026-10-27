@@ -20,6 +20,7 @@ import RAMON_CHAT_FEATURE_CARDS from './ramonChatFeatures';
 import SYSTEM_CARDS from './system';
 import EVENTS_CARDS from './events';
 import BUG_REPORT_CARDS from './bugreports';
+import TEMPLATE_CARDS from './templates';
 
 const FEATURE_CARDS: CardDef[] = [
   ...COMMUNITY_CARDS,
@@ -38,6 +39,7 @@ const FEATURE_CARDS: CardDef[] = [
   ...GAPS_CARDS,
   ...SYSTEM_CARDS,
   ...BUG_REPORT_CARDS,
+  ...TEMPLATE_CARDS,
 ];
 
 export default FEATURE_CARDS;

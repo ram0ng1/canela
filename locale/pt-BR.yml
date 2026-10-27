@@ -27,6 +27,54 @@ ramon-canela:
       user_default_tab_help: "Em qual aba o perfil abre quando se clica num avatar ou nome."
       user_default_tab_activity: "Atividade (postagens), como no Flarum"
       user_default_tab_summary: "Resumo"
+      templates:
+        title: "Modelos do editor"
+        description: "O texto com que um tópico novo já começa no editor, por categoria ou etiqueta (ou em todas). Dois tipos: o texto pré-preenchido, que quem escreve muda à vontade, e o formulário, em que só os campos marcados entre chaves duplas são preenchidos e o resto do texto fica fixo, bom para fóruns de suporte. Com vários modelos numa categoria, o editor mostra um seletor."
+        notice: "Os modelos valem para tópicos novos. Escreva o texto em Markdown e marque cada campo do formulário entre chaves duplas, como {example}: o rótulo, o tipo e as opções de cada um ficam logo abaixo do texto."
+        count: "{count, plural, =0 {Nenhum modelo} one {# modelo} other {# modelos}}"
+        new: "Novo modelo"
+        editing: "Editando \"{name}\""
+        edit: "Editar"
+        delete: "Apagar"
+        delete_confirm: "Apagar o modelo \"{name}\"? Os tópicos já publicados não mudam."
+        save: "Salvar"
+        cancel: "Cancelar"
+        empty: "Nenhum modelo ainda. Crie o primeiro em \"Novo modelo\"."
+        load_failed: "Não deu para carregar os modelos. As migrações do tema já rodaram?"
+        save_failed: "Não deu para salvar o modelo."
+        name_label: "Nome"
+        name_placeholder: "Ex.: Pedido de suporte"
+        kind_label: "Tipo"
+        kind_text: "Texto pré-preenchido"
+        kind_text_help: "O texto entra no editor e quem escreve muda o que quiser."
+        kind_form: "Formulário"
+        kind_form_help: "Só os campos entre chaves duplas são preenchidos; o resto do texto fica fixo."
+        tags_label: "Onde vale"
+        tags_help: "Marque as categorias e etiquetas em que o modelo aparece. Nenhuma marcada: em todos os tópicos novos."
+        tags_all: "Todas as categorias"
+        tags_missing: "Sem a extensão Tags, o modelo vale em todos os tópicos novos."
+        required_label: "Sem texto livre"
+        required_help: "Onde este modelo vale, quem escreve precisa usar um modelo: a opção \"Texto livre\" some do seletor."
+        position_label: "Ordem"
+        position_help: "Os números menores aparecem primeiro no seletor."
+        body_label: "Texto"
+        body_help: "Markdown. No formulário, cada campo entre chaves duplas, como {example}, vira um campo a preencher; o texto em volta sai como está."
+        example_field: "Versão"
+        example_field_2: "Descrição"
+        fields_heading: "Campos do formulário"
+        fields_help: "Um para cada campo entre chaves duplas do texto, na ordem em que aparecem. Mude o texto para acrescentar ou tirar campos."
+        fields_empty: "Nenhum campo ainda: escreva um nome entre chaves duplas no texto, como {example}."
+        field_label: "Rótulo"
+        field_type: "Tipo"
+        field_type_text: "Texto curto"
+        field_type_textarea: "Texto longo"
+        field_type_select: "Lista de opções"
+        field_placeholder: "Dica dentro do campo"
+        field_description: "Ajuda abaixo do campo"
+        field_required: "Obrigatório"
+        field_options: "Opções"
+        field_options_help: "Uma por linha."
+        badge_required: "Sem texto livre"
       bug_reports:
         permission: "Relatar problemas (marcar a tela e enviar)"
         title: "Relatar problema"
@@ -249,6 +297,8 @@ ramon-canela:
         group_moderation_desc: 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'
         group_bugreports: "Relatar problemas"
         group_bugreports_desc: "O botão para marcar a tela e relatar um problema, e os relatórios que chegaram."
+        group_templates: "Modelos do editor"
+        group_templates_desc: "O texto com que um tópico novo já começa, por categoria: pré-preenchido, ou um formulário em que só os campos são preenchidos."
         group_integrations_desc: O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.
         group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
         group_system: "Mensagens automáticas"
@@ -2301,6 +2351,7 @@ ramon-canela:
         privacy: Privacidade
         custom_title: Links
     list:
+      typing: "Alguém está digitando…"
       topic: Discussão
       replies: Respostas
       views: Visualizações
@@ -2983,6 +3034,18 @@ ramon-canela:
     system_user:
       no_replies: "Esta é uma conversa automática do sistema: respostas não são entregues."
       conversation_note: "Mensagens automáticas do sistema. Não é possível responder."
+    templates:
+      picker_label: "Modelo"
+      choose: "Escolher um modelo…"
+      free_text: "Texto livre"
+      kind_text: "Texto"
+      kind_form: "Formulário"
+      form_hint: "Preencha os campos abaixo. O resto do texto é fixo e aparece na prévia."
+      select_placeholder: "Escolha…"
+      replace_confirm: "Trocar o que você escreveu pelo texto do modelo?"
+      load_failed: "Não deu para carregar o modelo. Tente de novo."
+      missing_required: "Preencha o campo \"{field}\" antes de publicar."
+      choose_required: "Escolha um modelo antes de publicar."
     bug_reports:
       button: "Relatar um problema"
       menu_report: "Relatar um problema nesta página"

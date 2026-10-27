@@ -9,6 +9,7 @@ export type GroupKey =
   | 'list'
   | 'topic'
   | 'composer'
+  | 'templates'
   | 'people'
   | 'messages'
   | 'community'
