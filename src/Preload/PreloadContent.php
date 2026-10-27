@@ -20,6 +20,7 @@ use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Psr\Http\Message\ServerRequestInterface;
+use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Stats\Http\Visitor;
 use Throwable;
 
@@ -43,6 +44,7 @@ final class PreloadContent
         private readonly Client $api,
         private readonly SettingsRepositoryInterface $settings,
         private readonly ExtensionManager $extensions,
+        private readonly AiSettings $ai,
     ) {
     }
 
@@ -97,6 +99,7 @@ final class PreloadContent
             'user' => $this->userPlan($document, (string) ($params['filter'] ?? ''), $guest ? null : (string) $actor->id),
             // A lista do menu e da página; o contador já vem no usuário da sessão.
             'notifications' => $guest ? [] : [self::NOTIFICATIONS],
+            'discussion' => $this->discussionPlan($document),
             // "Novos (N)" e "Não lidos (N)" da tag: as do fórum todo já vêm no fórum.
             'tag' => $guest || ! isset($params['slug']) ? [] : [['/canela-counts', ['tag' => (string) $params['slug']]]],
             'canela.about' => [['/canela-about', []]],
@@ -117,6 +120,123 @@ final class PreloadContent
     }
 
     /** `NotificationListState`: a primeira página, sem limite (o padrão da API). */
+    /** Até quantos posts a discussão cabe na primeira carga do stream (o fim aparece de cara). */
+    private const SUGGESTED_FIT = 20;
+
+    /**
+     * Os tópicos sugeridos do fim da discussão (`SuggestedTopics.tsx`), só nas
+     * discussões curtas: nelas o fim aparece logo ao abrir, e a tabela vinha
+     * depois da página. Nas longas o fim só aparece rolando, e o pedido
+     * continua saindo nessa hora (pré-carregar seria trabalho à toa).
+     *
+     * Os parâmetros são exatamente os do JS — a chave do pré-carregamento é o
+     * pedido —, e a categoria e as etiquetas saem das tags que já vêm no
+     * documento da discussão.
+     */
+    private function discussionPlan(Document $document): array
+    {
+        if (! (bool) $this->settings->get('canela.suggested_topics', true)) {
+            return [];
+        }
+
+        $apiDocument = $document->payload['apiDocument'] ?? null;
+        $discussion = $apiDocument->data ?? null;
+
+        if (! is_object($discussion) || ($discussion->type ?? null) !== 'discussions') {
+            return [];
+        }
+
+        // A discussão inteira já veio no documento, e cabe na primeira carga.
+        $postIds = array_map(static fn ($post) => (string) ($post->id ?? ''), (array) ($discussion->relationships->posts->data ?? []));
+        $includedPosts = [];
+        $tags = [];
+
+        foreach ((array) ($apiDocument->included ?? []) as $item) {
+            if (($item->type ?? null) === 'posts') {
+                $includedPosts[(string) $item->id] = true;
+            }
+
+            if (($item->type ?? null) === 'tags') {
+                $tags[(string) $item->id] = $item;
+            }
+        }
+
+        if ($postIds === [] || count($postIds) > self::SUGGESTED_FIT || array_diff($postIds, array_keys($includedPosts)) !== []) {
+            return [];
+        }
+
+        $id = (string) $discussion->id;
+        $limit = max(1, (int) $this->settings->get('canela.suggested_count', 5));
+        $tagsOn = $this->extensions->isEnabled('flarum-tags');
+        $include = $tagsOn ? 'tags,user,lastPostedUser' : 'user,lastPostedUser';
+
+        [$category, $labels] = $tagsOn ? $this->splitTags($discussion, $tags) : [null, []];
+
+        $suggested = ['sort' => '-lastPostedAt', 'page' => ['limit' => $limit + 1], 'include' => $include];
+
+        if ($category !== null) {
+            $suggested['filter'] = ['tag' => $category];
+        }
+
+        $plan = [['/discussions', $suggested]];
+
+        if ($this->ai->feature(AiSettings::RELATED)) {
+            $plan[] = ["/canela/ai/related/$id", []];
+        } elseif ($labels !== []) {
+            $plan[] = ['/discussions', [
+                'sort' => '-commentCount',
+                'filter' => ['tag' => implode(',', $labels)],
+                'page' => ['limit' => $limit * 2],
+                'include' => $include,
+            ]];
+        }
+
+        return $plan;
+    }
+
+    /**
+     * A categoria mais específica (a filha, quando há uma; senão a de maior
+     * posição, a última na ordem do JS) e os slugs das etiquetas, em ordem
+     * alfabética — a mesma do `SuggestedTopics.tsx`.
+     *
+     * @param array<string, object> $tags
+     * @return array{0: ?string, 1: list<string>}
+     */
+    private function splitTags(object $discussion, array $tags): array
+    {
+        $category = null;
+        $categoryRank = null;
+        $labels = [];
+
+        foreach ((array) ($discussion->relationships->tags->data ?? []) as $ref) {
+            $tag = $tags[(string) ($ref->id ?? '')] ?? null;
+            $slug = (string) ($tag->attributes->slug ?? '');
+
+            if ($tag === null || $slug === '') {
+                continue;
+            }
+
+            $position = $tag->attributes->position ?? null;
+
+            if ($position === null) {
+                $labels[] = $slug;
+                continue;
+            }
+
+            // A filha vem depois do pai; entre as do mesmo nível, a de maior posição.
+            $rank = [(bool) ($tag->attributes->isChild ?? false) ? 1 : 0, (int) $position];
+
+            if ($categoryRank === null || $rank > $categoryRank) {
+                $category = $slug;
+                $categoryRank = $rank;
+            }
+        }
+
+        sort($labels, SORT_STRING);
+
+        return [$category, $labels];
+    }
+
     private const NOTIFICATIONS = ['/notifications', ['page' => ['offset' => 0]]];
 
     /** Os campos que a grade de /badges desenha (`LIST_FIELDS` em features/badges/utils.ts). */
