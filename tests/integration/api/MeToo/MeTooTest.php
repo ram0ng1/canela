@@ -335,4 +335,50 @@ class MeTooTest extends TestCase
         $this->assertEquals(403, $this->toggle(1, 4)->getStatusCode());
         $this->assertSame(0, $this->database()->table('canela_me_too')->whereIn('discussion_id', [3, 4])->count());
     }
+
+    /**
+     * Numa tag restrita em que a pessoa pode responder, ela também marca: a
+     * política das tags não barra a habilidade `canelaMeToo`.
+     */
+    #[Test]
+    public function tag_restrita_com_permissao_de_responder_marca(): void
+    {
+        $this->extension('flarum-tags', 'ramon-canela');
+        $this->prepareDatabase([
+            'tags' => [
+                ['id' => 10, 'name' => 'Restrita', 'slug' => 'restrita', 'position' => 0, 'is_restricted' => true],
+            ],
+            'discussion_tag' => [
+                ['discussion_id' => 1, 'tag_id' => 10],
+            ],
+            'group_permission' => [
+                ['group_id' => 3, 'permission' => 'tag10.viewForum'],
+                ['group_id' => 3, 'permission' => 'tag10.discussion.reply'],
+            ],
+        ]);
+
+        $this->assertTrue($this->meToo(3)['can']);
+        $this->assertEquals(200, $this->toggle(3)->getStatusCode());
+    }
+
+    /** Na tag restrita sem a permissão de responder, não. */
+    #[Test]
+    public function tag_restrita_sem_permissao_de_responder_nao_marca(): void
+    {
+        $this->extension('flarum-tags', 'ramon-canela');
+        $this->prepareDatabase([
+            'tags' => [
+                ['id' => 10, 'name' => 'Restrita', 'slug' => 'restrita', 'position' => 0, 'is_restricted' => true],
+            ],
+            'discussion_tag' => [
+                ['discussion_id' => 1, 'tag_id' => 10],
+            ],
+            'group_permission' => [
+                ['group_id' => 3, 'permission' => 'tag10.viewForum'],
+            ],
+        ]);
+
+        $this->assertFalse($this->meToo(3)['can']);
+        $this->assertEquals(403, $this->toggle(3)->getStatusCode());
+    }
 }

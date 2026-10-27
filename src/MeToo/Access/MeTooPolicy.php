@@ -23,9 +23,15 @@ use Ramon\Canela\MeToo\MeToo;
  * pelas regras de MeToo::canToggle (logado, não é o autor, pode responder, o
  * tópico aberto e nas tags escolhidas…).
  *
- * `forceDeny` quando não vale, e não `deny`: sem ele o Gate deixaria o
- * administrador marcar o próprio tópico ou um tópico trancado. Tirar o
- * próprio voto não passa por aqui: vale sempre (ToggleMeToo).
+ * As duas respostas são forçadas:
+ * - `forceDeny` quando não vale, e não `deny`: sem ele o Gate deixaria o
+ *   administrador marcar o próprio tópico ou um tópico trancado;
+ * - `forceAllow` quando vale, e não `allow`: a política do flarum/tags nega
+ *   qualquer habilidade sem a permissão própria da tag restrita
+ *   (`tag{id}.discussion.canelaMeToo`, que não existe), e a regra já pede o
+ *   `reply` no tópico, que respeita as tags.
+ *
+ * Tirar o próprio voto não passa por aqui: vale sempre (ToggleMeToo).
  */
 final class MeTooPolicy extends AbstractPolicy
 {
@@ -38,6 +44,6 @@ final class MeTooPolicy extends AbstractPolicy
 
     public function canelaMeToo(User $actor, Discussion $discussion): string
     {
-        return $this->meToo->canToggle($actor, $discussion) ? $this->allow() : $this->forceDeny();
+        return $this->meToo->canToggle($actor, $discussion) ? $this->forceAllow() : $this->forceDeny();
     }
 }
