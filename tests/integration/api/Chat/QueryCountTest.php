@@ -181,6 +181,17 @@ class QueryCountTest extends AbstractChatTestCase
         $this->assertCount(11, $updatesBody['meta']['newIds']);
     }
 
+    /** A busca junta mensagens de muitos canais: ainda uma consulta por tipo de dado. */
+    #[Test]
+    public function busca_em_varios_canais(): void
+    {
+        [$status, $body] = $this->api('GET', '/chat-messages/search', 2, null, ['filter' => ['q' => 'canal']]);
+
+        $this->assertEquals(200, $status, json_encode($body));
+        $this->assertCount(8, $body['data']);
+        $this->assertCount(8, self::includedIds($body, 'chat-channels'));
+    }
+
     #[Test]
     public function membros_e_busca_de_pessoas(): void
     {

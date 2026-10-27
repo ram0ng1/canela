@@ -29,9 +29,6 @@ final class ActorCache
     /** @var int[]|null as tags que o ator enxerga */
     public ?array $tags = null;
 
-    /** @var array<string, int[]> permissão => grupos que a têm */
-    public array $granted = [];
-
     /** @var array<int, Membership|null> canal => participação do ator, já carregada */
     public array $memberships = [];
 }

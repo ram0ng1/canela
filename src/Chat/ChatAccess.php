@@ -16,6 +16,7 @@ namespace Ramon\Canela\Chat;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Group\Group;
 use Flarum\Group\Permission;
+use Flarum\Group\PermissionCache;
 use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
 use Illuminate\Support\Collection;
@@ -40,8 +41,8 @@ use Ramon\Canela\Chat\Model\Message;
  *   `canela.chat.moderate`, só nos canais públicos.
  *
  * Aqui ficam também os caches de cada ator, para uma lista de mensagens não
- * repetir uma consulta por mensagem: as tags que ele enxerga, os grupos com
- * cada permissão e as participações que a montagem da resposta já carregou.
+ * repetir uma consulta por mensagem: as tags que ele enxerga e as
+ * participações que a montagem da resposta já carregou.
  * Ficam presos ao objeto do ator (WeakMap): cada requisição carrega o seu, e o
  * cache some com ele.
  */
@@ -64,6 +65,7 @@ final class ChatAccess
     public function __construct(
         private readonly ChatSettings $settings,
         private readonly ExtensionManager $extensions,
+        private readonly PermissionCache $permissions,
     ) {
         $this->actors = new \WeakMap();
     }
@@ -100,26 +102,30 @@ final class ChatAccess
 
             // Administrador suspenso também lê, como o Flarum libera tudo para ele.
             return in_array(Group::ADMINISTRATOR_ID, $groups, true)
-                || array_intersect($this->groupsWith($actor, self::PERMISSION_USE), $groups) !== [];
+                || in_array(self::PERMISSION_USE, $this->permissionsOf($groups), true);
         }
 
         return $actor->can(self::PERMISSION_USE);
     }
 
     /**
-     * Os grupos que têm a permissão, uma consulta por ator.
+     * As permissões de um conjunto de grupos, pelo mesmo cache do core
+     * (User::getPermissions): uma consulta por combinação de grupos, e não
+     * uma por pessoa, e esvaziado quando o admin muda uma permissão.
      *
-     * @return int[]
+     * @param int[] $groupIds
+     * @return string[]
      */
-    private function groupsWith(User $actor, string $permission): array
+    private function permissionsOf(array $groupIds): array
     {
-        $cache = $this->cache($actor);
+        $permissions = $this->permissions->get($groupIds);
 
-        return $cache->granted[$permission] ??= Permission::query()
-            ->where('permission', $permission)
-            ->pluck('group_id')
-            ->map(static fn ($id) => (int) $id)
-            ->all();
+        if ($permissions === null) {
+            $permissions = Permission::query()->whereIn('group_id', $groupIds)->pluck('permission')->all();
+            $this->permissions->put($groupIds, $permissions);
+        }
+
+        return $permissions;
     }
 
     private function cache(User $actor): ActorCache

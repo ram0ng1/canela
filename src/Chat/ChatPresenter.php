@@ -178,20 +178,22 @@ final class ChatPresenter
     // ─── Mensagens ──────────────────────────────────────────────────────────
 
     /**
-     * As mensagens de um canal.
+     * As mensagens, de um canal ou de vários (a busca): tudo numa consulta por
+     * tipo de dado, qualquer que seja o número de canais.
      *
      * @param iterable<Message> $messages
+     * @param array<int, Channel> $channels os canais das mensagens, por id
      * @return array<int, array<string, mixed>> por id da mensagem
      */
-    public function messages(iterable $messages, Channel $channel, User $actor): array
+    public function messages(iterable $messages, array $channels, User $actor): array
     {
-        $messages = Collection::make($messages)->values();
+        $messages = Collection::make($messages)->filter(static fn (Message $m) => isset($channels[$m->channel_id]))->values();
 
         if ($messages->isEmpty()) {
             return [];
         }
 
-        $this->access->primeMemberships($actor, [$channel->id]);
+        $this->access->primeMemberships($actor, $messages->pluck('channel_id')->unique()->values()->all());
 
         $ids = $messages->pluck('id')->all();
 
@@ -209,6 +211,8 @@ final class ChatPresenter
         $out = [];
 
         foreach ($messages as $message) {
+            $channel = $channels[$message->channel_id];
+
             // As policies leem o canal pela relação: sem isto, uma consulta por mensagem.
             $message->setRelation('channel', $channel);
 

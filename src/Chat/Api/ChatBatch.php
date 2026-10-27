@@ -166,18 +166,7 @@ final class ChatBatch
             }
 
             $this->loadChannels(array_map(static fn (Message $m) => (int) $m->channel_id, $messages));
-
-            $groups = [];
-
-            foreach ($messages as $message) {
-                $groups[(int) $message->channel_id][] = $message;
-            }
-
-            foreach ($groups as $channelId => $group) {
-                if ($channel = $this->channelModels[$channelId] ?? null) {
-                    $this->messages += $this->presenter->messages($group, $channel, $this->actor);
-                }
-            }
+            $this->messages += $this->presenter->messages($messages, $this->channelModels, $this->actor);
         }
 
         if ($channels = $this->pendingChannels) {
