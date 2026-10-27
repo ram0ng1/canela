@@ -128,8 +128,7 @@ async function toggle(discussion: Discussion, state: MeTooState): Promise<void> 
     const apiUrl = ((app.forum.attribute<string>('apiUrl') as string) || '/api').replace(/\/+$/, '');
     const result = await app.request<{ count: number; mine: boolean; can: boolean; subscription: string | null }>({
       method: 'POST',
-      url: `${apiUrl}/canela-me-too`,
-      body: { discussionId: id },
+      url: `${apiUrl}/discussions/${id}/canela-me-too`,
     });
 
     const attributes: Record<string, unknown> = { canelaMeToo: { ...state, count: result.count, mine: result.mine, can: result.can ?? state.can } };

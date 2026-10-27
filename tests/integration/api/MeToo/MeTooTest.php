@@ -20,7 +20,7 @@ use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * "Eu também" (`POST /api/canela-me-too` e `canelaMeToo` no tópico): quem não
+ * "Eu também" (`POST /api/discussions/{id}/canela-me-too` e `canelaMeToo` no tópico): quem não
  * é o autor marca que tem o mesmo problema, em tópicos públicos e abertos.
  */
 class MeTooTest extends TestCase
@@ -60,9 +60,8 @@ class MeTooTest extends TestCase
 
     private function toggle(int $actor, int $discussionId = 1)
     {
-        return $this->send($this->request('POST', '/api/canela-me-too', [
+        return $this->send($this->request('POST', "/api/discussions/$discussionId/canela-me-too", [
             'authenticatedAs' => $actor,
-            'json' => ['discussionId' => $discussionId],
         ]));
     }
 
@@ -138,7 +137,7 @@ class MeTooTest extends TestCase
     #[Test]
     public function visitante_nao_marca(): void
     {
-        $response = $this->send($this->request('POST', '/api/canela-me-too', ['json' => ['discussionId' => 1]]));
+        $response = $this->send($this->request('POST', '/api/discussions/1/canela-me-too'));
 
         $this->assertContains($response->getStatusCode(), [400, 401]);
         $this->assertEquals(1, $this->database()->table('canela_me_too')->count());
@@ -309,5 +308,31 @@ class MeTooTest extends TestCase
         $this->assertFalse($this->database()->table('canela_me_too')->where('user_id', 3)->exists());
 
         $this->assertEquals(403, $this->toggle(3)->getStatusCode());
+    }
+
+    /**
+     * A regra é a MeTooPolicy (`canelaMeToo`), com `forceDeny`: o
+     * administrador também não marca o próprio tópico nem um tópico trancado.
+     */
+    #[Test]
+    public function administrador_segue_as_mesmas_regras(): void
+    {
+        $this->extension('flarum-lock', 'ramon-canela');
+        $this->prepareDatabase([
+            Discussion::class => [
+                ['id' => 3, 'title' => 'Do admin', 'user_id' => 1, 'first_post_id' => 3, 'comment_count' => 1, 'last_post_number' => 1],
+                ['id' => 4, 'title' => 'Trancado', 'user_id' => 2, 'first_post_id' => 4, 'comment_count' => 1, 'last_post_number' => 1, 'is_locked' => true],
+            ],
+            Post::class => [
+                ['id' => 3, 'discussion_id' => 3, 'user_id' => 1, 'type' => 'comment', 'content' => '<t><p>Meu</p></t>', 'number' => 1],
+                ['id' => 4, 'discussion_id' => 4, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>Trancado</p></t>', 'number' => 1],
+            ],
+        ]);
+
+        $this->assertFalse($this->meToo(1, 3)['can']);
+        $this->assertEquals(403, $this->toggle(1, 3)->getStatusCode());
+        $this->assertFalse($this->meToo(1, 4)['can']);
+        $this->assertEquals(403, $this->toggle(1, 4)->getStatusCode());
+        $this->assertSame(0, $this->database()->table('canela_me_too')->whereIn('discussion_id', [3, 4])->count());
     }
 }

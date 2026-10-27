@@ -17,6 +17,7 @@ use Flarum\Api\Context;
 use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
+use Ramon\Canela\MeToo\Access\MeTooPolicy;
 use Ramon\Canela\MeToo\MeToo;
 use Ramon\Canela\Support\Log;
 
@@ -47,7 +48,7 @@ final class DiscussionMeTooFields
 
                         $actor = $context->getActor();
 
-                        return [...$this->meToo->stateFor($discussion, $actor), 'can' => $this->meToo->canToggle($actor, $discussion)];
+                        return [...$this->meToo->stateFor($discussion, $actor), 'can' => $actor->can(MeTooPolicy::ABILITY, $discussion)];
                     } catch (\Throwable $error) {
                         Log::warning('me too do tópico: '.$error->getMessage());
 

@@ -16,9 +16,11 @@
  */
 
 use Flarum\Api\Resource\DiscussionResource;
+use Flarum\Discussion\Discussion;
 use Flarum\Extend;
+use Ramon\Canela\MeToo\Access\MeTooPolicy;
 use Ramon\Canela\MeToo\Api\DiscussionMeTooFields;
-use Ramon\Canela\MeToo\Api\ToggleMeTooController;
+use Ramon\Canela\MeToo\Api\ToggleMeToo;
 use Ramon\Canela\MeToo\Event\Toggled;
 use Ramon\Canela\MeToo\MeToo;
 use Ramon\Canela\MeToo\Realtime\BroadcastMeToo;
@@ -34,11 +36,14 @@ return [
         // escolhe a melhor resposta, sem esperar recarregar o tópico.
         ->serializeToForum('canelaMeTooHideSolved', MeToo::HIDE_SOLVED, 'boolval'),
 
-    (new Extend\Routes('api'))
-        ->post('/canela-me-too', 'canela.metoo.toggle', ToggleMeTooController::class),
-
+    // O campo `canelaMeToo` e a troca (`POST /discussions/{id}/canela-me-too`).
     (new Extend\ApiResource(DiscussionResource::class))
-        ->fields(DiscussionMeTooFields::class),
+        ->fields(DiscussionMeTooFields::class)
+        ->endpoints(static fn (): array => [ToggleMeToo::endpoint()]),
+
+    // Quem pode marcar: `$actor->can('canelaMeToo', $discussion)`.
+    (new Extend\Policy())
+        ->modelPolicy(Discussion::class, MeTooPolicy::class),
 
     // Tempo real: só com o flarum/realtime, quem está com o tópico aberto vê
     // a contagem mudar sem recarregar. Sem ele o ouvinte nem é registrado.

@@ -13,34 +13,34 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\MeToo\Api;
 
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\Exception\RouteNotFoundException;
-use Flarum\Http\RequestUtil;
 use Flarum\Post\Exception\FloodingException;
 use Flarum\User\Exception\PermissionDeniedException;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Ramon\Canela\MeToo\Access\MeTooPolicy;
 use Ramon\Canela\MeToo\Event\Toggled;
 use Ramon\Canela\MeToo\MeToo;
 use Ramon\Canela\Support\Log;
 
 /**
- * POST /api/canela-me-too `{discussionId}`: alterna o "Eu também" de quem
- * chama e devolve a contagem nova,
- * se marcou, e a inscrição no tópico (para o botão de notificações do rodapé
- * mudar junto).
+ * `POST /api/discussions/{id}/canela-me-too`: alterna o "Eu também" de quem
+ * chama e devolve a contagem nova, se marcou, se ainda pode marcar e a
+ * inscrição no tópico (para o botão de notificações do rodapé mudar junto).
  *
- * Visitante recebe 401 (o fórum abre o login antes de chegar aqui); tópico que
- * a pessoa não vê, 404; sem permissão, 403 — menos para tirar o próprio voto,
- * que vale sempre; mais de 5 trocas na hora, 429.
+ * Um endpoint de ação no recurso de tópicos: o `{id}` passa pela busca do
+ * recurso, com a visibilidade de quem pede — tópico inexistente ou que a
+ * pessoa não vê, 404.
+ *
+ * Recurso desligado, 404; visitante, 401 (o fórum abre o login antes de chegar
+ * aqui); sem poder marcar (MeTooPolicy), 403 — menos para tirar o próprio
+ * voto, que vale sempre; mais de 5 trocas na hora, 429.
  */
-final class ToggleMeTooController implements RequestHandlerInterface
+final class ToggleMeToo
 {
     public function __construct(
         private readonly MeToo $meToo,
@@ -49,28 +49,30 @@ final class ToggleMeTooController implements RequestHandlerInterface
     ) {
     }
 
-    #[\Override]
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public static function endpoint(): Endpoint\Endpoint
+    {
+        return Endpoint\Endpoint::make('canela.meToo')
+            ->route('POST', '/{id}/canela-me-too')
+            ->action(static fn (Context $context): array => resolve(self::class)->toggle($context))
+            ->response(static fn (Context $context, array $result): JsonResponse => new JsonResponse($result));
+    }
+
+    /** @return array{count: int, mine: bool, subscription: string|null, can: bool} */
+    public function toggle(Context $context): array
     {
         if (! $this->meToo->enabled()) {
             throw new RouteNotFoundException();
         }
 
-        $actor = RequestUtil::getActor($request);
+        $actor = $context->getActor();
         $actor->assertRegistered();
 
-        $id = (int) Arr::get((array) $request->getParsedBody(), 'discussionId', 0);
-
-        /** @var Discussion|null $discussion */
-        $discussion = $id > 0 ? Discussion::query()->whereVisibleTo($actor)->find($id) : null;
-
-        if (! $discussion) {
-            throw new ModelNotFoundException();
-        }
+        /** @var Discussion $discussion */
+        $discussion = $context->model;
 
         // Quem não pode mais marcar (tópico trancado, resolvido, sem
         // permissão) ainda tira o próprio voto: o voto é dele.
-        $canToggle = $this->meToo->canToggle($actor, $discussion);
+        $canToggle = $actor->can(MeTooPolicy::ABILITY, $discussion);
 
         if (! $canToggle && ! $this->meToo->stateFor($discussion, $actor)['mine']) {
             throw new PermissionDeniedException();
@@ -92,7 +94,7 @@ final class ToggleMeTooController implements RequestHandlerInterface
 
         // `can` junto: depois de tirar o voto num tópico trancado, o botão
         // apaga (não dá para marcar de novo).
-        return new JsonResponse([...$result, 'can' => $canToggle]);
+        return [...$result, 'can' => $canToggle];
     }
 
     /** Janela fixa de uma hora: a chave muda a cada hora e vence sozinha. */
