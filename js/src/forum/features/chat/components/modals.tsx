@@ -117,7 +117,8 @@ export class CreateChannelModal extends Modal<CreateChannelModalAttrs> {
         name: this.name,
         slug: this.slug,
         description: this.description,
-        tagId: this.tagId || null,
+        // O select dá texto; o campo do recurso é um inteiro.
+        tagId: this.tagId ? Number(this.tagId) : null,
         threadingEnabled: this.threading,
         autoJoin: this.autoJoin,
       });
