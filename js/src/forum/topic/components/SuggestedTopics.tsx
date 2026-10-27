@@ -26,6 +26,7 @@ import { fullDate, shortAge } from '../../utils/dates';
 import { forumBool, forumInt, t } from '../../utils/settings';
 import { viewsHeat, viewsNumber } from '../../utils/views';
 import { aiFeature, aiRequest } from '../../features/ai/state';
+import { takePreloaded } from '../../utils/preload';
 
 /** Uma linha da tabela, venha de um modelo do store ou da API de IA. */
 interface Row {
@@ -120,14 +121,20 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
     const id = discussion.id()!;
     const limit = forumInt('canelaSuggestedCount', 5);
 
+    // Nas discussões curtas o servidor já mandou as listas com a página
+    // (src/Preload): a tabela sai no primeiro desenho, sem esperar a rede.
+    const preSuggested = this.preloadedSuggested(discussion, limit);
+    const preRelated = this.preloadedRelated(discussion, limit);
+
+    if (preSuggested && preRelated) {
+      cache.set(id, this.lists(preSuggested, preRelated));
+      return;
+    }
+
     this.loading = true;
 
-    Promise.all([this.loadSuggested(discussion, limit), this.loadRelated(discussion, limit)])
-      .then(([suggested, related]) => {
-        const seen = new Set(suggested.map((row) => row.id));
-
-        cache.set(id, { suggested, related: related.filter((row) => !seen.has(row.id)) });
-      })
+    Promise.all([preSuggested ?? this.loadSuggested(discussion, limit), preRelated ?? this.loadRelated(discussion, limit)])
+      .then(([suggested, related]) => cache.set(id, this.lists(suggested, related)))
       .catch(() => cache.set(id, { suggested: [], related: [] }))
       .finally(() => {
         this.loading = false;
@@ -135,7 +142,15 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
       });
   }
 
-  loadSuggested(discussion: Discussion, limit: number): Promise<Row[]> {
+  /** As duas listas, sem repetir em "Relacionado(a)" o que já está em "Sugestões". */
+  lists(suggested: Row[], related: Row[]): Lists {
+    const seen = new Set(suggested.map((row) => row.id));
+
+    return { suggested, related: related.filter((row) => !seen.has(row.id)) };
+  }
+
+  /** O pedido de "Sugestões" (o servidor pré-carrega o mesmo: os parâmetros são a chave). */
+  suggestedParams(discussion: Discussion, limit: number): Record<string, unknown> {
     const { categories } = splitDiscussionTags(discussion);
     // A mais específica: a filha, quando o tópico está numa subcategoria.
     const category = categories[categories.length - 1];
@@ -144,14 +159,54 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
 
     if (category) params.filter = { tag: category.slug() };
 
+    return params;
+  }
+
+  /** O pedido de "Relacionado(a)" sem IA; null sem etiquetas. Os slugs em ordem alfabética, como no servidor. */
+  relatedParams(discussion: Discussion, limit: number): Record<string, unknown> | null {
+    const { labels } = splitDiscussionTags(discussion);
+
+    if (!labels.length) return null;
+
+    const slugs = labels.map((tag) => tag.slug()).sort();
+
+    return { sort: '-commentCount', filter: { tag: slugs.join(',') }, page: { limit: limit * 2 }, include: include() };
+  }
+
+  rowsOf(discussion: Discussion, results: Discussion[], limit: number): Row[] {
+    return Array.from(results)
+      .filter((item) => item && item.id() !== discussion.id())
+      .slice(0, limit)
+      .map(fromDiscussion);
+  }
+
+  preloadedSuggested(discussion: Discussion, limit: number): Row[] | null {
+    const payload = takePreloaded('discussions', this.suggestedParams(discussion, limit));
+
+    return payload ? this.rowsOf(discussion, app.store.pushPayload<Discussion[]>(payload) as unknown as Discussion[], limit) : null;
+  }
+
+  preloadedRelated(discussion: Discussion, limit: number): Row[] | null {
+    if (aiFeature('related')) {
+      const payload = takePreloaded<{ data: AiRelated[] }>(`canela/ai/related/${discussion.id()}`);
+
+      return payload ? (payload.data || []).slice(0, limit).map(fromAi) : null;
+    }
+
+    const params = this.relatedParams(discussion, limit);
+
+    // Sem etiquetas não há o que buscar: a lista vazia já é a resposta.
+    if (!params) return [];
+
+    const payload = takePreloaded('discussions', params);
+
+    return payload ? this.rowsOf(discussion, app.store.pushPayload<Discussion[]>(payload) as unknown as Discussion[], limit) : null;
+  }
+
+  loadSuggested(discussion: Discussion, limit: number): Promise<Row[]> {
     return app.store
-      .find<Discussion[]>('discussions', params, undefined, { errorHandler: () => {} })
-      .then((results) =>
-        Array.from(results)
-          .filter((item) => item && item.id() !== discussion.id())
-          .slice(0, limit)
-          .map(fromDiscussion)
-      )
+      .find<Discussion[]>('discussions', this.suggestedParams(discussion, limit), undefined, { errorHandler: () => {} })
+      .then((results) => this.rowsOf(discussion, results as unknown as Discussion[], limit))
       .catch(() => []);
   }
 
@@ -163,23 +218,13 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
     }
 
     // Sem IA: os que dividem uma etiqueta (o filtro do tags junta por "ou").
-    const { labels } = splitDiscussionTags(discussion);
+    const params = this.relatedParams(discussion, limit);
 
-    if (!labels.length) return Promise.resolve([]);
+    if (!params) return Promise.resolve([]);
 
     return app.store
-      .find<Discussion[]>(
-        'discussions',
-        { sort: '-commentCount', filter: { tag: labels.map((tag) => tag.slug()).join(',') }, page: { limit: limit * 2 }, include: include() },
-        undefined,
-        { errorHandler: () => {} }
-      )
-      .then((results) =>
-        Array.from(results)
-          .filter((item) => item && item.id() !== discussion.id())
-          .slice(0, limit)
-          .map(fromDiscussion)
-      )
+      .find<Discussion[]>('discussions', params, undefined, { errorHandler: () => {} })
+      .then((results) => this.rowsOf(discussion, results as unknown as Discussion[], limit))
       .catch(() => []);
   }
 
