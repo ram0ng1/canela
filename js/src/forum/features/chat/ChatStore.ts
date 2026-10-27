@@ -11,7 +11,8 @@
  */
 import app from 'flarum/forum/app';
 
-import { caps, chatOn, chatRequest, countReaction, meId, playSound, preference, pushUsers, readLocal, writeLocal } from './utils';
+import * as api from './api';
+import { caps, chatOn, countReaction, meId, playSound, preference, readLocal, writeLocal } from './utils';
 import type { ChatChannel, ChatEvent, ChatMessage, ChatRoute, ChatThread, ChatUpload } from './types';
 
 const PAGE = 50;
@@ -112,13 +113,8 @@ export class ChatPane {
     const target = around || (unread ? lastRead : null);
 
     try {
-      const result = await chatRequest('GET', `/channels/${this.channelId}/messages`, undefined, {
-        around: target || undefined,
-        thread: this.threadId || undefined,
-        limit: PAGE,
-      });
+      const result = await api.messages(this.channelId, { around: target || undefined, limit: PAGE }, this.threadId);
 
-      pushUsers(result.users);
       this.messages = result.messages;
       this.canLoadMorePast = result.meta.canLoadMorePast;
       this.canLoadMoreFuture = result.meta.canLoadMoreFuture;
@@ -139,13 +135,8 @@ export class ChatPane {
     this.loadingPast = true;
 
     try {
-      const result = await chatRequest('GET', `/channels/${this.channelId}/messages`, undefined, {
-        before: this.firstId(),
-        thread: this.threadId || undefined,
-        limit: PAGE,
-      });
+      const result = await api.messages(this.channelId, { before: this.firstId(), limit: PAGE }, this.threadId);
 
-      pushUsers(result.users);
       this.messages = [...result.messages.filter((m: ChatMessage) => !this.find(m.id)), ...this.messages];
       this.canLoadMorePast = result.meta.canLoadMorePast;
     } finally {
@@ -160,13 +151,8 @@ export class ChatPane {
     this.loadingFuture = true;
 
     try {
-      const result = await chatRequest('GET', `/channels/${this.channelId}/messages`, undefined, {
-        after: this.lastId(),
-        thread: this.threadId || undefined,
-        limit: PAGE,
-      });
+      const result = await api.messages(this.channelId, { after: this.lastId(), limit: PAGE }, this.threadId);
 
-      pushUsers(result.users);
       result.messages.forEach((message: ChatMessage) => this.upsert(message));
       this.canLoadMoreFuture = result.meta.canLoadMoreFuture;
     } finally {
@@ -183,9 +169,8 @@ export class ChatPane {
       this.targetMessageId = null;
       this.highlightedId = null;
 
-      const result = await chatRequest('GET', `/channels/${this.channelId}/messages`, undefined, { thread: this.threadId || undefined, limit: PAGE });
+      const result = await api.messages(this.channelId, { limit: PAGE }, this.threadId);
 
-      pushUsers(result.users);
       this.messages = result.messages;
       this.canLoadMorePast = result.meta.canLoadMorePast;
       this.canLoadMoreFuture = false;
@@ -242,8 +227,7 @@ export class ChatPane {
       this.sending = true;
 
       try {
-        const result = await chatRequest('PATCH', `/messages/${editing.id}`, { message: text, uploadIds: uploads.map((u) => u.id) });
-        pushUsers(result.users);
+        const result = await api.updateMessage(editing.id, { message: text, uploadIds: uploads.map((u) => u.id) });
         this.store.upsertEverywhere(result.message);
         this.resetComposer();
       } catch (error) {
@@ -303,15 +287,12 @@ export class ChatPane {
 
   async post(staged: ChatMessage, inReplyToId: number | null, uploads: ChatUpload[], toThread = false): Promise<void> {
     try {
-      const result = await chatRequest(
-        'POST',
-        `/channels/${this.channelId}/messages`,
+      const result = await api.sendMessage(
+        this.channelId,
         { message: staged.message, inReplyToId, threadId: this.threadId, uploadIds: uploads.map((u) => u.id) },
-        undefined,
-        { errorHandler: () => {} }
+        api.quiet
       );
 
-      pushUsers(result.users);
       this.messages = this.messages.filter((m) => m.stagedKey !== staged.stagedKey);
 
       const message: ChatMessage = result.message;
@@ -407,15 +388,13 @@ export class ChatPane {
       this.pendingRead = 0;
       this.readTimer = null;
 
-      const path = this.threadId ? `/threads/${this.threadId}/read` : `/channels/${this.channelId}/read`;
+      const request = this.threadId
+        ? api.markThreadRead(this.threadId, id, api.quiet).then(() => this.store.refreshSoon())
+        : api.markRead(this.channelId, id, api.quiet).then((result) => {
+            this.store.putChannel(result.channel);
+          });
 
-      chatRequest('POST', path, { messageId: id }, undefined, { errorHandler: () => {} })
-        .then((result: any) => {
-          if (result?.channel) this.store.putChannel(result.channel);
-          if (result?.users) pushUsers(result.users);
-          if (this.threadId) this.store.refreshSoon();
-        })
-        .catch(() => {});
+      request.catch(() => {});
     }, 800);
 
     m.redraw();
@@ -445,11 +424,8 @@ export class ChatPane {
         continue;
       }
 
-      const body = new FormData();
-      body.append('file', file);
-
       try {
-        const result = await chatRequest('POST', '/uploads', body);
+        const result = await api.upload(file);
         item.upload = result.upload;
       } catch {
         item.error = 'failed';
@@ -468,19 +444,12 @@ export class ChatPane {
   async poll(): Promise<void> {
     if (!this.loaded || this.loading) return;
 
-    const result = await chatRequest(
-      'GET',
-      `/channels/${this.channelId}/updates`,
-      undefined,
-      {
-        after: this.lastId() || undefined,
-        since: this.since || undefined,
-        thread: this.threadId || undefined,
-      },
-      { errorHandler: () => {} }
-    );
+    const result = await api.updates(this.channelId, {
+      after: this.lastId() || undefined,
+      since: this.since || undefined,
+      thread: this.threadId || undefined,
+    });
 
-    pushUsers(result.users);
     this.since = result.now;
 
     const fresh = (result.messages as ChatMessage[]).filter((m) => !this.find(m.id));
@@ -584,9 +553,7 @@ export class ChatStore {
     this.lastStateAt = Date.now();
 
     try {
-      const result = await chatRequest('GET', '/state', undefined, undefined, { errorHandler: () => {} });
-
-      pushUsers(result.users);
+      const result = await api.state(api.quiet);
 
       const seen = new Set<number>();
 
@@ -635,9 +602,7 @@ export class ChatStore {
   }
 
   async fetchChannel(id: number): Promise<ChatChannel> {
-    const result = await chatRequest('GET', `/channels/${id}`);
-
-    pushUsers(result.users);
+    const result = await api.channel(id);
 
     return this.putChannel(result.channel);
   }
@@ -707,9 +672,8 @@ export class ChatStore {
   }
 
   async fetchThread(threadId: number): Promise<ChatThread> {
-    const result = await chatRequest('GET', `/threads/${threadId}`);
+    const result = await api.fetchThread(threadId);
 
-    pushUsers(result.users);
     this.threads.set(threadId, result.thread);
 
     return result.thread;
@@ -773,9 +737,8 @@ export class ChatStore {
     if (!id) return;
 
     try {
-      const result = await chatRequest('GET', `/messages/${id}`, undefined, undefined, { errorHandler: () => {} });
+      const result = await api.message(id, api.quiet);
 
-      pushUsers(result.users);
       this.upsertEverywhere(result.message);
     } catch {
       // A original pode ter sido apagada nesse meio-tempo.
@@ -915,9 +878,7 @@ export class ChatStore {
 
     this.typingSentAt.set(pane.key, typing ? Date.now() : 0);
 
-    chatRequest('POST', `/channels/${pane.channelId}/typing`, { typing, threadId: pane.threadId }, undefined, { errorHandler: () => {} }).catch(
-      () => {}
-    );
+    api.typing(pane.channelId, typing, pane.threadId).catch(() => {});
   }
 
   /** Uma mensagem nova de outra pessoa: contagens, som. */
@@ -962,8 +923,7 @@ export class ChatStore {
         let message: ChatMessage;
 
         try {
-          const result = await chatRequest('GET', `/messages/${event.messageId}`, undefined, undefined, { errorHandler: () => {} });
-          pushUsers(result.users);
+          const result = await api.message(event.messageId, api.quiet);
           message = result.message;
         } catch {
           return;
@@ -1079,8 +1039,7 @@ export class ChatStore {
     m.redraw();
 
     try {
-      const result = await chatRequest('POST', `/messages/${message.id}/reactions`, { emoji: char, action: adding ? 'add' : 'remove' });
-      pushUsers(result.users);
+      const result = await api.react(message.id, char, adding ? 'add' : 'remove');
       this.upsertEverywhere(result.message);
     } catch {
       applyReaction(message, char, meId(), !adding);

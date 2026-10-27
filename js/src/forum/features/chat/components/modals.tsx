@@ -10,7 +10,8 @@ import type Mithril from 'mithril';
 
 import chat from '../ChatStore';
 import { go } from './ChannelsList';
-import { channelTitle, chatRequest, ct, pushUsers } from '../utils';
+import * as api from '../api';
+import { channelTitle, ct } from '../utils';
 import { allTags, isTagsEnabled, sortTags } from '../../../utils/tags';
 import type { ChatChannel } from '../types';
 import { caps } from '../flags';
@@ -112,7 +113,7 @@ export class CreateChannelModal extends Modal<CreateChannelModalAttrs> {
     this.loading = true;
 
     try {
-      const result = await chatRequest('POST', '/channels', {
+      const result = await api.createChannel({
         name: this.name,
         slug: this.slug,
         description: this.description,
@@ -121,7 +122,6 @@ export class CreateChannelModal extends Modal<CreateChannelModalAttrs> {
         autoJoin: this.autoJoin,
       });
 
-      pushUsers(result.users);
       const channel = chat.putChannel(result.channel);
 
       app.modal.close();
@@ -188,7 +188,7 @@ export class DeleteChannelModal extends Modal<DeleteChannelModalAttrs> {
     this.loading = true;
 
     try {
-      await chatRequest('DELETE', `/channels/${this.attrs.channel.id}`);
+      await api.deleteChannel(this.attrs.channel.id);
       chat.channels.delete(this.attrs.channel.id);
       app.modal.close();
       app.alerts.show({ type: 'success' }, ct('channel_delete.process_started'));

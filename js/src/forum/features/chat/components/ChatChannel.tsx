@@ -18,7 +18,8 @@ import chat, { type ChatPane } from '../ChatStore';
 import ChatMessage from './ChatMessage';
 import ChatComposer from './ChatComposer';
 import { ChannelIcon } from './bits';
-import { channelTitle, chatRequest, ct, isSelfDm, meId, otherParticipants, displayName, pushUsers, readLocal, writeLocal } from '../utils';
+import * as api from '../api';
+import { channelTitle, ct, isSelfDm, meId, otherParticipants, displayName, readLocal, writeLocal } from '../utils';
 import type { ChatMessage as Message } from '../types';
 import { caps } from '../flags';
 
@@ -284,9 +285,9 @@ export default class ChatChannel extends Component<ChatChannelAttrs> {
   private loadPins(): void {
     if (!caps().pins) return;
 
-    chatRequest('GET', `/channels/${this.attrs.pane.channelId}/pins`, undefined, undefined, { errorHandler: () => {} })
-      .then((result: any) => {
-        pushUsers(result.users);
+    api
+      .pins(this.attrs.pane.channelId, api.quiet)
+      .then((result) => {
         this.pins = result.messages;
         m.redraw();
       })
@@ -460,8 +461,7 @@ export default class ChatChannel extends Component<ChatChannelAttrs> {
     this.joining = true;
 
     try {
-      const result = await chatRequest('POST', `/channels/${channel.id}/membership`);
-      pushUsers(result.users);
+      const result = await api.follow(channel.id);
       chat.putChannel(result.channel);
     } finally {
       this.joining = false;

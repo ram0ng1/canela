@@ -1,6 +1,8 @@
 /*
- * Os formatos que a API do chat (/api/chat/*) devolve. São objetos simples,
- * e não modelos do store: o chat muda o tempo todo (mensagens, reações,
+ * Os recursos da API do chat (`chat-channels`, `chat-messages`,
+ * `chat-threads`) como o front os usa: objetos simples, com o id e os
+ * atributos lado a lado (api.ts os monta a partir do documento JSON:API), e
+ * não modelos do store: o chat muda o tempo todo (mensagens, reações,
  * contagens), e o front mexe neles direto ao receber cada evento. Os usuários,
  * esses sim, vão para o store do Flarum (Avatar, nome, perfil).
  */
@@ -57,6 +59,7 @@ export interface ChatChannel {
   canPin: boolean;
   canEdit: boolean;
   canAddMembers: boolean;
+  canDelete?: boolean;
   membership: ChatMembership | null;
 }
 
@@ -108,6 +111,10 @@ export interface ChatMessage {
   pinnedById: number | null;
   pinnedAt: string | null;
   thread: ChatThreadPreview | null;
+  // O que o leitor pode (MessagePolicy); ausentes nas mensagens montadas no front.
+  canEdit?: boolean;
+  canDelete?: boolean;
+  canRestore?: boolean;
 
   // Só do front: a mensagem enviada que ainda não voltou do servidor, a que
   // falhou, e a apagada que o leitor abriu.
@@ -119,6 +126,7 @@ export interface ChatMessage {
 
 export interface ChatThread extends ChatThreadPreview {
   channelId: number;
+  canRename?: boolean;
   originalMessage: ChatMessage | null;
   membership: { notificationLevel: ThreadLevel; lastReadMessageId: number | null; unreadCount: number } | null;
 }

@@ -18,7 +18,8 @@ import type Mithril from 'mithril';
 
 import chat, { type ChatPane } from '../ChatStore';
 import { setMenuOpen } from './ChatMessage';
-import { channelPath, chatRequest, copyText, ct, emoji, meId, pushUsers, quickReactions } from '../utils';
+import * as api from '../api';
+import { channelPath, copyText, ct, emoji, meId, quickReactions } from '../utils';
 import { openEmojiPicker } from '../../composer/emoji/pickerLazy';
 import type { ChatMessage } from '../types';
 
@@ -88,23 +89,20 @@ function copyLink(message: ChatMessage, pane: ChatPane): void {
 }
 
 async function pin(message: ChatMessage, value: boolean): Promise<void> {
-  const result = await chatRequest(value ? 'POST' : 'DELETE', `/messages/${message.id}/pin`);
+  const result = await api.pin(message.id, value);
 
-  pushUsers(result.users);
   chat.upsertEverywhere(result.message);
 }
 
 async function remove(message: ChatMessage): Promise<void> {
-  const result = await chatRequest('DELETE', `/messages/${message.id}`);
+  const result = await api.deleteMessage(message.id);
 
-  pushUsers(result.users);
   chat.upsertEverywhere(result.message);
 }
 
 async function restore(message: ChatMessage): Promise<void> {
-  const result = await chatRequest('POST', `/messages/${message.id}/restore`);
+  const result = await api.restoreMessage(message.id);
 
-  pushUsers(result.users);
   chat.upsertEverywhere({ ...result.message, expanded: false });
 }
 

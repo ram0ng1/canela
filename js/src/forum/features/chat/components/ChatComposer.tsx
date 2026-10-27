@@ -18,7 +18,8 @@ import type Mithril from 'mithril';
 
 import chat, { type ChatPane } from '../ChatStore';
 import { ChatUserAvatar } from './bits';
-import { chatRequest, chatUser, composerPlaceholder, ct, displayName, emoji, meId, preference, pushUsers } from '../utils';
+import * as api from '../api';
+import { chatUser, composerPlaceholder, ct, displayName, emoji, meId, preference } from '../utils';
 import { openEmojiPicker } from '../../composer/emoji/pickerLazy';
 import { loadEmojiData, matches, normalize } from '../../composer/emoji/emojiUtils';
 import type { EmojiRow } from '../../composer/emoji-data';
@@ -445,12 +446,11 @@ export default class ChatComposer extends Component<ChatComposerAttrs> {
       setTimeout(() => {
         if (request !== this.suggestRequest) return;
 
-        chatRequest('GET', '/users', undefined, { q: typed, channel: this.attrs.pane.channelId }, { errorHandler: () => {} })
-          .then((result: any) => {
-            pushUsers(result.users);
-
+        api
+          .users(typed, this.attrs.pane.channelId)
+          .then((result) => {
             const members = new Set<number>(result.memberIds);
-            const items: Suggestion[] = (result.userIds as number[])
+            const items: Suggestion[] = result.userIds
               .filter((id) => id !== meId())
               .map((id) => {
                 const user = chatUser(id);
