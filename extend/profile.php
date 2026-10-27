@@ -24,6 +24,7 @@ use Flarum\User\Event\Deleted;
 use Flarum\User\User;
 use Ramon\Canela\Profile\Access\ProfilePolicy;
 use Ramon\Canela\Profile\Api\ProfileImageEndpoints;
+use Ramon\Canela\Profile\Api\UserLastPostField;
 use Ramon\Canela\Profile\Api\UserProfileFields;
 use Ramon\Canela\Profile\Listener\DeleteProfileImages;
 use Ramon\Canela\Profile\Listener\DeleteReplacedProfileImages;
@@ -65,6 +66,7 @@ return (static function (): array {
 
         (new Extend\ApiResource(UserResource::class))
             ->fields(UserProfileFields::class)
+            ->fields(UserLastPostField::class)
             ->endpoints(ProfileImageEndpoints::class),
 
         (new Extend\Policy())
