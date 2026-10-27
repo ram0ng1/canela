@@ -36,7 +36,7 @@ use Ramon\Canela\Stats\VisitRecorder;
  * - o dia inteiro tem teto (VisitRecorder).
  *
  * Continua um controller, e não um endpoint do recurso de tópicos: o fórum
- * manda por \`fetch\` com \`keepalive\` (o último envio sai mesmo com a aba
+ * manda por `fetch` com `keepalive` (o último envio sai mesmo com a aba
  * fechando), um beacon que ninguém lê. O formato passa pelo
  * ReadTimeValidator; só quem entrou envia (401).
  */
