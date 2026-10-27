@@ -25,11 +25,13 @@ use Ramon\Canela\BugReports\BugReportsSettings;
 use Ramon\Canela\BugReports\PromptBuilder;
 
 /**
- * As instruções para a IA, prontas para colar ou baixar (só o admin):
+ * `GET /api/canela-bug-reports-export`: as instruções para a IA com todos os
+ * relatórios pendentes (até MAX), prontas para colar; com `?download=1`, como
+ * arquivo .md. Só para quem pode exportar (BugReportPolicy::export).
  *
- * - `GET /api/canela-bug-reports-export`: todos os relatórios pendentes;
- *   com `?download=1`, como arquivo .md;
- * - `GET /api/canela-bug-reports/{id}/prompt`: um relatório só.
+ * Continua um controlador, e não um endpoint do recurso: a resposta é um
+ * arquivo Markdown, não um documento JSON:API. O de um relatório só é o
+ * `GET /api/canela-bug-reports/{id}/prompt`, no BugReportResource.
  */
 final class ExportController implements RequestHandlerInterface
 {
@@ -49,21 +51,17 @@ final class ExportController implements RequestHandlerInterface
         }
 
         $actor = RequestUtil::getActor($request);
-        $actor->assertAdmin();
+        $actor->assertCan('export', BugReport::class);
 
         $query = $request->getQueryParams();
 
-        if (Arr::has($query, 'id')) {
-            $rows = [ReportController::find($request, $actor)];
-        } else {
-            /** @var \Illuminate\Database\Eloquent\Collection<int, BugReport> $rows */
-            $rows = BugReport::query()
-                ->with('user')
-                ->whereNotIn('status', ['fixed', 'wontfix'])
-                ->orderBy('id')
-                ->limit(self::MAX)
-                ->get();
-        }
+        /** @var \Illuminate\Database\Eloquent\Collection<int, BugReport> $rows */
+        $rows = BugReport::whereVisibleTo($actor)
+            ->with('user')
+            ->whereNotIn('status', ['fixed', 'wontfix'])
+            ->orderBy('id')
+            ->limit(self::MAX)
+            ->get();
 
         $headers = ['Content-Type' => 'text/markdown; charset=utf-8', 'Cache-Control' => 'no-store'];
 

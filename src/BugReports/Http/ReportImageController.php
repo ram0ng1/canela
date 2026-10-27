@@ -27,9 +27,13 @@ use Ramon\Canela\BugReports\BugReportsSettings;
 use Ramon\Canela\BugReports\ImageLinks;
 
 /**
- * `GET /api/canela-bug-reports/{id}/{region|full}`: a captura, só para o admin
- * ou para quem reportou, ou para quem tem o link assinado das instruções da
- * IA (`?exp=…&sig=…`, válido por 7 dias). Privada e sem cache compartilhado.
+ * `GET /api/canela-bug-reports/{id}/{region|full}`: a captura, só para quem
+ * pode ver o relatório (BugReportPolicy::view: o admin ou quem reportou), ou
+ * para quem tem o link assinado das instruções da IA (`?exp=…&sig=…`, válido
+ * por 7 dias). Privada e sem cache compartilhado.
+ *
+ * Continua um controlador, e não um endpoint do recurso: a resposta é a
+ * imagem, e o link assinado abre sem sessão.
  */
 final class ReportImageController implements RequestHandlerInterface
 {
@@ -61,7 +65,14 @@ final class ReportImageController implements RequestHandlerInterface
             $actor = RequestUtil::getActor($request);
             $actor->assertRegistered();
 
-            $report = ReportController::find($request, $actor);
+            // O relatório de outra pessoa responde como inexistente.
+            $report = BugReport::whereVisibleTo($actor)->find($id);
+
+            if (! $report instanceof BugReport) {
+                throw new RouteNotFoundException();
+            }
+
+            $actor->assertCan('view', $report);
         }
 
         $bytes = $this->images->read($which === 'full' ? $report->full_path : $report->region_path);

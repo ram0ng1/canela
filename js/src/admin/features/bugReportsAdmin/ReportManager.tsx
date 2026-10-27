@@ -14,6 +14,7 @@ import type Mithril from 'mithril';
 import { AdminComponent, trans } from '../../util';
 import { AdminNotice } from '../../components/AdminCard';
 import { copyImage, copyText, fetchText } from './clipboard';
+import { reportBody, reportFrom, reportsFrom, type BugReportData, type BugReportsDocument } from '../../../common/bugReports';
 
 export const KEY = 'ramon-canela.admin.settings.bug_reports';
 
@@ -23,19 +24,9 @@ const FILTERS = ['active', ...STATUSES, 'all'] as const;
 type Status = (typeof STATUSES)[number];
 type Filter = (typeof FILTERS)[number];
 
-interface Report {
-  id: number;
-  kind: string;
+interface Report extends BugReportData {
   status: Status;
-  description: string;
-  currentText: string | null;
-  suggestedText: string | null;
-  url: string;
-  title: string;
-  note: string | null;
-  hasFull: boolean;
-  createdAt: string;
-  user: { id: number; username: string; displayName: string; avatarUrl: string | null } | null;
+  user: BugReportData['user'];
   context: {
     viewport?: { w: number; h: number; dpr: number };
     userAgent?: string;
@@ -125,16 +116,16 @@ export default class ReportManager extends AdminComponent {
 
   reload(): void {
     app
-      .request<{ reports: Report[]; counts: Record<string, number>; total: number; perPage: number }>({
+      .request<BugReportsDocument>({
         method: 'GET',
         url: apiUrl('/canela-bug-reports'),
-        params: { status: this.filter === 'all' ? '' : this.filter, page: this.page },
+        params: { filter: this.filter === 'all' ? {} : { status: this.filter }, page: { number: this.page }, include: 'user' },
       })
-      .then((payload) => {
-        this.rows = payload.reports || [];
-        this.counts = payload.counts || {};
-        this.total = payload.total || 0;
-        this.perPage = payload.perPage || 20;
+      .then((document) => {
+        this.rows = reportsFrom(document) as Report[];
+        this.counts = document.meta?.counts || {};
+        this.total = document.meta?.page?.total || 0;
+        this.perPage = document.meta?.page?.limit || 20;
         this.error = null;
       })
       .catch(() => (this.error = trans(`${KEY}.load_failed`)))
@@ -409,9 +400,11 @@ export default class ReportManager extends AdminComponent {
     this.busy.add(report.id);
 
     app
-      .request<{ report: Report }>({ method: 'PATCH', url: apiUrl(`/canela-bug-reports/${report.id}`), body })
-      .then((payload) => {
-        Object.assign(report, payload.report);
+      .request<BugReportsDocument>({ method: 'PATCH', url: apiUrl(`/canela-bug-reports/${report.id}`), body: reportBody(body, report.id) })
+      .then((document) => {
+        // A resposta não traz quem enviou (sem `include`): o que já estava fica.
+        const { user, ...changed } = reportFrom(document);
+        Object.assign(report, changed);
         this.reload();
       })
       .catch(() => (this.error = trans(`${KEY}.save_failed`)))

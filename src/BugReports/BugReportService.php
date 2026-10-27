@@ -16,11 +16,12 @@ namespace Ramon\Canela\BugReports;
 use Flarum\Foundation\ValidationException;
 use Flarum\User\User;
 use Illuminate\Contracts\Cache\Repository as Cache;
-use Illuminate\Support\Arr;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Criar, listar e apresentar relatórios.
+ * As regras dos relatórios (limpeza do texto e do contexto, teto por hora,
+ * capturas) e a apresentação para as instruções da IA. Criar, listar e
+ * mudar ficam no BugReportResource, que usa estas regras.
  *
  * O contexto que vem do navegador é só dado: cada campo é conferido, cortado
  * e guardado com tamanho fixo, para um relatório nunca virar um depósito.
@@ -42,68 +43,53 @@ final class BugReportService
     ) {
     }
 
-    private function fail(string $field, string $key): never
+    /** A mensagem de erro de validação `$key` (ramon-canela.api.bug_reports.*), no idioma do fórum. */
+    public function message(string $key): string
     {
-        throw new ValidationException([$field => $this->translator->trans(self::KEY.$key)]);
+        return $this->translator->trans(self::KEY.$key);
     }
 
-    /** @param array<string, mixed> $body */
-    public function create(User $actor, array $body): BugReport
+    /** O erro de validação de um campo, com a mensagem das traduções. */
+    public function fail(string $field, string $key): never
     {
-        $kind = (string) Arr::get($body, 'kind', 'bug');
-        $description = self::text(Arr::get($body, 'description'), self::MAX_DESCRIPTION);
-
-        if (! in_array($kind, BugReport::KINDS, true)) {
-            $kind = 'bug';
-        }
-
-        if ($description === '') {
-            $this->fail('description', 'description_required');
-        }
-
-        $region = BugReportImages::decodeDataUrl(Arr::get($body, 'region'));
-
-        if ($region === null) {
-            $this->fail('region', 'image_invalid');
-        }
-
-        $full = $this->settings->bool(BugReportsSettings::FULL, true) ? BugReportImages::decodeDataUrl(Arr::get($body, 'full')) : null;
-
-        if (! $actor->isAdmin() && $this->overLimit((int) $actor->id)) {
-            $this->fail('description', 'too_many');
-        }
-
-        $regionPath = $this->images->store($region);
-
-        if ($regionPath === null) {
-            $this->fail('region', 'image_invalid');
-        }
-
-        $context = self::context((array) Arr::get($body, 'context', []), $this->settings->bool(BugReportsSettings::CONSOLE, false));
-
-        $report = new BugReport();
-        $report->user_id = (int) $actor->id;
-        $report->kind = $kind;
-        $report->status = 'open';
-        $report->description = $description;
-        $report->current_text = self::text(Arr::get($body, 'currentText'), 2000) ?: null;
-        $report->suggested_text = self::text(Arr::get($body, 'suggestedText'), 2000) ?: null;
-        $report->url = self::text($context['url'] ?? '', 1000);
-        $report->title = self::text($context['title'] ?? '', 200);
-        $report->context = $context;
-        $report->region_path = $regionPath;
-        $report->full_path = $full !== null ? $this->images->store($full) : null;
-        $report->save();
-
-        return $report;
+        throw new ValidationException([$field => $this->message($key)]);
     }
 
-    private function overLimit(int $userId): bool
+    /**
+     * Conta mais um relatório da pessoa nesta hora e diz se passou do teto
+     * (PER_HOUR). O admin não tem teto: quem chama decide.
+     */
+    public function overLimit(int $userId): bool
     {
         $key = 'canela.bug_reports.rate.'.$userId.'.'.intdiv(time(), 3600);
         $this->cache->add($key, 0, 7200);
 
         return (int) $this->cache->increment($key) > self::PER_HOUR;
+    }
+
+    /**
+     * Grava a captura (relida e regravada em WebP) e devolve o caminho, ou
+     * null se os bytes não forem uma imagem válida.
+     */
+    public function storeImage(string $bytes): ?string
+    {
+        return $this->images->store($bytes);
+    }
+
+    /**
+     * O contexto da página limpo, com os erros do console só se o admin os pede.
+     *
+     * @return array<string, mixed>
+     */
+    public function cleanContext(mixed $raw): array
+    {
+        return self::context(is_array($raw) ? $raw : [], $this->settings->bool(BugReportsSettings::CONSOLE, false));
+    }
+
+    /** A captura da tela inteira vai junto (opção do admin). */
+    public function wantsFull(): bool
+    {
+        return $this->settings->bool(BugReportsSettings::FULL, true);
     }
 
     /** Texto de uma linha ou de várias, sem caracteres de controle e com teto. */
