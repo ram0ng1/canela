@@ -53,14 +53,6 @@ export function aiApiUrl(path: string): string {
   return `${app.forum.attribute<string>('apiUrl')}/canela/ai/${path}`;
 }
 
-/**
- * Os tópicos relacionados por embeddings: um endpoint de ação no recurso de
- * tópicos (`GET /api/discussions/{id}/canela-related`).
- */
-export function relatedTopicsRequest<T>(discussionId: string): Promise<{ data: T[] }> {
-  return app.request<{ data: T[] }>({ method: 'GET', url: `${app.forum.attribute<string>('apiUrl')}/discussions/${discussionId}/canela-related` });
-}
-
 export function aiRequest<T = any>(method: 'GET' | 'POST' | 'PATCH' | 'DELETE', path: string, body?: Record<string, unknown>): Promise<T> {
   return app.request<T>({ method, url: aiApiUrl(path), body });
 }

@@ -19,7 +19,7 @@ import type Mithril from 'mithril';
 import { categoryBadge, labelBadge, type CanelaTag } from '../../utils/tags';
 import { fullDate, shortAge } from '../../utils/dates';
 import { t } from '../../utils/settings';
-import { relatedTopicsRequest } from './state';
+import { aiRequest } from './state';
 
 interface RelatedTopic {
   id: string;
@@ -47,7 +47,7 @@ export default class RelatedTopics extends Component<RelatedTopicsAttrs> {
 
     cache.set(id, []);
 
-    relatedTopicsRequest<RelatedTopic>(id)
+    aiRequest<{ data: RelatedTopic[] }>('GET', `related/${id}`)
       .then((response) => cache.set(id, response.data || []))
       .catch(() => {})
       .finally(() => m.redraw());

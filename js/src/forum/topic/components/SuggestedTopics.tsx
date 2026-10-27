@@ -25,7 +25,7 @@ import { categoryBadge, discussionBadges, isTagsEnabled, labelBadge, splitDiscus
 import { fullDate, shortAge } from '../../utils/dates';
 import { forumBool, forumInt, t } from '../../utils/settings';
 import { viewsHeat, viewsNumber } from '../../utils/views';
-import { aiFeature, relatedTopicsRequest } from '../../features/ai/state';
+import { aiFeature, aiRequest } from '../../features/ai/state';
 
 /** Uma linha da tabela, venha de um modelo do store ou da API de IA. */
 interface Row {
@@ -157,7 +157,7 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
 
   loadRelated(discussion: Discussion, limit: number): Promise<Row[]> {
     if (aiFeature('related')) {
-      return relatedTopicsRequest<AiRelated>(discussion.id()!)
+      return aiRequest<{ data: AiRelated[] }>('GET', `related/${discussion.id()}`)
         .then((response) => (response.data || []).slice(0, limit).map(fromAi))
         .catch(() => []);
     }

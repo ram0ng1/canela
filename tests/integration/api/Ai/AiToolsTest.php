@@ -17,11 +17,12 @@ use Flarum\Post\Post;
 use PHPUnit\Framework\Attributes\Test;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Llm\LlmException;
+use Ramon\Canela\Ai\TopicEmbedding;
 use Ramon\Canela\Tests\integration\api\Ai\Fake\FakeLlm;
 
 /**
  * O que a IA faz sem modelo guardado, com o provedor falso: o ajudante do
- * editor, os tópicos relacionados (endpoint no recurso de tópicos), o
+ * editor, os tópicos relacionados, o
  * "Testar conexão" do admin e o pedido de traduções — a validação da entrada
  * e quem pode cada um.
  */
@@ -127,28 +128,71 @@ class AiToolsTest extends AbstractAiTestCase
     }
 
     /**
-     * Relacionados: o tópico passa pela visibilidade do recurso de tópicos
-     * (404 para o oculto); sem vetores ainda, a lista vem vazia.
+     * Relacionados (`GET /api/canela/ai/related/{id}`, no formato
+     * `{data: [...]}`): o tópico passa pela visibilidade de quem pede (404
+     * para o oculto); sem vetores ainda, a lista vem vazia.
      */
     #[Test]
-    public function relacionados_no_recurso_de_topicos(): void
+    public function relacionados_respeitam_a_visibilidade(): void
     {
         $this->setting(AiSettings::RELATED, '1');
 
-        $response = $this->send($this->request('GET', '/api/discussions/1/canela-related'));
+        $response = $this->send($this->request('GET', '/api/canela/ai/related/1'));
 
         $this->assertEquals(200, $response->getStatusCode(), (string) $response->getBody());
         $this->assertSame(['data' => []], $this->body($response));
 
-        $this->assertEquals(404, $this->send($this->request('GET', '/api/discussions/2/canela-related'))->getStatusCode());
-        $this->assertEquals(404, $this->send($this->request('GET', '/api/discussions/999/canela-related'))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela/ai/related/2'))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela/ai/related/999'))->getStatusCode());
+    }
+
+    /**
+     * O formato de cada item, que a página do tópico pré-carrega e desenha:
+     * `{id, title, url, replyCount, lastPostedAt, tagIds}`. O tópico oculto,
+     * mesmo com vetor parecido, não entra.
+     */
+    #[Test]
+    public function relacionados_no_formato_da_tabela(): void
+    {
+        $this->setting(AiSettings::RELATED, '1');
+
+        $now = Carbon::now();
+        $vector = static fn (array $values): array => ['model' => 'text-embedding-3-small', 'digest' => str_repeat('a', 40), 'vector' => TopicEmbedding::pack($values), 'updated_at' => $now];
+
+        $this->prepareDatabase([
+            Discussion::class => [
+                ['id' => 3, 'title' => 'Parecido', 'slug' => 'parecido', 'user_id' => 3, 'created_at' => $now, 'last_posted_at' => $now, 'comment_count' => 3, 'first_post_id' => 3, 'last_post_number' => 3],
+            ],
+            Post::class => [
+                ['id' => 3, 'discussion_id' => 3, 'user_id' => 3, 'type' => 'comment', 'content' => '<t><p>Oi</p></t>', 'number' => 1, 'created_at' => $now],
+            ],
+            'canela_ai_embeddings' => [
+                ['discussion_id' => 1] + $vector([1.0, 0.0]),
+                ['discussion_id' => 2] + $vector([1.0, 0.1]),
+                ['discussion_id' => 3] + $vector([0.9, 0.1]),
+            ],
+        ]);
+
+        $response = $this->send($this->request('GET', '/api/canela/ai/related/1'));
+
+        $this->assertEquals(200, $response->getStatusCode(), (string) $response->getBody());
+
+        $data = $this->body($response)['data'];
+
+        $this->assertCount(1, $data);
+        $this->assertSame(['id', 'title', 'url', 'replyCount', 'lastPostedAt', 'tagIds'], array_keys($data[0]));
+        $this->assertSame('3', $data[0]['id']);
+        $this->assertSame('Parecido', $data[0]['title']);
+        $this->assertStringContainsString('/d/3', $data[0]['url']);
+        $this->assertSame(2, $data[0]['replyCount']);
+        $this->assertSame([], $data[0]['tagIds']);
     }
 
     /** Relacionados desligados (o padrão): 404. */
     #[Test]
     public function relacionados_desligados_respondem_404(): void
     {
-        $this->assertEquals(404, $this->send($this->request('GET', '/api/discussions/1/canela-related'))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela/ai/related/1'))->getStatusCode());
     }
 
     /** "Testar conexão": só administradores; cada modelo configurado responde. */

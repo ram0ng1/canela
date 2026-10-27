@@ -44,7 +44,7 @@ use Ramon\Canela\Ai\Console\EmbedTopicsCommand;
 use Ramon\Canela\Ai\Console\GenerateGistsCommand;
 use Ramon\Canela\Ai\Console\HourlySchedule;
 use Ramon\Canela\Ai\Conversation;
-use Ramon\Canela\Ai\Embeddings\RelatedTopicsEndpoint;
+use Ramon\Canela\Ai\Embeddings\RelatedController;
 use Ramon\Canela\Ai\Helper\HelperController;
 use Ramon\Canela\Ai\Http\AiPageContent;
 use Ramon\Canela\Ai\Http\Conversations\ReplyController;
@@ -72,8 +72,7 @@ return [
         ->fields(ForumAiFields::class),
 
     (new Extend\ApiResource(DiscussionResource::class))
-        ->fields(DiscussionAiFields::class)
-        ->endpoints(static fn (): array => [RelatedTopicsEndpoint::endpoint()]),
+        ->fields(DiscussionAiFields::class),
 
     // As conversas com o bot (e as mensagens, só como inclusão) e os resumos
     // prontos dos tópicos.
@@ -94,13 +93,15 @@ return [
         ->route('/ai/conversations', 'canela.ai.conversations', AiPageContent::class)
         ->route('/ai/conversations/{id:\d+}', 'canela.ai.conversation', AiPageContent::class),
 
-    // O que responde em streaming (NDJSON) ou só chama o provedor fica em
-    // controllers: a pergunta ao bot, o ajudante, a geração do resumo e o
-    // "Testar conexão" do admin.
+    // O que responde em streaming (NDJSON) ou só chama um provedor fica em
+    // controllers: a pergunta ao bot, o ajudante, a geração do resumo, os
+    // tópicos relacionados (embeddings) e o "Testar conexão" do admin.
     (new Extend\Routes('api'))
         ->post('/canela/ai/conversations/reply', 'canela.ai.conversations.reply', ReplyController::class)
         ->post('/canela/ai/helper', 'canela.ai.helper', HelperController::class)
         ->post('/canela/ai/summaries/{id:\d+}', 'canela.ai.summaries.generate', SummaryController::class)
+        // A página do tópico pré-carrega este caminho: URL e formato ficam.
+        ->get('/canela/ai/related/{id:\d+}', 'canela.ai.related', RelatedController::class)
         ->post('/canela/ai/test', 'canela.ai.test', TestConnectionController::class),
 
     (new Extend\Console())
