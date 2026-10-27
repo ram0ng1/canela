@@ -50,6 +50,7 @@ export interface ChatChannel {
     canPin: boolean;
     canEdit: boolean;
     canAddMembers: boolean;
+    canDelete?: boolean;
     membership: ChatMembership | null;
 }
 export interface ChatReaction {
@@ -102,6 +103,9 @@ export interface ChatMessage {
     pinnedById: number | null;
     pinnedAt: string | null;
     thread: ChatThreadPreview | null;
+    canEdit?: boolean;
+    canDelete?: boolean;
+    canRestore?: boolean;
     staged?: boolean;
     error?: string | null;
     expanded?: boolean;
@@ -109,6 +113,7 @@ export interface ChatMessage {
 }
 export interface ChatThread extends ChatThreadPreview {
     channelId: number;
+    canRename?: boolean;
     originalMessage: ChatMessage | null;
     membership: {
         notificationLevel: ThreadLevel;
