@@ -28,7 +28,10 @@ declare(strict_types=1);
  * descem pela API quando o modelo é escolhido.
  */
 
+use Flarum\Api\Resource\ForumResource;
+use Flarum\Api\Schema;
 use Flarum\Extend;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Tags\Event\Deleting;
 use Ramon\Canela\Templates\Api\TemplateResource;
 use Ramon\Canela\Templates\Listener\PruneDeletedTag;
@@ -39,8 +42,17 @@ return [
     (new Extend\Settings())
         ->default(TemplatesSettings::ENABLED, true)
         ->serializeToForum('canelaTemplatesEnabled', TemplatesSettings::ENABLED, 'boolval')
-        ->default(TemplateIndex::KEY, '[]')
-        ->serializeToForum('canelaTemplates', TemplateIndex::KEY, static fn (mixed $value): array => TemplateIndex::decode($value)),
+        ->default(TemplateIndex::KEY, '[]'),
+
+    // O índice é lido a cada serialização, e não por `serializeToForum`: ali o
+    // valor é lido uma vez e fica preso no campo, e um processo que atende
+    // várias requisições (os testes, um worker) serviria o índice antigo
+    // depois de uma gravação.
+    (new Extend\ApiResource(ForumResource::class))
+        ->fields(static fn (): array => [
+            Schema\Arr::make('canelaTemplates')
+                ->get(static fn (): array => TemplateIndex::decode(resolve(SettingsRepositoryInterface::class)->get(TemplateIndex::KEY))),
+        ]),
 
     new Extend\ApiResource(TemplateResource::class),
 
