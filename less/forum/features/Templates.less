@@ -1,99 +1,11 @@
 // =====================================================================
-// Modelos do editor (features/templates): a linha "Modelo" no alto da área
-// do editor e, no modelo de formulário, os campos no lugar da área de texto.
-// A caixa dos campos é `.Composer-flexible`: o core lhe dá a altura que daria
-// à área de texto (ver forum/Composer.less), e ela rola por dentro.
+// Modelos do editor (features/templates): os campos de um modelo "sem texto
+// livre" no lugar da área de texto do composer. A caixa é `.Composer-flexible`:
+// o core lhe dá a altura que daria à área de texto (ver forum/Composer.less),
+// e ela rola por dentro. A troca de modelo mora no menu ⊕ da barra.
 // =====================================================================
 
 .CanelaTemplatePanel {
-  background: var(--cn-surface);
-  color: var(--cn-primary);
-}
-
-.CanelaTemplatePanel-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 4px 8px 4px 16px;
-  border-bottom: 1px solid var(--cn-composer-border);
-  font-size: 14px;
-}
-
-.CanelaTemplatePanel-icon {
-  flex: none;
-  color: var(--cn-primary-medium);
-}
-
-.CanelaTemplatePanel-label {
-  flex: none;
-  color: var(--cn-primary-high);
-  font-weight: 600;
-}
-
-// O seletor, compacto: a linha é do tamanho do texto, não da célula de categoria.
-.CanelaTemplatePanel-select {
-  flex: 0 1 auto;
-  min-width: 0;
-  max-width: 100%;
-
-  .CanelaSelectKit-header {
-    min-height: 34px;
-    padding: 6px 8px;
-    border-radius: var(--cn-radius);
-    font-size: 14px;
-
-    &:hover {
-      background: var(--cn-primary-very-low);
-    }
-  }
-
-  .CanelaSelectKit-body {
-    min-width: 280px;
-  }
-}
-
-.CanelaTemplatePanel-value {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  &.is-placeholder {
-    color: var(--cn-primary-medium);
-    font-weight: 400;
-  }
-}
-
-.CanelaTemplateRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.CanelaTemplateRow-icon {
-  flex: none;
-  color: var(--cn-primary-medium);
-}
-
-.CanelaTemplateRow-name {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.CanelaTemplateRow-kind {
-  flex: none;
-  margin-left: auto;
-  color: var(--cn-primary-medium);
-  font-size: 12px;
-}
-
-// ---------------------------------------------------------------------
-// O formulário
-// ---------------------------------------------------------------------
-.CanelaTemplatePanel-fields {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -101,6 +13,8 @@
   padding: 12px 16px 8px;
   overflow-y: auto;
   overscroll-behavior: contain;
+  background: var(--cn-surface);
+  color: var(--cn-primary);
 }
 
 .CanelaTemplatePanel-hint {
@@ -152,51 +66,16 @@
   display: none;
 }
 
-// Com a prévia ao lado (a grade de forum/Composer.less): a linha do seletor
-// ocupa as duas colunas; no formulário, os campos ficam na coluna do texto,
-// com a prévia ao lado mostrando o texto montado.
-.CanelaComposer .ComposerBody-editor.CanelaComposer-split.has-templates {
-  grid-template-rows: auto auto auto;
-
-  > .CanelaTemplatePanel {
-    grid-column: ~"1 / -1";
-    grid-row: 1;
-  }
-
-  .TextEditor-editorContainer,
-  .CanelaComposerPreview {
-    grid-row: 2;
-  }
-
-  .TextEditor-controls {
-    grid-row: 3;
-  }
-
-  &.CanelaComposer-form {
-    grid-template-rows: auto auto;
-
-    > .CanelaTemplatePanel {
-      grid-column: 1;
-      grid-row: 1;
-      min-width: 0;
-    }
-
-    .CanelaComposerPreview {
-      grid-row: 1;
-    }
-
-    .TextEditor-controls {
-      grid-row: 2;
-    }
-  }
+// Com a prévia ao lado (a grade de forum/Composer.less), os campos ficam na
+// coluna do texto e a prévia mostra o texto montado.
+.CanelaComposer .ComposerBody-editor.CanelaComposer-split.CanelaComposer-form > .CanelaTemplatePanel {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
 }
 
 @media (max-width: 767px) {
-  .CanelaTemplatePanel-picker {
-    padding-left: 12px;
-  }
-
-  .CanelaTemplatePanel-fields {
+  .CanelaTemplatePanel {
     padding: 10px 12px 8px;
   }
 }

@@ -19,7 +19,8 @@ use Illuminate\Database\Schema\Blueprint;
  * - `kind` `form`: só os campos marcados com {{campo}} no texto são
  *   preenchidos, num formulário; o resto do texto sai como está. `fields`
  *   guarda, em JSON, o rótulo, o tipo, a dica e as opções de cada campo.
- * - `required`: onde o modelo vale, não há a opção de texto livre.
+ * - `required` ("sem texto livre"): decide o `kind` e tira a opção de texto
+ *   livre onde o modelo vale.
  * - `position`: a ordem no seletor e no painel.
  */
 return Migration::createTable(

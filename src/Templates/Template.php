@@ -20,16 +20,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * Um modelo do editor.
+ * Um modelo do editor. O tipo (`kind`) vem de `required` ("sem texto livre"):
  *
- * - `text`: o texto entra no composer do tópico novo, e quem escreve muda o
- *   que quiser;
- * - `form`: só os campos (`{{campo}}` no texto) são preenchidos, num
- *   formulário; o resto do texto sai como está. `fields` descreve cada campo
- *   (ver TemplateFields).
+ * - `text` (sem a trava): o texto entra no composer do tópico novo, e quem
+ *   escreve muda o que quiser;
+ * - `form` (com a trava): só os campos (`{{campo}}` no texto) são preenchidos,
+ *   num formulário; o resto do texto sai como está. `fields` descreve cada
+ *   campo (ver TemplateFields).
  *
  * Sem tags, vale em qualquer tópico novo; com tags, só nos tópicos que levam
- * uma delas. `required` tira a opção de texto livre onde o modelo vale.
+ * uma delas. Onde um modelo com a trava vale, não há a opção de texto livre.
  *
  * @property int $id
  * @property string $name

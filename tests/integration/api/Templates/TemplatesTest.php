@@ -79,7 +79,7 @@ class TemplatesTest extends TestCase
     #[Test]
     public function so_a_administracao_cria(): void
     {
-        $response = $this->create(2, ['name' => 'Pedido', 'kind' => 'text', 'body' => 'Olá']);
+        $response = $this->create(2, ['name' => 'Pedido', 'body' => 'Olá']);
 
         $this->assertEquals(403, $response->getStatusCode());
 
@@ -94,22 +94,23 @@ class TemplatesTest extends TestCase
     #[Test]
     public function o_admin_cria_com_tags_e_o_indice_do_forum_acompanha(): void
     {
-        $response = $this->create(1, ['name' => '  Pedido de suporte ', 'kind' => 'text', 'body' => 'Descreva o problema.', 'required' => true, 'position' => 2], [1]);
+        $response = $this->create(1, ['name' => '  Pedido de suporte ', 'body' => 'Descreva o problema.', 'required' => true, 'position' => 2], [1]);
 
         $this->assertEquals(201, $response->getStatusCode());
 
         $data = $this->body($response)['data'];
 
         $this->assertSame('Pedido de suporte', $data['attributes']['name']);
-        $this->assertSame('text', $data['attributes']['kind']);
         $this->assertTrue($data['attributes']['required']);
-        $this->assertNull($data['attributes']['fields']);
+        // "Sem texto livre" é o formulário; sem {{campo}} no texto, sem campos.
+        $this->assertSame('form', $data['attributes']['kind']);
+        $this->assertSame([], $data['attributes']['fields']);
         $this->assertSame([['type' => 'tags', 'id' => '1']], $data['relationships']['tags']['data']);
 
         $this->assertSame([[
             'id' => (int) $data['id'],
             'name' => 'Pedido de suporte',
-            'kind' => 'text',
+            'kind' => 'form',
             'required' => true,
             'tags' => [1],
         ]], $this->forumIndex());
@@ -120,7 +121,7 @@ class TemplatesTest extends TestCase
     {
         $response = $this->create(1, [
             'name' => 'Relato',
-            'kind' => 'form',
+            'required' => true,
             'body' => "**Versão:** {{Versão}}\n\n{{Descrição}}",
             'fields' => [
                 ['key' => 'Descrição', 'label' => 'O que aconteceu', 'type' => 'textarea', 'required' => true, 'extra' => 'fora'],
@@ -142,17 +143,17 @@ class TemplatesTest extends TestCase
     }
 
     #[Test]
-    public function nome_e_texto_sao_obrigatorios_e_o_tipo_e_conferido(): void
+    public function nome_texto_e_sem_texto_livre_sao_conferidos(): void
     {
         $this->assertEquals(422, $this->create(1, ['name' => '', 'body' => 'x'])->getStatusCode());
         $this->assertEquals(422, $this->create(1, ['name' => 'Sem texto', 'body' => ''])->getStatusCode());
-        $this->assertEquals(422, $this->create(1, ['name' => 'Tipo', 'body' => 'x', 'kind' => 'carta'])->getStatusCode());
+        $this->assertEquals(422, $this->create(1, ['name' => 'Trava', 'body' => 'x', 'required' => 'talvez'])->getStatusCode());
     }
 
     #[Test]
     public function mudar_e_apagar_refazem_o_indice(): void
     {
-        $id = $this->body($this->create(1, ['name' => 'Pedido', 'kind' => 'text', 'body' => 'Olá'], [1]))['data']['id'];
+        $id = $this->body($this->create(1, ['name' => 'Pedido', 'body' => 'Olá'], [1]))['data']['id'];
 
         $response = $this->send($this->request('PATCH', "/api/canela-templates/$id", [
             'authenticatedAs' => 1,

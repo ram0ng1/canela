@@ -112,50 +112,6 @@
   margin: 0 0 1em;
 }
 
-// Os dois tipos, como cartões: o escolhido ganha a borda da cor primária.
-.CanelaTemplatesAdmin-kinds {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.5em;
-}
-
-.CanelaTemplatesAdmin-kind {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25em;
-  padding: 0.75em;
-  border: 1px solid var(--control-bg);
-  border-radius: var(--border-radius);
-  font-weight: 400;
-  cursor: pointer;
-
-  input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  &.is-on {
-    border-color: var(--primary-color);
-    background: var(--control-bg);
-  }
-
-  &:focus-within {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 1px;
-  }
-}
-
-.CanelaTemplatesAdmin-kindName {
-  font-weight: 600;
-}
-
-.CanelaTemplatesAdmin-kindHelp {
-  color: var(--muted-color);
-  font-size: 0.85em;
-}
-
 .CanelaTemplatesAdmin-position {
   max-width: 8em;
 }

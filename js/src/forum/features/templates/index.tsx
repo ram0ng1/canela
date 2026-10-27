@@ -1,15 +1,18 @@
 /*
  * Modelos do editor no composer de tópico novo (extend/templates.php):
  *
- * - com um só modelo para as tags escolhidas, ele entra sozinho: o texto
- *   (modelo de texto, editável) ou o formulário no lugar da área de texto
- *   (modelo de formulário); com vários, o seletor "Modelo" no alto do editor;
+ * - o modelo das tags escolhidas entra sozinho (o obrigatório, ou o primeiro
+ *   da ordem do admin) enquanto o composer está em branco: o texto (modelo
+ *   editável) ou os campos no lugar da área de texto (modelo "sem texto
+ *   livre");
+ * - com vários modelos na tag, a troca fica no menu ⊕ da barra do editor
+ *   (uma ação por modelo, mais "Texto livre" quando nenhum é obrigatório):
+ *   nada a mais no corpo do composer;
  * - no formulário só os campos são preenchidos: o texto final (o modelo com
  *   os campos trocados) vai para o conteúdo do composer, e a prévia e os
  *   rascunhos o veem como texto comum. Publicar com um campo obrigatório em
- *   branco é barrado;
- * - "Texto livre" volta ao editor comum, a não ser que um modelo da tag seja
- *   obrigatório. O que a pessoa tinha escrito antes do formulário volta.
+ *   branco é barrado. O que a pessoa tinha escrito antes do formulário volta
+ *   ao sair dele.
  *
  * Tudo acontece no DiscussionComposer; responder e editar não mudam.
  */
@@ -22,9 +25,13 @@ import TemplatePanel from './TemplatePanel';
 import { candidatesFor, loadTemplate, newState, templatesOn, type TemplateState } from './model';
 import { missingRequired, render, type TemplateSummary } from '../../../common/templates';
 import { findByClass } from '../composer/installPreview';
+import { addMoreAction, type KeyedAction } from '../../composer/installToolbar';
 import { t } from '../../utils/settings';
 
 const DISCUSSION = 'flarum/forum/components/DiscussionComposer';
+
+/** O DiscussionComposer aberto agora (as ações do menu ⊕ falam com ele). */
+let current: any = null;
 
 function stateOf(body: any): TemplateState | null {
   return (body?.canelaTemplates as TemplateState | undefined) ?? null;
@@ -103,15 +110,15 @@ function deselect(body: any, state: TemplateState): void {
 function select(body: any, state: TemplateState, summary: TemplateSummary, interactive: boolean): void {
   if (state.selected?.id === summary.id) return;
 
-  const current = content(body);
-  const owned = current === state.applied;
+  const text = content(body);
+  const owned = text === state.applied;
 
   // Um modelo de texto substitui o que está escrito: só com confirmação.
   if (summary.kind === 'text' && !untouched(body, state) && (!interactive || !confirm(t('templates.replace_confirm')))) return;
 
   // O que a pessoa tinha escrito antes do primeiro formulário fica guardado e
   // volta ao sair dele; trocar de modelo mantém a reserva.
-  if (summary.kind === 'form' && !owned && current.trim() && state.backup === null) state.backup = current;
+  if (summary.kind === 'form' && !owned && text.trim() && state.backup === null) state.backup = text;
 
   state.selected = summary;
   state.template = null;
@@ -143,8 +150,8 @@ function select(body: any, state: TemplateState, summary: TemplateSummary, inter
 
 /**
  * A cada redesenho: as tags mudaram? Então os modelos que valem mudam, o
- * escolhido pode deixar de valer, e um modelo pode entrar sozinho (o único
- * da tag, ou o obrigatório) quando o composer ainda está em branco.
+ * escolhido pode deixar de valer, e um modelo entra sozinho (o obrigatório,
+ * ou o primeiro da ordem) enquanto o composer está em branco.
  */
 function sync(body: any): void {
   const state = stateOf(body);
@@ -163,7 +170,7 @@ function sync(body: any): void {
   if (state.selected && !state.candidates.some((template) => template.id === state.selected!.id)) deselect(body, state);
 
   if (!state.selected && untouched(body, state)) {
-    const pick = state.candidates.find((template) => template.required) ?? (state.candidates.length === 1 ? state.candidates[0] : null);
+    const pick = state.candidates.find((template) => template.required) ?? state.candidates[0];
 
     if (pick) select(body, state, pick, false);
   }
@@ -200,9 +207,44 @@ function focusField(key: string): void {
   field?.focus();
 }
 
+/** As ações do menu ⊕: um item por modelo da tag e, sem modelo obrigatório, "Texto livre". */
+function menuActions(): KeyedAction[] | null {
+  const body = current;
+  const state = body ? stateOf(body) : null;
+
+  if (!state || !templatesOn() || !app.composer.isVisible() || !app.composer.bodyMatches(DISCUSSION as any) || !state.candidates.length) {
+    return null;
+  }
+
+  const actions: KeyedAction[] = state.candidates.map((template) => ({
+    key: `canelaTemplate-${template.id}`,
+    icon: template.kind === 'form' ? 'fas fa-list-check' : 'fas fa-align-left',
+    label: template.name,
+    active: state.selected?.id === template.id,
+    onclick: () => choose(body, template.id),
+  }));
+
+  if (!state.candidates.some((template) => template.required)) {
+    actions.push({
+      key: 'canelaTemplateFree',
+      icon: 'fas fa-pen',
+      label: t('templates.free_text'),
+      active: !state.selected,
+      onclick: () => choose(body, null),
+    });
+  }
+
+  return actions;
+}
+
 export default function installTemplates(): void {
   extend(DISCUSSION as any, 'oninit', function (this: any) {
     this.canelaTemplates = newState();
+    current = this;
+  });
+
+  extend(DISCUSSION as any, 'onremove', function (this: any) {
+    if (current === this) current = null;
   });
 
   // O headerItems roda a cada redesenho: é onde a troca de tags é percebida.
@@ -210,9 +252,12 @@ export default function installTemplates(): void {
     sync(this);
   });
 
-  // O painel entra na frente da área do editor. Sempre um nó ali (nulo sem
-  // modelos): se o TextEditor mudasse de posição na lista, o Mithril o
-  // recriaria, e o texto digitado se perderia.
+  addMoreAction(menuActions);
+
+  // No formulário, os campos entram na frente da área do editor (que some
+  // pelo CSS). Sempre um nó ali (nulo fora do formulário): se o TextEditor
+  // mudasse de posição na lista, o Mithril o recriaria, e o texto digitado se
+  // perderia.
   extend('flarum/forum/components/ComposerBody' as any, 'view', function (this: any, vdom: Mithril.Children) {
     const state = stateOf(this);
 
@@ -222,17 +267,16 @@ export default function installTemplates(): void {
 
     if (!editor || !Array.isArray(editor.children)) return;
 
-    const show = state.candidates.length > 0;
-    const form = show && state.template?.kind === 'form';
+    const form = state.template?.kind === 'form' ? state.template : null;
 
-    editor.attrs.className = classList(editor.attrs.className, 'CanelaComposer-templates', { 'has-templates': show, 'CanelaComposer-form': form });
+    editor.attrs.className = classList(editor.attrs.className, { 'CanelaComposer-form': !!form });
 
     editor.children.unshift(
-      show ? (
+      form ? (
         <TemplatePanel
           state={state}
+          template={form}
           disabled={!!this.loading || !!this.attrs.disabled}
-          onselect={(id: number | null) => choose(this, id)}
           oninput={(key: string, value: string) => input(this, key, value)}
         />
       ) : null

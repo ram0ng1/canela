@@ -34,8 +34,11 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
  *   (`position`, depois o nome), com as tags de cada um.
  * - POST, PATCH e DELETE: só a administração.
  *
- * Os campos de um formulário são refeitos a partir do texto a cada gravação
- * (TemplateFields::normalize). O índice que o fórum recebe em toda página é
+ * O tipo (`kind`) não é escolhido: vem de `required` ("sem texto livre").
+ * Ligado, o modelo é um formulário (`form`): só os campos `{{campo}}` do
+ * texto são preenchidos, e eles são refeitos a partir do texto a cada
+ * gravação (TemplateFields::normalize). Desligado, é texto editável (`text`),
+ * sem campos. O índice que o fórum recebe em toda página é
  * refeito depois de gravar ou apagar, no `after` do endpoint: a relação com
  * as tags só é sincronizada depois dos ganchos `saved`/`created` do recurso,
  * e um índice feito ali sairia sem elas. Com o recurso desligado no admin,
@@ -125,9 +128,8 @@ final class TemplateResource extends AbstractDatabaseResource
                 ->requiredOnCreate()
                 ->maxLength(TemplateFields::MAX_LABEL)
                 ->set(static fn (Template $template, string $value) => $template->name = trim($value)),
-            Schema\Str::make('kind')
-                ->writable()
-                ->in(Template::KINDS),
+            // Só leitura: decidido por `required` ao gravar (ver `saving()`).
+            Schema\Str::make('kind'),
             Schema\Str::make('body')
                 ->writable()
                 ->requiredOnCreate()
@@ -162,10 +164,11 @@ final class TemplateResource extends AbstractDatabaseResource
     public function saving(object $model, OriginalContext $context): object
     {
         /** @var Template $model */
-        $model->kind = in_array($model->kind, Template::KINDS, true) ? $model->kind : 'text';
+        $model->required = (bool) $model->required;
+        // "Sem texto livre" é o formulário; sem ele, texto editável.
+        $model->kind = $model->required ? 'form' : 'text';
         $model->body = (string) $model->body;
         $model->fields = $model->isForm() ? TemplateFields::normalize($model->fields, $model->body) : null;
-        $model->required = (bool) $model->required;
         $model->position = (int) $model->position;
 
         return $model;

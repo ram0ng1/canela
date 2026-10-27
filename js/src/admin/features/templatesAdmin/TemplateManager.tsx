@@ -1,12 +1,14 @@
 /*
- * O painel dos modelos no card "Modelos do editor": a lista (nome, tipo, onde
- * vale, obrigatório) e, ao abrir um deles ou "Novo modelo", o editor: nome,
- * tipo, categorias/etiquetas, "sem texto livre", ordem, o texto e, no
- * formulário, a configuração de cada {{campo}} achado no texto.
+ * O painel dos modelos no card "Modelos do editor": a lista (nome, se é "sem
+ * texto livre", onde vale) e, ao abrir um deles ou "Novo modelo", o editor:
+ * nome, categorias/etiquetas, "sem texto livre", ordem, o texto e, com "sem
+ * texto livre" ligado, a configuração de cada {{campo}} achado no texto.
  *
  * Fala com /api/canela-templates (TemplateResource); só a administração
- * grava. Os campos seguem o texto: ao digitar, a lista é refeita a partir
- * dos {{campos}} (syncFields), mantendo o que já foi configurado.
+ * grava. O tipo (texto editável ou só os campos) não é escolhido: o servidor
+ * o decide por "sem texto livre". Os campos seguem o texto: ao digitar, a
+ * lista é refeita a partir dos {{campos}} (syncFields), mantendo o que já foi
+ * configurado.
  */
 import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
@@ -31,8 +33,6 @@ import {
 
 export const KEY = 'ramon-canela.admin.settings.templates';
 
-const KINDS: TemplateKind[] = ['text', 'form'];
-
 const apiUrl = (path: string) => `${((app.forum.attribute<string>('apiUrl') as string) || '/api').replace(/\/+$/, '')}${path}`;
 
 const tagsOn = () => 'flarum-tags' in flarum.extensions;
@@ -41,7 +41,6 @@ const tagsOn = () => 'flarum-tags' in flarum.extensions;
 interface Draft {
   id: number | null;
   name: string;
-  kind: TemplateKind;
   body: string;
   fields: TemplateField[];
   required: boolean;
@@ -53,7 +52,6 @@ function draftFrom(template: TemplateData): Draft {
   return {
     id: template.id,
     name: template.name,
-    kind: template.kind,
     body: template.body,
     fields: syncFields(template.body, template.fields),
     required: template.required,
@@ -76,10 +74,7 @@ const bodyExample = () => {
   const version = trans(`${KEY}.example_field`);
   const description = trans(`${KEY}.example_field_2`);
 
-  return `**${version}:** {{${version}}}
-
-**${description}**
-{{${description}}}`;
+  return `**${version}:** {{${version}}}\n\n**${description}**\n{{${description}}}`;
 };
 
 const kindIcon = (kind: TemplateKind) => (kind === 'form' ? 'fas fa-list-check' : 'fas fa-align-left');
@@ -106,7 +101,7 @@ export default class TemplateManager extends AdminComponent {
         params: { page: { limit: 100 }, ...(tagsOn() ? { include: 'tags' } : {}) },
       })
       .then((document) => {
-        // A ordem do seletor: posição, depois o nome.
+        // A ordem do composer: posição, depois o nome.
         this.rows = templatesFrom(document).sort((a, b) => a.position - b.position || a.name.localeCompare(b.name));
         this.error = null;
       })
@@ -132,9 +127,7 @@ export default class TemplateManager extends AdminComponent {
           <Button
             className="Button Button--primary"
             icon="fas fa-plus"
-            onclick={() =>
-              this.open({ id: null, name: '', kind: 'text', body: '', fields: [], required: false, position: rows?.length ?? 0, tags: [] })
-            }
+            onclick={() => this.open({ id: null, name: '', body: '', fields: [], required: false, position: rows?.length ?? 0, tags: [] })}
           >
             {trans(`${KEY}.new`)}
           </Button>
@@ -158,10 +151,9 @@ export default class TemplateManager extends AdminComponent {
         <div className="CanelaTemplatesAdmin-main">
           <span className="CanelaTemplatesAdmin-name">{template.name}</span>
           <span className="CanelaTemplatesAdmin-badges">
-            <span className="CanelaTemplatesAdmin-badge">{trans(`${KEY}.kind_${template.kind}`)}</span>
-            {template.required && (
-              <span className="CanelaTemplatesAdmin-badge CanelaTemplatesAdmin-badge--required">{trans(`${KEY}.badge_required`)}</span>
-            )}
+            <span className={classList('CanelaTemplatesAdmin-badge', { 'CanelaTemplatesAdmin-badge--required': template.required })}>
+              {trans(`${KEY}.kind_${template.kind}`)}
+            </span>
             <span className="CanelaTemplatesAdmin-where">{names.length ? names.join(', ') : trans(`${KEY}.tags_all`)}</span>
           </span>
         </div>
@@ -219,21 +211,6 @@ export default class TemplateManager extends AdminComponent {
             placeholder={trans(`${KEY}.name_placeholder`)}
             oninput={(event: Event) => (draft.name = (event.target as HTMLInputElement).value)}
           />
-        </div>
-
-        <div className="Form-group">
-          <span className="CanelaAdmin-label">{trans(`${KEY}.kind_label`)}</span>
-          <div className="CanelaTemplatesAdmin-kinds" role="radiogroup">
-            {KINDS.map((kind) => (
-              <label className={classList('CanelaTemplatesAdmin-kind', { 'is-on': draft.kind === kind })}>
-                <input type="radio" name="CanelaTemplate-kind" value={kind} checked={draft.kind === kind} onchange={() => (draft.kind = kind)} />
-                <span className="CanelaTemplatesAdmin-kindName">
-                  <i className={kindIcon(kind)} aria-hidden="true" /> {trans(`${KEY}.kind_${kind}`)}
-                </span>
-                <span className="CanelaTemplatesAdmin-kindHelp">{trans(`${KEY}.kind_${kind}_help`)}</span>
-              </label>
-            ))}
-          </div>
         </div>
 
         {tagsOn() ? (
@@ -313,7 +290,7 @@ export default class TemplateManager extends AdminComponent {
           <p className="helpText">{trans(`${KEY}.body_help`, { example: example() })}</p>
         </div>
 
-        {draft.kind === 'form' && this.fieldsEditor(draft)}
+        {draft.required && this.fieldsEditor(draft)}
 
         {this.saveError && (
           <p className="CanelaTemplatesAdmin-error" role="alert">
@@ -427,14 +404,12 @@ export default class TemplateManager extends AdminComponent {
 
     const attributes: Record<string, unknown> = {
       name: draft.name.trim(),
-      kind: draft.kind,
       body: draft.body,
       required: draft.required,
       position: draft.position,
-      fields:
-        draft.kind === 'form'
-          ? draft.fields.map((field) => ({ ...field, options: field.options.map((option) => option.trim()).filter(Boolean) }))
-          : null,
+      fields: draft.required
+        ? draft.fields.map((field) => ({ ...field, options: field.options.map((option) => option.trim()).filter(Boolean) }))
+        : null,
     };
 
     const data: Record<string, unknown> = { type: TEMPLATES_TYPE, attributes };
