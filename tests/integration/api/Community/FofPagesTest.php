@@ -61,7 +61,7 @@ class FofPagesTest extends TestCase
 
     private function createGuidelines(): ResponseInterface
     {
-        return $this->send($this->request('POST', '/api/canela-guidelines/page', ['authenticatedAs' => 1, 'json' => []]));
+        return $this->send($this->request('POST', '/api/canela-about-pages/guidelines', ['authenticatedAs' => 1, 'json' => []]));
     }
 
     /**
@@ -80,7 +80,8 @@ class FofPagesTest extends TestCase
 
         $first = $this->createGuidelines();
         $this->assertEquals(201, $first->getStatusCode(), (string) $first->getBody());
-        $id = $this->body($first)['pageId'];
+        $this->assertSame('canela-about-pages', $this->body($first)['data']['type']);
+        $id = (int) $this->body($first)['data']['id'];
 
         $page = Page::query()->find($id);
         $this->assertSame('guidelines-2', $page->slug);
@@ -90,7 +91,7 @@ class FofPagesTest extends TestCase
 
         $second = $this->createGuidelines();
         $this->assertEquals(200, $second->getStatusCode(), (string) $second->getBody());
-        $this->assertSame($id, $this->body($second)['pageId']);
+        $this->assertSame($id, (int) $this->body($second)['data']['id']);
         $this->assertCount(1, $events);
         $this->assertSame(4, Page::query()->count());
     }
@@ -106,7 +107,7 @@ class FofPagesTest extends TestCase
         $response = $this->createGuidelines();
 
         $this->assertEquals(201, $response->getStatusCode(), (string) $response->getBody());
-        $this->assertNotSame(99, $this->body($response)['pageId']);
+        $this->assertNotSame(99, (int) $this->body($response)['data']['id']);
     }
 
     /**
@@ -168,5 +169,38 @@ class FofPagesTest extends TestCase
         $this->assertSame([], $this->body($this->send($this->request('GET', '/api')))['data']['attributes']['canelaAboutPages']);
         $this->assertEquals(404, $this->send($this->request('GET', '/api/canela-about-pages/3'))->getStatusCode());
         $this->assertEquals(404, $this->send($this->request('GET', '/about/3-equipe'))->getStatusCode());
+    }
+    /**
+     * A aba extra pela API: o HTML, o título e o rótulo do admin. Só as
+     * páginas da lista e com a visibilidade do fof/pages: a oculta só para o
+     * admin, e uma fora da lista é 404 até para ele.
+     */
+    #[Test]
+    public function aba_extra_segue_a_lista_e_a_visibilidade(): void
+    {
+        $this->setting('canela.about_pages', json_encode([['id' => 3, 'label' => 'Quem somos', 'icon' => ''], ['id' => 2, 'label' => '', 'icon' => '']]));
+
+        $page = $this->body($this->send($this->request('GET', '/api/canela-about-pages/3')));
+
+        $this->assertSame('canela-about-pages', $page['data']['type']);
+        $this->assertSame('3', $page['data']['id']);
+        $this->assertSame('Quem somos', $page['data']['attributes']['label']);
+        $this->assertSame('Página 3', $page['data']['attributes']['title']);
+        $this->assertStringContainsString('Conteúdo', $page['data']['attributes']['html']);
+
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela-about-pages/2', ['authenticatedAs' => 2]))->getStatusCode());
+        $this->assertEquals(200, $this->send($this->request('GET', '/api/canela-about-pages/2', ['authenticatedAs' => 1]))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela-about-pages/1', ['authenticatedAs' => 1]))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/api/canela-about-pages/equipe', ['authenticatedAs' => 1]))->getStatusCode());
+    }
+
+    /** Criar as Diretrizes é só do admin: membro recebe 403 e nada é criado. */
+    #[Test]
+    public function membro_nao_cria_diretrizes(): void
+    {
+        $response = $this->send($this->request('POST', '/api/canela-about-pages/guidelines', ['authenticatedAs' => 2, 'json' => []]));
+
+        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertSame(3, Page::query()->count());
     }
 }

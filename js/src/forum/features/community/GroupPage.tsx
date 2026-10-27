@@ -16,7 +16,7 @@ import DirectoryState from './DirectoryState';
 import DirectoryTable from './DirectoryTable';
 import DirectoryControls from './DirectoryControls';
 import GroupFlair from './GroupFlair';
-import { fetchGroupActivity } from './api';
+import { fetchGroupActivity, GROUP_ACTIVITY_PAGE } from './api';
 import { findGroup, groupSlug, groupsEnabled, memberCount } from './groups';
 import { forumBool, t } from '../../utils/settings';
 import { fullDate, shortAge } from '../../utils/dates';
@@ -176,24 +176,12 @@ export default class GroupPage extends CommunityPage {
     this.postsLoading = true;
     const page = this.postsPage + 1;
 
-    fetchGroupActivity(this.group.id()!, page)
-      .then((response) => {
-        this.postsHasMore = response.meta.hasMore;
-        this.postsPage = page;
-
-        if (!response.data.length) return [] as Post[];
-
-        // Os ids já vêm filtrados pela visibilidade; o /api/posts serializa
-        // cada postagem com o que as extensões acrescentam.
-        return app.store.find<Post[]>('posts', {
-          filter: { id: response.data.join(',') },
-          include: 'user,discussion',
-          page: { limit: response.data.length },
-        } as any);
-      })
+    fetchGroupActivity(this.group.id()!, this.postsPage * GROUP_ACTIVITY_PAGE)
       .then((posts) => {
-        const sorted = [...posts].sort((a, b) => (b.createdAt()?.getTime() || 0) - (a.createdAt()?.getTime() || 0));
-        this.posts = [...this.posts, ...sorted];
+        // Já filtradas pela visibilidade e em ordem (a mais nova primeiro).
+        this.postsHasMore = !!posts.payload?.links?.next;
+        this.postsPage = page;
+        this.posts = [...this.posts, ...posts];
       })
       .catch(() => {})
       .finally(() => {

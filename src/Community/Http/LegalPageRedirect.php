@@ -25,6 +25,8 @@ use Ramon\Canela\Community\LegalPages;
  * /tos e /privacy: levam
  * ao endereço da política (do fof/terms ou do admin do tema). Sem endereço, a
  * página não existe — 404, e não uma página vazia.
+ *
+ * Um redirecionamento do fórum, e não da API: continua um controlador.
  */
 final class LegalPageRedirect implements RequestHandlerInterface
 {
