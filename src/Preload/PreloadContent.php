@@ -98,7 +98,7 @@ final class PreloadContent
             // A lista do menu e da página; o contador já vem no usuário da sessão.
             'notifications' => $guest ? [] : [self::NOTIFICATIONS],
             // "Novos (N)" e "Não lidos (N)" da tag: as do fórum todo já vêm no fórum.
-            'tag' => $guest || ! isset($params['slug']) ? [] : [['/canela-counts', ['tag' => (string) $params['slug']]]],
+            'tag' => $guest || ! isset($params['slug']) ? [] : [['/forums/canela-counts', ['filter' => ['tag' => (string) $params['slug']]]]],
             'canela.about' => [['/canela-about', []]],
             // `GuidelinesPage` e `AboutExtraPage` (a mesma página de regras).
             'canela.guidelines', 'canela.faq' => [['/canela-guidelines', []]],
@@ -235,7 +235,7 @@ final class PreloadContent
             ['/discussions', ['filter' => ['author' => $slug], 'sort' => '-commentCount', 'include' => 'firstPost', 'fields' => ['discussions' => 'title,slug,commentCount,createdAt,firstPost', 'posts' => 'likesCount'], 'page' => ['limit' => 20, 'total' => 0]]],
             ['/posts', ['filter' => ['author' => $slug, 'type' => 'comment'], 'sort' => '-createdAt', 'include' => 'discussion', 'fields' => ['posts' => self::REPLY_POST_FIELDS, 'discussions' => 'title,slug'], 'page' => ['limit' => 50, 'total' => 0]]],
             // Sem o recurso `usersummary` (ou `badges`) a rota não existe: 404, e fica de fora.
-            ["/canela-user-summary/$id", []],
+            ["/users/$id/canela-summary", []],
             self::userBadges($id),
         ];
 

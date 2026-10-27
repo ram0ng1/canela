@@ -15,10 +15,12 @@
  * categorias". Só leitura: nenhuma tabela nova, nenhuma migration.
  */
 
+use Flarum\Api\Resource\UserResource;
 use Flarum\Extend;
-use Ramon\Canela\UserSummary\ShowUserSummaryController;
+use Ramon\Canela\UserSummary\ShowUserSummary;
 
 return [
-    (new Extend\Routes('api'))
-        ->get('/canela-user-summary/{id:\d+}', 'canela.user_summary', ShowUserSummaryController::class),
+    // `GET /api/users/{id}/canela-summary`.
+    (new Extend\ApiResource(UserResource::class))
+        ->endpoints(static fn (): array => [ShowUserSummary::endpoint()]),
 ];

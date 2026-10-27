@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * O Resumo do perfil (/api/canela-user-summary/{id}): com quem a pessoa
+ * O Resumo do perfil (/api/users/{id}/canela-summary): com quem a pessoa
  * mais conversa e onde. Tudo conta só o que quem pergunta pode ver — tópicos
  * ocultos e etiquetas restritas ficam de fora —, curtir a si mesmo não conta
  * e uma extensão desligada deixa a lista dela nula.
@@ -88,7 +88,7 @@ class UserSummaryTest extends TestCase
 
     private function summary(int $userId, ?int $actor): ResponseInterface
     {
-        return $this->send($this->request('GET', "/api/canela-user-summary/$userId", $actor ? ['authenticatedAs' => $actor] : []));
+        return $this->send($this->request('GET', "/api/users/$userId/canela-summary", $actor ? ['authenticatedAs' => $actor] : []));
     }
 
     private function body(ResponseInterface $response): array
