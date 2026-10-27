@@ -14,8 +14,8 @@ namespace Ramon\Canela\Tests\integration\api\Chat;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * Canais: as portas de entrada da API (chat ligado, logado, no grupo
- * permitido), criar, listar e abrir.
+ * Canais (`/api/chat-channels`): as portas de entrada da API (chat ligado,
+ * logado, com a permissão de usar), criar, listar e abrir.
  */
 class ChannelsTest extends AbstractChatTestCase
 {
@@ -28,7 +28,7 @@ class ChannelsTest extends AbstractChatTestCase
     {
         $this->setting('canela.chat_enabled', '0');
 
-        [$status] = $this->chat('GET', '/channels', 2);
+        [$status] = $this->api('GET', '/chat-channels', 2);
 
         $this->assertEquals(404, $status);
     }
@@ -37,23 +37,23 @@ class ChannelsTest extends AbstractChatTestCase
     #[Test]
     public function visitante_recebe_401(): void
     {
-        [$status] = $this->chat('GET', '/channels', null);
+        [$status] = $this->api('GET', '/chat-channels', null);
 
         $this->assertEquals(401, $status);
     }
 
     /**
-     * Só os grupos de `canela.chat_allowed_groups` usam o chat (o
-     * administrador sempre). Fora deles: 403.
+     * Só os grupos com `canela.chat.use` usam o chat (o administrador
+     * sempre). Fora deles: 403.
      */
     #[Test]
     public function usuario_fora_dos_grupos_permitidos_recebe_403(): void
     {
-        $this->setting('canela.chat_allowed_groups', '4');
+        $this->grant('canela.chat.use', [4]);
 
-        [$normal] = $this->chat('GET', '/channels', 2);
-        [$moderator] = $this->chat('GET', '/channels', 3);
-        [$admin] = $this->chat('GET', '/channels', 1);
+        [$normal] = $this->api('GET', '/chat-channels', 2);
+        [$moderator] = $this->api('GET', '/chat-channels', 3);
+        [$admin] = $this->api('GET', '/chat-channels', 1);
 
         $this->assertEquals(403, $normal);
         $this->assertEquals(200, $moderator);
@@ -70,7 +70,7 @@ class ChannelsTest extends AbstractChatTestCase
             ],
         ]);
 
-        [$status] = $this->chat('GET', '/channels', 5);
+        [$status] = $this->api('GET', '/chat-channels', 5);
 
         $this->assertEquals(403, $status);
     }
@@ -79,41 +79,42 @@ class ChannelsTest extends AbstractChatTestCase
     #[Test]
     public function admin_cria_canal(): void
     {
-        [$status, $body] = $this->chat('POST', '/channels', 1, ['name' => 'Anúncios', 'description' => 'Novidades']);
+        [$status, $body] = $this->api('POST', '/chat-channels', 1, self::document('chat-channels', ['name' => 'Anúncios', 'description' => 'Novidades']));
 
-        $this->assertEquals(200, $status, json_encode($body));
-        $this->assertEquals('Anúncios', $body['channel']['name']);
-        $this->assertEquals('anuncios', $body['channel']['slug']);
-        $this->assertEquals('public', $body['channel']['type']);
-        $this->assertTrue($body['channel']['membership']['following']);
-        $this->assertEquals(1, $body['channel']['userCount']);
+        $this->assertEquals(201, $status, json_encode($body));
+        $channel = self::data($body);
+        $this->assertEquals('Anúncios', $channel['name']);
+        $this->assertEquals('anuncios', $channel['slug']);
+        $this->assertEquals('public', $channel['type']);
+        $this->assertTrue($channel['membership']['following']);
+        $this->assertEquals(1, $channel['userCount']);
     }
 
     /** Membro comum não cria canal (por padrão, só os administradores). */
     #[Test]
     public function membro_comum_nao_cria_canal(): void
     {
-        [$status] = $this->chat('POST', '/channels', 2, ['name' => 'Meu canal']);
+        [$status] = $this->api('POST', '/chat-channels', 2, self::document('chat-channels', ['name' => 'Meu canal']));
 
         $this->assertEquals(403, $status);
     }
 
-    /** Com o grupo dele em `canela.chat_create_channel_groups`, o membro cria. */
+    /** Com `canela.chat.createChannel` no grupo dele, o membro cria. */
     #[Test]
     public function membro_cria_canal_com_o_grupo_liberado(): void
     {
-        $this->setting('canela.chat_create_channel_groups', '3');
+        $this->grant('canela.chat.createChannel', [3]);
 
-        [$status, $body] = $this->chat('POST', '/channels', 2, ['name' => 'Meu canal']);
+        [$status, $body] = $this->api('POST', '/chat-channels', 2, self::document('chat-channels', ['name' => 'Meu canal']));
 
-        $this->assertEquals(200, $status, json_encode($body));
+        $this->assertEquals(201, $status, json_encode($body));
     }
 
     /** Canal público sem nome não passa na validação: 422. */
     #[Test]
     public function canal_sem_nome_responde_422(): void
     {
-        [$status, $body] = $this->chat('POST', '/channels', 1, ['name' => '   ']);
+        [$status, $body] = $this->api('POST', '/chat-channels', 1, self::document('chat-channels', ['name' => '   ']));
 
         $this->assertEquals(422, $status);
         $this->assertEquals('/data/attributes/name', $body['errors'][0]['source']['pointer']);
@@ -123,7 +124,7 @@ class ChannelsTest extends AbstractChatTestCase
     #[Test]
     public function slug_repetido_responde_422(): void
     {
-        [$status] = $this->chat('POST', '/channels', 1, ['name' => 'Outro', 'slug' => 'geral']);
+        [$status] = $this->api('POST', '/chat-channels', 1, self::document('chat-channels', ['name' => 'Outro', 'slug' => 'geral']));
 
         $this->assertEquals(422, $status);
     }
@@ -132,11 +133,12 @@ class ChannelsTest extends AbstractChatTestCase
     #[Test]
     public function lista_e_abre_canal(): void
     {
-        [$status, $body] = $this->chat('GET', '/channels', 4);
+        [$status, $body] = $this->api('GET', '/chat-channels', 4);
 
         $this->assertEquals(200, $status);
-        $this->assertEquals(['Geral'], array_column($body['channels'], 'name'));
-        $this->assertFalse($body['hasMore']);
+        $this->assertEquals(['Geral'], array_column(self::data($body), 'name'));
+        // Sem próxima página.
+        $this->assertArrayNotHasKey('next', $body['links'] ?? []);
 
         $channel = $this->channelFor(1, 4);
 
@@ -150,7 +152,7 @@ class ChannelsTest extends AbstractChatTestCase
     #[Test]
     public function canal_inexistente_responde_404(): void
     {
-        [$status] = $this->chat('GET', '/channels/999', 2);
+        [$status] = $this->api('GET', '/chat-channels/999', 2);
 
         $this->assertEquals(404, $status);
     }
@@ -165,29 +167,29 @@ class ChannelsTest extends AbstractChatTestCase
             ],
         ]);
 
-        [, $member] = $this->chat('GET', '/channels', 2);
-        [, $moderator] = $this->chat('GET', '/channels', 3);
+        [, $member] = $this->api('GET', '/chat-channels', 2);
+        [, $moderator] = $this->api('GET', '/chat-channels', 3);
 
-        $this->assertNotContains('Antigo', array_column($member['channels'], 'name'));
-        $this->assertContains('Antigo', array_column($moderator['channels'], 'name'));
+        $this->assertNotContains('Antigo', array_column(self::data($member), 'name'));
+        $this->assertContains('Antigo', array_column(self::data($moderator), 'name'));
     }
 
     /** Só a moderação muda e apaga o canal. */
     #[Test]
     public function so_a_moderacao_edita_e_apaga_canal(): void
     {
-        [$editDenied] = $this->chat('PATCH', '/channels/1', 2, ['name' => 'Hackeado']);
-        [$deleteDenied] = $this->chat('DELETE', '/channels/1', 2);
+        [$editDenied] = $this->api('PATCH', '/chat-channels/1', 2, self::document('chat-channels', ['name' => 'Hackeado']));
+        [$deleteDenied] = $this->api('DELETE', '/chat-channels/1', 2);
 
         $this->assertEquals(403, $editDenied);
         $this->assertEquals(403, $deleteDenied);
 
-        [$edited, $body] = $this->chat('PATCH', '/channels/1', 3, ['name' => 'Geral 2', 'status' => 'closed']);
+        [$edited, $body] = $this->api('PATCH', '/chat-channels/1', 3, self::document('chat-channels', ['name' => 'Geral 2', 'status' => 'closed']));
         $this->assertEquals(200, $edited, json_encode($body));
-        $this->assertEquals('Geral 2', $body['channel']['name']);
-        $this->assertEquals('closed', $body['channel']['status']);
+        $this->assertEquals('Geral 2', self::data($body)['name']);
+        $this->assertEquals('closed', self::data($body)['status']);
 
-        [$deleted] = $this->chat('DELETE', '/channels/1', 3);
+        [$deleted] = $this->api('DELETE', '/chat-channels/1', 3);
         $this->assertEquals(204, $deleted);
         $this->assertNull($this->database()->table('canela_chat_channels')->find(1));
     }
@@ -196,9 +198,10 @@ class ChannelsTest extends AbstractChatTestCase
     #[Test]
     public function canal_arquivado_nao_reabre(): void
     {
-        $this->chat('PATCH', '/channels/1', 1, ['status' => 'archived']);
+        [$archived] = $this->api('PATCH', '/chat-channels/1', 1, self::document('chat-channels', ['status' => 'archived']));
+        $this->assertEquals(200, $archived);
 
-        [$status] = $this->chat('PATCH', '/channels/1', 1, ['status' => 'open']);
+        [$status] = $this->api('PATCH', '/chat-channels/1', 1, self::document('chat-channels', ['status' => 'open']));
 
         $this->assertEquals(422, $status);
     }

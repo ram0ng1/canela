@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 /**
  * As configurações do chat (`canela.chat_*`) e o liga/desliga do recurso.
  *
+ * Quem usa, manda MD, cria canais e modera não mora aqui: são permissões do
+ * Flarum (ChatAccess::PERMISSION_*), em Administração → Permissões.
+ *
  * As rotas da API são montadas no boot, sem acesso às configurações: com o chat
  * desligado no admin elas continuam registradas, mas cada uma pergunta aqui e
  * responde 404, como se o recurso não existisse.
@@ -27,19 +30,7 @@ final class ChatSettings
 {
     public const ENABLED = 'canela.chat_enabled';
 
-    /** Grupos (ids separados por vírgula) que usam o chat — o `chat_allowed_groups`. */
-    public const ALLOWED_GROUPS = 'canela.chat_allowed_groups';
-
     public const DM_ENABLED = 'canela.chat_dm_enabled';
-
-    /** Grupos (ids separados por vírgula) que podem abrir mensagens diretas. */
-    public const DM_GROUPS = 'canela.chat_dm_groups';
-
-    /** Quem cria canais públicos, além dos administradores. */
-    public const CREATE_CHANNEL_GROUPS = 'canela.chat_create_channel_groups';
-
-    /** Quem modera (apaga mensagens alheias, fixa, fecha canais), além dos administradores. */
-    public const MODERATOR_GROUPS = 'canela.chat_moderator_groups';
 
     public const THREADS_ENABLED = 'canela.chat_threads_enabled';
 
@@ -71,11 +62,7 @@ final class ChatSettings
         // Desligado por padrão: o chat é um recurso grande e opcional; quem quiser
         // liga no admin (e ele não colide com outra extensão de chat instalada).
         self::ENABLED => false,
-        self::ALLOWED_GROUPS => '3',
         self::DM_ENABLED => true,
-        self::DM_GROUPS => '3',
-        self::CREATE_CHANNEL_GROUPS => '',
-        self::MODERATOR_GROUPS => '4',
         self::THREADS_ENABLED => true,
         self::MAX_MESSAGE_LENGTH => 6000,
         self::UPLOADS_ENABLED => true,
@@ -126,18 +113,6 @@ final class ChatSettings
         $value = max($min, $value);
 
         return $max === null ? $value : min($max, $value);
-    }
-
-    /**
-     * Ids de grupo guardados como "3,4" (o admin grava a lista de marcados).
-     *
-     * @return int[]
-     */
-    public function groups(string $key): array
-    {
-        $raw = (string) $this->settings->get($key, self::DEFAULTS[$key] ?? '');
-
-        return array_values(array_unique(array_filter(array_map('intval', preg_split('/[\s,]+/', $raw) ?: []), static fn (int $id) => $id > 0)));
     }
 
     public function maxMessageLength(): int
