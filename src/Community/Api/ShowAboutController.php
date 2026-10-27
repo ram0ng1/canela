@@ -45,6 +45,9 @@ use Ramon\Canela\Community\UserPresenter;
  * cache único. A equipe não entra no
  * cache: depende de quem pergunta (grupos ocultos, usuários visíveis) e são
  * duas consultas pequenas.
+ *
+ * Não é um recurso JSON:API: é um agregado sem modelo (texto, contato,
+ * números e a equipe), sempre um só, sem nada para listar ou mudar.
  */
 final class ShowAboutController implements RequestHandlerInterface
 {

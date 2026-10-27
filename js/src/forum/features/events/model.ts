@@ -52,7 +52,7 @@ export interface EventData extends EventSummary {
   sample: EventPerson[];
 }
 
-/** Uma ocorrência da lista de próximos eventos (GET /api/canela-events). */
+/** Uma ocorrência da lista de próximos eventos (a agenda, GET /api/canela-events). */
 export interface UpcomingItem {
   id: number;
   name: string | null;
@@ -62,6 +62,62 @@ export interface UpcomingItem {
   timezone: string | null;
   going: number;
   discussion: { id: string; title: string | null; slug: string | null };
+}
+
+interface ResourceObject {
+  type: string;
+  id: string;
+  attributes?: Record<string, any>;
+  relationships?: Record<string, { data?: { type: string; id: string } | null }>;
+}
+
+/** Um documento do recurso `canela-events` (CalendarEventResource no PHP). */
+export interface EventsDocument {
+  data: ResourceObject | ResourceObject[];
+  included?: ResourceObject[];
+  meta?: Record<string, any>;
+}
+
+/** O cartão do evento de uma resposta do recurso (o cartão, a presença): os atributos, com o id. */
+export function eventFromDocument(document: EventsDocument): EventData | null {
+  const resource = Array.isArray(document.data) ? document.data[0] : document.data;
+
+  return resource ? ({ ...(resource.attributes || {}), id: Number(resource.id) } as EventData) : null;
+}
+
+/**
+ * A agenda como as telas a usam: uma linha por ocorrência, em ordem, com o
+ * nome do evento (ou o título da discussão) e a discussão.
+ */
+export function upcomingFromDocument(document: EventsDocument): UpcomingItem[] {
+  const discussions = new Map<string, Record<string, any>>();
+
+  (document.included || []).forEach((item) => {
+    if (item.type === 'discussions') discussions.set(item.id, item.attributes || {});
+  });
+
+  const items: UpcomingItem[] = [];
+
+  (Array.isArray(document.data) ? document.data : [document.data]).forEach((event) => {
+    const attributes = event.attributes || {};
+    const discussionId = event.relationships?.discussion?.data?.id || '';
+    const discussion = discussions.get(discussionId) || {};
+
+    ((attributes.occurrences || []) as { startsAt: string; endsAt: string | null }[]).forEach((occurrence) => {
+      items.push({
+        id: Number(event.id),
+        name: attributes.name || discussion.title || null,
+        startsAt: occurrence.startsAt,
+        endsAt: occurrence.endsAt,
+        recurrence: attributes.recurrence ?? null,
+        timezone: attributes.timezone ?? null,
+        going: attributes.going ?? 0,
+        discussion: { id: discussionId, title: discussion.title ?? null, slug: discussion.slug ?? null },
+      });
+    });
+  });
+
+  return items.sort((a, b) => (a.startsAt < b.startsAt ? -1 : a.startsAt > b.startsAt ? 1 : 0));
 }
 
 export const eventsSettings = {

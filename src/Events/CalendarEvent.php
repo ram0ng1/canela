@@ -15,6 +15,7 @@ namespace Ramon\Canela\Events;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\Discussion\Discussion;
 use Flarum\Post\Post;
 use Flarum\User\User;
@@ -56,11 +57,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class CalendarEvent extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     public const STATUS_PUBLIC = 'public';
 
     public const STATUS_STANDALONE = 'standalone';
 
     protected $table = 'canela_events';
+
+    /**
+     * As ocorrências no intervalo que a agenda pediu (CalendarEventResource),
+     * em ordem. Só existe na resposta da agenda: não é coluna, nunca é gravado.
+     *
+     * @var list<array{startsAt: string, endsAt: string|null}>|null
+     */
+    public ?array $agendaOccurrences = null;
 
     public $timestamps = true;
 

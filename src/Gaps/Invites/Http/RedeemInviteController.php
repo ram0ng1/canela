@@ -26,6 +26,8 @@ use Ramon\Canela\Gaps\Invites\InviteService;
  * com o código no endereço, e o fórum abre a janela de cadastro já com o
  * convite ("Fulano convidou você"). Código inválido ou esgotado: só a
  * página inicial, sem erro — o link pode ter sido usado por outra pessoa.
+ *
+ * Um redirecionamento do fórum, e não da API: continua um controlador.
  */
 final class RedeemInviteController implements RequestHandlerInterface
 {

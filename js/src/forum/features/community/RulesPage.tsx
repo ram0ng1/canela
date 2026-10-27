@@ -100,17 +100,23 @@ export default abstract class RulesPage extends CommunityPage {
 
   load(): void {
     app
-      .request<RulesPayload>({
+      .request<unknown>({
         method: 'GET',
         url: `${(app.forum.attribute<string>('apiUrl') || '/api').replace(/\/+$/, '')}${this.endpoint()}`,
       })
-      .then((data) => {
+      .then((response) => {
+        const data = this.parse(response);
         this.html = data?.html || '';
         this.pageTitle = data?.title || null;
         this.loaded(data);
       })
       .catch(() => (this.failed = true))
       .finally(() => m.redraw());
+  }
+
+  /** O HTML e o título na resposta da API (as Diretrizes já vêm assim). */
+  parse(response: unknown): RulesPayload {
+    return response as RulesPayload;
   }
 
   /** Depois de carregar (a página extra troca o título da aba do navegador). */

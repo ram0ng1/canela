@@ -19,7 +19,8 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * As páginas institucionais: "Sobre" (/api/canela-about e /about), as
- * "Diretrizes" (/api/canela-guidelines, /guidelines e /faq) e os atalhos
+ * "Diretrizes" (/api/canela-guidelines, /guidelines e /faq, e a criação da
+ * página em /api/canela-about-pages/guidelines) e os atalhos
  * /tos e /privacy para as políticas.
  */
 class PagesTest extends TestCase
@@ -177,12 +178,12 @@ class PagesTest extends TestCase
     #[Test]
     public function criar_pagina_de_diretrizes_so_admin(): void
     {
-        $response = $this->send($this->request('POST', '/api/canela-guidelines/page', ['authenticatedAs' => 2, 'json' => []]));
+        $response = $this->send($this->request('POST', '/api/canela-about-pages/guidelines', ['authenticatedAs' => 2, 'json' => []]));
 
         $this->assertEquals(403, $response->getStatusCode());
 
         // Sem o fof/pages, nem o admin cria: 422.
-        $response = $this->send($this->request('POST', '/api/canela-guidelines/page', ['authenticatedAs' => 1, 'json' => []]));
+        $response = $this->send($this->request('POST', '/api/canela-about-pages/guidelines', ['authenticatedAs' => 1, 'json' => []]));
 
         $this->assertEquals(422, $response->getStatusCode());
     }

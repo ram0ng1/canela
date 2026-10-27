@@ -37,6 +37,14 @@ use Ramon\Canela\Community\UserPresenter;
  * Valores fora do esperado (período, coluna, página) caem no padrão em vez de
  * dar erro: a URL do fórum é editável, e um parâmetro velho num link salvo não
  * deveria quebrar a página.
+ *
+ * Continua um controlador próprio, e não campos e ordens extras no
+ * `/api/users` do core (o jeito FoF): o Index do core exige `searchUsers`,
+ * e o diretório pode abrir para visitantes (`canela.directory_guests`) sem
+ * abrir a busca de usuários; as colunas são subconsultas agregadas por
+ * período, que teriam de passar pelo searcher de usuários, sem o cache por
+ * página; e o core responde 400 a uma ordem inválida, onde aqui ela cai no
+ * padrão. Os usuários já saem como recursos `users` (UserPresenter).
  */
 final class ListDirectoryController implements RequestHandlerInterface
 {

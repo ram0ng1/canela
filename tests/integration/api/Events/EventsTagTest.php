@@ -57,7 +57,7 @@ class EventsTagTest extends AbstractEventsTestCase
 
         $this->assertNull($this->eventId((int) $json['data']['id']));
 
-        [, $agenda] = $this->getJson('/api/canela-events', 1, ['from' => '2030-05-01', 'to' => '2030-05-31']);
+        [, $agenda] = $this->agenda(1, ['from' => '2030-05-01', 'to' => '2030-05-31']);
         $this->assertSame([], $agenda['events']);
     }
 }

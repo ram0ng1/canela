@@ -106,9 +106,9 @@ class GuidelinesPagePicker extends AdminComponent {
   create() {
     this.creating = true;
     app
-      .request<{ pageId: number }>({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/canela-guidelines/page` })
+      .request<{ data: { id: string } }>({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/canela-about-pages/guidelines` })
       .then((res) => {
-        app.data.settings['canela.guidelines_page'] = String(res.pageId);
+        app.data.settings['canela.guidelines_page'] = String(res.data.id);
         this.load();
       })
       .finally(() => {

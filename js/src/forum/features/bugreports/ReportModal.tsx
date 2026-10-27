@@ -10,6 +10,7 @@ import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
 import type { ReportContext } from './context';
+import { reportBody } from '../../../common/bugReports';
 
 export type Kind = 'bug' | 'content' | 'design' | 'idea';
 
@@ -153,7 +154,7 @@ export default class ReportModal extends FormModal<ReportModalAttrs> {
         .request({
           method: 'POST',
           url: apiUrl('/canela-bug-reports'),
-          body: {
+          body: reportBody({
             kind: this.kind,
             description: this.description,
             currentText: this.kind === 'content' ? this.currentText : '',
@@ -161,7 +162,7 @@ export default class ReportModal extends FormModal<ReportModalAttrs> {
             region: this.attrs.region,
             full,
             context: this.attrs.context,
-          },
+          }),
           errorHandler: (error: any) => {
             this.loading = false;
             this.alertAttrs = { type: 'error', content: error?.response?.errors?.[0]?.detail || t('bug_reports.send_failed') } as any;

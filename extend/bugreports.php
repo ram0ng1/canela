@@ -22,13 +22,15 @@
 use Flarum\Api\Resource\ForumResource;
 use Flarum\Extend;
 use Flarum\Foundation\Paths;
+use Ramon\Canela\BugReports\Access\BugReportPolicy;
+use Ramon\Canela\BugReports\Access\ScopeBugReportVisibility;
+use Ramon\Canela\BugReports\Api\BugReportResource;
 use Ramon\Canela\BugReports\Api\ForumResourceFields;
+use Ramon\Canela\BugReports\BugReport;
 use Ramon\Canela\BugReports\BugReportImages;
 use Ramon\Canela\BugReports\BugReportsSettings;
 use Ramon\Canela\BugReports\Http\ExportController;
-use Ramon\Canela\BugReports\Http\ReportController;
 use Ramon\Canela\BugReports\Http\ReportImageController;
-use Ramon\Canela\BugReports\Http\ReportsController;
 
 return [
     (new Extend\Settings())
@@ -45,13 +47,18 @@ return [
             'root' => "$paths->storage/canela-bug-reports",
         ]),
 
+    // Os relatórios: o recurso JSON:API (listar, enviar, ver, mudar, apagar e
+    // as instruções de um relatório), com o escopo e a policy.
+    new Extend\ApiResource(BugReportResource::class),
+
+    (new Extend\ModelVisibility(BugReport::class))
+        ->scope(ScopeBugReportVisibility::class),
+
+    (new Extend\Policy())
+        ->modelPolicy(BugReport::class, BugReportPolicy::class),
+
+    // O que não é JSON:API: o arquivo Markdown de todos e as capturas.
     (new Extend\Routes('api'))
-        ->get('/canela-bug-reports', 'canela.bug_reports.index', ReportsController::class)
-        ->post('/canela-bug-reports', 'canela.bug_reports.create', ReportsController::class)
         ->get('/canela-bug-reports-export', 'canela.bug_reports.export', ExportController::class)
-        ->get('/canela-bug-reports/{id:\d+}', 'canela.bug_reports.show', ReportController::class)
-        ->patch('/canela-bug-reports/{id:\d+}', 'canela.bug_reports.update', ReportController::class)
-        ->delete('/canela-bug-reports/{id:\d+}', 'canela.bug_reports.delete', ReportController::class)
-        ->get('/canela-bug-reports/{id:\d+}/prompt', 'canela.bug_reports.prompt', ExportController::class)
         ->get('/canela-bug-reports/{id:\d+}/{which:region|full}', 'canela.bug_reports.image', ReportImageController::class),
 ];

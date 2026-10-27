@@ -22,18 +22,19 @@ use Flarum\Api\Resource\GroupResource;
 use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Group\Event\Deleted as GroupDeleted;
+use Flarum\Post\Filter\PostSearcher;
+use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\Settings\Event\Saving;
 use Flarum\User\Event\Activated as UserActivated;
 use Flarum\User\Event\Deleted as UserDeleted;
 use Flarum\User\Event\GroupsChanged;
 use Flarum\User\Event\Registered as UserRegistered;
 use Ramon\Canela\Community\AboutPages;
-use Ramon\Canela\Community\Api\ShowAboutPageController;
+use Ramon\Canela\Community\Api\AboutPageResource;
 use Ramon\Canela\Community\Content\AboutPageContent;
-use Ramon\Canela\Community\Api\CreateGuidelinesPageController;
 use Ramon\Canela\Community\Api\GroupFields;
 use Ramon\Canela\Community\Api\ListDirectoryController;
-use Ramon\Canela\Community\Api\ListGroupActivityController;
+use Ramon\Canela\Community\Search\GroupActivityFilter;
 use Ramon\Canela\Community\Api\ShowAboutController;
 use Ramon\Canela\Community\Api\ShowGuidelinesController;
 use Ramon\Canela\Community\Community;
@@ -77,13 +78,21 @@ return [
         ->default(Community::GROUPS_PROFILE_LINKS, true)
         ->serializeToForum('canelaGroupsProfileLinks', Community::GROUPS_PROFILE_LINKS, 'boolval'),
 
+    // O "Sobre", as Diretrizes e o diretório juntam números, texto e equipe
+    // (ou usuários com colunas calculadas) numa resposta só, sem um modelo
+    // por trás: continuam controladores. Ver o relatório em cada classe.
     (new Extend\Routes('api'))
         ->get('/canela-about', 'canela.about', ShowAboutController::class)
         ->get('/canela-guidelines', 'canela.guidelines', ShowGuidelinesController::class)
-        ->post('/canela-guidelines/page', 'canela.guidelines.page', CreateGuidelinesPageController::class)
-        ->get('/canela-about-pages/{id:\d+}', 'canela.about_pages.show', ShowAboutPageController::class)
-        ->get('/canela-directory', 'canela.directory', ListDirectoryController::class)
-        ->get('/canela-groups/{id:\d+}/activity', 'canela.groups.activity', ListGroupActivityController::class),
+        ->get('/canela-directory', 'canela.directory', ListDirectoryController::class),
+
+    // As abas extras do Sobre (páginas do fof/pages) e a criação da página
+    // de Diretrizes: o recurso JSON:API.
+    new Extend\ApiResource(AboutPageResource::class),
+
+    // A aba "Atividade" do grupo: um filtro do /api/posts do core.
+    (new Extend\SearchDriver(DatabaseSearchDriver::class))
+        ->addFilter(PostSearcher::class, GroupActivityFilter::class),
 
     (new Extend\Frontend('forum'))
         ->route('/about', 'canela.about', CommunityPage::for(Community::ABOUT_ENABLED, 'about.title'))

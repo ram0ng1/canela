@@ -6,7 +6,7 @@ namespace Ramon\Canela\Tests\unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Ramon\Canela\Gaps\Invites\Http\InvitesController;
+use Ramon\Canela\Gaps\Invites\Api\InviteResource;
 use Symfony\Component\Yaml\Yaml;
 
 /** A mensagem de "convites demais" vem das traduções, nos três idiomas, e não do código. */
@@ -23,7 +23,7 @@ final class InvitesMessageTest extends TestCase
     {
         $value = Yaml::parseFile(dirname(__DIR__, 2)."/locale/$locale.yml");
 
-        foreach (explode('.', InvitesController::TOO_MANY_KEY) as $part) {
+        foreach (explode('.', InviteResource::TOO_MANY_KEY) as $part) {
             self::assertIsArray($value);
             self::assertArrayHasKey($part, $value);
             $value = $value[$part];
@@ -33,9 +33,9 @@ final class InvitesMessageTest extends TestCase
         self::assertNotSame('', trim($value));
     }
 
-    public function test_sem_texto_fixo_no_controlador(): void
+    public function test_sem_texto_fixo_no_recurso(): void
     {
-        $source = (string) file_get_contents(dirname(__DIR__, 2).'/src/Gaps/Invites/Http/InvitesController.php');
+        $source = (string) file_get_contents(dirname(__DIR__, 2).'/src/Gaps/Invites/Api/InviteResource.php');
 
         self::assertStringNotContainsString('Apague algum antes de gerar outro', $source);
     }

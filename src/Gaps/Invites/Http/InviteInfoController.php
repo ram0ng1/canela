@@ -25,6 +25,10 @@ use Ramon\Canela\Gaps\Invites\InviteService;
  * GET /api/canela-invite-info/{code} — para a janela de cadastro de quem
  * chegou por um convite: se o código vale e quem convidou ("Fulano convidou
  * você"). Público: o próprio link já é o segredo.
+ *
+ * Fica fora do InviteResource: responde também por códigos que não existem
+ * (`valid: false`, sem 404 que diga se o código existiu), e não expõe o
+ * convite em si — só se vale e o nome de quem convidou.
  */
 final class InviteInfoController implements RequestHandlerInterface
 {
