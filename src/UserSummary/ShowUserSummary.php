@@ -13,25 +13,24 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\UserSummary;
 
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
 use Flarum\Extension\ExtensionManager;
-use Flarum\Http\RequestUtil;
 use Flarum\Post\Post;
 use Flarum\User\User;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Laminas\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Links\LinkClicks;
 use Ramon\Canela\Support\Log;
 
 /**
- * GET /api/canela-user-summary/{id} — as listas do Resumo do perfil: com quem
- * a pessoa mais conversa e onde.
+ * GET /api/users/{id}/canela-summary — as listas do Resumo do perfil: com quem
+ * a pessoa mais conversa e onde. Um endpoint de ação no recurso de usuários:
+ * o `{id}` passa pela busca do recurso, com a visibilidade de quem pede —
+ * quem a pessoa não pode ver responde 404.
  *
  * - `mostRepliedTo`: a quem ela mais respondeu (as citações do flarum/mentions
  *   fazem o papel do `reply_to_user_id`);
@@ -54,7 +53,7 @@ use Ramon\Canela\Support\Log;
  * número de postagens e tópicos da pessoa também, para uma postagem nova dela
  * já aparecer.
  */
-final class ShowUserSummaryController implements RequestHandlerInterface
+final class ShowUserSummary
 {
     /** Quantos itens por lista. */
     private const LIMIT = 6;
@@ -70,22 +69,24 @@ final class ShowUserSummaryController implements RequestHandlerInterface
     ) {
     }
 
-    #[\Override]
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public static function endpoint(): Endpoint\Endpoint
     {
-        $actor = RequestUtil::getActor($request);
-        $id = (int) Arr::get($request->getQueryParams(), 'id', 0);
+        return Endpoint\Endpoint::make('canela.summary')
+            ->route('GET', '/{id}/canela-summary')
+            ->action(static fn (Context $context): array => resolve(self::class)->show($context))
+            ->response(static fn (Context $context, array $summary): JsonResponse => new JsonResponse($summary));
+    }
 
-        /** @var User|null $user */
-        $user = User::whereVisibleTo($actor)->find($id);
-
-        if (! $user) {
-            return new JsonResponse(['errors' => [['status' => '404', 'code' => 'not_found']]], 404);
-        }
+    /** @return array<string, mixed> */
+    public function show(Context $context): array
+    {
+        $actor = $context->getActor();
+        /** @var User $user */
+        $user = $context->model;
 
         $key = sprintf('canela.user-summary.%d.%d.%d.%d', $user->id, (int) $actor->id, (int) $user->comment_count, (int) $user->discussion_count);
 
-        return new JsonResponse($this->cache->remember($key, self::CACHE_TTL, fn (): array => $this->summary($user, $actor)));
+        return $this->cache->remember($key, self::CACHE_TTL, fn (): array => $this->summary($user, $actor));
     }
 
     /** @return array<string, mixed> */

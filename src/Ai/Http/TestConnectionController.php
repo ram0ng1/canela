@@ -23,6 +23,7 @@ use Ramon\Canela\Ai\Embeddings\RelatedTopics;
 use Ramon\Canela\Ai\Llm\LlmException;
 use Ramon\Canela\Ai\Llm\LlmFactory;
 use Ramon\Canela\Ai\Llm\LlmRequest;
+use Ramon\Canela\Ai\Validation\TestConnectionValidator;
 
 /**
  * `POST /api/canela/ai/test`: o "Testar conexão" do admin.
@@ -34,12 +35,16 @@ use Ramon\Canela\Ai\Llm\LlmRequest;
  *
  * Funciona com a IA desligada e antes do `migrate`: é o jeito de conferir a
  * chave antes de abrir o recurso.
+ *
+ * Um controller, como o "Testar e-mail" do core: chama um serviço externo e
+ * não lê nem grava modelo nenhum. Só administradores.
  */
 final class TestConnectionController implements RequestHandlerInterface
 {
     public function __construct(
         private readonly AiSettings $settings,
         private readonly LlmFactory $llm,
+        private readonly TestConnectionValidator $validator,
     ) {
     }
 
@@ -48,7 +53,10 @@ final class TestConnectionController implements RequestHandlerInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
 
-        $target = (string) (AiGate::body($request)['target'] ?? 'llm');
+        $body = AiGate::body($request);
+        $this->validator->assertValid(['target' => $body['target'] ?? null]);
+
+        $target = (string) ($body['target'] ?? 'llm');
 
         if ($target === 'embeddings') {
             return new JsonResponse(['data' => [$this->embeddings()]]);

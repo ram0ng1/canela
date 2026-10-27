@@ -27,11 +27,11 @@ use Flarum\Discussion\Search\DiscussionSearcher;
 use Flarum\Extend;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Ramon\Canela\Stats\Api\Controller\RecordReadTimeController;
-use Ramon\Canela\Stats\Api\Controller\ShowTopicCountsController;
 use Ramon\Canela\Stats\Api\DiscussionResourceFields;
 use Ramon\Canela\Stats\Api\TopicMapFields;
 use Ramon\Canela\Stats\Api\ForumResourceFields;
 use Ramon\Canela\Stats\Api\RecordTopicView;
+use Ramon\Canela\Stats\Api\ShowTopicCounts;
 use Ramon\Canela\Stats\Api\ShowTopicViewStats;
 use Ramon\Canela\Stats\Api\UserResourceFields;
 use Ramon\Canela\Stats\Http\RecordVisitMiddleware;
@@ -74,9 +74,11 @@ return [
         ->endpoints(static fn (): array => [ShowTopicViewStats::endpoint()])
         ->endpoint(Endpoint\Show::class, fn (Endpoint\Show $endpoint): Endpoint\Show => $endpoint->after(RecordTopicView::class)),
 
-    // "Novos (N)" / "Não lidos (N)".
+    // "Novos (N)" / "Não lidos (N)": os campos do fórum e a renovação deles
+    // (`GET /api/forums/canela-counts`).
     (new Extend\ApiResource(ForumResource::class))
-        ->fields(ForumResourceFields::class),
+        ->fields(ForumResourceFields::class)
+        ->endpoints(static fn (): array => [ShowTopicCounts::endpoint()]),
 
     // Resumo de atividade do perfil.
     (new Extend\ApiResource(UserResource::class))
@@ -87,8 +89,8 @@ return [
         ->addFilter(DiscussionSearcher::class, NewFilter::class)
         ->addFilter(DiscussionSearcher::class, UnreadFilter::class),
 
+    // O tempo de leitura chega por `keepalive`: um beacon, fora do JSON:API.
     (new Extend\Routes('api'))
-        ->get('/canela-counts', 'canela.stats.counts', ShowTopicCountsController::class)
         ->post('/canela-read-time', 'canela.stats.read_time', RecordReadTimeController::class),
 
     // O dia de visita conta tanto ao carregar a página quanto ao navegar só

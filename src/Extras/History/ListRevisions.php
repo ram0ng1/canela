@@ -14,55 +14,59 @@ declare(strict_types=1);
 namespace Ramon\Canela\Extras\History;
 
 use Carbon\Carbon;
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
 use Flarum\Http\Exception\RouteNotFoundException;
-use Flarum\Http\RequestUtil;
 use Flarum\Post\CommentPost;
-use Flarum\Post\PostRepository;
+use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
-use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Extras\Extras;
 
 /**
- * `GET /api/canela/posts/{id}/revisions`: todas as versões de uma postagem,
+ * `GET /api/posts/{id}/canela-revisions`: todas as versões de uma postagem,
  * da original à atual, para o modal "Histórico".
  *
- * - Só para quem pode ver a postagem: o repositório aplica a visibilidade do
- *   core (tópico, aprovação, postagem oculta…), e o que não se vê dá 404 — o
- *   mesmo que a API responde para a própria postagem.
+ * - Um endpoint de ação no recurso de postagens: o `{id}` passa pela busca do
+ *   recurso, com a visibilidade do core (tópico, aprovação, postagem
+ *   oculta…), e o que não se vê dá 404 — o mesmo que a API responde para a
+ *   própria postagem.
  * - Postagem oculta: as datas e os autores das edições continuam, mas o texto
  *   de cada versão só vai para quem pode editá-la. Quem vê uma postagem oculta
  *   (moderação) sem poder editá-la não deveria ler o que foi apagado por meio
  *   das versões antigas.
- * - Histórico só para o autor e quem pode editar (opção do admin): para os
- *   demais, 404.
+ * - Histórico só para o autor e quem pode editar (opção do admin; a
+ *   PostHistoryPolicy): para os demais, 404.
  * - Recurso desligado no admin: 404, como se a rota não existisse.
  */
-final class ListRevisionsController implements RequestHandlerInterface
+final class ListRevisions
 {
     public function __construct(
-        private readonly PostRepository $posts,
         private readonly SettingsRepositoryInterface $settings,
     ) {
     }
 
-    #[\Override]
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public static function endpoint(): Endpoint\Endpoint
+    {
+        return Endpoint\Endpoint::make('canela.revisions')
+            ->route('GET', '/{id}/canela-revisions')
+            ->action(static fn (Context $context): array => resolve(self::class)->list($context))
+            ->response(static fn (Context $context, array $data): JsonResponse => new JsonResponse(['data' => $data]));
+    }
+
+    /** @return array<string, mixed> */
+    public function list(Context $context): array
     {
         if (! Extras::enabled($this->settings, Extras::POST_HISTORY)) {
             throw new RouteNotFoundException();
         }
 
-        $actor = RequestUtil::getActor($request);
-        $postId = (int) Arr::get($request->getQueryParams(), 'id');
+        $actor = $context->getActor();
+        /** @var Post $post */
+        $post = $context->model;
 
-        $post = $this->posts->findOrFail($postId, $actor);
-
-        if (! $post instanceof CommentPost || ! Extras::canSeeHistory($this->settings, $actor, $post)) {
+        if (! $post instanceof CommentPost || ! $actor->can(PostHistoryPolicy::ABILITY, $post)) {
             throw new RouteNotFoundException();
         }
 
@@ -92,14 +96,12 @@ final class ListRevisionsController implements RequestHandlerInterface
         // A versão atual, que mora na própria postagem.
         $versions[] = $this->version(count($versions) + 1, $author, $createdAt, (string) $post->content, $contentVisible);
 
-        return new JsonResponse([
-            'data' => [
-                'postId' => (string) $post->id,
-                'revisionCount' => $revisions->count(),
-                'contentHidden' => ! $contentVisible,
-                'versions' => $versions,
-            ],
-        ]);
+        return [
+            'postId' => (string) $post->id,
+            'revisionCount' => $revisions->count(),
+            'contentHidden' => ! $contentVisible,
+            'versions' => $versions,
+        ];
     }
 
     /**

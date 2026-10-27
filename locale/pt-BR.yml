@@ -740,10 +740,9 @@ ramon-canela:
         personas_title: Personas
         personas_help: Cada persona tem nome, descrição, o prompt de sistema e as ferramentas que pode usar. Quem conversa escolhe a persona embaixo do campo de pergunta.
         access_title: Acesso e limites
-        allowed_groups_label: Quem pode usar o bot, o ajudante e o "Perguntar à IA"
-        allowed_groups_help: '"Membros" é todo usuário com o e-mail confirmado. Administradores sempre podem.'
-        summary_groups_label: Quem pode gerar resumos de discussões
-        summary_groups_help: Ler um resumo pronto, qualquer um que veja a discussão pode, inclusive visitantes.
+        use_permission: 'Usar o bot de IA, o ajudante do editor e o "Perguntar à IA"'
+        summarize_permission: 'Gerar resumos de discussões com IA'
+        access_permissions_help: 'Quem usa o bot, o ajudante e o "Perguntar à IA", e quem gera resumos de discussões, se escolhe em Administração → Permissões. Ler um resumo pronto, qualquer um que veja a discussão pode, inclusive visitantes. Administradores sempre podem.'
         daily_limit_label: Pedidos por pessoa por dia
         daily_limit_help: Cada pergunta ao bot, cada uso do ajudante e cada resumo gerado conta um. 0 = sem limite. Administradores não têm limite.
         embeddings_title: Embeddings

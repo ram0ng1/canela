@@ -16,8 +16,6 @@ namespace Ramon\Canela\Ai\Summaries;
 use Flarum\Discussion\Discussion;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
-use Flarum\User\Exception\PermissionDeniedException;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -26,15 +24,18 @@ use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Http\AiGate;
 use Ramon\Canela\Ai\Http\NdjsonStream;
 use Ramon\Canela\Ai\UsageLimiter;
+use Ramon\Canela\Ai\Validation\SummaryValidator;
 
 /**
- * `GET` e `POST /api/canela/ai/summaries/{id}`: o resumo de IA de um tópico.
+ * `POST /api/canela/ai/summaries/{id}`: gera (ou atualiza) o resumo de IA de
+ * um tópico, em streaming. Um resumo em dia volta na hora, sem chamar o
+ * modelo; um desatualizado só é refeito com `regenerate` — abrir o painel não
+ * gasta nada se já há resumo.
  *
- * - GET devolve o resumo guardado (ou null) — qualquer um que veja o tópico,
- *   visitante incluído, lê um resumo pronto.
- * - POST gera (ou atualiza) o resumo em streaming. Um resumo em dia volta na
- *   hora, sem chamar o modelo; um desatualizado só é refeito com
- *   `regenerate` — abrir o painel não gasta nada se já há resumo.
+ * Ler o resumo pronto é o recurso `canela-ai-summaries` (TopicSummaryResource).
+ * Isto continua um controller por causa do streaming: a entrada passa pelo
+ * SummaryValidator e a permissão `canela.generateAiSummaries` é conferida
+ * antes dos cabeçalhos.
  */
 final class SummaryController implements RequestHandlerInterface
 {
@@ -44,6 +45,7 @@ final class SummaryController implements RequestHandlerInterface
         private readonly TopicSummarizer $summarizer,
         private readonly UsageLimiter $usage,
         private readonly AiErrors $errors,
+        private readonly SummaryValidator $validator,
     ) {
     }
 
@@ -59,23 +61,20 @@ final class SummaryController implements RequestHandlerInterface
             throw new RouteNotFoundException();
         }
 
-        $canGenerate = $this->settings->canSummarize($actor);
+        $body = AiGate::body($request);
+        $this->validator->assertValid(['regenerate' => $body['regenerate'] ?? null]);
+
+        $canGenerate = $actor->can(AiSettings::SUMMARIZE_PERMISSION);
         $summary = $this->summarizer->find($discussion);
         $present = $this->summarizer->present($discussion, $summary, $canGenerate);
 
-        if ($request->getMethod() !== 'POST') {
-            return new JsonResponse(['data' => $present, 'canGenerate' => $canGenerate]);
-        }
-
-        $regenerate = ! empty(AiGate::body($request)['regenerate']);
+        $regenerate = ! empty($body['regenerate']);
 
         if ($present !== null && (! $present['outdated'] || ! $regenerate)) {
             return NdjsonStream::response(static fn (callable $write) => $write('summary', ['summary' => $present]), $this->errors->describe(...));
         }
 
-        if (! $canGenerate) {
-            throw new PermissionDeniedException();
-        }
+        $actor->assertCan(AiSettings::SUMMARIZE_PERMISSION);
 
         $this->gate->quota($actor);
 

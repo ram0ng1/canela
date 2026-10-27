@@ -55,9 +55,13 @@ final class NdjsonStream
                 }
 
                 // O output_buffering do php.ini seguraria as linhas até juntar
-                // 4 KB; aqui cada linha precisa sair na hora.
-                while (ob_get_level() > 0) {
-                    @ob_end_flush();
+                // 4 KB; aqui cada linha precisa sair na hora. Na linha de
+                // comando (os testes) não há navegador esperando, e os buffers
+                // abertos são de quem chamou, que lê a resposta por eles.
+                if (PHP_SAPI !== 'cli') {
+                    while (ob_get_level() > 0) {
+                        @ob_end_flush();
+                    }
                 }
 
                 $write = static function (string $type, array $data = []): void {

@@ -13,19 +13,20 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Activity\Api;
 
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
 use Flarum\Extension\ExtensionManager;
-use Flarum\Http\RequestUtil;
 use Flarum\Post\Post;
+use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Ramon\Canela\Activity\Search\ActivityUser;
 
 /**
- * A subaba "Reações" do perfil: curtidas (flarum/likes) e reações
+ * `GET /api/users/{id}/canela-reactions?page[offset]=0&page[limit]=20`: a
+ * subaba "Reações" do perfil, num endpoint de ação do recurso de usuários (a
+ * pessoa passa pela visibilidade do recurso: quem não se vê, 404).
+ *
+ * A subaba: curtidas (flarum/likes) e reações
  * (fof/reactions) numa lista só, da mais nova para a mais antiga. No Canela
  * a curtida é a reação "coração", então as duas são uma coisa só para quem lê.
  *
@@ -34,37 +35,48 @@ use Ramon\Canela\Activity\Search\ActivityUser;
  * core. Aqui a visibilidade também vale: só posts que o visitante vê, e as
  * reações só com a permissão do fof de ver quem reagiu.
  */
-final class ListReactionsController implements RequestHandlerInterface
+final class ListReactions
 {
     private const MAX_LIMIT = 50;
 
+    private const DEFAULT_LIMIT = 20;
+
     public function __construct(
-        private readonly ActivityUser $users,
         private readonly ConnectionInterface $db,
         private readonly ExtensionManager $extensions
     ) {
     }
 
-    #[\Override]
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public static function endpoint(): Endpoint\Endpoint
     {
-        $actor = RequestUtil::getActor($request);
-        $params = $request->getQueryParams();
-        $user = $this->users->resolve((string) Arr::get($params, 'username', ''), $actor);
-        $offset = max(0, (int) Arr::get($params, 'offset', 0));
-        $limit = min(self::MAX_LIMIT, max(1, (int) Arr::get($params, 'limit', 20)));
+        return Endpoint\Endpoint::make('canela.reactions')
+            ->route('GET', '/{id}/canela-reactions')
+            ->action(static fn (Context $context): array => resolve(self::class)->list($context))
+            ->response(static fn (Context $context, array $page): JsonResponse => new JsonResponse($page));
+    }
+
+    /** @return array{data: list<array{postId: int, reactionId: int|null, createdAt: mixed}>, hasMore: bool} */
+    public function list(Context $context): array
+    {
+        $actor = $context->getActor();
+        /** @var User $user */
+        $user = $context->model;
+        $page = $context->request->getQueryParams()['page'] ?? [];
+        $page = is_array($page) ? $page : [];
+        $offset = max(0, (int) ($page['offset'] ?? 0));
+        $limit = min(self::MAX_LIMIT, max(1, (int) ($page['limit'] ?? self::DEFAULT_LIMIT)));
 
         $parts = [];
         $visible = static fn () => Post::whereVisibleTo($actor)->select('posts.id');
 
-        if ($user && $this->extensions->isEnabled('flarum-likes')) {
+        if ($this->extensions->isEnabled('flarum-likes')) {
             $parts[] = $this->db->table('post_likes')
                 ->select('post_id', $this->db->raw('NULL as reaction_id'), 'created_at')
                 ->where('user_id', (int) $user->id)
                 ->whereIn('post_id', $visible());
         }
 
-        if ($user && $this->extensions->isEnabled('fof-reactions') && $actor->hasPermission('discussion.canSeeReactions')) {
+        if ($this->extensions->isEnabled('fof-reactions') && $actor->hasPermission('discussion.canSeeReactions')) {
             $parts[] = $this->db->table('post_reactions')
                 ->select('post_id', 'reaction_id', 'created_at')
                 ->where('user_id', (int) $user->id)
@@ -73,7 +85,7 @@ final class ListReactionsController implements RequestHandlerInterface
         }
 
         if (! $parts) {
-            return new JsonResponse(['data' => [], 'hasMore' => false]);
+            return ['data' => [], 'hasMore' => false];
         }
 
         $query = array_shift($parts);
@@ -95,6 +107,6 @@ final class ListReactionsController implements RequestHandlerInterface
             'createdAt' => $row->created_at,
         ])->values()->all();
 
-        return new JsonResponse(['data' => $data, 'hasMore' => $rows->count() > $limit]);
+        return ['data' => $data, 'hasMore' => $rows->count() > $limit];
     }
 }

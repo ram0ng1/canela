@@ -22,24 +22,32 @@
  * no boot, antes das configurações —, e cada ponto de entrada consulta
  * AiSettings: desligada, sem chave ou sem as tabelas, as rotas respondem 404 e
  * o fórum não mostra nada.
+ *
+ * Quem usa o bot, o ajudante e o "Perguntar à IA" (`canela.useAi`) e quem
+ * gera resumos (`canela.generateAiSummaries`) se escolhe em Administração →
+ * Permissões.
  */
 
 use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Api\Resource\ForumResource;
 use Flarum\Extend;
+use Ramon\Canela\Ai\Access\AiPermissionPolicy;
+use Ramon\Canela\Ai\Access\ConversationPolicy;
+use Ramon\Canela\Ai\Access\ScopeConversationVisibility;
 use Ramon\Canela\Ai\AiSettings;
+use Ramon\Canela\Ai\Api\ConversationResource;
 use Ramon\Canela\Ai\Api\DiscussionAiFields;
 use Ramon\Canela\Ai\Api\ForumAiFields;
+use Ramon\Canela\Ai\Api\MessageResource;
+use Ramon\Canela\Ai\Api\TopicSummaryResource;
 use Ramon\Canela\Ai\Console\EmbedTopicsCommand;
 use Ramon\Canela\Ai\Console\GenerateGistsCommand;
 use Ramon\Canela\Ai\Console\HourlySchedule;
+use Ramon\Canela\Ai\Conversation;
 use Ramon\Canela\Ai\Embeddings\RelatedController;
 use Ramon\Canela\Ai\Helper\HelperController;
 use Ramon\Canela\Ai\Http\AiPageContent;
-use Ramon\Canela\Ai\Http\Conversations\ListConversationsController;
 use Ramon\Canela\Ai\Http\Conversations\ReplyController;
-use Ramon\Canela\Ai\Http\Conversations\ShowConversationController;
-use Ramon\Canela\Ai\Http\Conversations\UpdateConversationController;
 use Ramon\Canela\Ai\Http\TestConnectionController;
 use Ramon\Canela\Ai\Summaries\SummaryController;
 
@@ -66,19 +74,33 @@ return [
     (new Extend\ApiResource(DiscussionResource::class))
         ->fields(DiscussionAiFields::class),
 
+    // As conversas com o bot (e as mensagens, só como inclusão) e os resumos
+    // prontos dos tópicos.
+    new Extend\ApiResource(ConversationResource::class),
+    new Extend\ApiResource(MessageResource::class),
+    new Extend\ApiResource(TopicSummaryResource::class),
+
+    (new Extend\ModelVisibility(Conversation::class))
+        ->scope(ScopeConversationVisibility::class),
+
+    // Só a dona mexe na conversa; `canela.useAi` e `canela.generateAiSummaries`
+    // juntam a permissão de grupo com o estado da IA.
+    (new Extend\Policy())
+        ->modelPolicy(Conversation::class, ConversationPolicy::class)
+        ->globalPolicy(AiPermissionPolicy::class),
+
     (new Extend\Frontend('forum'))
         ->route('/ai/conversations', 'canela.ai.conversations', AiPageContent::class)
         ->route('/ai/conversations/{id:\d+}', 'canela.ai.conversation', AiPageContent::class),
 
+    // O que responde em streaming (NDJSON) ou só chama um provedor fica em
+    // controllers: a pergunta ao bot, o ajudante, a geração do resumo, os
+    // tópicos relacionados (embeddings) e o "Testar conexão" do admin.
     (new Extend\Routes('api'))
-        ->get('/canela/ai/conversations', 'canela.ai.conversations.index', ListConversationsController::class)
         ->post('/canela/ai/conversations/reply', 'canela.ai.conversations.reply', ReplyController::class)
-        ->get('/canela/ai/conversations/{id:\d+}', 'canela.ai.conversations.show', ShowConversationController::class)
-        ->patch('/canela/ai/conversations/{id:\d+}', 'canela.ai.conversations.update', UpdateConversationController::class)
-        ->delete('/canela/ai/conversations/{id:\d+}', 'canela.ai.conversations.delete', UpdateConversationController::class)
         ->post('/canela/ai/helper', 'canela.ai.helper', HelperController::class)
-        ->get('/canela/ai/summaries/{id:\d+}', 'canela.ai.summaries.show', SummaryController::class)
         ->post('/canela/ai/summaries/{id:\d+}', 'canela.ai.summaries.generate', SummaryController::class)
+        // A página do tópico pré-carrega este caminho: URL e formato ficam.
         ->get('/canela/ai/related/{id:\d+}', 'canela.ai.related', RelatedController::class)
         ->post('/canela/ai/test', 'canela.ai.test', TestConnectionController::class),
 

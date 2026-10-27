@@ -740,10 +740,9 @@ ramon-canela:
         personas_title: ペルソナ
         personas_help: 各ペルソナには名前、説明、システムプロンプト、使用できるツールがあります。ユーザーは質問欄の下でペルソナを選びます。
         access_title: アクセスと制限
-        allowed_groups_label: ボット、ヘルパー、「AI に質問」を使用できるユーザー
-        allowed_groups_help: '「メンバー」はメールアドレスを確認済みのすべてのユーザーです。管理者は常に使用できます。'
-        summary_groups_label: スレッドの概要を生成できるユーザー
-        summary_groups_help: 完成した概要は、スレッドを閲覧できる人なら誰でも（ゲストを含む）読めます。
+        use_permission: 'AI ボット、エディターのヘルパー、「AI に質問」を使用'
+        summarize_permission: 'AI でスレッドの概要を生成'
+        access_permissions_help: 'ボット、ヘルパー、「AI に質問」を使用できるユーザーと、スレッドの概要を生成できるユーザーは、管理 → 権限 で設定します。完成した概要は、スレッドを閲覧できる人なら誰でも（ゲストを含む）読めます。管理者は常に使用できます。'
         daily_limit_label: 1人1日あたりのリクエスト数
         daily_limit_help: ボットへの質問、ヘルパーの使用、概要の生成がそれぞれ1回と数えられます。0 = 無制限。管理者には制限がありません。
         embeddings_title: 埋め込み

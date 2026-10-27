@@ -2,7 +2,7 @@
  * As contagens "Novos (N)" e "Não lidos (N)" de quem entrou na conta.
  *
  * Chegam prontas no documento do fórum (canelaNewCount / canelaUnreadCount) e
- * são renovadas por GET /api/canela-counts quando a pessoa volta à lista —
+ * são renovadas por GET /api/forums/canela-counts quando a pessoa volta à lista —
  * que é quando ela pode ter acabado de ler alguma coisa.
  *
  * Na página de uma tag, as abas mostram os números dela (`?tag=slug`): o "(1)" global numa categoria vazia mentia.

@@ -23,6 +23,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Links\LinkClicks;
+use Ramon\Canela\Links\Validation\LinkClickValidator;
 use Ramon\Canela\Stats\Http\Visitor;
 use Ramon\Canela\Stats\StatsSettings;
 
@@ -30,6 +31,10 @@ use Ramon\Canela\Stats\StatsSettings;
  * POST /api/canela-link-click — o registro de cliques. O fórum manda
  * por `navigator.sendBeacon` (corpo de formulário, com o csrfToken) quando
  * alguém clica num link externo de uma postagem, logado ou não.
+ *
+ * Continua um controller, e não um endpoint do recurso de postagens: é um
+ * beacon (`sendBeacon`, corpo de formulário), que ninguém lê. O formato
+ * passa pelo LinkClickValidator.
  *
  * Responde sempre 204, gravando ou não: o navegador já foi para o link e não
  * lê a resposta, e quem tenta inflar números não descobre o que contou. Só
@@ -46,6 +51,7 @@ final class RecordLinkClickController implements RequestHandlerInterface
         private readonly LinkClicks $clicks,
         private readonly StatsSettings $stats,
         private readonly Cache $cache,
+        private readonly LinkClickValidator $validator,
     ) {
     }
 
@@ -64,12 +70,14 @@ final class RecordLinkClickController implements RequestHandlerInterface
         }
 
         $body = (array) $request->getParsedBody();
-        $url = trim((string) Arr::get($body, 'url', ''));
-        $postId = (int) Arr::get($body, 'post_id', 0);
+        $url = is_string(Arr::get($body, 'url')) ? trim(Arr::get($body, 'url')) : Arr::get($body, 'url');
 
-        if ($postId <= 0 || $url === '' || mb_strlen($url) > LinkClicks::MAX_URL_LENGTH || ! $this->clicks->isExternal($url)) {
+        if (! $this->validator->passes(['post_id' => Arr::get($body, 'post_id'), 'url' => $url]) || ! $this->clicks->isExternal((string) $url)) {
             return $done;
         }
+
+        $url = (string) $url;
+        $postId = (int) Arr::get($body, 'post_id');
 
         $actor = RequestUtil::getActor($request);
         $who = $actor->isGuest() ? 'ip:'.$visitor->ipHash($this->stats->visitorSalt()) : 'u:'.$actor->id;

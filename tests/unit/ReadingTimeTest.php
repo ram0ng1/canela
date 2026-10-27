@@ -13,6 +13,7 @@ use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase;
 use Ramon\Canela\Stats\Api\Controller\RecordReadTimeController;
 use Ramon\Canela\Stats\StatsSettings;
+use Ramon\Canela\Stats\Validation\ReadTimeValidator;
 use Ramon\Canela\Stats\VisitRecorder;
 use Ramon\Canela\Tests\Support\ArraySettings;
 use Ramon\Canela\Tests\Support\TestDatabase;
@@ -55,7 +56,9 @@ final class ReadingTimeTest extends TestCase
 
     private function credit(int $claimed, int $userId = 1): int
     {
-        $controller = new RecordReadTimeController(new StatsSettings(new ArraySettings()), $this->visits, $this->cache);
+        // O validador da entrada não entra nesta conta: só o relógio.
+        $validator = (new \ReflectionClass(ReadTimeValidator::class))->newInstanceWithoutConstructor();
+        $controller = new RecordReadTimeController(new StatsSettings(new ArraySettings()), $this->visits, $this->cache, $validator);
 
         return (fn () => $this->creditedSeconds($userId, $claimed))->call($controller);
     }

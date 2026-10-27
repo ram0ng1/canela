@@ -158,12 +158,12 @@ class MarkUnreadTest extends TestCase
     #[Test]
     public function volta_a_contar_como_nao_lido_depois_de_marcar_tudo(): void
     {
-        $before = json_decode((string) $this->send($this->request('GET', '/api/canela-counts', ['authenticatedAs' => 2]))->getBody(), true);
+        $before = json_decode((string) $this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2]))->getBody(), true);
         $this->assertSame(0, $before['unread']);
 
         $this->markUnread(1, 1);
 
-        $after = json_decode((string) $this->send($this->request('GET', '/api/canela-counts', ['authenticatedAs' => 2]))->getBody(), true);
+        $after = json_decode((string) $this->send($this->request('GET', '/api/forums/canela-counts', ['authenticatedAs' => 2]))->getBody(), true);
         $this->assertSame(1, $after['unread']);
 
         $list = $this->send($this->request('GET', '/api/discussions', ['authenticatedAs' => 2])->withQueryParams(['filter' => ['canelaUnread' => '1']]));

@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Ai\Http\Conversations;
 
-use Flarum\Foundation\ValidationException;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
-use Flarum\Locale\TranslatorInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -27,6 +25,7 @@ use Ramon\Canela\Ai\Conversation;
 use Ramon\Canela\Ai\Http\AiGate;
 use Ramon\Canela\Ai\Http\NdjsonStream;
 use Ramon\Canela\Ai\Personas;
+use Ramon\Canela\Ai\Validation\ReplyValidator;
 
 /**
  * `POST /api/canela/ai/conversations/reply`: manda uma pergunta ao bot e
@@ -35,6 +34,11 @@ use Ramon\Canela\Ai\Personas;
  * Sem `conversationId`, abre uma conversa nova — a "Nova pergunta" e o
  * "Perguntar à IA" da busca. A persona só vale na conversa
  * nova; uma conversa continua com a persona com que começou.
+ *
+ * Continua um controller, e não um endpoint do ConversationResource, por
+ * causa do streaming: a entrada passa pelo ReplyValidator e a conversa pela
+ * ConversationPolicy (`reply`) antes dos cabeçalhos, enquanto um erro ainda
+ * vira status HTTP.
  */
 final class ReplyController implements RequestHandlerInterface
 {
@@ -47,7 +51,7 @@ final class ReplyController implements RequestHandlerInterface
         private readonly BotReply $reply,
         private readonly Personas $personas,
         private readonly AiErrors $errors,
-        private readonly TranslatorInterface $translator,
+        private readonly ReplyValidator $validator,
     ) {
     }
 
@@ -61,21 +65,25 @@ final class ReplyController implements RequestHandlerInterface
         $this->gate->quota($actor);
 
         $body = AiGate::body($request);
-        $question = trim((string) ($body['message'] ?? ''));
-        $length = mb_strlen($question);
+        $question = is_string($body['message'] ?? null) ? trim($body['message']) : ($body['message'] ?? null);
 
-        if ($length < self::MIN_LENGTH || $length > self::MAX_LENGTH) {
-            throw new ValidationException(['message' => $this->translator->trans('ramon-canela.api.ai.errors.message_length', ['min' => self::MIN_LENGTH, 'max' => self::MAX_LENGTH])]);
-        }
+        $this->validator->assertValid([
+            'message' => $question,
+            'conversationId' => $body['conversationId'] ?? null,
+            'persona' => $body['persona'] ?? null,
+        ]);
 
         $conversationId = (int) ($body['conversationId'] ?? 0);
 
         if ($conversationId > 0) {
-            $conversation = Conversation::query()->where('user_id', $actor->id)->find($conversationId);
+            // A de outra pessoa nem aparece (404), como no recurso de conversas.
+            $conversation = Conversation::query()->whereVisibleTo($actor)->find($conversationId);
 
             if (! $conversation instanceof Conversation) {
                 throw new RouteNotFoundException();
             }
+
+            $actor->assertCan('reply', $conversation);
         } else {
             $conversation = new Conversation();
             $conversation->persona = $this->personas->find(isset($body['persona']) ? (string) $body['persona'] : null)['id'] ?? null;

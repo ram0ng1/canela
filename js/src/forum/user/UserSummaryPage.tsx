@@ -173,7 +173,7 @@ export default class UserSummaryPage<Attrs extends IUserPageAttrs = IUserPageAtt
     // seções simplesmente não aparecem.
     this.extra = null;
     app
-      .request<SummaryExtra>({ method: 'GET', url: `${app.forum.attribute('apiUrl')}/canela-user-summary/${user.id()}`, ...quiet })
+      .request<SummaryExtra>({ method: 'GET', url: `${app.forum.attribute('apiUrl')}/users/${user.id()}/canela-summary`, ...quiet })
       .then((extra) => {
         if (this.loadedFor === user && extra && typeof extra === 'object') this.extra = extra;
       })
