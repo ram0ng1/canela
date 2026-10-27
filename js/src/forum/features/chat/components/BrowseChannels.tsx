@@ -15,7 +15,8 @@ import chat from '../ChatStore';
 import { ChannelIcon } from './bits';
 import { go } from './ChannelsList';
 import { CreateChannelModal } from './modals';
-import { caps, chatRequest, ct, pushUsers } from '../utils';
+import * as api from '../api';
+import { caps, ct } from '../utils';
 import type { ChatChannel } from '../types';
 
 const FILTERS = ['all', 'open', 'closed', 'archived'] as const;
@@ -40,10 +41,9 @@ export default class BrowseChannels extends Component<BrowseChannelsAttrs> {
   }
 
   private async load(): Promise<void> {
-    const result = await chatRequest('GET', '/channels', undefined, { status: this.filter, q: this.query });
+    const result = await api.browse({ status: this.filter, q: this.query });
 
-    pushUsers(result.users);
-    this.channels = (result.channels as ChatChannel[]).map((channel) => (chat.channels.has(channel.id) ? chat.putChannel(channel) : channel));
+    this.channels = result.channels.map((channel) => (chat.channels.has(channel.id) ? chat.putChannel(channel) : channel));
     m.redraw();
   }
 
@@ -170,11 +170,9 @@ export default class BrowseChannels extends Component<BrowseChannelsAttrs> {
     this.busy.add(channel.id);
 
     try {
-      const result = await chatRequest(following ? 'DELETE' : 'POST', `/channels/${channel.id}/membership`);
+      const result = following ? await api.leave(channel.id) : await api.follow(channel.id);
 
-      pushUsers(result?.users);
-
-      if (result?.channel) {
+      if (result.channel) {
         Object.assign(channel, result.channel);
         chat.putChannel(channel);
       }

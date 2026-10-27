@@ -14,7 +14,8 @@ import chat from '../ChatStore';
 import ChatMessage, { relativeAgo } from './ChatMessage';
 import { ChannelTitle, ChatUserAvatar, UnreadIndicator } from './bits';
 import { go } from './ChannelsList';
-import { chatRequest, chatUser, ct, displayName, pushUsers } from '../utils';
+import * as api from '../api';
+import { chatUser, ct, displayName } from '../utils';
 import type { ChatMessage as Message, ChatThread } from '../types';
 
 function threadTitle(thread: ChatThread): string {
@@ -85,11 +86,9 @@ export class ThreadList extends Component<ThreadListAttrs> {
   }
 
   private async load(): Promise<void> {
-    const path = this.attrs.channelId ? `/channels/${this.attrs.channelId}/threads` : '/threads';
-    const result = await chatRequest('GET', path);
+    const result = await api.threads(this.attrs.channelId || undefined);
 
-    pushUsers(result.users);
-    (result.channels || []).forEach((channel: any) => chat.channels.has(channel.id) || chat.putChannel(channel));
+    result.channels.forEach((channel) => chat.channels.has(channel.id) || chat.putChannel(channel));
     this.threads = result.threads;
     m.redraw();
   }
@@ -127,14 +126,13 @@ export class PinsList extends Component<PinsListAttrs> {
   oninit(vnode: Mithril.Vnode<PinsListAttrs, this>) {
     super.oninit(vnode);
 
-    chatRequest('GET', `/channels/${this.attrs.channelId}/pins`).then((result: any) => {
-      pushUsers(result.users);
+    api.pins(this.attrs.channelId).then((result) => {
       this.messages = result.messages;
       m.redraw();
     });
 
     // Abrir a lista é "ver" as fixadas: o pontinho some.
-    chatRequest('POST', `/channels/${this.attrs.channelId}/pins-read`, undefined, undefined, { errorHandler: () => {} }).catch(() => {});
+    api.pinsRead(this.attrs.channelId).catch(() => {});
 
     const membership = chat.channels.get(this.attrs.channelId)?.membership;
     if (membership) membership.hasUnseenPins = false;
@@ -187,9 +185,8 @@ export class PinsList extends Component<PinsListAttrs> {
   }
 
   private async unpin(message: Message): Promise<void> {
-    const result = await chatRequest('DELETE', `/messages/${message.id}/pin`);
+    const result = await api.pin(message.id, false);
 
-    pushUsers(result.users);
     chat.upsertEverywhere(result.message);
     this.messages = (this.messages || []).filter((m) => m.id !== message.id);
     m.redraw();
@@ -287,9 +284,8 @@ export class ChatSearch extends Component<ChatSearchAttrs> {
     m.redraw();
 
     try {
-      const result = await chatRequest('GET', '/search', undefined, { q: this.query.trim(), sort: this.sort, channel: this.attrs.channelId });
-      pushUsers(result.users);
-      (result.channels || []).forEach((channel: any) => chat.channels.has(channel.id) || chat.putChannel(channel));
+      const result = await api.search(this.query.trim(), this.sort, this.attrs.channelId);
+      result.channels.forEach((channel) => chat.channels.has(channel.id) || chat.putChannel(channel));
       this.results = result.results;
     } finally {
       this.loading = false;

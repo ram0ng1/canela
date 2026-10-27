@@ -23,16 +23,19 @@ class DirectMessagesTest extends AbstractChatTestCase
     #[Test]
     public function abre_e_reaproveita_a_md(): void
     {
-        [$status, $body] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [4]]);
+        [$status, $body] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [4]]);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertEquals('direct', $body['channel']['type']);
-        $this->assertFalse($body['channel']['isGroup']);
-        $this->assertEqualsCanonicalizing([2, 4], $body['channel']['participantIds']);
+        $channel = self::data($body);
+        $this->assertEquals('direct', $channel['type']);
+        $this->assertFalse($channel['isGroup']);
+        $this->assertEqualsCanonicalizing([2, 4], $channel['participantIds']);
+        // Os participantes vão para o store do fórum.
+        $this->assertEqualsCanonicalizing(['2', '4'], self::includedIds($body, 'users'));
 
-        [, $again] = $this->chat('POST', '/direct-messages', 4, ['userIds' => [2]]);
+        [, $again] = $this->api('POST', '/chat-channels/direct', 4, ['userIds' => [2]]);
 
-        $this->assertEquals($body['channel']['id'], $again['channel']['id']);
+        $this->assertEquals($channel['id'], self::data($again)['id']);
     }
 
     /**
@@ -42,19 +45,19 @@ class DirectMessagesTest extends AbstractChatTestCase
     #[Test]
     public function so_os_participantes_enxergam_a_md(): void
     {
-        [, $body] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [4]]);
-        $id = $body['channel']['id'];
+        [, $body] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [4]]);
+        $id = self::data($body)['id'];
         $message = $this->post($id, 2, 'Só entre nós');
 
-        [$recipient, $messages] = $this->chat('GET', "/channels/$id/messages", 4);
+        [$recipient, $messages] = $this->messages($id, 4);
         $this->assertEquals(200, $recipient);
-        $this->assertEquals([$message], array_column($messages['messages'], 'id'));
+        $this->assertEquals([$message], array_column(self::data($messages), 'id'));
 
-        [$third] = $this->chat('GET', "/channels/$id/messages", 3);
-        [$admin] = $this->chat('GET', "/channels/$id", 1);
-        [$single] = $this->chat('GET', "/messages/$message", 1);
-        [$post] = $this->chat('POST', "/channels/$id/messages", 3, ['message' => 'Intruso']);
-        [$join] = $this->chat('POST', "/channels/$id/membership", 3);
+        [$third] = $this->messages($id, 3);
+        [$admin] = $this->api('GET', "/chat-channels/$id", 1);
+        [$single] = $this->api('GET', "/chat-messages/$message", 1);
+        [$post] = $this->sendMessage($id, 3, 'Intruso');
+        [$join] = $this->api('POST', "/chat-channels/$id/membership", 3);
 
         $this->assertEquals(404, $third);
         $this->assertEquals(404, $admin);
@@ -62,21 +65,21 @@ class DirectMessagesTest extends AbstractChatTestCase
         $this->assertEquals(404, $post);
         $this->assertEquals(404, $join);
 
-        [, $list] = $this->chat('GET', '/channels', 2);
-        $this->assertNotContains($id, array_column($list['channels'], 'id'));
+        [, $list] = $this->api('GET', '/chat-channels', 2);
+        $this->assertNotContains($id, array_column(self::data($list), 'id'));
     }
 
     /** A primeira mensagem conta como não lida para quem recebe. */
     #[Test]
     public function primeira_mensagem_chega_como_nao_lida(): void
     {
-        [, $body] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [4]]);
-        $id = $body['channel']['id'];
+        [, $body] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [4]]);
+        $id = self::data($body)['id'];
 
         $this->post($id, 2, 'Oi!');
 
-        [, $state] = $this->chat('GET', '/state', 4);
-        $dm = array_values(array_filter($state['channels'], static fn ($c) => $c['id'] === $id));
+        [, $state] = $this->api('GET', '/chat-channels/state', 4);
+        $dm = array_values(array_filter(self::data($state), static fn ($c) => $c['id'] === $id));
 
         $this->assertCount(1, $dm);
         $this->assertEquals(1, $dm[0]['membership']['unreadCount']);
@@ -86,13 +89,13 @@ class DirectMessagesTest extends AbstractChatTestCase
     #[Test]
     public function participante_fixa_na_md(): void
     {
-        [, $body] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [4]]);
-        $message = $this->post($body['channel']['id'], 2, 'Lembrete');
+        [, $body] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [4]]);
+        $message = $this->post(self::data($body)['id'], 2, 'Lembrete');
 
-        [$status, $pinned] = $this->chat('POST', "/messages/$message/pin", 4);
+        [$status, $pinned] = $this->api('POST', "/chat-messages/$message/pin", 4);
 
         $this->assertEquals(200, $status, json_encode($pinned));
-        $this->assertTrue($pinned['message']['pinned']);
+        $this->assertTrue(self::data($pinned)['pinned']);
     }
 
     /** MDs desligadas no admin: abrir recusa (422 em `userIds`). */
@@ -101,20 +104,20 @@ class DirectMessagesTest extends AbstractChatTestCase
     {
         $this->setting('canela.chat_dm_enabled', '0');
 
-        [$status, $body] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [4]]);
+        [$status, $body] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [4]]);
 
         $this->assertEquals(422, $status);
         $this->assertEquals('/data/attributes/userIds', $body['errors'][0]['source']['pointer']);
     }
 
-    /** Fora dos grupos de `canela.chat_dm_groups`: não abre MD. */
+    /** Sem `canela.chat.directMessage` no grupo: não abre MD. */
     #[Test]
     public function fora_dos_grupos_de_md_recusa(): void
     {
-        $this->setting('canela.chat_dm_groups', '4');
+        $this->grant('canela.chat.directMessage', [4]);
 
-        [$member] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [4]]);
-        [$moderator] = $this->chat('POST', '/direct-messages', 3, ['userIds' => [4]]);
+        [$member] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [4]]);
+        [$moderator] = $this->api('POST', '/chat-channels/direct', 3, ['userIds' => [4]]);
 
         $this->assertEquals(422, $member);
         $this->assertEquals(200, $moderator);
@@ -124,7 +127,7 @@ class DirectMessagesTest extends AbstractChatTestCase
     #[Test]
     public function destinatario_inexistente_responde_422(): void
     {
-        [$status] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [999]]);
+        [$status] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [999]]);
 
         $this->assertEquals(422, $status);
     }
@@ -133,12 +136,12 @@ class DirectMessagesTest extends AbstractChatTestCase
     #[Test]
     public function sair_do_grupo_tira_o_acesso(): void
     {
-        [, $body] = $this->chat('POST', '/direct-messages', 2, ['userIds' => [3, 4]]);
-        $id = $body['channel']['id'];
-        $this->assertTrue($body['channel']['isGroup']);
+        [, $body] = $this->api('POST', '/chat-channels/direct', 2, ['userIds' => [3, 4]]);
+        $id = self::data($body)['id'];
+        $this->assertTrue(self::data($body)['isGroup']);
 
-        [$left] = $this->chat('DELETE', "/channels/$id/membership", 4);
-        [$after] = $this->chat('GET', "/channels/$id", 4);
+        [$left] = $this->api('DELETE', "/chat-channels/$id/membership", 4);
+        [$after] = $this->api('GET', "/chat-channels/$id", 4);
 
         $this->assertEquals(204, $left);
         $this->assertEquals(404, $after);

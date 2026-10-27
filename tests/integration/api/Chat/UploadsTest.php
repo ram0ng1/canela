@@ -24,7 +24,7 @@ class UploadsTest extends AbstractChatTestCase
     {
         $this->setting('canela.chat_uploads_enabled', '0');
 
-        [$status] = $this->chat('POST', '/uploads', 2);
+        [$status] = $this->api('POST', '/chat/uploads', 2);
 
         $this->assertEquals(403, $status);
     }
@@ -33,7 +33,7 @@ class UploadsTest extends AbstractChatTestCase
     #[Test]
     public function upload_sem_arquivo_responde_422(): void
     {
-        [$status, $body] = $this->chat('POST', '/uploads', 2);
+        [$status, $body] = $this->api('POST', '/chat/uploads', 2);
 
         $this->assertEquals(422, $status);
         $this->assertEquals('/data/attributes/file', $body['errors'][0]['source']['pointer']);
@@ -49,7 +49,7 @@ class UploadsTest extends AbstractChatTestCase
             ],
         ]);
 
-        [$status] = $this->chat('POST', '/channels/1/messages', 2, ['message' => '', 'uploadIds' => [1]]);
+        [$status] = $this->sendMessage(1, 2, '', ['uploadIds' => [1]]);
 
         $this->assertEquals(422, $status);
     }

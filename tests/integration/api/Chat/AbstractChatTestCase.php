@@ -11,6 +11,7 @@
 
 namespace Ramon\Canela\Tests\integration\api\Chat;
 
+use Flarum\Group\PermissionCache;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
@@ -21,12 +22,17 @@ use Flarum\User\User;
  *
  * - 1: administrador;
  * - 2: membro comum (o `normalUser()`);
- * - 3: moderador (grupo 4, o padrão de `canela.chat_moderator_groups`);
+ * - 3: moderador (grupo 4, que tem `canela.chat.moderate` por padrão);
  * - 4: outro membro comum.
  *
  * O canal 1 é público e avulso (sem tag), com o 2 e o 3 como participantes.
- * As respostas do chat são JSON próprio (não JSON:API): `channel`,
- * `message`, `users`…
+ * As respostas são documentos JSON:API (`chat-channels`, `chat-messages`,
+ * `chat-threads`, com os usuários no `included`); `data()` os devolve no
+ * formato que o fórum usa, com o id e os atributos lado a lado.
+ *
+ * As permissões do chat (`canela.chat.*`) começam como a migration as semeia
+ * num fórum novo: usar e mandar MD para os membros (3), moderar para os
+ * moderadores (4), criar canal só para os administradores.
  */
 abstract class AbstractChatTestCase extends TestCase
 {
@@ -63,19 +69,21 @@ abstract class AbstractChatTestCase extends TestCase
     }
 
     /**
-     * Uma chamada à API do chat; devolve o status e o corpo decodificado.
+     * Uma chamada à API; devolve o status e o corpo decodificado.
      *
+     * @param array<string, mixed>|null $json
+     * @param array<string, mixed> $query
      * @return array{0: int, 1: array<string, mixed>|null}
      */
-    protected function chat(string $method, string $path, ?int $actor, array $json = [], array $query = []): array
+    protected function api(string $method, string $path, ?int $actor, ?array $json = null, array $query = []): array
     {
         $options = $actor ? ['authenticatedAs' => $actor] : [];
 
         if ($method !== 'GET') {
-            $options['json'] = $json;
+            $options['json'] = $json ?? [];
         }
 
-        $request = $this->request($method, '/api/chat'.$path, $options);
+        $request = $this->request($method, '/api'.$path, $options);
 
         if ($query) {
             $request = $request->withQueryParams($query);
@@ -87,23 +95,134 @@ abstract class AbstractChatTestCase extends TestCase
         return [$response->getStatusCode(), $body === '' ? null : json_decode($body, true)];
     }
 
+    /**
+     * O corpo JSON:API de uma gravação (POST ou PATCH de um recurso).
+     *
+     * @param array<string, mixed> $attributes
+     * @param array<string, mixed> $relationships
+     * @return array<string, mixed>
+     */
+    protected static function document(string $type, array $attributes = [], array $relationships = []): array
+    {
+        $data = ['type' => $type, 'attributes' => $attributes];
+
+        if ($relationships) {
+            $data['relationships'] = $relationships;
+        }
+
+        return ['data' => $data];
+    }
+
+    /** @return array<string, mixed> */
+    protected static function channelLink(int $channelId): array
+    {
+        return ['channel' => ['data' => ['type' => 'chat-channels', 'id' => (string) $channelId]]];
+    }
+
+    /**
+     * Um recurso como o fórum o usa: o id (número) e os atributos; o
+     * `channelType` volta a ser o `type` do canal.
+     *
+     * @param array<string, mixed> $resource
+     * @return array<string, mixed>
+     */
+    protected static function item(array $resource): array
+    {
+        $item = ['id' => (int) $resource['id'], ...($resource['attributes'] ?? [])];
+
+        if (array_key_exists('channelType', $item)) {
+            $item['type'] = $item['channelType'];
+        }
+
+        return $item;
+    }
+
+    /**
+     * O `data` da resposta, já como itens.
+     *
+     * @param array<string, mixed>|null $body
+     * @return array<int|string, mixed>
+     */
+    protected static function data(?array $body): array
+    {
+        $data = $body['data'] ?? [];
+
+        return array_is_list($data) ? array_map(self::item(...), $data) : self::item($data);
+    }
+
+    /**
+     * Os ids de um tipo no `included`.
+     *
+     * @param array<string, mixed>|null $body
+     * @return string[]
+     */
+    protected static function includedIds(?array $body, string $type): array
+    {
+        return array_values(array_map(
+            static fn (array $item) => (string) $item['id'],
+            array_filter($body['included'] ?? [], static fn (array $item) => $item['type'] === $type)
+        ));
+    }
+
+    /**
+     * Troca os grupos que têm uma permissão do chat (o que antes era a lista
+     * de grupos nas configurações).
+     *
+     * @param int[] $groupIds
+     */
+    protected function grant(string $permission, array $groupIds): void
+    {
+        $this->database()->table('group_permission')->where('permission', $permission)->delete();
+
+        foreach ($groupIds as $groupId) {
+            $this->database()->table('group_permission')->insert(['permission' => $permission, 'group_id' => $groupId]);
+        }
+
+        // O core guarda as permissões de cada conjunto de grupos no processo,
+        // e a gravação direta no banco não o avisa (o admin avisa).
+        $this->app()->getContainer()->make(PermissionCache::class)->flush();
+    }
+
+    /**
+     * Envia uma mensagem e devolve o corpo da resposta.
+     *
+     * @param array<string, mixed> $extra
+     * @return array{0: int, 1: array<string, mixed>|null}
+     */
+    protected function sendMessage(int $channelId, int $actor, string $text, array $extra = []): array
+    {
+        return $this->api('POST', '/chat-messages', $actor, self::document('chat-messages', ['message' => $text, ...$extra], self::channelLink($channelId)));
+    }
+
     /** Envia uma mensagem e devolve o id dela. */
     protected function post(int $channelId, int $actor, string $text, array $extra = []): int
     {
-        [$status, $body] = $this->chat('POST', "/channels/$channelId/messages", $actor, ['message' => $text, ...$extra]);
+        [$status, $body] = $this->sendMessage($channelId, $actor, $text, $extra);
 
-        $this->assertEquals(200, $status, json_encode($body));
+        $this->assertEquals(201, $status, json_encode($body));
 
-        return (int) $body['message']['id'];
+        return (int) $body['data']['id'];
+    }
+
+    /**
+     * As mensagens de um canal (ou de um fio), pelo cursor.
+     *
+     * @param array<string, mixed> $filter
+     * @param array<string, mixed> $page
+     * @return array{0: int, 1: array<string, mixed>|null}
+     */
+    protected function messages(int $channelId, int $actor, array $filter = [], array $page = []): array
+    {
+        return $this->api('GET', '/chat-messages', $actor, null, array_filter(['filter' => ['channel' => $channelId, ...$filter], 'page' => $page]));
     }
 
     /** O canal como o ator o vê (com `membership.unreadCount`). */
     protected function channelFor(int $channelId, int $actor): array
     {
-        [$status, $body] = $this->chat('GET', "/channels/$channelId", $actor);
+        [$status, $body] = $this->api('GET', "/chat-channels/$channelId", $actor);
 
         $this->assertEquals(200, $status, json_encode($body));
 
-        return $body['channel'];
+        return self::data($body);
     }
 }

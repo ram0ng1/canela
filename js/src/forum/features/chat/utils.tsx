@@ -1,7 +1,7 @@
 /*
- * Peças comuns do chat: a tradução, as permissões do `canelaChat`, o acesso
- * à API, os usuários no store, os títulos dos canais e as datas no formato
- * curto ("Hoje", "Ontem", "13 de outubro", "14:35").
+ * Peças comuns do chat: a tradução, as permissões do `canelaChat`, os
+ * usuários no store, os títulos dos canais e as datas no formato curto
+ * ("Hoje", "Ontem", "13 de outubro", "14:35"). O acesso à API mora em api.ts.
  */
 import app from 'flarum/forum/app';
 import type User from 'flarum/common/models/User';
@@ -14,36 +14,6 @@ import { caps, chatOn, ct } from './flags';
 
 // Reexportados: o resto do chat importa tudo daqui.
 export { caps, chatOn, ct };
-
-export function apiUrl(path: string): string {
-  return `${(app.forum.attribute<string>('apiUrl') || '/api').replace(/\/+$/, '')}/chat${path}`;
-}
-
-export function chatRequest<T = any>(
-  method: string,
-  path: string,
-  body?: Record<string, unknown> | FormData,
-  params?: Record<string, unknown>,
-  options: Record<string, unknown> = {}
-): Promise<T> {
-  const query = params
-    ? Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== ''))
-    : undefined;
-
-  return app.request<T>({
-    method,
-    url: apiUrl(path),
-    body: body as any,
-    params: query,
-    ...(body instanceof FormData ? { serialize: (raw: FormData) => raw } : {}),
-    ...options,
-  } as any);
-}
-
-/** Os usuários que vieram na resposta vão para o store (Avatar, nome, perfil). */
-export function pushUsers(resources: any[] | undefined): void {
-  (resources || []).forEach((resource) => app.store.pushObject(resource));
-}
 
 export function chatUser(id: number | null | undefined): User | null {
   return id ? ((app.store.getById('users', String(id)) as User | undefined) ?? null) : null;

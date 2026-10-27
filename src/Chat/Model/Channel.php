@@ -15,6 +15,7 @@ namespace Ramon\Canela\Chat\Model;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,6 +47,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Channel extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     public const TYPE_PUBLIC = 'public';
 
     public const TYPE_DIRECT = 'direct';

@@ -21,7 +21,8 @@ import { ChatUserAvatar } from './bits';
 import { go } from './ChannelsList';
 import MessageCreator from './MessageCreator';
 import { DeleteChannelModal } from './modals';
-import { caps, channelTitle, chatRequest, chatUser, ct, pushUsers } from '../utils';
+import * as api from '../api';
+import { caps, channelTitle, chatUser, ct } from '../utils';
 import type { ChatChannel, NotificationLevel } from '../types';
 
 export interface ChannelInfoAttrs extends ComponentAttrs {
@@ -272,17 +273,15 @@ class ChannelSettings extends Component<SectionAttrs> {
   }
 
   private async update(attributes: Record<string, unknown>): Promise<void> {
-    const result = await chatRequest('PATCH', `/channels/${this.attrs.channel.id}`, attributes);
+    const result = await api.updateChannel(this.attrs.channel.id, attributes);
 
-    pushUsers(result.users);
     chat.putChannel(result.channel);
     m.redraw();
   }
 
-  private async membership(attributes: Record<string, unknown>): Promise<void> {
-    const result = await chatRequest('PATCH', `/channels/${this.attrs.channel.id}/membership`, attributes);
+  private async membership(attributes: Parameters<typeof api.updateMembership>[1]): Promise<void> {
+    const result = await api.updateMembership(this.attrs.channel.id, attributes);
 
-    pushUsers(result.users);
     chat.putChannel(result.channel);
     app.alerts.show({ type: 'success' }, ct('settings.saved'));
     m.redraw();
@@ -365,7 +364,7 @@ class ChannelSettings extends Component<SectionAttrs> {
   private async leave(): Promise<void> {
     const channel = this.attrs.channel;
 
-    await chatRequest('DELETE', `/channels/${channel.id}/membership`);
+    await api.leave(channel.id);
 
     if (channel.membership) channel.membership.following = false;
     if (channel.type === 'direct' && channel.isGroup) chat.channels.delete(channel.id);
@@ -388,9 +387,8 @@ class ChannelMembers extends Component<SectionAttrs> {
   }
 
   private async load(offset = 0): Promise<void> {
-    const result = await chatRequest('GET', `/channels/${this.attrs.channel.id}/members`, undefined, { q: this.query, offset });
+    const result = await api.members(this.attrs.channel.id, this.query, offset);
 
-    pushUsers(result.users);
     this.ids = offset ? [...(this.ids || []), ...result.memberIds] : result.memberIds;
     this.hasMore = result.hasMore;
     m.redraw();

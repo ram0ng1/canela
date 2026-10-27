@@ -27,28 +27,30 @@ class MembershipTest extends AbstractChatTestCase
     {
         $last = $this->post(1, 2, 'Mensagem antiga');
 
-        [$status, $body] = $this->chat('POST', '/channels/1/membership', 4);
+        [$status, $body] = $this->api('POST', '/chat-channels/1/membership', 4);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertTrue($body['channel']['membership']['following']);
-        $this->assertEquals($last, $body['channel']['membership']['lastReadMessageId']);
-        $this->assertEquals(0, $body['channel']['membership']['unreadCount']);
-        $this->assertEquals(3, $body['channel']['userCount']);
-        $this->assertTrue($body['channel']['canPost']);
+        $channel = self::data($body);
+        $this->assertTrue($channel['membership']['following']);
+        $this->assertEquals($last, $channel['membership']['lastReadMessageId']);
+        $this->assertEquals(0, $channel['membership']['unreadCount']);
+        $this->assertEquals(3, $channel['userCount']);
+        $this->assertTrue($channel['canPost']);
     }
 
     /** Sair só deixa de seguir: a linha fica, e o canal volta a recusar a escrita. */
     #[Test]
     public function sair_do_canal_deixa_de_seguir(): void
     {
-        [$status, $body] = $this->chat('DELETE', '/channels/1/membership', 2);
+        [$status, $body] = $this->api('DELETE', '/chat-channels/1/membership', 2);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertFalse($body['channel']['membership']['following']);
-        $this->assertEquals(1, $body['channel']['userCount']);
-        $this->assertEquals('not_member', $body['channel']['cannotPostReason']);
+        $channel = self::data($body);
+        $this->assertFalse($channel['membership']['following']);
+        $this->assertEquals(1, $channel['userCount']);
+        $this->assertEquals('not_member', $channel['cannotPostReason']);
 
-        [$post] = $this->chat('POST', '/channels/1/messages', 2, ['message' => 'Ainda estou aqui?']);
+        [$post] = $this->sendMessage(1, 2, 'Ainda estou aqui?');
         $this->assertEquals(403, $post);
     }
 
@@ -56,8 +58,8 @@ class MembershipTest extends AbstractChatTestCase
     #[Test]
     public function quem_nao_participa_nao_escreve(): void
     {
-        [$read] = $this->chat('GET', '/channels/1/messages', 4);
-        [$write] = $this->chat('POST', '/channels/1/messages', 4, ['message' => 'Oi']);
+        [$read] = $this->messages(1, 4);
+        [$write] = $this->sendMessage(1, 4, 'Oi');
 
         $this->assertEquals(200, $read);
         $this->assertEquals(403, $write);
@@ -67,11 +69,11 @@ class MembershipTest extends AbstractChatTestCase
     #[Test]
     public function estado_lista_os_canais_seguidos(): void
     {
-        [, $member] = $this->chat('GET', '/state', 2);
-        [, $outsider] = $this->chat('GET', '/state', 4);
+        [, $member] = $this->api('GET', '/chat-channels/state', 2);
+        [, $outsider] = $this->api('GET', '/chat-channels/state', 4);
 
-        $this->assertEquals([1], array_column($member['channels'], 'id'));
-        $this->assertSame([], $outsider['channels']);
+        $this->assertEquals([1], array_column(self::data($member), 'id'));
+        $this->assertSame([], $outsider['data']);
     }
 
     /** Canal com "adicionar automaticamente" entra no estado de quem abre o chat. */
@@ -84,20 +86,21 @@ class MembershipTest extends AbstractChatTestCase
             ],
         ]);
 
-        [, $body] = $this->chat('GET', '/state', 4);
+        [, $body] = $this->api('GET', '/chat-channels/state', 4);
 
-        $this->assertEquals([2], array_column($body['channels'], 'id'));
+        $this->assertEquals([2], array_column(self::data($body), 'id'));
     }
 
     /** As preferências da participação (silenciar, favoritar, nível de aviso). */
     #[Test]
     public function atualiza_preferencias_da_participacao(): void
     {
-        [$status, $body] = $this->chat('PATCH', '/channels/1/membership', 2, ['muted' => true, 'starred' => true, 'notificationLevel' => 'never']);
+        [$status, $body] = $this->api('PATCH', '/chat-channels/1/membership', 2, ['muted' => true, 'starred' => true, 'notificationLevel' => 'never']);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertTrue($body['channel']['membership']['muted']);
-        $this->assertTrue($body['channel']['membership']['starred']);
-        $this->assertEquals('never', $body['channel']['membership']['notificationLevel']);
+        $membership = self::data($body)['membership'];
+        $this->assertTrue($membership['muted']);
+        $this->assertTrue($membership['starred']);
+        $this->assertEquals('never', $membership['notificationLevel']);
     }
 }

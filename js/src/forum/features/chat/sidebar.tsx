@@ -22,7 +22,8 @@ import type Mithril from 'mithril';
 import CanelaSidebar from '../../components/CanelaSidebar';
 import chat, { routeUrl } from './ChatStore';
 import { ChannelIcon, UnreadIndicator } from './components/bits';
-import { caps, channelTitle, chatOn, chatRequest, ct } from './utils';
+import * as api from './api';
+import { caps, channelTitle, chatOn, ct } from './utils';
 import type { ChatChannel, ChatRoute } from './types';
 
 /** Abre na gaveta ou na página cheia, conforme o leitor usa o chat. */
@@ -165,7 +166,7 @@ async function closeDm(channel: ChatChannel): Promise<void> {
   m.redraw();
 
   try {
-    await chatRequest('DELETE', `/channels/${channel.id}/membership`);
+    await api.leave(channel.id);
   } catch {
     if (channel.membership) channel.membership.following = true;
     m.redraw();

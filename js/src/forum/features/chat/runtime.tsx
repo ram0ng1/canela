@@ -11,7 +11,7 @@ import ChatDrawer from './components/ChatDrawer';
 import ChatHeaderIcon from './components/ChatHeaderIcon';
 import installChatSidebar, { openChat } from './sidebar';
 import installChatPreferences from './preferences';
-import { chatRequest, pushUsers } from './utils';
+import * as api from './api';
 
 let started = false;
 
@@ -47,9 +47,7 @@ function start(): void {
 }
 
 async function openDirect(user: User): Promise<void> {
-  const result = await chatRequest('POST', '/direct-messages', { userIds: [Number(user.id())] });
-
-  pushUsers(result.users);
+  const result = await api.openDirect([Number(user.id())]);
   const channel = chat.putChannel(result.channel);
 
   openChat({ name: 'channel', channelId: channel.id });

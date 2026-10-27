@@ -15,38 +15,59 @@ namespace Ramon\Canela\Chat;
 
 use Flarum\Extension\ExtensionManager;
 use Flarum\Group\Group;
+use Flarum\Group\Permission;
+use Flarum\Group\PermissionCache;
 use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 use Ramon\Canela\Chat\Model\Channel;
 use Ramon\Canela\Chat\Model\Membership;
 use Ramon\Canela\Chat\Model\Message;
 
 /**
- * Quem pode o quê no chat.
+ * Quem pode o quê no chat: a fachada que o resto do chat consulta.
  *
- * - Usar o chat: os grupos de `chat_allowed_groups` (administradores sempre),
- *   com o e-mail confirmado, e sem ter desligado o chat nas preferências.
- * - Ver um canal público: o canal avulso, todo mundo que usa o chat; o canal de
- *   uma tag, quem enxerga a tag (as permissões da tag valem para o canal).
- * - Ver uma mensagem direta: só os participantes — nem os administradores leem
- *   as MDs dos outros.
+ * As decisões não moram aqui. As globais são permissões do Flarum
+ * (`group_permission`, em Administração → Permissões) perguntadas com
+ * `$actor->can()`; as de um canal, mensagem ou fio são das policies
+ * (Access\ChannelPolicy, MessagePolicy, ThreadPolicy). Outra extensão estende
+ * qualquer uma delas com uma policy própria, como faria com as do core.
+ *
+ * - Usar o chat: `canela.chat.use` (administradores sempre), com o e-mail
+ *   confirmado e sem ter desligado o chat nas preferências.
+ * - Mandar MD: `canela.chat.directMessage`, com as MDs ligadas no admin.
+ * - Criar canal público: `canela.chat.createChannel`.
  * - Moderar (apagar mensagens alheias, fixar, fechar e arquivar canais):
- *   administradores e `chat_moderator_groups`.
+ *   `canela.chat.moderate`, só nos canais públicos.
+ *
+ * Aqui ficam também os caches de cada ator, para uma lista de mensagens não
+ * repetir uma consulta por mensagem: as tags que ele enxerga e as
+ * participações que a montagem da resposta já carregou.
+ * Ficam presos ao objeto do ator (WeakMap): cada requisição carrega o seu, e o
+ * cache some com ele.
  */
 final class ChatAccess
 {
     /** Preferência do usuário que desliga o chat para ele ("Ativar chat"). */
     public const PREF_ENABLED = 'canelaChatEnabled';
 
-    /** @var array<int, int[]|null> ator => tags visíveis (null: sem o flarum/tags) */
-    private array $tagCache = [];
+    public const PERMISSION_USE = 'canela.chat.use';
+
+    public const PERMISSION_DIRECT_MESSAGE = 'canela.chat.directMessage';
+
+    public const PERMISSION_CREATE_CHANNEL = 'canela.chat.createChannel';
+
+    public const PERMISSION_MODERATE = 'canela.chat.moderate';
+
+    /** @var \WeakMap<User, ActorCache> */
+    private \WeakMap $actors;
 
     public function __construct(
         private readonly ChatSettings $settings,
         private readonly ExtensionManager $extensions,
+        private readonly PermissionCache $permissions,
     ) {
+        $this->actors = new \WeakMap();
     }
 
     public function settings(): ChatSettings
@@ -59,18 +80,7 @@ final class ChatAccess
         return $this->extensions->isEnabled('flarum-tags') && class_exists(\Flarum\Tags\Tag::class);
     }
 
-    private function inGroups(User $actor, string $key): bool
-    {
-        if ($actor->isGuest()) {
-            return false;
-        }
-
-        if ($actor->isAdmin()) {
-            return true;
-        }
-
-        return (bool) array_intersect($this->settings->groups($key), $actor->permissionGroupIds());
-    }
+    // ─── Permissões globais ─────────────────────────────────────────────────
 
     /**
      * Se o ator pode usar o chat, ignorando a preferência pessoal (o admin vê o que está ligado).
@@ -90,12 +100,41 @@ final class ChatAccess
         if ($this->isSuspended($actor)) {
             $groups = $this->realGroupIds($actor);
 
-            // Administrador suspenso também lê: o inGroups() libera admin sempre.
+            // Administrador suspenso também lê, como o Flarum libera tudo para ele.
             return in_array(Group::ADMINISTRATOR_ID, $groups, true)
-                || array_intersect($this->settings->groups(ChatSettings::ALLOWED_GROUPS), $groups) !== [];
+                || in_array(self::PERMISSION_USE, $this->permissionsOf($groups), true);
         }
 
-        return $this->inGroups($actor, ChatSettings::ALLOWED_GROUPS);
+        return $actor->can(self::PERMISSION_USE);
+    }
+
+    /**
+     * As permissões de um conjunto de grupos, pelo mesmo cache do core
+     * (User::getPermissions): uma consulta por combinação de grupos, e não
+     * uma por pessoa, e esvaziado quando o admin muda uma permissão.
+     *
+     * @param int[] $groupIds
+     * @return string[]
+     */
+    private function permissionsOf(array $groupIds): array
+    {
+        $permissions = $this->permissions->get($groupIds);
+
+        if ($permissions === null) {
+            $permissions = Permission::query()->whereIn('group_id', $groupIds)->pluck('permission')->all();
+            $this->permissions->put($groupIds, $permissions);
+        }
+
+        return $permissions;
+    }
+
+    private function cache(User $actor): ActorCache
+    {
+        if (! $this->actors->offsetExists($actor)) {
+            $this->actors[$actor] = new ActorCache();
+        }
+
+        return $this->actors[$actor];
     }
 
     /**
@@ -137,19 +176,19 @@ final class ChatAccess
 
     public function canModerate(User $actor): bool
     {
-        return $this->allowed($actor) && $this->inGroups($actor, ChatSettings::MODERATOR_GROUPS);
+        return $this->allowed($actor) && $actor->can(self::PERMISSION_MODERATE);
     }
 
     public function canCreateChannel(User $actor): bool
     {
-        return $this->canUse($actor) && ($actor->isAdmin() || $this->inGroups($actor, ChatSettings::CREATE_CHANNEL_GROUPS));
+        return $this->canUse($actor) && $actor->can(self::PERMISSION_CREATE_CHANNEL);
     }
 
     public function canDirectMessage(User $actor): bool
     {
         return $this->canUse($actor)
             && $this->settings->bool(ChatSettings::DM_ENABLED)
-            && $this->inGroups($actor, ChatSettings::DM_GROUPS);
+            && $actor->can(self::PERMISSION_DIRECT_MESSAGE);
     }
 
     /** Suspenso (flarum/suspend) lê, mas não escreve. */
@@ -172,105 +211,83 @@ final class ChatAccess
             return null;
         }
 
-        return $this->tagCache[$actor->id ?? 0] ??= \Flarum\Tags\Tag::query()
-            ->whereVisibleTo($actor)
-            ->pluck('id')
-            ->map(static fn ($id) => (int) $id)
-            ->all();
+        $cache = $this->cache($actor);
+
+        if (! $cache->tagsLoaded) {
+            $cache->tags = \Flarum\Tags\Tag::query()
+                ->whereVisibleTo($actor)
+                ->pluck('id')
+                ->map(static fn ($id) => (int) $id)
+                ->all();
+            $cache->tagsLoaded = true;
+        }
+
+        return $cache->tags;
     }
+
+    // ─── Participações ──────────────────────────────────────────────────────
 
     /**
-     * Restringe uma consulta de canais aos que o ator enxerga.
-     *
-     * @param Builder<Channel> $query
+     * A participação do ator no canal. A que a montagem da resposta já
+     * carregou em lote (primeMemberships) vem do cache; fora dela, uma
+     * consulta — e nunca guardada, porque a ação que pergunta costuma ser a
+     * que muda a participação logo em seguida.
      */
-    public function scopeVisibleChannels(Builder $query, User $actor): void
-    {
-        if (! $this->canUse($actor)) {
-            $query->whereRaw('1 = 0');
-
-            return;
-        }
-
-        $tagIds = $this->visibleTagIds($actor);
-        $actorId = (int) $actor->id;
-
-        $query->where(static function (Builder $query) use ($tagIds, $actorId) {
-            $query->where(static function (Builder $public) use ($tagIds) {
-                $public->where('canela_chat_channels.type', Channel::TYPE_PUBLIC);
-
-                if ($tagIds !== null) {
-                    $public->where(static function (Builder $tag) use ($tagIds) {
-                        $tag->whereNull('canela_chat_channels.tag_id')->orWhereIn('canela_chat_channels.tag_id', $tagIds ?: [0]);
-                    });
-                }
-            })->orWhere(static function (Builder $direct) use ($actorId) {
-                $direct->where('canela_chat_channels.type', Channel::TYPE_DIRECT)
-                    ->whereExists(static function ($exists) use ($actorId) {
-                        $exists->selectRaw('1')
-                            ->from('canela_chat_memberships')
-                            ->whereColumn('canela_chat_memberships.channel_id', 'canela_chat_channels.id')
-                            ->where('canela_chat_memberships.user_id', $actorId);
-                    });
-            });
-        });
-    }
-
-    public function canSeeChannel(Channel $channel, User $actor, ?Membership $membership = null): bool
-    {
-        if (! $this->canUse($actor)) {
-            return false;
-        }
-
-        if ($channel->isDirect()) {
-            return $membership !== null
-                || Membership::query()->where('channel_id', $channel->id)->where('user_id', $actor->id)->exists();
-        }
-
-        if ($channel->tag_id === null) {
-            return true;
-        }
-
-        $tagIds = $this->visibleTagIds($actor);
-
-        return $tagIds === null || in_array($channel->tag_id, $tagIds, true);
-    }
-
-    /**
-     * O canal pelo id, se o ator o enxerga; senão 404 (e não 403, para não
-     * confirmar que uma MD alheia existe).
-     *
-     * @throws ModelNotFoundException
-     */
-    public function findChannel(int $id, User $actor): Channel
-    {
-        $this->assertCanUse($actor);
-
-        /** @var Channel|null $channel */
-        $channel = Channel::query()->find($id);
-
-        if (! $channel || ! $this->canSeeChannel($channel, $actor)) {
-            throw new ModelNotFoundException();
-        }
-
-        return $channel;
-    }
-
     public function membership(Channel $channel, User $actor): ?Membership
     {
+        $primed = $this->cache($actor)->memberships;
+
+        if (array_key_exists($channel->id, $primed)) {
+            return $primed[$channel->id];
+        }
+
         /** @var Membership|null */
         return Membership::query()->where('channel_id', $channel->id)->where('user_id', $actor->id)->first();
     }
 
+    /**
+     * Guarda as participações do ator nesses canais (as que faltam, numa
+     * consulta), para as policies não consultarem uma por mensagem.
+     *
+     * Só a montagem da resposta chama, depois de todas as escritas.
+     *
+     * @param int[] $channelIds
+     * @param Collection<int, Membership>|null $loaded as já carregadas, por canal
+     */
+    public function primeMemberships(User $actor, array $channelIds, ?Collection $loaded = null): void
+    {
+        $cache = $this->cache($actor);
+        $missing = array_values(array_diff($channelIds, array_keys($cache->memberships)));
+
+        if (! $missing) {
+            return;
+        }
+
+        $loaded ??= Membership::query()->where('user_id', $actor->id)->whereIn('channel_id', $missing)->get()->keyBy('channel_id');
+
+        foreach ($missing as $id) {
+            $cache->memberships[$id] = $loaded->get($id);
+        }
+    }
+
+    // ─── Canais e mensagens (pelas policies) ────────────────────────────────
+
+    public function canSeeChannel(Channel $channel, User $actor): bool
+    {
+        return $actor->can('view', $channel);
+    }
+
     public function canModerateChannel(Channel $channel, User $actor): bool
     {
-        // Numa MD não há moderação: quem modera o fórum não lê as conversas dos outros.
-        return $channel->isPublic() && $this->canModerate($actor);
+        return $actor->can('moderate', $channel);
     }
 
     /**
      * Por que o ator não pode escrever no canal, ou null quando pode. O motivo
      * vira o texto do composer ("Canal fechado, não é possível enviar…").
+     *
+     * É a regra que a ChannelPolicy usa para `post`; o motivo em si não cabe
+     * numa resposta sim/não, por isso mora aqui.
      */
     public function cannotPostReason(Channel $channel, User $actor, ?Membership $membership): ?string
     {
@@ -306,63 +323,10 @@ final class ChatAccess
         return null;
     }
 
-    /**
-     * @throws PermissionDeniedException
-     */
-    public function assertCanPost(Channel $channel, User $actor, ?Membership $membership): void
-    {
-        if ($this->cannotPostReason($channel, $actor, $membership) !== null) {
-            throw new PermissionDeniedException();
-        }
-    }
-
-    /** O autor edita a própria mensagem enquanto o canal aceita escrita. */
-    public function canEditMessage(Message $message, Channel $channel, User $actor, ?Membership $membership): bool
-    {
-        return ! $message->isDeleted()
-            && $message->user_id !== null
-            && $message->user_id === $actor->id
-            && $this->cannotPostReason($channel, $actor, $membership) === null;
-    }
-
-    public function canDeleteMessage(Message $message, Channel $channel, User $actor): bool
-    {
-        if ($message->isDeleted() || $channel->status === Channel::STATUS_ARCHIVED || $channel->status === Channel::STATUS_READ_ONLY) {
-            return false;
-        }
-
-        if ($this->canModerateChannel($channel, $actor)) {
-            return true;
-        }
-
-        return $message->user_id === $actor->id && ! $this->isSuspended($actor) && $channel->status === Channel::STATUS_OPEN;
-    }
-
-    /** Restaurar: a moderação, ou o autor quando foi ele mesmo quem apagou. */
-    public function canRestoreMessage(Message $message, Channel $channel, User $actor): bool
-    {
-        if (! $message->isDeleted() || ($channel->status !== Channel::STATUS_OPEN && ! $this->canModerateChannel($channel, $actor))) {
-            return false;
-        }
-
-        return $this->canModerateChannel($channel, $actor)
-            || ($message->user_id === $actor->id && $message->deleted_by_id === $actor->id);
-    }
-
     /** Uma mensagem apagada só aparece (recolhida) para a moderação e para o autor. */
     public function canSeeDeleted(Message $message, Channel $channel, User $actor): bool
     {
         return $message->user_id === $actor->id || $this->canModerateChannel($channel, $actor);
-    }
-
-    /** Fixar: a moderação nos canais públicos; numa MD, qualquer participante. */
-    public function canPin(Channel $channel, User $actor, ?Membership $membership): bool
-    {
-        if (! $this->settings->bool(ChatSettings::PINS_ENABLED) || $channel->status === Channel::STATUS_ARCHIVED) {
-            return false;
-        }
-
-        return $channel->isDirect() ? $membership !== null : $this->canModerateChannel($channel, $actor);
     }
 
     public function threadsOn(Channel $channel): bool

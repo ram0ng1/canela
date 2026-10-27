@@ -24,17 +24,29 @@ declare(strict_types=1);
  */
 
 use Flarum\Api\Resource\ForumResource;
+use Flarum\Api\Resource\UserResource;
 use Flarum\Extend;
 use Flarum\Foundation\Paths;
 use Flarum\Http\UrlGenerator;
 use Illuminate\Console\Scheduling\Event as ScheduledEvent;
+use Ramon\Canela\Chat\Access\ChannelPolicy;
+use Ramon\Canela\Chat\Access\MessagePolicy;
+use Ramon\Canela\Chat\Access\ScopeChannelVisibility;
+use Ramon\Canela\Chat\Access\ScopeMessageVisibility;
+use Ramon\Canela\Chat\Access\ScopeThreadVisibility;
+use Ramon\Canela\Chat\Access\ThreadPolicy;
 use Ramon\Canela\Chat\Api;
 use Ramon\Canela\Chat\ChatAccess;
 use Ramon\Canela\Chat\ChatNotifier;
+use Ramon\Canela\Chat\ChatServiceProvider;
 use Ramon\Canela\Chat\ChatSettings;
 use Ramon\Canela\Chat\Console\PurgeChat;
 use Ramon\Canela\Chat\Content\ChatPage;
+use Ramon\Canela\Chat\Http\MissingChatTables;
 use Ramon\Canela\Chat\Listener\DeleteTagChannels;
+use Ramon\Canela\Chat\Model\Channel;
+use Ramon\Canela\Chat\Model\Message;
+use Ramon\Canela\Chat\Model\Thread;
 use Ramon\Canela\Chat\Notification\ChatMentionBlueprint;
 use Ramon\Canela\Chat\Notification\ChatMessageBlueprint;
 use Ramon\Canela\Chat\Upload\ChatUploads;
@@ -74,36 +86,42 @@ return (static function (): array {
             ->registerPreference('canelaChatQuickReactionsCustom', static fn ($value) => is_string($value) ? mb_substr($value, 0, 64) : '', '')
             ->registerPreference('canelaChatAnnounce', 'boolval', false),
 
+        (new Extend\ServiceProvider())->register(ChatServiceProvider::class),
+
+        // A API: canais, mensagens e fios como recursos JSON:API, com as
+        // ações (participar, ler, reagir, fixar…) como endpoints deles. Só o
+        // envio de imagem (multipart) continua controller.
+        new Extend\ApiResource(Api\ChannelResource::class),
+        new Extend\ApiResource(Api\MessageResource::class),
+        new Extend\ApiResource(Api\ThreadResource::class),
+
+        // A busca de pessoas do chat, no recurso `users` do core. Antes do
+        // `show`: a rota fixa tem de vir antes da `/users/{id}`, senão é ela
+        // que atende (com "canela-chat-search" como id).
+        (new Extend\ApiResource(UserResource::class))
+            ->endpointsBefore('show', static fn () => [Api\UserSearch::endpoint()]),
+
         (new Extend\Routes('api'))
-            ->get('/chat/state', 'canela.chat.state', Api\StateController::class)
-            ->get('/chat/channels', 'canela.chat.channels.index', Api\ChannelsController::class)
-            ->post('/chat/channels', 'canela.chat.channels.create', Api\ChannelsController::class)
-            ->get('/chat/channels/{id:\d+}', 'canela.chat.channels.show', Api\ChannelController::class)
-            ->patch('/chat/channels/{id:\d+}', 'canela.chat.channels.update', Api\ChannelController::class)
-            ->delete('/chat/channels/{id:\d+}', 'canela.chat.channels.delete', Api\ChannelController::class)
-            ->post('/chat/channels/{id:\d+}/membership', 'canela.chat.membership.create', Api\MembershipController::class)
-            ->patch('/chat/channels/{id:\d+}/membership', 'canela.chat.membership.update', Api\MembershipController::class)
-            ->delete('/chat/channels/{id:\d+}/membership', 'canela.chat.membership.delete', Api\MembershipController::class)
-            ->get('/chat/channels/{id:\d+}/members', 'canela.chat.members.index', Api\MembersController::class)
-            ->post('/chat/channels/{id:\d+}/members', 'canela.chat.members.create', Api\MembersController::class)
-            ->get('/chat/channels/{id:\d+}/messages', 'canela.chat.messages.index', Api\MessagesController::class)
-            ->post('/chat/channels/{id:\d+}/messages', 'canela.chat.messages.create', Api\MessagesController::class)
-            ->get('/chat/channels/{id:\d+}/updates', 'canela.chat.updates', Api\UpdatesController::class)
-            ->post('/chat/channels/{id:\d+}/{action:read|typing|pins-read}', 'canela.chat.channels.action', Api\ChannelActionController::class)
-            ->get('/chat/channels/{id:\d+}/{action:pins|threads}', 'canela.chat.channels.list', Api\ChannelActionController::class)
-            ->get('/chat/messages/{id:\d+}', 'canela.chat.message.show', Api\MessageController::class)
-            ->patch('/chat/messages/{id:\d+}', 'canela.chat.message.update', Api\MessageController::class)
-            ->delete('/chat/messages/{id:\d+}', 'canela.chat.message.delete', Api\MessageController::class)
-            ->post('/chat/messages/{id:\d+}/{action:restore|reactions|pin}', 'canela.chat.message.action', Api\MessageActionController::class)
-            ->delete('/chat/messages/{id:\d+}/{action:pin}', 'canela.chat.message.unpin', Api\MessageActionController::class)
-            ->get('/chat/threads', 'canela.chat.threads.mine', Api\UserThreadsController::class)
-            ->get('/chat/threads/{id:\d+}', 'canela.chat.threads.show', Api\ThreadController::class)
-            ->patch('/chat/threads/{id:\d+}', 'canela.chat.threads.update', Api\ThreadController::class)
-            ->post('/chat/threads/{id:\d+}/{action:read}', 'canela.chat.threads.read', Api\ThreadController::class)
-            ->post('/chat/direct-messages', 'canela.chat.direct', Api\DirectMessagesController::class)
-            ->get('/chat/users', 'canela.chat.users', Api\UsersController::class)
-            ->post('/chat/uploads', 'canela.chat.uploads', Api\UploadController::class)
-            ->get('/chat/search', 'canela.chat.search', Api\SearchController::class),
+            ->post('/chat/uploads', 'canela.chat.uploads', Api\UploadController::class),
+
+        (new Extend\Middleware('api'))
+            ->add(MissingChatTables::class),
+
+        // Quem pode o quê: as permissões globais (canela.chat.*) moram em
+        // `group_permission`; as de cada canal, mensagem e fio, nas policies.
+        (new Extend\Policy())
+            ->modelPolicy(Channel::class, ChannelPolicy::class)
+            ->modelPolicy(Message::class, MessagePolicy::class)
+            ->modelPolicy(Thread::class, ThreadPolicy::class),
+
+        (new Extend\ModelVisibility(Channel::class))
+            ->scope(ScopeChannelVisibility::class),
+
+        (new Extend\ModelVisibility(Message::class))
+            ->scope(ScopeMessageVisibility::class),
+
+        (new Extend\ModelVisibility(Thread::class))
+            ->scope(ScopeThreadVisibility::class),
 
         // As páginas do fórum: a página cheia e as sub-rotas
         // (/chat/c/:slug/:id, /chat/c/:slug/:id/t/:thread, /chat/browse…).

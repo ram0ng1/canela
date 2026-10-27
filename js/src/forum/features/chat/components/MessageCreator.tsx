@@ -14,7 +14,8 @@ import type Mithril from 'mithril';
 import chat from '../ChatStore';
 import { ChannelTitle, ChatUserAvatar, UnreadIndicator } from './bits';
 import { go } from './ChannelsList';
-import { caps, chatRequest, chatUser, ct, meId, pushUsers } from '../utils';
+import * as api from '../api';
+import { caps, chatUser, ct, meId } from '../utils';
 import type { ChatChannel } from '../types';
 
 type Item = { type: 'channel'; channel: ChatChannel } | { type: 'user'; id: number } | { type: 'group' };
@@ -282,11 +283,11 @@ export default class MessageCreator extends Component<MessageCreatorAttrs> {
     setTimeout(() => {
       if (request !== this.request) return;
 
-      chatRequest('GET', '/users', undefined, { q: query }, { errorHandler: () => {} })
-        .then((result: any) => {
+      api
+        .users(query)
+        .then((result) => {
           if (request !== this.request) return;
 
-          pushUsers(result.users);
           this.users = result.userIds;
           m.redraw();
         })
@@ -298,8 +299,7 @@ export default class MessageCreator extends Component<MessageCreatorAttrs> {
     this.busy = true;
 
     try {
-      const result = await chatRequest('POST', '/direct-messages', { userIds, name: name || undefined });
-      pushUsers(result.users);
+      const result = await api.openDirect(userIds, name);
       const channel = chat.putChannel(result.channel);
 
       go({ name: 'channel', channelId: channel.id }, this.attrs.inDrawer);
@@ -313,7 +313,7 @@ export default class MessageCreator extends Component<MessageCreatorAttrs> {
     this.busy = true;
 
     try {
-      await chatRequest('POST', `/channels/${this.attrs.addTo!.id}/members`, { userIds: this.members });
+      await api.addMembers(this.attrs.addTo!.id, this.members);
       await chat.fetchChannel(this.attrs.addTo!.id);
       app.alerts.show({ type: 'success' }, ct('mention_warning.invitations_sent', { count: this.members.length }));
       this.members = [];

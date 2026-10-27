@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Chat;
 
-use Flarum\Http\SlugManager;
 use Flarum\User\User;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Collection;
@@ -29,103 +28,39 @@ use Ramon\Canela\Chat\Upload\ChatUploads;
 use Ramon\Canela\Support\Dates;
 
 /**
- * Monta o JSON das respostas do chat: canais, mensagens, fios e os usuários
- * citados por eles.
+ * Calcula os atributos dos recursos do chat que dependem do ator ou de outras
+ * tabelas: as contagens de não lidas, a participação, as reações, os anexos,
+ * a resposta citada, o resumo do fio, o que o ator pode fazer…
  *
- * O chat tem a própria API (com cursor e contagens
- * por usuário), mas os usuários saem como objetos do JSON:API (`type: users`):
- * o fórum os põe no store e usa o Avatar, o nome e o link do perfil do core.
+ * Sempre em lote: recebe a lista inteira (as mensagens de uma página, os
+ * canais da barra lateral) e faz uma consulta por tipo de dado, nunca uma por
+ * item. Quem chama é o Api\ChatBatch, que junta os modelos de um documento
+ * JSON:API antes de pedir os atributos de qualquer um deles.
  *
- * Tudo o que uma lista de mensagens precisa (autores, reações, anexos,
- * respostas citadas, fios, fixadas) é carregado em lote — uma consulta por
- * tipo, nunca uma por mensagem.
- *
- * Uma instância por resposta: ela junta os usuários mencionados no caminho.
+ * Cada item volta com `_userIds`: os usuários que os atributos citam (o autor,
+ * quem reagiu, quem apagou, os participantes…). Eles saem como a relação
+ * `users` do recurso, e o fórum os põe no store.
  */
 final class ChatPresenter
 {
     /** Quantos rostos o indicador do fio mostra. */
     private const THREAD_PARTICIPANTS = 3;
 
-    /** @var array<int, true> */
-    private array $userIds = [];
-
-    /** @var array<int, User> */
-    private array $loadedUsers = [];
-
     public function __construct(
         private readonly ChatAccess $access,
         private readonly UnreadCounter $counter,
         private readonly ChatUploads $uploads,
-        private readonly SlugManager $slugs,
         private readonly ConnectionInterface $db,
     ) {
-    }
-
-    public function addUser(?int $id): void
-    {
-        if ($id) {
-            $this->userIds[$id] = true;
-        }
-    }
-
-    /** @param iterable<User> $users */
-    public function addLoadedUsers(iterable $users): void
-    {
-        foreach ($users as $user) {
-            $this->loadedUsers[$user->id] = $user;
-            $this->userIds[$user->id] = true;
-        }
-    }
-
-    /**
-     * Os usuários juntados até aqui, como recursos `users` do JSON:API.
-     *
-     * @return list<array<string, mixed>>
-     */
-    public function users(): array
-    {
-        $missing = array_diff(array_keys($this->userIds), array_keys($this->loadedUsers));
-
-        if ($missing) {
-            foreach (User::query()->whereIn('id', $missing)->get() as $user) {
-                $this->loadedUsers[$user->id] = $user;
-            }
-        }
-
-        $out = [];
-
-        foreach (array_keys($this->userIds) as $id) {
-            if (isset($this->loadedUsers[$id])) {
-                $out[] = $this->user($this->loadedUsers[$id]);
-            }
-        }
-
-        return $out;
-    }
-
-    /** @return array<string, mixed> */
-    public function user(User $user): array
-    {
-        return [
-            'type' => 'users',
-            'id' => (string) $user->id,
-            'attributes' => [
-                'username' => $user->username,
-                'displayName' => $user->display_name,
-                'avatarUrl' => $user->avatar_url,
-                'slug' => $this->slugs->forResource(User::class)->toSlug($user),
-            ],
-        ];
     }
 
     // ─── Canais ─────────────────────────────────────────────────────────────
 
     /**
      * @param iterable<Channel> $channels
-     * @return list<array<string, mixed>>
+     * @return array<int, array<string, mixed>> por id do canal
      */
-    public function channels(iterable $channels, User $actor, bool $withCounts = true): array
+    public function channels(iterable $channels, User $actor): array
     {
         $channels = Collection::make($channels);
 
@@ -137,7 +72,9 @@ final class ChatPresenter
 
         /** @var Collection<int, Membership> $memberships */
         $memberships = Membership::query()->where('user_id', $actor->id)->whereIn('channel_id', $ids)->get()->keyBy('channel_id');
-        $counts = $withCounts ? $this->counter->forUser($actor, $memberships->keys()->all()) : [];
+        $this->access->primeMemberships($actor, $ids, $memberships);
+
+        $counts = $this->counter->forUser($actor, $memberships->keys()->all());
 
         // Os participantes das MDs dão o título ("Ana, Bruno") e os avatares.
         $directIds = $channels->filter(static fn (Channel $c) => $c->isDirect())->pluck('id')->all();
@@ -147,26 +84,28 @@ final class ChatPresenter
 
         $tags = $this->tags($channels->pluck('tag_id')->filter()->unique()->all());
 
-        $lastMessages = Message::query()
-            ->whereIn('id', $channels->pluck('last_message_id')->filter()->all())
-            ->get(['id', 'user_id', 'cooked', 'created_at', 'deleted_at'])
-            ->keyBy('id');
+        $lastIds = $channels->pluck('last_message_id')->filter()->all();
+        $lastMessages = $lastIds
+            ? Message::query()->whereIn('id', $lastIds)->get(['id', 'user_id', 'cooked', 'created_at', 'deleted_at'])->keyBy('id')
+            : collect();
 
-        return $channels->map(function (Channel $channel) use ($actor, $memberships, $counts, $participants, $tags, $lastMessages) {
+        $out = [];
+
+        foreach ($channels as $channel) {
             /** @var Membership|null $membership */
             $membership = $memberships->get($channel->id);
             $userIds = $participants->get($channel->id, collect())->pluck('user_id')->map(static fn ($id) => (int) $id)->all();
 
-            foreach ($userIds as $id) {
-                $this->addUser($id);
-            }
-
             /** @var Message|null $last */
             $last = $channel->last_message_id ? $lastMessages->get($channel->last_message_id) : null;
-            $this->addUser($last?->user_id);
 
-            return $this->channel($channel, $actor, $membership, $counts[$channel->id] ?? null, $userIds, $channel->tag_id !== null ? ($tags[$channel->tag_id] ?? null) : null, $last);
-        })->values()->all();
+            $data = $this->channel($channel, $actor, $membership, $counts[$channel->id] ?? null, $userIds, $channel->tag_id !== null ? ($tags[$channel->tag_id] ?? null) : null, $last);
+            $data['_userIds'] = self::ids([...$userIds, $last && ! $last->isDeleted() ? $last->user_id : null]);
+
+            $out[$channel->id] = $data;
+        }
+
+        return $out;
     }
 
     /**
@@ -175,27 +114,17 @@ final class ChatPresenter
      * @param array<string, mixed>|null $tag
      * @return array<string, mixed>
      */
-    public function channel(Channel $channel, User $actor, ?Membership $membership, ?array $counts = null, array $participantIds = [], ?array $tag = null, ?Message $last = null): array
+    private function channel(Channel $channel, User $actor, ?Membership $membership, ?array $counts, array $participantIds, ?array $tag, ?Message $last): array
     {
-        $canModerate = $this->access->canModerateChannel($channel, $actor);
         $cannotPost = $this->access->cannotPostReason($channel, $actor, $membership);
 
         return [
-            'id' => $channel->id,
             'type' => $channel->type,
             'isGroup' => $channel->is_group,
-            'name' => $channel->name,
             'slug' => $channel->slug ?: ($channel->isDirect() ? 'dm' : 'canal'),
-            'description' => $channel->description,
-            'emoji' => $channel->emoji,
             'tag' => $tag,
             'status' => $channel->statusName(),
             'threadingEnabled' => $this->access->threadsOn($channel),
-            'allowChannelWideMentions' => $channel->allow_channel_wide_mentions,
-            'autoJoin' => $channel->auto_join,
-            'userCount' => $channel->user_count,
-            'messagesCount' => $channel->messages_count,
-            'lastMessageId' => $channel->last_message_id,
             'lastMessage' => $last && ! $last->isDeleted() ? [
                 'id' => $last->id,
                 'userId' => $last->user_id,
@@ -203,13 +132,13 @@ final class ChatPresenter
                 'createdAt' => Dates::atom($last->created_at),
             ] : null,
             'participantIds' => $participantIds,
-            'createdAt' => Dates::atom($channel->created_at),
-            'canModerate' => $canModerate,
+            'canModerate' => $actor->can('moderate', $channel),
             'canPost' => $cannotPost === null,
             'cannotPostReason' => $cannotPost,
-            'canPin' => $this->access->canPin($channel, $actor, $membership),
-            'canEdit' => $canModerate || ($channel->isDirect() && $channel->is_group && $membership !== null),
-            'canAddMembers' => $canModerate || ($channel->isDirect() && $channel->is_group && $membership !== null),
+            'canPin' => $actor->can('pin', $channel),
+            'canEdit' => $actor->can('edit', $channel),
+            'canAddMembers' => $actor->can('addMembers', $channel),
+            'canDelete' => $actor->can('delete', $channel),
             'membership' => $membership ? [
                 'following' => $membership->following,
                 'muted' => $membership->muted,
@@ -249,16 +178,22 @@ final class ChatPresenter
     // ─── Mensagens ──────────────────────────────────────────────────────────
 
     /**
+     * As mensagens, de um canal ou de vários (a busca): tudo numa consulta por
+     * tipo de dado, qualquer que seja o número de canais.
+     *
      * @param iterable<Message> $messages
-     * @return list<array<string, mixed>>
+     * @param array<int, Channel> $channels os canais das mensagens, por id
+     * @return array<int, array<string, mixed>> por id da mensagem
      */
-    public function messages(iterable $messages, Channel $channel, User $actor): array
+    public function messages(iterable $messages, array $channels, User $actor): array
     {
-        $messages = Collection::make($messages)->values();
+        $messages = Collection::make($messages)->filter(static fn (Message $m) => isset($channels[$m->channel_id]))->values();
 
         if ($messages->isEmpty()) {
             return [];
         }
+
+        $this->access->primeMemberships($actor, $messages->pluck('channel_id')->unique()->values()->all());
 
         $ids = $messages->pluck('id')->all();
 
@@ -273,12 +208,19 @@ final class ChatPresenter
         $threads = $threadIds ? Thread::query()->whereIn('id', $threadIds)->get()->keyBy('id') : collect();
         $threadInfo = $this->threadPreviews($threads->all());
 
-        return $messages->map(function (Message $message) use ($channel, $actor, $reactions, $uploads, $pins, $replies, $threads, $threadInfo) {
+        $out = [];
+
+        foreach ($messages as $message) {
+            $channel = $channels[$message->channel_id];
+
+            // As policies leem o canal pela relação: sem isto, uma consulta por mensagem.
+            $message->setRelation('channel', $channel);
+
             /** @var Thread|null $thread */
             $thread = $message->thread_id ? $threads->get($message->thread_id) : null;
             $isOriginal = $thread !== null && $thread->original_message_id === $message->id;
 
-            return $this->message(
+            $out[$message->id] = $this->message(
                 $message,
                 $channel,
                 $actor,
@@ -289,7 +231,9 @@ final class ChatPresenter
                 $thread,
                 $isOriginal ? ($threadInfo[$thread->id] ?? null) : null,
             );
-        })->all();
+        }
+
+        return $out;
     }
 
     /**
@@ -298,7 +242,7 @@ final class ChatPresenter
      * @param array<string, mixed>|null $threadPreview
      * @return array<string, mixed>
      */
-    public function message(
+    private function message(
         Message $message,
         Channel $channel,
         User $actor,
@@ -309,9 +253,7 @@ final class ChatPresenter
         ?Thread $thread,
         ?array $threadPreview,
     ): array {
-        $this->addUser($message->user_id);
-        $this->addUser($message->deleted_by_id);
-        $this->addUser($pin?->pinned_by_id);
+        $userIds = [$message->user_id, $message->deleted_by_id, $pin?->pinned_by_id];
 
         $grouped = [];
 
@@ -323,12 +265,16 @@ final class ChatPresenter
             // dos primeiros; mais que isso só pesaria a resposta.
             if (count($grouped[$reaction->emoji]['userIds']) < 50) {
                 $grouped[$reaction->emoji]['userIds'][] = $reaction->user_id;
-                $this->addUser($reaction->user_id);
+                $userIds[] = $reaction->user_id;
             }
         }
 
         if ($inReplyTo) {
-            $this->addUser($inReplyTo->user_id);
+            $userIds[] = $inReplyTo->user_id;
+        }
+
+        if ($threadPreview) {
+            array_push($userIds, $threadPreview['lastReplyUserId'], ...$threadPreview['participantIds']);
         }
 
         $threadsOn = $this->access->threadsOn($channel);
@@ -336,7 +282,6 @@ final class ChatPresenter
         $hidden = $message->isDeleted() && ! $this->access->canSeeDeleted($message, $channel, $actor);
 
         return [
-            'id' => $message->id,
             'channelId' => $message->channel_id,
             'threadId' => $threadsOn && $thread ? $thread->id : null,
             'isThreadOriginal' => $threadsOn && $thread !== null && $thread->original_message_id === $message->id,
@@ -360,8 +305,14 @@ final class ChatPresenter
             'pinnedById' => $pin?->pinned_by_id,
             'pinnedAt' => $pin?->created_at?->toAtomString(),
             'thread' => $threadPreview,
+            'canEdit' => $actor->can('edit', $message),
+            'canDelete' => $actor->can('delete', $message),
+            'canRestore' => $actor->can('restore', $message),
+            '_userIds' => self::ids($userIds),
         ];
     }
+
+    // ─── Fios ───────────────────────────────────────────────────────────────
 
     /**
      * O resumo de cada fio para o indicador debaixo da original: respostas,
@@ -398,12 +349,6 @@ final class ChatPresenter
             $last = $thread->last_message_id && $thread->last_message_id !== $thread->original_message_id ? $lasts->get($thread->last_message_id) : null;
             $people = Collection::make($participants->get($thread->id, []))->sortByDesc('last_id')->pluck('user_id')->map(static fn ($id) => (int) $id)->values();
 
-            foreach ($people->take(self::THREAD_PARTICIPANTS) as $id) {
-                $this->addUser($id);
-            }
-
-            $this->addUser($last?->user_id);
-
             $out[$thread->id] = [
                 'id' => $thread->id,
                 'title' => $thread->title,
@@ -421,26 +366,53 @@ final class ChatPresenter
     }
 
     /**
-     * Um fio para a lista de fios e o cabeçalho do painel.
+     * Os fios para a lista de fios e o cabeçalho do painel: o resumo, o
+     * acompanhamento do ator e as não lidas dele.
      *
-     * @return array<string, mixed>
+     * @param iterable<Thread> $threads
+     * @return array<int, array<string, mixed>> por id do fio
      */
-    public function thread(Thread $thread, Channel $channel, User $actor, ?ThreadMembership $membership, int $unread = 0): array
+    public function threads(iterable $threads, User $actor): array
     {
-        $preview = $this->threadPreviews([$thread])[$thread->id] ?? [];
+        $threads = Collection::make($threads)->values();
 
-        /** @var Message|null $original */
-        $original = Message::query()->find($thread->original_message_id);
+        if ($threads->isEmpty()) {
+            return [];
+        }
 
-        return [
-            ...$preview,
-            'channelId' => $thread->channel_id,
-            'originalMessage' => $original ? ($this->messages([$original], $channel, $actor)[0] ?? null) : null,
-            'membership' => $membership ? [
-                'notificationLevel' => Thread::LEVEL_NAMES[$membership->notification_level] ?? 'tracking',
-                'lastReadMessageId' => $membership->last_read_message_id,
-                'unreadCount' => $unread,
-            ] : null,
-        ];
+        $previews = $this->threadPreviews($threads->all());
+        $memberships = ThreadMembership::query()->where('user_id', $actor->id)->whereIn('thread_id', $threads->pluck('id')->all())->get()->keyBy('thread_id');
+        $unread = $this->counter->threadUnread($actor, $memberships->keys()->all());
+
+        $out = [];
+
+        foreach ($threads as $thread) {
+            $preview = $previews[$thread->id];
+            /** @var ThreadMembership|null $membership */
+            $membership = $memberships->get($thread->id);
+
+            $out[$thread->id] = [
+                ...$preview,
+                'channelId' => $thread->channel_id,
+                'canRename' => $actor->can('rename', $thread),
+                'membership' => $membership ? [
+                    'notificationLevel' => Thread::LEVEL_NAMES[$membership->notification_level] ?? 'tracking',
+                    'lastReadMessageId' => $membership->last_read_message_id,
+                    'unreadCount' => $unread[$thread->id] ?? 0,
+                ] : null,
+                '_userIds' => self::ids([$preview['lastReplyUserId'], ...$preview['participantIds']]),
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param array<int|null> $ids
+     * @return int[]
+     */
+    private static function ids(array $ids): array
+    {
+        return array_values(array_unique(array_filter(array_map('intval', $ids), static fn (int $id) => $id > 0)));
     }
 }

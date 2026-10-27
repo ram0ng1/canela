@@ -273,7 +273,7 @@ final class ChatService
         })
             ->limit(20);
 
-        $this->access->scopeVisibleChannels($query, $actor);
+        $query->whereVisibleTo($actor);
 
         foreach ($query->get() as $channel) {
             $this->follow($channel, $actor);
@@ -325,7 +325,10 @@ final class ChatService
     public function createMessage(Channel $channel, User $actor, string $text, ?int $inReplyToId, ?int $threadId, array $uploadIds = []): Message
     {
         $membership = $this->access->membership($channel, $actor);
-        $this->access->assertCanPost($channel, $actor, $membership);
+
+        if (! $actor->can('post', $channel)) {
+            throw new PermissionDeniedException();
+        }
 
         // Um teto de rajada: 10 mensagens em 10
         // segundos já é mais rápido do que alguém digita. A moderação não tem.
@@ -450,9 +453,9 @@ final class ChatService
     /** @param int[]|null $uploadIds null mantém os anexos como estão */
     public function updateMessage(Message $message, Channel $channel, User $actor, string $text, ?array $uploadIds): Message
     {
-        $membership = $this->access->membership($channel, $actor);
+        $message->setRelation('channel', $channel);
 
-        if (! $this->access->canEditMessage($message, $channel, $actor, $membership)) {
+        if (! $actor->can('edit', $message)) {
             throw new PermissionDeniedException();
         }
 
@@ -523,7 +526,9 @@ final class ChatService
 
     public function deleteMessage(Message $message, Channel $channel, User $actor): void
     {
-        if (! $this->access->canDeleteMessage($message, $channel, $actor)) {
+        $message->setRelation('channel', $channel);
+
+        if (! $actor->can('delete', $message)) {
             throw new PermissionDeniedException();
         }
 
@@ -547,7 +552,9 @@ final class ChatService
 
     public function restoreMessage(Message $message, Channel $channel, User $actor): void
     {
-        if (! $this->access->canRestoreMessage($message, $channel, $actor)) {
+        $message->setRelation('channel', $channel);
+
+        if (! $actor->can('restore', $message)) {
             throw new PermissionDeniedException();
         }
 
@@ -589,13 +596,12 @@ final class ChatService
      */
     public function react(Message $message, Channel $channel, User $actor, string $emoji, bool $add): void
     {
-        $membership = $this->access->membership($channel, $actor);
+        $message->setRelation('channel', $channel);
 
-        if ($message->isDeleted()) {
+        // Reagir pede a mesma permissão de escrever (MessagePolicy::react).
+        if (! $actor->can('react', $message)) {
             throw new PermissionDeniedException();
         }
-
-        $this->access->assertCanPost($channel, $actor, $membership);
 
         // Cada reação vai por push para o canal todo: 30 a cada 10 s bastam.
         if (! $this->access->canModerate($actor) && $this->overLimit('react.'.$actor->id, 30, 10)) {
@@ -657,8 +663,9 @@ final class ChatService
     public function pin(Message $message, Channel $channel, User $actor, bool $pin): void
     {
         $membership = $this->access->membership($channel, $actor);
+        $message->setRelation('channel', $channel);
 
-        if (! $this->access->canPin($channel, $actor, $membership) || $message->isDeleted()) {
+        if (! $actor->can('pin', $message)) {
             throw new PermissionDeniedException();
         }
 
@@ -753,13 +760,12 @@ final class ChatService
     /** @param array<string, mixed> $attributes */
     public function updateChannel(Channel $channel, User $actor, array $attributes): Channel
     {
-        $membership = $this->access->membership($channel, $actor);
-        $canModerate = $this->access->canModerateChannel($channel, $actor);
-        $groupMember = $channel->isDirect() && $channel->is_group && $membership !== null;
-
-        if (! $canModerate && ! $groupMember) {
+        if (! $actor->can('edit', $channel)) {
             throw new PermissionDeniedException();
         }
+
+        // O participante de um grupo de MD muda nome e descrição; o resto é da moderação.
+        $canModerate = $actor->can('moderate', $channel);
 
         $this->fillChannel($channel, $attributes, false);
 
@@ -857,7 +863,7 @@ final class ChatService
      */
     public function deleteChannel(Channel $channel, User $actor): void
     {
-        if (! $this->access->canModerateChannel($channel, $actor)) {
+        if (! $actor->can('delete', $channel)) {
             throw new PermissionDeniedException();
         }
 
@@ -910,7 +916,8 @@ final class ChatService
             $this->fail('userIds', 'too_many_users', ['count' => $max]);
         }
 
-        $users = User::query()->whereKey($ids ?: [0])->get();
+        // Com os grupos: a permissão de cada um sai deles, sem uma consulta por pessoa.
+        $users = User::query()->with('groups')->whereKey($ids ?: [0])->get();
 
         if ($users->count() !== count($ids)) {
             $this->fail('userIds', 'user_not_found');
@@ -985,10 +992,7 @@ final class ChatService
      */
     public function addMembers(Channel $channel, User $actor, array $userIds): void
     {
-        $membership = $this->access->membership($channel, $actor);
-        $allowed = $this->access->canModerateChannel($channel, $actor) || ($channel->isDirect() && $channel->is_group && $membership !== null);
-
-        if (! $allowed) {
+        if (! $actor->can('addMembers', $channel)) {
             throw new PermissionDeniedException();
         }
 
@@ -998,7 +1002,7 @@ final class ChatService
             $this->fail('userIds', 'cannot_dm');
         }
 
-        $users = User::query()->whereKey(array_map('intval', $userIds) ?: [0])->get()->filter(fn (User $user) => $this->access->canUse($user));
+        $users = User::query()->with('groups')->whereKey(array_map('intval', $userIds) ?: [0])->get()->filter(fn (User $user) => $this->access->canUse($user));
 
         if ($channel->isDirect()) {
             $current = Membership::query()->where('channel_id', $channel->id)->count();
@@ -1043,7 +1047,7 @@ final class ChatService
     {
         if (array_key_exists('title', $attributes)) {
             // O título é de quem abriu o fio e da moderação.
-            if ($thread->original_message_user_id !== $actor->id && ! $this->access->canModerateChannel($channel, $actor)) {
+            if (! $actor->can('rename', $thread)) {
                 throw new PermissionDeniedException();
             }
 

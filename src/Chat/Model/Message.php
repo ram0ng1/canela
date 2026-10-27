@@ -15,6 +15,7 @@ namespace Ramon\Canela\Chat\Model;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,6 +48,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Message extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     /** Tamanho máximo padrão de uma mensagem. */
     public const DEFAULT_MAX_LENGTH = 6000;
 

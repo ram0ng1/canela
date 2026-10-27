@@ -469,12 +469,16 @@ ramon-canela:
         revoke_confirm: Revoke this badge from {username}?
         run_queued: "Queued: badges will be granted in a moment."
       chat:
+        permissions_notice: "Who can use chat, start direct messages, create public channels and moderate is set in Permissions (\"Chat\" items). Admins always can."
+        permission_use: "Use chat"
+        permission_direct_message: "Start chat direct messages"
+        permission_create_channel: "Create public chat channels"
+        permission_moderate: "Moderate chat (delete messages, pin, close and archive channels)"
         channels_only_title: Chat channels
         title: Chat
         channels_title: Channels and direct messages
         limits_title: Messages, uploads and retention
         needs_chat: Turn chat on to configure this.
-        admins_always: Admins always can.
         realtime_on: Messages arrive in real time through the flarum/realtime websocket ("php flarum realtime:serve" must be running). If it goes down, chat falls back to asking the server every few seconds.
         realtime_off: Without flarum/realtime, chat asks the server every few seconds for new messages. It works, with a small delay and more requests. For real time, enable flarum/realtime and run "php flarum realtime:serve".
         retention_notice: Cleanup runs through Flarum’s scheduler ("php flarum schedule:run" in cron every minute) and also removes uploaded images that never became a message.
@@ -483,18 +487,10 @@ ramon-canela:
         chat_enabled_label: Chat
         chat_enabled_help: 'The theme’s chat: public channels (standalone or tied to a tag), direct messages, threads, reactions, mentions and images, with the header icon, the drawer in the corner and the /chat page. Off, everything disappears from the forum and the API answers as if the feature didn’t exist; messages are kept.'
         replaced_by_ramon_chat: "ramon/chat is enabled: it replaces the theme’s chat, which stays off. The theme adapts its look and sidebar."
-        chat_allowed_groups_label: Who can use chat
-        chat_allowed_groups_help: Groups that see chat. Each person can still turn it off in their own settings.
         chat_sidebar_label: Sidebar sections
         chat_sidebar_help: The "Channels" and "Direct messages" sections in the sidebar, below the tags, with unreads and mentions.
-        chat_create_channel_groups_label: Who creates public channels
-        chat_create_channel_groups_help: Besides admins. A channel can be tied to a tag, and then only people who can see the tag can see the channel.
-        chat_moderator_groups_label: Who moderates chat
-        chat_moderator_groups_help: They delete and restore other people’s messages, pin messages and close, archive or delete channels. Direct messages have no moderation, nobody reads other people’s conversations.
         chat_dm_enabled_label: Direct messages
         chat_dm_enabled_help: Private conversations between two people or in a group, opened with "New message" or the "Chat" button on the profile.
-        chat_dm_groups_label: Who can start direct messages
-        chat_dm_groups_help: Groups whose members can start direct messages.
         chat_dm_max_users_label: Participants per conversation
         chat_dm_max_users_help: Maximum people in a group chat, counting the creator.
         chat_threads_enabled_label: Threads
