@@ -18,6 +18,7 @@ use Flarum\User\User;
 use PHPUnit\Framework\Attributes\Test;
 use Ramon\Chat\Channel;
 use Ramon\Chat\ChannelUser;
+use Ramon\Canela\Tests\integration\RamonChatSchema;
 
 /**
  * O que o tema põe por cima do ramon/chat: a MD consigo mesmo
@@ -35,6 +36,11 @@ class RamonChatTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // O ramon/chat não instala em todo banco de testes (RamonChatSchema).
+        if ($reason = RamonChatSchema::unsupportedReason()) {
+            $this->markTestSkipped($reason);
+        }
 
         // Ver ResetsVisibilityScopers do ramon/chat: um conjunto de escopos por teste.
         foreach (['Ramon\Chat\Channel', 'Ramon\Chat\Message', 'Ramon\Chat\Thread', 'Ramon\Chat\Upload'] as $model) {
