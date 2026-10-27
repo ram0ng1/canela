@@ -82,14 +82,26 @@ export function setRichMode(value: boolean): void {
   m.redraw();
 }
 
+export type KeyedAction = MoreAction & { key: string };
+
 /**
  * Ações extras vindas de fora do editor (a enquete do fof/polls mora no
- * cabeçalho do composer). Quem registra devolve `null` quando não se aplica.
+ * cabeçalho do composer; os modelos do editor, uma ação por modelo). Quem
+ * registra devolve uma ação, uma lista delas, ou `null` quando não se aplica.
  */
-const externalActions: Array<() => (MoreAction & { key: string }) | null> = [];
+const externalActions: Array<() => KeyedAction | KeyedAction[] | null> = [];
 
-export function addMoreAction(provider: () => (MoreAction & { key: string }) | null): void {
+export function addMoreAction(provider: () => KeyedAction | KeyedAction[] | null): void {
   externalActions.push(provider);
+}
+
+/** As ações externas de agora, já achatadas e sem as que não se aplicam. */
+function currentExternalActions(): KeyedAction[] {
+  return externalActions.flatMap((provider) => {
+    const result = provider();
+
+    return result ? (Array.isArray(result) ? result : [result]) : [];
+  });
 }
 
 /** O alternador Markdown / "A". */
@@ -377,10 +389,7 @@ export default function installToolbar() {
       }
 
       const editor = this;
-      const actions = (): MoreAction[] => [
-        ...externalActions.map((provider) => provider()).filter((action): action is MoreAction & { key: string } => !!action),
-        ...(editor.canelaMore || []),
-      ];
+      const actions = (): MoreAction[] => [...currentExternalActions(), ...(editor.canelaMore || [])];
 
       if (actions().length) items.add('canelaMore', <MoreMenu actions={actions} />, -1000);
       items.add('canelaScrollBack', <ScrollButton dir="left" />, 2000);

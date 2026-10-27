@@ -23,24 +23,25 @@ class MessagesTest extends AbstractChatTestCase
     #[Test]
     public function participante_envia_mensagem(): void
     {
-        [$status, $body] = $this->chat('POST', '/channels/1/messages', 2, ['message' => 'Olá, **pessoal**']);
+        [$status, $body] = $this->sendMessage(1, 2, 'Olá, **pessoal**');
 
-        $this->assertEquals(200, $status, json_encode($body));
-        $this->assertEquals('Olá, **pessoal**', $body['message']['message']);
-        $this->assertStringContainsString('pessoal', $body['message']['cooked']);
-        $this->assertEquals(2, $body['message']['userId']);
-        $this->assertContains('2', array_column($body['users'], 'id'));
+        $this->assertEquals(201, $status, json_encode($body));
+        $message = self::data($body);
+        $this->assertEquals('Olá, **pessoal**', $message['message']);
+        $this->assertStringContainsString('pessoal', $message['cooked']);
+        $this->assertEquals(2, $message['userId']);
+        $this->assertContains('2', self::includedIds($body, 'users'));
 
-        [, $list] = $this->chat('GET', '/channels/1/messages', 3);
+        [, $list] = $this->messages(1, 3);
 
-        $this->assertEquals([$body['message']['id']], array_column($list['messages'], 'id'));
+        $this->assertEquals([$message['id']], array_column(self::data($list), 'id'));
     }
 
     /** Mensagem vazia (só espaços) não passa: 422. */
     #[Test]
     public function mensagem_vazia_responde_422(): void
     {
-        [$status, $body] = $this->chat('POST', '/channels/1/messages', 2, ['message' => "   \n "]);
+        [$status, $body] = $this->sendMessage(1, 2, "   \n ");
 
         $this->assertEquals(422, $status);
         $this->assertEquals('/data/attributes/message', $body['errors'][0]['source']['pointer']);
@@ -52,7 +53,7 @@ class MessagesTest extends AbstractChatTestCase
     {
         $this->setting('canela.chat_max_message_length', 50);
 
-        [$status] = $this->chat('POST', '/channels/1/messages', 2, ['message' => str_repeat('a', 51)]);
+        [$status] = $this->sendMessage(1, 2, str_repeat('a', 51));
 
         $this->assertEquals(422, $status);
     }
@@ -63,11 +64,11 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 2, 'Primeira versão');
 
-        [$status, $body] = $this->chat('PATCH', "/messages/$id", 2, ['message' => 'Segunda versão']);
+        [$status, $body] = $this->api('PATCH', "/chat-messages/$id", 2, self::document('chat-messages', ['message' => 'Segunda versão']));
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertEquals('Segunda versão', $body['message']['message']);
-        $this->assertNotNull($body['message']['editedAt']);
+        $this->assertEquals('Segunda versão', self::data($body)['message']);
+        $this->assertNotNull(self::data($body)['editedAt']);
     }
 
     /** Ninguém edita a mensagem de outra pessoa — nem a moderação: 403. */
@@ -76,7 +77,7 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 2, 'Minha');
 
-        [$other] = $this->chat('PATCH', "/messages/$id", 3, ['message' => 'Mexi']);
+        [$other] = $this->api('PATCH', "/chat-messages/$id", 3, self::document('chat-messages', ['message' => 'Mexi']));
 
         $this->assertEquals(403, $other);
         $this->assertEquals('Minha', $this->database()->table('canela_chat_messages')->where('id', $id)->value('message'));
@@ -88,8 +89,8 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 3, 'Do moderador');
 
-        $this->chat('POST', '/channels/1/membership', 4);
-        [$status] = $this->chat('DELETE', "/messages/$id", 4);
+        $this->api('POST', '/chat-channels/1/membership', 4);
+        [$status] = $this->api('DELETE', "/chat-messages/$id", 4);
 
         $this->assertEquals(403, $status);
         $this->assertNull($this->database()->table('canela_chat_messages')->where('id', $id)->value('deleted_at'));
@@ -104,14 +105,14 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 2, 'Vai sumir');
 
-        [$status, $body] = $this->chat('DELETE', "/messages/$id", 3);
+        [$status, $body] = $this->api('DELETE', "/chat-messages/$id", 3);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertNotNull($body['message']['deletedAt']);
-        $this->assertEquals(3, $body['message']['deletedById']);
+        $this->assertNotNull(self::data($body)['deletedAt']);
+        $this->assertEquals(3, self::data($body)['deletedById']);
 
-        [$outsider] = $this->chat('GET', "/messages/$id", 4);
-        [$author] = $this->chat('GET', "/messages/$id", 2);
+        [$outsider] = $this->api('GET', "/chat-messages/$id", 4);
+        [$author] = $this->api('GET', "/chat-messages/$id", 2);
 
         $this->assertEquals(404, $outsider);
         $this->assertEquals(200, $author);
@@ -122,17 +123,17 @@ class MessagesTest extends AbstractChatTestCase
     public function autor_restaura_so_o_que_ele_mesmo_apagou(): void
     {
         $own = $this->post(1, 2, 'Apago e volto');
-        $this->chat('DELETE', "/messages/$own", 2);
+        $this->api('DELETE', "/chat-messages/$own", 2);
 
-        [$restored, $body] = $this->chat('POST', "/messages/$own/restore", 2);
+        [$restored, $body] = $this->api('POST', "/chat-messages/$own/restore", 2);
 
         $this->assertEquals(200, $restored, json_encode($body));
-        $this->assertNull($body['message']['deletedAt']);
+        $this->assertNull(self::data($body)['deletedAt']);
 
         $moderated = $this->post(1, 2, 'A moderação apaga');
-        $this->chat('DELETE', "/messages/$moderated", 3);
+        $this->api('DELETE', "/chat-messages/$moderated", 3);
 
-        [$denied] = $this->chat('POST', "/messages/$moderated/restore", 2);
+        [$denied] = $this->api('POST', "/chat-messages/$moderated/restore", 2);
 
         $this->assertEquals(403, $denied);
     }
@@ -143,14 +144,16 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 3, 'Reaja');
 
-        [$status, $body] = $this->chat('POST', "/messages/$id/reactions", 2, ['emoji' => '👍']);
+        [$status, $body] = $this->api('POST', "/chat-messages/$id/reactions", 2, ['emoji' => '👍']);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertEquals([['emoji' => '👍', 'count' => 1, 'userIds' => [2]]], $body['message']['reactions']);
+        $this->assertEquals([['emoji' => '👍', 'count' => 1, 'userIds' => [2]]], self::data($body)['reactions']);
+        // Quem reagiu vai para o store (a dica "Fulano reagiu com…").
+        $this->assertContains('2', self::includedIds($body, 'users'));
 
-        [, $removed] = $this->chat('POST', "/messages/$id/reactions", 2, ['emoji' => '👍', 'action' => 'remove']);
+        [, $removed] = $this->api('POST', "/chat-messages/$id/reactions", 2, ['emoji' => '👍', 'action' => 'remove']);
 
-        $this->assertSame([], $removed['message']['reactions']);
+        $this->assertSame([], self::data($removed)['reactions']);
     }
 
     /** O campo do emoji vira HTML nas reações: texto qualquer é recusado (422). */
@@ -159,7 +162,7 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 3, 'Reaja');
 
-        [$status] = $this->chat('POST', "/messages/$id/reactions", 2, ['emoji' => '<b>x</b>']);
+        [$status] = $this->api('POST', "/chat-messages/$id/reactions", 2, ['emoji' => '<b>x</b>']);
 
         $this->assertEquals(422, $status);
     }
@@ -170,7 +173,7 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 3, 'Reaja');
 
-        [$status] = $this->chat('POST', "/messages/$id/reactions", 4, ['emoji' => '👍']);
+        [$status] = $this->api('POST', "/chat-messages/$id/reactions", 4, ['emoji' => '👍']);
 
         $this->assertEquals(403, $status);
     }
@@ -181,19 +184,19 @@ class MessagesTest extends AbstractChatTestCase
     {
         $id = $this->post(1, 2, 'Importante');
 
-        [$denied] = $this->chat('POST', "/messages/$id/pin", 2);
+        [$denied] = $this->api('POST', "/chat-messages/$id/pin", 2);
         $this->assertEquals(403, $denied);
 
-        [$status, $body] = $this->chat('POST', "/messages/$id/pin", 3);
+        [$status, $body] = $this->api('POST', "/chat-messages/$id/pin", 3);
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertTrue($body['message']['pinned']);
-        $this->assertEquals(3, $body['message']['pinnedById']);
+        $this->assertTrue(self::data($body)['pinned']);
+        $this->assertEquals(3, self::data($body)['pinnedById']);
 
-        [, $pins] = $this->chat('GET', '/channels/1/pins', 2);
-        $this->assertEquals([$id], array_column($pins['messages'], 'id'));
+        [, $pins] = $this->api('GET', '/chat-channels/1/pins', 2);
+        $this->assertEquals([$id], array_column(self::data($pins), 'id'));
 
-        [, $unpinned] = $this->chat('DELETE', "/messages/$id/pin", 3);
-        $this->assertFalse($unpinned['message']['pinned']);
+        [, $unpinned] = $this->api('DELETE', "/chat-messages/$id/pin", 3);
+        $this->assertFalse(self::data($unpinned)['pinned']);
     }
 
     /** Com `canela.chat_pins_enabled` desligado, nem a moderação fixa. */
@@ -204,7 +207,7 @@ class MessagesTest extends AbstractChatTestCase
 
         $id = $this->post(1, 2, 'Importante');
 
-        [$status] = $this->chat('POST', "/messages/$id/pin", 3);
+        [$status] = $this->api('POST', "/chat-messages/$id/pin", 3);
 
         $this->assertEquals(403, $status);
     }
@@ -215,20 +218,20 @@ class MessagesTest extends AbstractChatTestCase
     {
         $this->database()->table('canela_chat_channels')->where('id', 1)->update(['status' => 2]);
 
-        [$member] = $this->chat('POST', '/channels/1/messages', 2, ['message' => 'Oi']);
-        [$moderator] = $this->chat('POST', '/channels/1/messages', 3, ['message' => 'Aviso']);
+        [$member] = $this->sendMessage(1, 2, 'Oi');
+        [$moderator] = $this->sendMessage(1, 3, 'Aviso');
 
         $this->assertEquals(403, $member);
-        $this->assertEquals(200, $moderator);
+        $this->assertEquals(201, $moderator);
     }
 
     /** O HTML digitado não vira HTML: o `cooked` sai escapado. */
     #[Test]
     public function html_da_mensagem_sai_escapado(): void
     {
-        [, $body] = $this->chat('POST', '/channels/1/messages', 2, ['message' => '<script>alert(1)</script>']);
+        [, $body] = $this->sendMessage(1, 2, '<script>alert(1)</script>');
 
-        $this->assertStringNotContainsString('<script>', $body['message']['cooked']);
-        $this->assertStringContainsString('&lt;script&gt;', $body['message']['cooked']);
+        $this->assertStringNotContainsString('<script>', self::data($body)['cooked']);
+        $this->assertStringContainsString('&lt;script&gt;', self::data($body)['cooked']);
     }
 }

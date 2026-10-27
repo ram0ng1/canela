@@ -42,14 +42,14 @@ class UnreadTest extends AbstractChatTestCase
         $this->post(1, 3, 'Uma');
         $last = $this->post(1, 3, 'Duas');
 
-        [, $state] = $this->chat('GET', '/state', 2);
-        $this->assertEquals(2, $state['channels'][0]['membership']['unreadCount']);
+        [, $state] = $this->api('GET', '/chat-channels/state', 2);
+        $this->assertEquals(2, self::data($state)[0]['membership']['unreadCount']);
 
-        [$status, $body] = $this->chat('POST', '/channels/1/read', 2);
+        [$status, $body] = $this->api('POST', '/chat-channels/1/read', 2);
 
         $this->assertEquals(200, $status, json_encode($body));
-        $this->assertEquals(0, $body['channel']['membership']['unreadCount']);
-        $this->assertEquals($last, $body['channel']['membership']['lastReadMessageId']);
+        $this->assertEquals(0, self::data($body)['membership']['unreadCount']);
+        $this->assertEquals($last, self::data($body)['membership']['lastReadMessageId']);
     }
 
     /** Ler até uma mensagem do meio deixa as seguintes como não lidas, e não "deslê". */
@@ -60,12 +60,12 @@ class UnreadTest extends AbstractChatTestCase
         $second = $this->post(1, 3, 'Duas');
         $this->post(1, 3, 'Três');
 
-        [, $body] = $this->chat('POST', '/channels/1/read', 2, ['messageId' => $second]);
-        $this->assertEquals(1, $body['channel']['membership']['unreadCount']);
+        [, $body] = $this->api('POST', '/chat-channels/1/read', 2, ['messageId' => $second]);
+        $this->assertEquals(1, self::data($body)['membership']['unreadCount']);
 
-        [, $body] = $this->chat('POST', '/channels/1/read', 2, ['messageId' => $first]);
-        $this->assertEquals($second, $body['channel']['membership']['lastReadMessageId']);
-        $this->assertEquals(1, $body['channel']['membership']['unreadCount']);
+        [, $body] = $this->api('POST', '/chat-channels/1/read', 2, ['messageId' => $first]);
+        $this->assertEquals($second, self::data($body)['membership']['lastReadMessageId']);
+        $this->assertEquals(1, self::data($body)['membership']['unreadCount']);
     }
 
     /** Mensagem apagada sai da contagem. */
@@ -75,7 +75,7 @@ class UnreadTest extends AbstractChatTestCase
         $this->post(1, 3, 'Uma');
         $id = $this->post(1, 3, 'Duas');
 
-        $this->chat('DELETE', "/messages/$id", 3);
+        $this->api('DELETE', "/chat-messages/$id", 3);
 
         $this->assertEquals(1, $this->channelFor(1, 2)['membership']['unreadCount']);
     }

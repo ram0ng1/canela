@@ -1,22 +1,19 @@
 /*
  * Cards do Chat no grupo "Mensagens e chat" — as configurações de chat:
- * ligar/desligar (no cabeçalho do card Chat), quem usa, quem cria
- * canais, mensagens diretas, fios, fixadas, anexos, tamanho da mensagem e
- * retenção. Os outros cards dependem do Chat: com ele desligado, somem.
+ * ligar/desligar (no cabeçalho do card Chat), mensagens diretas, fios,
+ * fixadas, anexos, tamanho da mensagem e retenção. Os outros cards dependem
+ * do Chat: com ele desligado, somem.
  *
- * As listas de grupos (`chat_allowed_groups` e companhia) são caixas de
- * marcar com os grupos do fórum, gravadas como "3,4" — o formato que o
- * ChatSettings lê.
+ * Quem usa, abre MD, cria canais e modera não mora aqui: são permissões do
+ * Flarum, em Administração → Permissões (admin/extend.tsx), e o card só
+ * aponta para lá.
  */
-import app from 'flarum/admin/app';
-import Checkbox from 'flarum/common/components/Checkbox';
-import type Group from 'flarum/common/models/Group';
 import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 
 import { AdminNotice, AdminSubGroup, SubDivider } from '../components/AdminCard';
 import AdminToggle from '../components/AdminToggle';
 import AdminNumber from '../components/AdminNumber';
-import { AdminComponent, getBool, getStr, saveSetting, trans, when } from '../util';
+import { getBool, trans, when } from '../util';
 import type { CardDef } from '../types';
 
 const KEY = 'ramon-canela.admin.settings.chat';
@@ -34,63 +31,6 @@ const number = (name: string, min: number, max: number, fallback: number, suffix
     max={max}
     fallback={fallback}
     suffix={suffix}
-  />
-);
-
-/** Os grupos do fórum como caixas de marcar; "Visitantes" fica de fora (o chat pede login). */
-class AdminGroups extends AdminComponent {
-  view() {
-    const { settingKey, label, help, fallback = '', adminNote } = this.attrs;
-    const selected = new Set(
-      getStr(settingKey, fallback)
-        .split(',')
-        .map((id) => id.trim())
-        .filter(Boolean)
-    );
-    const groups = (app.store.all('groups') as Group[]).filter((group) => group.id() !== '2');
-
-    return (
-      <div className="Form-group CanelaAdmin-groups">
-        <label className="CanelaAdmin-label">{label}</label>
-        <div className="CanelaAdmin-groupList">
-          {groups.map((group) => {
-            const id = group.id()!;
-            const isAdmin = id === '1';
-
-            return (
-              <Checkbox
-                key={id}
-                state={isAdmin || selected.has(id)}
-                disabled={isAdmin}
-                onchange={(checked: boolean) => {
-                  if (checked) selected.add(id);
-                  else selected.delete(id);
-
-                  const value = [...selected].filter((g) => g !== '1').join(',');
-                  app.data.settings[settingKey] = value;
-                  m.redraw();
-                  saveSetting({ [settingKey]: value });
-                }}
-              >
-                {group.namePlural()}
-              </Checkbox>
-            );
-          })}
-        </div>
-        {help && <p className="helpText">{help}</p>}
-        {adminNote && <p className="helpText">{adminNote}</p>}
-      </div>
-    );
-  }
-}
-
-const groups = (name: string, fallback: string) => (
-  <AdminGroups
-    settingKey={`canela.${name}`}
-    fallback={fallback}
-    label={trans(`${KEY}.${name}_label`)}
-    help={trans(`${KEY}.${name}_help`)}
-    adminNote={trans(`${KEY}.admins_always`)}
   />
 );
 
@@ -112,7 +52,7 @@ const cards: CardDef[] = [
     lockedBy: () => (isExtensionEnabled('ramon-chat') ? trans(`${KEY}.replaced_by_ramon_chat`) : null),
     body: () => (
       <>
-        {groups('chat_allowed_groups', '3')}
+        <AdminNotice icon="fas fa-key">{trans(`${KEY}.permissions_notice`)}</AdminNotice>
         {toggle('chat_sidebar', 'canela.sidebar_enabled')}
         <AdminNotice icon="fas fa-bolt">{realtimeOn() ? trans(`${KEY}.realtime_on`) : trans(`${KEY}.realtime_off`)}</AdminNotice>
       </>
@@ -127,10 +67,6 @@ const cards: CardDef[] = [
     dependsOn: CHAT,
     body: () => (
       <>
-        {groups('chat_create_channel_groups', '')}
-        <SubDivider />
-        {groups('chat_moderator_groups', '4')}
-        <SubDivider />
         {toggle('chat_threads_enabled')}
         {toggle('chat_pins_enabled')}
       </>
@@ -145,12 +81,7 @@ const cards: CardDef[] = [
     keywords: 'chat mensagem direta md dm privada grupo participantes',
     master: 'canela.chat_dm_enabled',
     dependsOn: CHAT,
-    body: () => (
-      <>
-        {groups('chat_dm_groups', '3')}
-        {number('chat_dm_max_users', 2, 100, 20)}
-      </>
-    ),
+    body: () => <>{number('chat_dm_max_users', 2, 100, 20)}</>,
   },
   {
     id: 'chat-limits',

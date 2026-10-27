@@ -15,6 +15,7 @@ namespace Ramon\Canela\Chat\Model;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -37,6 +38,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Thread extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     public const TITLE_MAX_LENGTH = 100;
 
     public const LEVEL_MUTED = 0;

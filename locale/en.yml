@@ -27,6 +27,51 @@ ramon-canela:
       user_default_tab_help: "Which tab the profile opens on when someone clicks an avatar or name."
       user_default_tab_activity: "Activity (posts), as in Flarum"
       user_default_tab_summary: "Summary"
+      templates:
+        title: "Composer templates"
+        description: "The text a new topic starts with in the composer, per category or tag (or everywhere). With \"No free text\" on, writers only fill in the fields marked with double braces and the rest of the text stays fixed, handy for support forums; off, the text goes into the composer and can be changed freely. With several templates in a category, switching is in the composer's ⊕ menu."
+        notice: "Templates apply to new topics. Write the text in Markdown and mark each field with double braces, like {example}: with \"No free text\" on, only those fields can be filled in, and the label, type and options of each one are set right below the text."
+        count: "{count, plural, =0 {No templates} one {# template} other {# templates}}"
+        new: "New template"
+        editing: "Editing \"{name}\""
+        edit: "Edit"
+        delete: "Delete"
+        delete_confirm: "Delete the template \"{name}\"? Topics already posted do not change."
+        save: "Save"
+        cancel: "Cancel"
+        empty: "No templates yet. Create the first one with \"New template\"."
+        load_failed: "Could not load the templates. Have the theme's migrations run?"
+        save_failed: "Could not save the template."
+        name_label: "Name"
+        name_placeholder: "E.g. Support request"
+        kind_text: "Editable text"
+        kind_form: "Fields only"
+        tags_label: "Where it applies"
+        tags_help: "Tick the categories and tags where the template shows up. None ticked: every new topic."
+        tags_all: "All categories"
+        tags_missing: "Without the Tags extension, the template applies to every new topic."
+        required_label: "No free text"
+        required_help: "On, writers only fill in the fields in double braces; the rest of the text stays fixed and the \"Free text\" option leaves the ⊕ menu. Off, the text goes into the composer and can be changed freely."
+        position_label: "Order"
+        position_help: "Lower numbers come first in the picker."
+        body_label: "Text"
+        body_help: "Markdown. Each field in double braces, like {example}, becomes a field to fill in when \"No free text\" is on; the text around it is posted as is."
+        example_field: "Version"
+        example_field_2: "Description"
+        fields_heading: "Fields"
+        fields_help: "One per field in double braces in the text, in the order they appear. Edit the text to add or remove fields."
+        fields_empty: "No fields yet: write a name in double braces in the text, like {example}."
+        field_label: "Label"
+        field_type: "Type"
+        field_type_text: "Short text"
+        field_type_textarea: "Long text"
+        field_type_select: "Option list"
+        field_placeholder: "Hint inside the field"
+        field_description: "Help below the field"
+        field_required: "Required"
+        field_options: "Options"
+        field_options_help: "One per line."
+        badge_required: "No free text"
       bug_reports:
         permission: "Report problems (mark the screen and send)"
         title: "Report a problem"
@@ -249,6 +294,8 @@ ramon-canela:
         group_moderation_desc: 'Staff tools: bulk actions, edit history and notices to the author.'
         group_bugreports: "Problem reports"
         group_bugreports_desc: "The button to mark the screen and report a problem, and the reports that came in."
+        group_templates: "Composer templates"
+        group_templates_desc: "The text a new topic starts with, per category: pre-filled, or a form where only the fields are filled in."
         group_integrations_desc: The theme look for third-party extensions. Each one only works with its extension enabled.
         group_ai_desc: Provider, bot, composer helper, summaries and related discussions.
         group_system: "Automated messages"
@@ -469,12 +516,16 @@ ramon-canela:
         revoke_confirm: Revoke this badge from {username}?
         run_queued: "Queued: badges will be granted in a moment."
       chat:
+        permissions_notice: "Who can use chat, start direct messages, create public channels and moderate is set in Permissions (\"Chat\" items). Admins always can."
+        permission_use: "Use chat"
+        permission_direct_message: "Start chat direct messages"
+        permission_create_channel: "Create public chat channels"
+        permission_moderate: "Moderate chat (delete messages, pin, close and archive channels)"
         channels_only_title: Chat channels
         title: Chat
         channels_title: Channels and direct messages
         limits_title: Messages, uploads and retention
         needs_chat: Turn chat on to configure this.
-        admins_always: Admins always can.
         realtime_on: Messages arrive in real time through the flarum/realtime websocket ("php flarum realtime:serve" must be running). If it goes down, chat falls back to asking the server every few seconds.
         realtime_off: Without flarum/realtime, chat asks the server every few seconds for new messages. It works, with a small delay and more requests. For real time, enable flarum/realtime and run "php flarum realtime:serve".
         retention_notice: Cleanup runs through Flarum’s scheduler ("php flarum schedule:run" in cron every minute) and also removes uploaded images that never became a message.
@@ -483,18 +534,10 @@ ramon-canela:
         chat_enabled_label: Chat
         chat_enabled_help: 'The theme’s chat: public channels (standalone or tied to a tag), direct messages, threads, reactions, mentions and images, with the header icon, the drawer in the corner and the /chat page. Off, everything disappears from the forum and the API answers as if the feature didn’t exist; messages are kept.'
         replaced_by_ramon_chat: "ramon/chat is enabled: it replaces the theme’s chat, which stays off. The theme adapts its look and sidebar."
-        chat_allowed_groups_label: Who can use chat
-        chat_allowed_groups_help: Groups that see chat. Each person can still turn it off in their own settings.
         chat_sidebar_label: Sidebar sections
         chat_sidebar_help: The "Channels" and "Direct messages" sections in the sidebar, below the tags, with unreads and mentions.
-        chat_create_channel_groups_label: Who creates public channels
-        chat_create_channel_groups_help: Besides admins. A channel can be tied to a tag, and then only people who can see the tag can see the channel.
-        chat_moderator_groups_label: Who moderates chat
-        chat_moderator_groups_help: They delete and restore other people’s messages, pin messages and close, archive or delete channels. Direct messages have no moderation, nobody reads other people’s conversations.
         chat_dm_enabled_label: Direct messages
         chat_dm_enabled_help: Private conversations between two people or in a group, opened with "New message" or the "Chat" button on the profile.
-        chat_dm_groups_label: Who can start direct messages
-        chat_dm_groups_help: Groups whose members can start direct messages.
         chat_dm_max_users_label: Participants per conversation
         chat_dm_max_users_help: Maximum people in a group chat, counting the creator.
         chat_threads_enabled_label: Threads
@@ -2305,6 +2348,7 @@ ramon-canela:
         privacy: Privacy
         custom_title: Links
     list:
+      typing: "Someone is typing…"
       topic: Discussion
       replies: Replies
       views: Views
@@ -2987,6 +3031,14 @@ ramon-canela:
     system_user:
       no_replies: "This is an automated system conversation: replies are not delivered."
       conversation_note: "Automated system messages. Replies are not possible."
+    templates:
+      free_text: "Free text"
+      form_hint: "Template \"{name}\": fill in the fields below. The rest of the text is fixed and shows in the preview."
+      select_placeholder: "Choose…"
+      replace_confirm: "Replace what you wrote with the template text?"
+      load_failed: "Could not load the template. Try again."
+      missing_required: "Fill in the \"{field}\" field before posting."
+      choose_required: "Choose a template before posting."
     bug_reports:
       button: "Report a problem"
       menu_report: "Report a problem on this page"

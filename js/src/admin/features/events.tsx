@@ -10,6 +10,8 @@ import app from 'flarum/admin/app';
 import Component from 'flarum/common/Component';
 import type Mithril from 'mithril';
 
+import { allTags } from '../components/tags';
+
 import { AdminNotice } from '../components/AdminCard';
 import AdminNumber from '../components/AdminNumber';
 import AdminToggle from '../components/AdminToggle';
@@ -26,35 +28,6 @@ const toggle = (name: string, extra: Record<string, unknown> = {}) => (
 const eventsOff = (): string | null => (getBool('canela.events_backend') ? null : trans(`${KEY}.backend_off`));
 
 const cookedOff = (): string | null => (getBool('canela.cooked_backend') ? null : trans(`${COOKED}.backend_off`));
-
-interface AdminTag {
-  id(): string | undefined;
-  name(): string;
-  position(): number | null;
-  isChild(): boolean;
-}
-
-/** As tags do fórum, carregadas uma vez para os seletores. */
-let tagsLoading = false;
-
-function allTags(): AdminTag[] {
-  const tags = app.store.all<any>('tags') as AdminTag[];
-
-  if (!tags.length && !tagsLoading && 'flarum-tags' in flarum.extensions) {
-    tagsLoading = true;
-    app.store
-      .find('tags' as any)
-      .then(() => m.redraw())
-      .catch(() => {});
-  }
-
-  return [...tags].sort((a, b) => {
-    const pa = a.position() ?? 9999;
-    const pb = b.position() ?? 9999;
-
-    return pa - pb || a.name().localeCompare(b.name());
-  });
-}
 
 /** A tag dos eventos: uma só, ou nenhuma (qualquer discussão). */
 class EventsTagSelect extends Component {

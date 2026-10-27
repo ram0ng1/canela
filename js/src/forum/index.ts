@@ -26,6 +26,7 @@ import installBugReports from './features/bugreports';
 import installUserMenu from './usermenu';
 import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
+import installTemplates from './features/templates';
 import installGaps from './gaps';
 import installMotion from './motion';
 import installThirdParty from './thirdparty';
@@ -92,6 +93,8 @@ app.initializers.add('ramon-canela', () => {
   installBookmarks();
   installComposer();
   installComposerShell();
+  // Modelos do editor: depois da casca, para o painel entrar depois dos itens dela.
+  installTemplates();
   installExtras();
   installBadges();
   installAi();

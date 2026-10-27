@@ -519,6 +519,35 @@
   font-size: inherit;
   color: var(--cn-primary-medium);
 }
+
+// "Alguém está digitando" (flarum/realtime): uma pílula no estilo das
+// etiquetas, com a caneta e as reticências que ondulam (motion/typing.tsx),
+// no lugar do "…" pulsando na cor primária.
+.CanelaTyping {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 9px 0 8px;
+  border-radius: 999px;
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-medium);
+  font-size: 12px;
+  line-height: 1;
+  vertical-align: middle;
+
+  .CanelaTyping-icon {
+    font-size: 10px;
+  }
+
+  .CanelaWave {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 0.6;
+    letter-spacing: 1px;
+  }
+}
+
 .CanelaTopic-stats {
   display: inline-flex;
   gap: 8px;

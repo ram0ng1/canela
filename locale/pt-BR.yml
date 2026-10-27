@@ -27,6 +27,51 @@ ramon-canela:
       user_default_tab_help: "Em qual aba o perfil abre quando se clica num avatar ou nome."
       user_default_tab_activity: "Atividade (postagens), como no Flarum"
       user_default_tab_summary: "Resumo"
+      templates:
+        title: "Modelos do editor"
+        description: "O texto com que um tópico novo já começa no editor, por categoria ou etiqueta (ou em todas). Com \"Sem texto livre\" ligado, quem escreve só preenche os campos marcados entre chaves duplas e o resto do texto fica fixo, bom para fóruns de suporte; desligado, o texto entra no editor e pode ser mudado à vontade. Com vários modelos numa categoria, a troca fica no menu ⊕ do editor."
+        notice: "Os modelos valem para tópicos novos. Escreva o texto em Markdown e marque cada campo entre chaves duplas, como {example}: com \"Sem texto livre\" ligado, só esses campos podem ser preenchidos, e o rótulo, o tipo e as opções de cada um ficam logo abaixo do texto."
+        count: "{count, plural, =0 {Nenhum modelo} one {# modelo} other {# modelos}}"
+        new: "Novo modelo"
+        editing: "Editando \"{name}\""
+        edit: "Editar"
+        delete: "Apagar"
+        delete_confirm: "Apagar o modelo \"{name}\"? Os tópicos já publicados não mudam."
+        save: "Salvar"
+        cancel: "Cancelar"
+        empty: "Nenhum modelo ainda. Crie o primeiro em \"Novo modelo\"."
+        load_failed: "Não deu para carregar os modelos. As migrações do tema já rodaram?"
+        save_failed: "Não deu para salvar o modelo."
+        name_label: "Nome"
+        name_placeholder: "Ex.: Pedido de suporte"
+        kind_text: "Texto editável"
+        kind_form: "Só os campos"
+        tags_label: "Onde vale"
+        tags_help: "Marque as categorias e etiquetas em que o modelo aparece. Nenhuma marcada: em todos os tópicos novos."
+        tags_all: "Todas as categorias"
+        tags_missing: "Sem a extensão Tags, o modelo vale em todos os tópicos novos."
+        required_label: "Sem texto livre"
+        required_help: "Ligado, quem escreve só preenche os campos entre chaves duplas; o resto do texto fica fixo e a opção \"Texto livre\" some do menu ⊕. Desligado, o texto entra no editor e pode ser mudado à vontade."
+        position_label: "Ordem"
+        position_help: "Os números menores aparecem primeiro no seletor."
+        body_label: "Texto"
+        body_help: "Markdown. Cada campo entre chaves duplas, como {example}, vira um campo a preencher quando \"Sem texto livre\" está ligado; o texto em volta sai como está."
+        example_field: "Versão"
+        example_field_2: "Descrição"
+        fields_heading: "Campos"
+        fields_help: "Um para cada campo entre chaves duplas do texto, na ordem em que aparecem. Mude o texto para acrescentar ou tirar campos."
+        fields_empty: "Nenhum campo ainda: escreva um nome entre chaves duplas no texto, como {example}."
+        field_label: "Rótulo"
+        field_type: "Tipo"
+        field_type_text: "Texto curto"
+        field_type_textarea: "Texto longo"
+        field_type_select: "Lista de opções"
+        field_placeholder: "Dica dentro do campo"
+        field_description: "Ajuda abaixo do campo"
+        field_required: "Obrigatório"
+        field_options: "Opções"
+        field_options_help: "Uma por linha."
+        badge_required: "Sem texto livre"
       bug_reports:
         permission: "Relatar problemas (marcar a tela e enviar)"
         title: "Relatar problema"
@@ -249,6 +294,8 @@ ramon-canela:
         group_moderation_desc: 'Ferramentas da equipe: ações em massa, histórico de edições e avisos ao autor.'
         group_bugreports: "Relatar problemas"
         group_bugreports_desc: "O botão para marcar a tela e relatar um problema, e os relatórios que chegaram."
+        group_templates: "Modelos do editor"
+        group_templates_desc: "O texto com que um tópico novo já começa, por categoria: pré-preenchido, ou um formulário em que só os campos são preenchidos."
         group_integrations_desc: O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.
         group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
         group_system: "Mensagens automáticas"
@@ -469,12 +516,16 @@ ramon-canela:
         revoke_confirm: Revogar o emblema de {username}?
         run_queued: "Na fila: os emblemas saem em instantes."
       chat:
+        permissions_notice: "Quem pode usar o chat, abrir mensagens diretas, criar canais públicos e moderar fica em Permissões (itens \"Chat\"). Os administradores sempre podem."
+        permission_use: "Usar o chat"
+        permission_direct_message: "Abrir mensagens diretas no chat"
+        permission_create_channel: "Criar canais públicos no chat"
+        permission_moderate: "Moderar o chat (apagar mensagens, fixar, fechar e arquivar canais)"
         channels_only_title: Canais do chat
         title: Chat
         channels_title: Canais e mensagens diretas
         limits_title: Mensagens, anexos e retenção
         needs_chat: Ligue o chat para configurar.
-        admins_always: Os administradores sempre podem.
         realtime_on: As mensagens chegam em tempo real pelo websocket do flarum/realtime ("php flarum realtime:serve" precisa estar rodando). Se ele cair, o chat passa sozinho a perguntar ao servidor a cada poucos segundos.
         realtime_off: Sem o flarum/realtime, o chat pergunta ao servidor a cada poucos segundos se há mensagens novas. Funciona, mas com um pequeno atraso e mais requisições. Para tempo real, ative o flarum/realtime e rode "php flarum realtime:serve".
         retention_notice: A limpeza roda pelo agendador do Flarum ("php flarum schedule:run" no cron a cada minuto) e também apaga as imagens enviadas que nunca viraram mensagem.
@@ -483,18 +534,10 @@ ramon-canela:
         chat_enabled_label: Chat
         chat_enabled_help: 'O chat do tema: canais públicos (avulsos ou de uma tag), mensagens diretas, fios, reações, menções e imagens, com o ícone no cabeçalho, a gaveta no canto da tela e a página /chat. Desligado, tudo some do fórum e a API responde como se o recurso não existisse; as mensagens ficam guardadas.'
         replaced_by_ramon_chat: "O ramon/chat está habilitado: ele substitui o chat do tema, que fica desligado. O tema adapta o visual e a barra lateral dele."
-        chat_allowed_groups_label: Quem pode usar o chat
-        chat_allowed_groups_help: Os grupos que veem o chat. Cada pessoa ainda pode desligá-lo nas próprias configurações.
         chat_sidebar_label: Seções na barra lateral
         chat_sidebar_help: As seções "Canais" e "Mensagens diretas" na barra lateral, abaixo das tags, com as não lidas e as menções.
-        chat_create_channel_groups_label: Quem cria canais públicos
-        chat_create_channel_groups_help: Além dos administradores. Um canal pode ficar ligado a uma tag, e aí só quem enxerga a tag enxerga o canal.
-        chat_moderator_groups_label: Quem modera o chat
-        chat_moderator_groups_help: Apagam e restauram mensagens dos outros, fixam mensagens e fecham, arquivam ou excluem canais. As mensagens diretas não têm moderação, ninguém lê as conversas dos outros.
         chat_dm_enabled_label: Mensagens diretas
         chat_dm_enabled_help: Conversas privadas entre duas pessoas ou em grupo, abertas por "Nova mensagem" ou pelo botão "Chat" do perfil.
-        chat_dm_groups_label: Quem pode abrir mensagens diretas
-        chat_dm_groups_help: Grupos cujos membros podem iniciar mensagens diretas.
         chat_dm_max_users_label: Participantes por conversa
         chat_dm_max_users_help: O máximo de pessoas num chat em grupo, contando quem cria.
         chat_threads_enabled_label: Fios
@@ -2305,6 +2348,7 @@ ramon-canela:
         privacy: Privacidade
         custom_title: Links
     list:
+      typing: "Alguém está digitando…"
       topic: Discussão
       replies: Respostas
       views: Visualizações
@@ -2987,6 +3031,14 @@ ramon-canela:
     system_user:
       no_replies: "Esta é uma conversa automática do sistema: respostas não são entregues."
       conversation_note: "Mensagens automáticas do sistema. Não é possível responder."
+    templates:
+      free_text: "Texto livre"
+      form_hint: "Modelo \"{name}\": preencha os campos abaixo. O resto do texto é fixo e aparece na prévia."
+      select_placeholder: "Escolha…"
+      replace_confirm: "Trocar o que você escreveu pelo texto do modelo?"
+      load_failed: "Não deu para carregar o modelo. Tente de novo."
+      missing_required: "Preencha o campo \"{field}\" antes de publicar."
+      choose_required: "Escolha um modelo antes de publicar."
     bug_reports:
       button: "Relatar um problema"
       menu_report: "Relatar um problema nesta página"

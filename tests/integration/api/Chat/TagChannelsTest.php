@@ -50,11 +50,11 @@ class TagChannelsTest extends AbstractChatTestCase
     #[Test]
     public function lista_respeita_a_tag(): void
     {
-        [, $member] = $this->chat('GET', '/channels', 2);
-        [, $moderator] = $this->chat('GET', '/channels', 3);
+        [, $member] = $this->api('GET', '/chat-channels', 2);
+        [, $moderator] = $this->api('GET', '/chat-channels', 3);
 
-        $this->assertEqualsCanonicalizing(['Geral', 'Da aberta'], array_column($member['channels'], 'name'));
-        $this->assertEqualsCanonicalizing(['Geral', 'Da aberta', 'Da equipe'], array_column($moderator['channels'], 'name'));
+        $this->assertEqualsCanonicalizing(['Geral', 'Da aberta'], array_column(self::data($member), 'name'));
+        $this->assertEqualsCanonicalizing(['Geral', 'Da aberta', 'Da equipe'], array_column(self::data($moderator), 'name'));
     }
 
     /** Sem ver a tag: abrir, ler, escrever e entrar respondem 404. */
@@ -63,11 +63,11 @@ class TagChannelsTest extends AbstractChatTestCase
     {
         $message = $this->post(3, 3, 'Só para a equipe');
 
-        [$show] = $this->chat('GET', '/channels/3', 2);
-        [$read] = $this->chat('GET', '/channels/3/messages', 2);
-        [$single] = $this->chat('GET', "/messages/$message", 2);
-        [$write] = $this->chat('POST', '/channels/3/messages', 2, ['message' => 'Oi']);
-        [$join] = $this->chat('POST', '/channels/3/membership', 4);
+        [$show] = $this->api('GET', '/chat-channels/3', 2);
+        [$read] = $this->messages(3, 2);
+        [$single] = $this->api('GET', "/chat-messages/$message", 2);
+        [$write] = $this->sendMessage(3, 2, 'Oi');
+        [$join] = $this->api('POST', '/chat-channels/3/membership', 4);
 
         $this->assertEquals(404, $show);
         $this->assertEquals(404, $read);
@@ -75,22 +75,22 @@ class TagChannelsTest extends AbstractChatTestCase
         $this->assertEquals(404, $write);
         $this->assertEquals(404, $join);
 
-        [, $state] = $this->chat('GET', '/state', 2);
-        $this->assertNotContains(3, array_column($state['channels'], 'id'));
+        [, $state] = $this->api('GET', '/chat-channels/state', 2);
+        $this->assertNotContains(3, array_column(self::data($state), 'id'));
     }
 
     /** Criar canal numa tag que o ator não vê: 422 em `tagId`. */
     #[Test]
     public function criar_canal_em_tag_invisivel_responde_422(): void
     {
-        $this->setting('canela.chat_create_channel_groups', '3');
+        $this->grant('canela.chat.createChannel', [3]);
 
-        [$status, $body] = $this->chat('POST', '/channels', 2, ['name' => 'Infiltrado', 'tagId' => 2]);
-        [$allowed, $created] = $this->chat('POST', '/channels', 2, ['name' => 'Na aberta', 'tagId' => 1]);
+        [$status, $body] = $this->api('POST', '/chat-channels', 2, self::document('chat-channels', ['name' => 'Infiltrado', 'tagId' => 2]));
+        [$allowed, $created] = $this->api('POST', '/chat-channels', 2, self::document('chat-channels', ['name' => 'Na aberta', 'tagId' => 1]));
 
         $this->assertEquals(422, $status);
         $this->assertEquals('/data/attributes/tagId', $body['errors'][0]['source']['pointer']);
-        $this->assertEquals(200, $allowed);
-        $this->assertEquals(1, $created['channel']['tag']['id']);
+        $this->assertEquals(201, $allowed);
+        $this->assertEquals(1, self::data($created)['tag']['id']);
     }
 }

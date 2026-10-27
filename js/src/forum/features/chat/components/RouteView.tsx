@@ -21,7 +21,8 @@ import MessageCreator from './MessageCreator';
 import ChannelInfo from './ChannelInfo';
 import { ChatSearch, PinsList, ThreadList } from './lists';
 import { ChannelTitle, drawerButtons, Navbar, UnreadIndicator, type NavbarButton } from './bits';
-import { caps, channelTitle, chatRequest, ct, pushUsers } from '../utils';
+import * as api from '../api';
+import { caps, channelTitle, ct } from '../utils';
 import type { ChatChannel as Channel, ChatRoute, ThreadLevel } from '../types';
 
 export interface RouteViewAttrs extends ComponentAttrs {
@@ -328,9 +329,8 @@ export default class RouteView extends Component<RouteViewAttrs> {
   }
 
   private async setLevel(threadId: number, level: ThreadLevel): Promise<void> {
-    const result = await chatRequest('PATCH', `/threads/${threadId}`, { notificationLevel: level });
+    const result = await api.updateThread(threadId, { notificationLevel: level });
 
-    pushUsers(result.users);
     chat.threads.set(threadId, result.thread);
     m.redraw();
   }

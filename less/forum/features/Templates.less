@@ -1,0 +1,81 @@
+// =====================================================================
+// Modelos do editor (features/templates): os campos de um modelo "sem texto
+// livre" no lugar da área de texto do composer. A caixa é `.Composer-flexible`:
+// o core lhe dá a altura que daria à área de texto (ver forum/Composer.less),
+// e ela rola por dentro. A troca de modelo mora no menu ⊕ da barra.
+// =====================================================================
+
+.CanelaTemplatePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 12px 16px 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--cn-surface);
+  color: var(--cn-primary);
+}
+
+.CanelaTemplatePanel-hint {
+  margin: 0;
+  color: var(--cn-primary-medium);
+  font-size: 13px;
+}
+
+.CanelaTemplateField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .FormControl {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  textarea.FormControl {
+    min-height: 96px;
+    resize: vertical;
+  }
+
+  &.is-invalid .FormControl {
+    border-color: var(--cn-danger);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--cn-danger) 20%, transparent);
+  }
+}
+
+.CanelaTemplateField-label {
+  margin: 0;
+  color: var(--cn-primary-high);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.CanelaTemplateField-required {
+  margin-left: 3px;
+  color: var(--cn-danger);
+}
+
+.CanelaTemplateField-help {
+  margin: 0;
+  font-size: 13px;
+}
+
+// A área de texto some no formulário (o texto final vai direto ao conteúdo).
+.CanelaComposer .ComposerBody-editor.CanelaComposer-form .TextEditor-editorContainer {
+  display: none;
+}
+
+// Com a prévia ao lado (a grade de forum/Composer.less), os campos ficam na
+// coluna do texto e a prévia mostra o texto montado.
+.CanelaComposer .ComposerBody-editor.CanelaComposer-split.CanelaComposer-form > .CanelaTemplatePanel {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .CanelaTemplatePanel {
+    padding: 10px 12px 8px;
+  }
+}

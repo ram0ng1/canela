@@ -11,7 +11,8 @@ import type Mithril from 'mithril';
 
 import chat, { routeUrl } from '../ChatStore';
 import { ChannelIcon, ChannelName, UnreadIndicator } from './bits';
-import { caps, chatRequest, ct, messageTime, pushUsers } from '../utils';
+import * as api from '../api';
+import { caps, ct, messageTime } from '../utils';
 import type { ChatChannel, ChatRoute } from '../types';
 
 /** Vai para uma rota do chat: dentro da gaveta, ou pela URL na página cheia. */
@@ -189,7 +190,7 @@ export class ChannelRow extends Component<ChannelRowAttrs> {
     m.redraw();
 
     try {
-      await chatRequest('DELETE', `/channels/${channel.id}/membership`);
+      await api.leave(channel.id);
       setTimeout(() => {
         if (channel.membership) channel.membership.following = false;
         m.redraw();
@@ -246,8 +247,7 @@ export async function ensureChannel(id: number): Promise<ChatChannel | null> {
   if (known) return known;
 
   try {
-    const result = await chatRequest('GET', `/channels/${id}`);
-    pushUsers(result.users);
+    const result = await api.channel(id);
 
     return chat.putChannel(result.channel);
   } catch {

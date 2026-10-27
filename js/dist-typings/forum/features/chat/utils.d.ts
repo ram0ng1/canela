@@ -3,10 +3,6 @@ import type Mithril from 'mithril';
 import type { ChatChannel } from './types';
 import { caps, chatOn, ct } from './flags';
 export { caps, chatOn, ct };
-export declare function apiUrl(path: string): string;
-export declare function chatRequest<T = any>(method: string, path: string, body?: Record<string, unknown> | FormData, params?: Record<string, unknown>, options?: Record<string, unknown>): Promise<T>;
-/** Os usuários que vieram na resposta vão para o store (Avatar, nome, perfil). */
-export declare function pushUsers(resources: any[] | undefined): void;
 export declare function chatUser(id: number | null | undefined): User | null;
 export declare function displayName(id: number | null | undefined): string;
 export declare function meId(): number;
