@@ -1,2 +1,2 @@
-declare const _default: import("flarum/common/extenders/Notification").default[];
+declare const _default: (import("flarum/common/extenders/Store").default | import("flarum/common/extenders/Notification").default)[];
 export default _default;

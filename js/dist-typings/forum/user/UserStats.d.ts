@@ -6,7 +6,6 @@ export interface UserStatsAttrs extends ComponentAttrs {
     user: User;
 }
 export default class UserStats<Attrs extends UserStatsAttrs = UserStatsAttrs> extends Component<Attrs> {
-    oninit(vnode: Mithril.Vnode<Attrs, this>): void;
     view(): Mithril.Children;
     /** Cada estatística é um item, para outras extensões poderem somar as suas. */
     items(): ItemList<Mithril.Children>;

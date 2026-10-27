@@ -25,6 +25,15 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
     tab: Tab;
     oninit(vnode: Mithril.Vnode<SuggestedTopicsAttrs, this>): void;
     load(): void;
+    /** As duas listas, sem repetir em "Relacionado(a)" o que já está em "Sugestões". */
+    lists(suggested: Row[], related: Row[]): Lists;
+    /** O pedido de "Sugestões" (o servidor pré-carrega o mesmo: os parâmetros são a chave). */
+    suggestedParams(discussion: Discussion, limit: number): Record<string, unknown>;
+    /** O pedido de "Relacionado(a)" sem IA; null sem etiquetas. Os slugs em ordem alfabética, como no servidor. */
+    relatedParams(discussion: Discussion, limit: number): Record<string, unknown> | null;
+    rowsOf(discussion: Discussion, results: Discussion[], limit: number): Row[];
+    preloadedSuggested(discussion: Discussion, limit: number): Row[] | null;
+    preloadedRelated(discussion: Discussion, limit: number): Row[] | null;
     loadSuggested(discussion: Discussion, limit: number): Promise<Row[]>;
     loadRelated(discussion: Discussion, limit: number): Promise<Row[]>;
     view(): JSX.Element | null;

@@ -1,28 +1,14 @@
 import type Mithril from 'mithril';
 import { AdminComponent } from '../../util';
+import { type BugReportData } from '../../../common/bugReports';
 export declare const KEY = "ramon-canela.admin.settings.bug_reports";
 declare const STATUSES: readonly ["open", "reviewed", "in_progress", "fixed", "wontfix"];
 declare const FILTERS: readonly ["active", "open", "reviewed", "in_progress", "fixed", "wontfix", "all"];
 type Status = (typeof STATUSES)[number];
 type Filter = (typeof FILTERS)[number];
-interface Report {
-    id: number;
-    kind: string;
+interface Report extends BugReportData {
     status: Status;
-    description: string;
-    currentText: string | null;
-    suggestedText: string | null;
-    url: string;
-    title: string;
-    note: string | null;
-    hasFull: boolean;
-    createdAt: string;
-    user: {
-        id: number;
-        username: string;
-        displayName: string;
-        avatarUrl: string | null;
-    } | null;
+    user: BugReportData['user'];
     context: {
         viewport?: {
             w: number;

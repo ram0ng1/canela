@@ -39,7 +39,7 @@ export interface EventData extends EventSummary {
     creator: EventPerson | null;
     sample: EventPerson[];
 }
-/** Uma ocorrência da lista de próximos eventos (GET /api/canela-events). */
+/** Uma ocorrência da lista de próximos eventos (a agenda, GET /api/canela-events). */
 export interface UpcomingItem {
     id: number;
     name: string | null;
@@ -54,6 +54,30 @@ export interface UpcomingItem {
         slug: string | null;
     };
 }
+interface ResourceObject {
+    type: string;
+    id: string;
+    attributes?: Record<string, any>;
+    relationships?: Record<string, {
+        data?: {
+            type: string;
+            id: string;
+        } | null;
+    }>;
+}
+/** Um documento do recurso `canela-events` (CalendarEventResource no PHP). */
+export interface EventsDocument {
+    data: ResourceObject | ResourceObject[];
+    included?: ResourceObject[];
+    meta?: Record<string, any>;
+}
+/** O cartão do evento de uma resposta do recurso (o cartão, a presença): os atributos, com o id. */
+export declare function eventFromDocument(document: EventsDocument): EventData | null;
+/**
+ * A agenda como as telas a usam: uma linha por ocorrência, em ordem, com o
+ * nome do evento (ou o título da discussão) e a discussão.
+ */
+export declare function upcomingFromDocument(document: EventsDocument): UpcomingItem[];
 export declare const eventsSettings: {
     /** O backend carregado e o recurso ligado. */
     on: () => boolean;
@@ -73,3 +97,4 @@ export declare function discussionEvent(discussion: Discussion | null | undefine
 /** A pessoa como modelo do store (para o Avatar e o link do perfil). */
 export declare function personModel(person: EventPerson): User;
 export declare function apiUrl(path: string): string;
+export {};
