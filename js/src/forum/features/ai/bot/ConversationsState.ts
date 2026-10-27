@@ -10,8 +10,9 @@
  */
 import app from 'flarum/forum/app';
 
-import { aiInfo, aiRequest, aiStream, showAiError, type StreamLine } from '../state';
+import { aiInfo, aiStream, showAiError, type StreamLine } from '../state';
 import type { ToolActivity } from '../ui';
+import { deleteConversation, fetchConversation, fetchConversations, renameConversation } from './api';
 
 export interface AiConversation {
   id: string;
@@ -63,7 +64,7 @@ class ConversationsState {
 
     this.loading = true;
 
-    aiRequest<{ data: AiConversation[]; hasMore: boolean }>('GET', `conversations?page[offset]=${more ? this.conversations.length : 0}`)
+    fetchConversations(more ? this.conversations.length : 0)
       .then((response) => {
         this.conversations = more ? [...this.conversations, ...response.data] : response.data;
         this.hasMore = response.hasMore;
@@ -91,12 +92,12 @@ class ConversationsState {
 
     this.loadingMessages = true;
 
-    aiRequest<{ data: { conversation: AiConversation; messages: AiMessage[] } }>('GET', `conversations/${id}`)
+    fetchConversation(id)
       .then((response) => {
         if (this.currentId !== id) return;
 
-        this.messages = response.data.messages;
-        this.upsert(response.data.conversation, false);
+        this.messages = response.messages;
+        this.upsert(response.conversation, false);
       })
       .catch(() => {
         if (this.currentId === id) this.missing = true;
@@ -167,14 +168,14 @@ class ConversationsState {
   }
 
   rename(conversation: AiConversation, title: string): Promise<void> {
-    return aiRequest<{ data: AiConversation }>('PATCH', `conversations/${conversation.id}`, { title }).then((response) => {
-      this.upsert(response.data, false);
+    return renameConversation(conversation.id, title).then((updated) => {
+      this.upsert(updated, false);
       m.redraw();
     });
   }
 
   remove(conversation: AiConversation): Promise<void> {
-    return aiRequest('DELETE', `conversations/${conversation.id}`).then(() => {
+    return deleteConversation(conversation.id).then(() => {
       this.conversations = this.conversations.filter((item) => item.id !== conversation.id);
 
       if (this.currentId === conversation.id) m.route.set(app.route('canela.ai.conversations'));

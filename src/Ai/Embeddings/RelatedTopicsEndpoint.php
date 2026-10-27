@@ -13,15 +13,12 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Ai\Embeddings;
 
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
 use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
-use Flarum\Http\Exception\RouteNotFoundException;
-use Flarum\Http\RequestUtil;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Laminas\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\Http\AiGate;
 use Ramon\Canela\Ai\Tools\TopicLinks;
@@ -30,14 +27,19 @@ use Ramon\Canela\Support\Log;
 use Throwable;
 
 /**
- * `GET /api/canela/ai/related/{id}`: os tópicos semanticamente relacionados,
- * já filtrados pelo que a pessoa vê, com o que a tabela do fim do tópico
- * mostra (título, endereço, respostas, atividade e as tags).
+ * `GET /api/discussions/{id}/canela-related`: os tópicos semanticamente
+ * relacionados, já filtrados pelo que a pessoa vê, com o que a tabela do fim
+ * do tópico mostra (título, endereço, respostas, atividade e as tags).
+ *
+ * Um endpoint de ação no recurso de tópicos, como o `canela-views` das
+ * estatísticas: o `{id}` passa pela busca do próprio recurso, com a
+ * visibilidade de quem pede — um tópico que a pessoa não vê responde 404.
+ * Com o recurso desligado (ou sem embeddings configurados), também 404.
  *
  * Uma falha da API de embeddings devolve a lista vazia: a seção some, e a
  * página do tópico nunca quebra por causa dela.
  */
-final class RelatedController implements RequestHandlerInterface
+final class RelatedTopicsEndpoint
 {
     /** Pedidos por minuto por pessoa (ou IP): cada cache vazio compara o tópico com todos os outros. */
     private const PER_MINUTE = 30;
@@ -51,24 +53,29 @@ final class RelatedController implements RequestHandlerInterface
     ) {
     }
 
-    #[\Override]
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public static function endpoint(): Endpoint\Endpoint
+    {
+        return Endpoint\Endpoint::make('canela.aiRelated')
+            ->route('GET', '/{id}/canela-related')
+            ->action(static fn (Context $context): array => resolve(self::class)->list($context))
+            ->response(static fn (Context $context, array $data): JsonResponse => new JsonResponse(['data' => $data]));
+    }
+
+    /** @return list<array<string, mixed>> */
+    public function list(Context $context): array
     {
         $this->gate->feature(AiSettings::RELATED);
 
-        $actor = RequestUtil::getActor($request);
-        $discussion = Discussion::query()->whereVisibleTo($actor)->find(AiGate::routeId($request));
+        /** @var Discussion $discussion */
+        $discussion = $context->model;
+        $actor = $context->getActor();
 
-        if (! $discussion instanceof Discussion) {
-            throw new RouteNotFoundException();
-        }
-
-        $who = $actor->isGuest() ? 'ip:'.sha1((string) $request->getAttribute('ipAddress')) : 'user:'.$actor->id;
+        $who = $actor->isGuest() ? 'ip:'.sha1((string) $context->request->getAttribute('ipAddress')) : 'user:'.$actor->id;
         $key = 'canela.ai.related.rate.'.sha1($who).'.'.intdiv(time(), 60);
         $this->cache->add($key, 0, 120);
 
         if ((int) $this->cache->increment($key) > self::PER_MINUTE) {
-            return new JsonResponse(['data' => []]);
+            return [];
         }
 
         try {
@@ -79,7 +86,7 @@ final class RelatedController implements RequestHandlerInterface
         }
 
         if ($ids === []) {
-            return new JsonResponse(['data' => []]);
+            return [];
         }
 
         // Os dados que a tabela mostra vão prontos: a API de tópicos do core
@@ -107,6 +114,6 @@ final class RelatedController implements RequestHandlerInterface
             ];
         }
 
-        return new JsonResponse(['data' => $data]);
+        return $data;
     }
 }

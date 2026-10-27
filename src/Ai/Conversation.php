@@ -15,13 +15,15 @@ namespace Ramon\Canela\Ai;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramon\Canela\Support\Dates;
 
 /**
- * Uma conversa com o bot de IA.
+ * Uma conversa com o bot de IA. Só a dona a vê e mexe nela
+ * (ScopeConversationVisibility, ConversationPolicy).
  *
  * @property int $id
  * @property int $user_id
@@ -34,6 +36,8 @@ use Ramon\Canela\Support\Dates;
  */
 final class Conversation extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     protected $table = 'canela_ai_conversations';
 
     public $timestamps = true;

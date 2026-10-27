@@ -12,7 +12,7 @@ import Switch from 'flarum/common/components/Switch';
 import Icon from 'flarum/common/components/Icon';
 import type Mithril from 'mithril';
 
-import { AdminNotice, AdminSubGroup, SubDivider } from '../components/AdminCard';
+import { AdminNotice, AdminSubGroup } from '../components/AdminCard';
 import AdminToggle from '../components/AdminToggle';
 import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
@@ -119,41 +119,6 @@ class AiText extends AdminComponent {
   onremove(vnode: Mithril.VnodeDOM<LooseAttrs, this>) {
     super.onremove(vnode);
     this.flush();
-  }
-}
-
-/** Os grupos que podem usar um recurso: caixas de seleção que gravam a lista de ids. */
-class AiGroups extends AdminComponent {
-  view() {
-    const { settingKey, label, help } = this.attrs;
-    const selected = getStr(settingKey)
-      .split(/[\s,]+/)
-      .filter(Boolean);
-    // Visitantes (2) ficam de fora: conversas e pedidos são de alguém.
-    const groups = app.store.all<any>('groups').filter((group) => group.id() !== '2');
-
-    return (
-      <div className="Form-group CanelaAiAdmin-groups">
-        <label className="CanelaAdmin-label">{label}</label>
-        <div className="CanelaAiAdmin-groupList">
-          {groups.map((group) => (
-            <Switch
-              state={selected.includes(group.id())}
-              onchange={(checked: boolean) => {
-                const next = checked ? [...selected, group.id()] : selected.filter((id) => id !== group.id());
-                const value = Array.from(new Set(next)).join(',');
-
-                app.data.settings[settingKey] = value;
-                saveSetting({ [settingKey]: value });
-              }}
-            >
-              {group.icon() && <Icon name={group.icon()} />} {group.namePlural()}
-            </Switch>
-          ))}
-        </div>
-        {help && <p className="helpText">{help}</p>}
-      </div>
-    );
   }
 }
 
@@ -618,9 +583,8 @@ const cards: CardDef[] = [
     lockedBy: requiresProvider,
     body: () => (
       <>
-        <AiGroups settingKey="canela.ai_allowed_groups" label={trans(`${KEY}.allowed_groups_label`)} help={trans(`${KEY}.allowed_groups_help`)} />
-        <AiGroups settingKey="canela.ai_summary_groups" label={trans(`${KEY}.summary_groups_label`)} help={trans(`${KEY}.summary_groups_help`)} />
-        <SubDivider />
+        {/* Quem usa a IA e quem gera resumos são permissões (extend.tsx). */}
+        <p className="helpText">{trans(`${KEY}.access_permissions_help`)}</p>
         <AdminNumber
           settingKey="canela.ai_daily_limit"
           min={0}

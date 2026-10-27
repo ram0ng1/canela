@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Ramon\Canela\Ai\Http\AiGate;
+use Ramon\Canela\Ai\Validation\TranslateValidator;
 
 /**
  * `POST /api/canela/ai/translate` com `{posts: [ids], discussions: [ids]}`:
@@ -32,6 +33,10 @@ use Ramon\Canela\Ai\Http\AiGate;
  * traduz (mesmo idioma, invisível, privado) volta como `skip`.
  *
  * Visitantes também disparam (a tradução serve a todos), com limite por IP.
+ *
+ * Um controller, e não um recurso: as traduções vão para o fórum pelos campos
+ * das postagens e dos tópicos (TranslationFields); isto só dispara as que
+ * faltam, chamando o modelo. A entrada passa pelo TranslateValidator.
  */
 final class TranslateController implements RequestHandlerInterface
 {
@@ -49,6 +54,7 @@ final class TranslateController implements RequestHandlerInterface
     public function __construct(
         private readonly ContentTranslator $translator,
         private readonly Cache $cache,
+        private readonly TranslateValidator $validator,
     ) {
     }
 
@@ -63,6 +69,8 @@ final class TranslateController implements RequestHandlerInterface
 
         $actor = RequestUtil::getActor($request);
         $body = AiGate::body($request);
+        $this->validator->assertValid(['posts' => $body['posts'] ?? null, 'discussions' => $body['discussions'] ?? null]);
+
         $ids = static fn (string $key): array => array_slice(array_values(array_unique(array_filter(
             array_map('intval', is_array($body[$key] ?? null) ? $body[$key] : []),
             static fn (int $id): bool => $id > 0

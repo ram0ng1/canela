@@ -18,8 +18,11 @@ use Ramon\Canela\Ai\AiSettings;
 /**
  * O cliente do provedor escolhido no admin. Criado a cada uso, e não no boot:
  * trocar a chave ou o provedor vale já na próxima requisição.
+ *
+ * Não é `final`: é o ponto em que outro provedor (ou o provedor falso dos
+ * testes de integração) entra no container, no lugar deste.
  */
-final class LlmFactory
+class LlmFactory
 {
     public function __construct(
         private readonly AiSettings $settings,

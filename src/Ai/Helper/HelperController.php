@@ -16,7 +16,6 @@ namespace Ramon\Canela\Ai\Helper;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Foundation\ValidationException;
 use Flarum\Http\RequestUtil;
-use Flarum\Locale\TranslatorInterface;
 use Flarum\User\User;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -30,6 +29,7 @@ use Ramon\Canela\Ai\Llm\LlmException;
 use Ramon\Canela\Ai\Llm\LlmFactory;
 use Ramon\Canela\Ai\Llm\LlmRequest;
 use Ramon\Canela\Ai\UsageLimiter;
+use Ramon\Canela\Ai\Validation\HelperValidator;
 
 /**
  * `POST /api/canela/ai/helper`: o ajudante de IA do editor.
@@ -39,13 +39,17 @@ use Ramon\Canela\Ai\UsageLimiter;
  *   "Edições sugeridas" mostrar o texto novo enquanto é escrito.
  * - Sugestões (títulos, categoria e etiquetas): JSON comum, com a lista.
  *
+ * Um controller, e não um recurso: é uma chamada ao modelo, sem nada guardado.
+ * A entrada passa pelo HelperValidator e a permissão (`canela.useAi`) pelo
+ * AiGate, antes do streaming.
+ *
  * As etiquetas sugeridas só podem ser das que a pessoa vê: a lista oferecida
  * ao modelo já é a visível para ela, e os ids da resposta são conferidos
  * contra essa lista — um id inventado some.
  */
 final class HelperController implements RequestHandlerInterface
 {
-    private const MAX_TEXT = 20000;
+    public const MAX_TEXT = 20000;
 
     public function __construct(
         private readonly AiGate $gate,
@@ -53,8 +57,8 @@ final class HelperController implements RequestHandlerInterface
         private readonly LlmFactory $llm,
         private readonly UsageLimiter $usage,
         private readonly AiErrors $errors,
-        private readonly TranslatorInterface $translator,
         private readonly ExtensionManager $extensions,
+        private readonly HelperValidator $validator,
     ) {
     }
 
@@ -68,22 +72,20 @@ final class HelperController implements RequestHandlerInterface
         $this->gate->quota($actor);
 
         $body = AiGate::body($request);
-        $mode = (string) ($body['mode'] ?? '');
-        $text = trim((string) ($body['text'] ?? ''));
+        $trimmed = static fn (string $key): mixed => is_string($body[$key] ?? null) ? trim($body[$key]) : ($body[$key] ?? null);
 
-        if (! in_array($mode, [...HelperPrompts::TEXT_MODES, ...HelperPrompts::SUGGESTION_MODES], true)) {
-            throw new ValidationException(['mode' => $this->translator->trans('ramon-canela.api.ai.errors.invalid_mode')]);
-        }
+        $this->validator->assertValid([
+            'mode' => $body['mode'] ?? null,
+            'text' => $trimmed('text'),
+            'customPrompt' => $trimmed('customPrompt'),
+            'language' => $body['language'] ?? null,
+            'context' => $body['context'] ?? null,
+            'title' => $body['title'] ?? null,
+        ]);
 
-        if ($text === '' || mb_strlen($text) > self::MAX_TEXT) {
-            throw new ValidationException(['text' => $this->translator->trans('ramon-canela.api.ai.errors.no_content')]);
-        }
-
+        $mode = (string) $body['mode'];
+        $text = (string) $trimmed('text');
         $customPrompt = trim(mb_substr((string) ($body['customPrompt'] ?? ''), 0, 1000));
-
-        if ($mode === 'custom_prompt' && $customPrompt === '') {
-            throw new ValidationException(['customPrompt' => $this->translator->trans('ramon-canela.api.ai.errors.no_prompt')]);
-        }
 
         $language = trim(mb_substr((string) ($body['language'] ?? ''), 0, 60));
         $context = trim(mb_substr((string) ($body['context'] ?? ''), 0, 300));

@@ -23,7 +23,7 @@ import type Mithril from 'mithril';
 
 import { t } from '../../../utils/settings';
 import { fullDate } from '../../../utils/dates';
-import { aiInfo, aiRequest, aiStream, showAiError } from '../state';
+import { aiInfo, aiStream, showAiError } from '../state';
 import Cooked from '../Cooked';
 import { blinkingAnimation, indicatorWave } from '../ui';
 
@@ -160,12 +160,19 @@ class SummaryState {
 
     // Quem não pode gerar só lê o resumo pronto.
     if (!aiInfo()?.canSummarize) {
-      aiRequest<{ data: SummaryData | null }>('GET', `summaries/${discussion.id()}`)
+      // O recurso `canela-ai-summaries` responde 404 quando o tópico ainda não
+      // tem resumo: aí o painel diz que não há, sem alerta de erro.
+      app
+        .request<{ data: { attributes: SummaryData } }>({
+          method: 'GET',
+          url: `${app.forum.attribute<string>('apiUrl')}/canela-ai-summaries/${discussion.id()}`,
+          errorHandler: () => {},
+        })
         .then((response) => {
-          this.summary = response.data;
+          this.summary = response.data.attributes;
           // O texto do resumo pronto também aparece (antes só o resumo era
           // guardado, e o painel dizia que não havia resumo).
-          if (response.data?.text) this.receive(response.data.text, true);
+          if (this.summary.text) this.receive(this.summary.text, true);
         })
         .catch(() => {})
         .finally(() => {

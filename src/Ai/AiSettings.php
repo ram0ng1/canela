@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Ai;
 
-use Flarum\Group\Group;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 
@@ -71,9 +70,19 @@ final class AiSettings
 
     public const EMBEDDINGS_MODEL = 'canela.ai_embeddings_model';
 
+    /**
+     * As listas de grupos de antes das permissões: só a migração que semeia
+     * `USE_PERMISSION` e `SUMMARIZE_PERMISSION` ainda as lê.
+     */
     public const ALLOWED_GROUPS = 'canela.ai_allowed_groups';
 
     public const SUMMARY_GROUPS = 'canela.ai_summary_groups';
+
+    /** Conversar com o bot, usar o ajudante do editor e o "Perguntar à IA" (Administração → Permissões). */
+    public const USE_PERMISSION = 'canela.useAi';
+
+    /** Gerar e atualizar o resumo de um tópico; ler um resumo pronto não pede nada. */
+    public const SUMMARIZE_PERMISSION = 'canela.generateAiSummaries';
 
     public const DAILY_LIMIT = 'canela.ai_daily_limit';
 
@@ -109,9 +118,7 @@ final class AiSettings
     public const ANTHROPIC_MODELS = ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'];
 
     /**
-     * Os padrões, para o extender registrar. O padrão dos grupos é o grupo
-     * Membros (3): todo usuário com o e-mail confirmado — o bot aberto à
-     * comunidade.
+     * Os padrões, para o extender registrar.
      *
      * @return array<string, mixed>
      */
@@ -144,8 +151,6 @@ final class AiSettings
             self::EMBEDDINGS_URL => 'https://api.openai.com/v1/embeddings',
             self::EMBEDDINGS_KEY => '',
             self::EMBEDDINGS_MODEL => 'text-embedding-3-small',
-            self::ALLOWED_GROUPS => (string) Group::MEMBER_ID,
-            self::SUMMARY_GROUPS => (string) Group::MEMBER_ID,
             self::DAILY_LIMIT => 50,
             self::PERSONAS => '',
             self::DEFAULT_PERSONA => 'general',
@@ -253,42 +258,10 @@ final class AiSettings
         return $fast !== '' ? $fast : $this->mainModel();
     }
 
-    /** @return int[] */
-    public function groupIds(string $key): array
-    {
-        $ids = array_map('intval', preg_split('/[\s,]+/', $this->string($key)) ?: []);
-
-        return array_values(array_unique(array_filter($ids, static fn (int $id): bool => $id > 0)));
-    }
-
     /**
-     * O ator está num dos grupos da configuração? O grupo Membros não é uma
-     * relação no banco — todo usuário ativado pertence a ele —, por isso entra
-     * à parte, como no `User::getPermissions()` do core. Administradores
-     * sempre podem: são eles que testam o recurso antes de abrir.
-     */
-    public function actorInGroups(User $actor, string $key): bool
-    {
-        if ($actor->isGuest() || self::isSuspended($actor)) {
-            return false;
-        }
-
-        if ($actor->isAdmin()) {
-            return true;
-        }
-
-        $allowed = $this->groupIds($key);
-
-        if (in_array(Group::MEMBER_ID, $allowed, true) && $actor->is_email_confirmed) {
-            return true;
-        }
-
-        return $actor->groups->pluck('id')->map(static fn ($id): int => (int) $id)->intersect($allowed)->isNotEmpty();
-    }
-
-    /**
-     * Suspenso (flarum/suspend) não usa a IA: a suspensão tira permissões, mas
-     * não grupos, e o acesso aqui é por grupo.
+     * Suspenso (flarum/suspend) não usa a IA. A suspensão já troca os grupos
+     * da pessoa pelo de visitantes nas permissões, mas um administrador
+     * suspenso continuaria administrador: a checagem fica explícita.
      */
     public static function isSuspended(User $actor): bool
     {
@@ -303,15 +276,27 @@ final class AiSettings
         return $until instanceof \DateTimeInterface && $until > new \DateTimeImmutable();
     }
 
-    /** Pode conversar com o bot, usar o ajudante do editor e perguntar na busca. */
+    /**
+     * Pode conversar com o bot, usar o ajudante do editor e perguntar na
+     * busca: IA no ar, conta que não é de visitante nem suspensa, e a
+     * permissão `canela.useAi` (administradores sempre a têm).
+     *
+     * O código pergunta por `$actor->can(USE_PERMISSION)`, que passa pela
+     * AiPermissionPolicy e chega aqui: outra extensão pode mudar a regra.
+     */
     public function canUse(User $actor): bool
     {
-        return $this->available() && $this->actorInGroups($actor, self::ALLOWED_GROUPS);
+        return $this->available() && self::eligible($actor) && $actor->hasPermission(self::USE_PERMISSION);
     }
 
     /** Pode gerar (ou atualizar) o resumo de um tópico; ler um resumo pronto, qualquer um pode. */
     public function canSummarize(User $actor): bool
     {
-        return $this->feature(self::SUMMARY) && $this->actorInGroups($actor, self::SUMMARY_GROUPS);
+        return $this->feature(self::SUMMARY) && self::eligible($actor) && $actor->hasPermission(self::SUMMARIZE_PERMISSION);
+    }
+
+    private static function eligible(User $actor): bool
+    {
+        return ! $actor->isGuest() && ! self::isSuspended($actor);
     }
 }

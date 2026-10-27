@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $gist
  * @property int|null $gist_post_number
  * @property Carbon|null $gist_updated_at
+ * @property-read Discussion|null $discussion
  */
 final class TopicSummary extends AbstractModel
 {

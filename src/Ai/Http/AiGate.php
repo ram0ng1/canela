@@ -16,8 +16,6 @@ namespace Ramon\Canela\Ai\Http;
 use Flarum\Foundation\ValidationException;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Locale\TranslatorInterface;
-use Flarum\User\Exception\NotAuthenticatedException;
-use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramon\Canela\Ai\AiSettings;
@@ -29,7 +27,7 @@ use Ramon\Canela\Ai\UsageLimiter;
  *
  * - Recurso desligado (ou IA sem provedor, ou tabelas por criar): 404, como
  *   se a rota não existisse.
- * - Visitante: 401. Fora dos grupos permitidos: 403.
+ * - Visitante: 401. Sem a permissão `canela.useAi`: 403.
  * - Limite diário esgotado: 422 com a mensagem, que o fórum mostra num alerta.
  */
 final class AiGate
@@ -48,16 +46,14 @@ final class AiGate
         }
     }
 
-    /** Bot, ajudante e "Perguntar à IA": logado e num dos grupos permitidos. */
+    /**
+     * Bot, ajudante e "Perguntar à IA": logado (401) e com a permissão
+     * `canela.useAi` (403), que a AiPermissionPolicy decide.
+     */
     public function user(User $actor): void
     {
-        if ($actor->isGuest()) {
-            throw new NotAuthenticatedException();
-        }
-
-        if (! $this->settings->canUse($actor)) {
-            throw new PermissionDeniedException();
-        }
+        $actor->assertRegistered();
+        $actor->assertCan(AiSettings::USE_PERMISSION);
     }
 
     public function quota(User $actor): void

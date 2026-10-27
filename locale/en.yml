@@ -740,10 +740,9 @@ ramon-canela:
         personas_title: Personas
         personas_help: Each persona has a name, a description, the system prompt and the tools it may use. People pick the persona under the question field.
         access_title: Access and limits
-        allowed_groups_label: Who can use the bot, the helper and "Ask AI"
-        allowed_groups_help: '"Members" is every user with a confirmed email. Administrators always can.'
-        summary_groups_label: Who can generate discussion summaries
-        summary_groups_help: Anyone who can see the discussion can read a finished summary, guests included.
+        use_permission: 'Use the AI bot, the editor helper and "Ask AI"'
+        summarize_permission: 'Generate AI discussion summaries'
+        access_permissions_help: 'Who can use the bot, the helper and "Ask AI", and who can generate discussion summaries, is set in Administration → Permissions. Anyone who can see a discussion can read a finished summary, guests included. Administrators always can.'
         daily_limit_label: Requests per person per day
         daily_limit_help: Each question to the bot, each helper use and each generated summary counts one. 0 = no limit. Administrators have no limit.
         embeddings_title: Embeddings
