@@ -66,19 +66,14 @@
 }
 
 .CanelaOnebox-title {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
   font-weight: 600;
   font-size: 15px;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .CanelaOnebox-titleLink {
-  flex: 0 1 auto;
-  min-width: 0;
   color: @ob-link;
-  overflow-wrap: anywhere;
 
   &:hover {
     text-decoration: underline;
@@ -90,12 +85,6 @@
   font-size: 14px;
 }
 
-.CanelaOnebox-titleText {
-  flex: 0 1 auto;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
 .CanelaOnebox-number {
   white-space: nowrap;
   color: @ob-muted;
@@ -103,14 +92,15 @@
 }
 
 .CanelaOnebox-ref {
-  display: inline-block;
-  margin: 6px 0 0;
-  padding: 1px 7px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
   border-radius: 6px;
   background: @ob-soft;
   color: @ob-link;
   font-family: @ob-mono;
   font-size: 12px;
+  line-height: 1.4;
 }
 
 .CanelaOnebox-code {
@@ -188,7 +178,6 @@
   align-items: center;
   flex: none;
   gap: 5px;
-  margin-top: 1px;
   padding: 2px 9px;
   border-radius: 999px;
   color: #fff;
@@ -226,11 +215,13 @@
   }
 }
 
-.CanelaOnebox-labels {
+// A linha de tags do topo (estado, rótulos, ref, tag): os textos vêm abaixo.
+.CanelaOnebox-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .CanelaOnebox-label {

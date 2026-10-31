@@ -9,6 +9,8 @@
  */
 import app from 'flarum/common/app';
 
+export { GITHUB_URL } from './oneboxUrl';
+
 export type OneboxType = 'file' | 'issue' | 'pull' | 'commit' | 'release' | 'repo';
 
 export interface OneboxCard {
@@ -48,9 +50,6 @@ export interface OneboxCard {
 }
 
 const KEY = 'ramon-canela.lib.onebox';
-
-/** Os links do GitHub que podem virar cartão (o servidor confere de novo). */
-export const GITHUB_URL = /^https:\/\/(www\.)?github\.com\/[^/?#\s]+\/[^/?#\s]+(\/(blob|issues|pull|commit|releases)\/[^\s]+)?\/?(#L\d+(-L?\d+)?)?$/i;
 
 /** Os pedidos desta página, por endereço: o mesmo link em vários posts pede uma vez. */
 const requests = new Map<string, Promise<OneboxCard | null>>();
@@ -162,13 +161,52 @@ function diffStats(card: OneboxCard): HTMLElement {
   return row;
 }
 
-function fileCard(card: OneboxCard, root: HTMLElement): void {
-  const title = el('div', 'CanelaOnebox-title');
-  title.appendChild(link(card.url, 'CanelaOnebox-titleLink CanelaOnebox-path', card.path || ''));
-  root.appendChild(title);
+/** A linha de tags do topo (estado, rótulos, ref): os textos vêm abaixo dela. */
+function tags(root: HTMLElement, items: Array<HTMLElement | null | false | undefined>): void {
+  const nodes = items.filter((item): item is HTMLElement => !!item);
 
-  if (card.ref)
-    root.appendChild(el('span', 'CanelaOnebox-ref', card.ref.length > 12 && /^[0-9a-f]+$/i.test(card.ref) ? card.ref.slice(0, 9) : card.ref));
+  if (!nodes.length) return;
+
+  const row = el('div', 'CanelaOnebox-tags');
+  nodes.forEach((node) => row.appendChild(node));
+  root.appendChild(row);
+}
+
+function stateBadge(state: string, iconName: string): HTMLElement {
+  const badge = el('span', `CanelaOnebox-state CanelaOnebox-state--${state}`);
+  badge.appendChild(icon(iconName));
+  badge.appendChild(document.createTextNode(trans(`state_${state}`)));
+
+  return badge;
+}
+
+/** Ref, sha ou tag, em fonte de código. */
+function chip(text: string | undefined): HTMLElement | null {
+  return text ? el('span', 'CanelaOnebox-ref', text) : null;
+}
+
+/** O título; o número de uma issue ou PR segue a última palavra, mesmo quando o título quebra a linha. */
+function title(root: HTMLElement, card: OneboxCard, text: string, className = ''): void {
+  const row = el('div', 'CanelaOnebox-title');
+  row.appendChild(link(card.url, `CanelaOnebox-titleLink ${className}`.trim(), text));
+
+  if (card.number) {
+    row.appendChild(document.createTextNode(' '));
+    row.appendChild(el('span', 'CanelaOnebox-number', `#${card.number}`));
+  }
+
+  root.appendChild(row);
+}
+
+function excerpt(root: HTMLElement, text: string | undefined): void {
+  if (text) root.appendChild(el('p', 'CanelaOnebox-excerpt', text));
+}
+
+function fileCard(card: OneboxCard, root: HTMLElement): void {
+  const ref = card.ref && card.ref.length > 12 && /^[0-9a-f]+$/i.test(card.ref) ? card.ref.slice(0, 9) : card.ref;
+
+  tags(root, [chip(ref)]);
+  title(root, card, card.path || '', 'CanelaOnebox-path');
 
   const lines = card.lines || [];
   const first = card.firstLine || 1;
@@ -209,28 +247,13 @@ const ISSUE_ICONS: Record<string, string> = {
 
 function issueCard(card: OneboxCard, root: HTMLElement): void {
   const state = card.state && card.state in ISSUE_ICONS ? card.state : 'open';
-  const stateIcon = (card.type === 'pull' ? PULL_ICONS : ISSUE_ICONS)[state];
 
-  const title = el('div', 'CanelaOnebox-title');
-  const badge = el('span', `CanelaOnebox-state CanelaOnebox-state--${state}`);
-  badge.appendChild(icon(stateIcon));
-  badge.appendChild(document.createTextNode(trans(`state_${state}`)));
-  title.appendChild(badge);
-  // O número segue a última palavra do título, mesmo quando ele quebra a linha.
-  const text = el('span', 'CanelaOnebox-titleText');
-  text.appendChild(link(card.url, 'CanelaOnebox-titleLink', card.title || ''));
-  text.appendChild(document.createTextNode(' '));
-  text.appendChild(el('span', 'CanelaOnebox-number', `#${card.number}`));
-  title.appendChild(text);
-  root.appendChild(title);
-
-  if (card.labels?.length) {
-    const labels = el('div', 'CanelaOnebox-labels');
-    card.labels.forEach((label) => labels.appendChild(el('span', 'CanelaOnebox-label', label)));
-    root.appendChild(labels);
-  }
-
-  if (card.excerpt) root.appendChild(el('p', 'CanelaOnebox-excerpt', card.excerpt));
+  tags(root, [
+    stateBadge(state, (card.type === 'pull' ? PULL_ICONS : ISSUE_ICONS)[state]),
+    ...(card.labels || []).map((label) => el('span', 'CanelaOnebox-label', label)),
+  ]);
+  title(root, card, card.title || '');
+  excerpt(root, card.excerpt);
 
   root.appendChild(
     meta([
@@ -244,12 +267,9 @@ function issueCard(card: OneboxCard, root: HTMLElement): void {
 }
 
 function commitCard(card: OneboxCard, root: HTMLElement): void {
-  const title = el('div', 'CanelaOnebox-title');
-  title.appendChild(link(card.url, 'CanelaOnebox-titleLink', card.title || ''));
-  root.appendChild(title);
-  root.appendChild(el('span', 'CanelaOnebox-ref', (card.sha || '').slice(0, 9)));
-
-  if (card.excerpt) root.appendChild(el('p', 'CanelaOnebox-excerpt', card.excerpt));
+  tags(root, [chip((card.sha || '').slice(0, 9))]);
+  title(root, card, card.title || '');
+  excerpt(root, card.excerpt);
 
   root.appendChild(
     meta([
@@ -262,16 +282,10 @@ function commitCard(card: OneboxCard, root: HTMLElement): void {
 
 function releaseCard(card: OneboxCard, root: HTMLElement): void {
   const state = card.state === 'prerelease' ? 'prerelease' : 'release';
-  const title = el('div', 'CanelaOnebox-title');
-  const badge = el('span', `CanelaOnebox-state CanelaOnebox-state--${state}`);
-  badge.appendChild(icon('fas fa-tag'));
-  badge.appendChild(document.createTextNode(trans(`state_${state}`)));
-  title.appendChild(badge);
-  title.appendChild(link(card.url, 'CanelaOnebox-titleLink', card.title || card.tag || ''));
-  root.appendChild(title);
 
-  if (card.tag && card.tag !== card.title) root.appendChild(el('span', 'CanelaOnebox-ref', card.tag));
-  if (card.excerpt) root.appendChild(el('p', 'CanelaOnebox-excerpt', card.excerpt));
+  tags(root, [stateBadge(state, 'fas fa-tag'), card.tag !== card.title && chip(card.tag)]);
+  title(root, card, card.title || card.tag || '');
+  excerpt(root, card.excerpt);
 
   root.appendChild(
     meta([
@@ -283,11 +297,8 @@ function releaseCard(card: OneboxCard, root: HTMLElement): void {
 }
 
 function repoCard(card: OneboxCard, root: HTMLElement): void {
-  const title = el('div', 'CanelaOnebox-title');
-  title.appendChild(link(card.url, 'CanelaOnebox-titleLink', card.repo));
-  root.appendChild(title);
-
-  if (card.description) root.appendChild(el('p', 'CanelaOnebox-excerpt', card.description));
+  title(root, card, card.repo);
+  excerpt(root, card.description);
 
   root.appendChild(
     meta([

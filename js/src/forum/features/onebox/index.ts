@@ -13,9 +13,12 @@ import { extend } from 'flarum/common/extend';
 import CommentPost from 'flarum/forum/components/CommentPost';
 
 import { forumBool } from '../../utils/settings';
-import { GITHUB_URL, fetchOnebox, renderOneboxCard } from '../../../common/onebox';
+import { GITHUB_URL } from '../../../common/oneboxUrl';
 
 const DONE = 'canelaOnebox';
+
+/** O pedido e o desenho do cartão, num chunk que só desce quando há um link para ele. */
+const loadCards = () => import('./cards');
 
 /** O link sozinho no parágrafo, com o próprio endereço como texto. */
 function standaloneLink(paragraph: HTMLElement): HTMLAnchorElement | null {
@@ -43,14 +46,19 @@ export function decorateOneboxes(body: HTMLElement): void {
 
     if (!anchor) return;
 
-    fetchOnebox(anchor.getAttribute('href') || '').then((card) => {
-      // O post pode ter mudado (edição, tradução) enquanto o pedido ia.
-      if (!card || !paragraph.isConnected || paragraph.querySelector('.CanelaOnebox')) return;
+    loadCards()
+      .then(({ fetchOnebox, renderOneboxCard }) =>
+        fetchOnebox(anchor.getAttribute('href') || '').then((card) => {
+          // O post pode ter mudado (edição, tradução) enquanto o pedido ia.
+          if (!card || !paragraph.isConnected || paragraph.querySelector('.CanelaOnebox')) return;
 
-      anchor.classList.add('CanelaOnebox-source-link');
-      paragraph.classList.add('CanelaOnebox-host');
-      paragraph.appendChild(renderOneboxCard(card));
-    });
+          anchor.classList.add('CanelaOnebox-source-link');
+          paragraph.classList.add('CanelaOnebox-host');
+          paragraph.appendChild(renderOneboxCard(card));
+        })
+      )
+      // Sem o chunk (rede caiu), fica o link.
+      .catch(() => {});
   });
 }
 
