@@ -1,0 +1,309 @@
+// Onebox (js/src/common/onebox.ts): o cartão de um link do GitHub, nas
+// postagens e na prévia do admin. Os tokens do tema (--cn-*) quando existem
+// (fórum), e as variáveis do core no admin, que não carrega os tokens.
+
+@ob-border: var(--cn-border, var(--control-bg));
+@ob-surface: var(--cn-surface, var(--body-bg));
+@ob-soft: var(--control-bg);
+@ob-text: var(--cn-primary, var(--text-color));
+@ob-muted: var(--cn-primary-high, var(--muted-color));
+@ob-faint: var(--cn-primary-medium, var(--muted-more-color));
+@ob-link: var(--primary-color);
+@ob-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+.CanelaOnebox {
+  display: block;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid @ob-border;
+  border-radius: 10px;
+  background: @ob-surface;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: normal;
+  animation: CanelaOnebox-in 0.18s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  @media (max-width: 767px) {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.CanelaOnebox-source {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: @ob-muted;
+  font-size: 13px;
+
+  .icon {
+    flex: none;
+    width: 16px;
+    font-size: 15px;
+    text-align: center;
+  }
+}
+
+.CanelaOnebox-sourceLink {
+  color: @ob-muted !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.CanelaOnebox-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.CanelaOnebox-titleLink {
+  flex: 0 1 auto;
+  min-width: 0;
+  color: @ob-link;
+  overflow-wrap: anywhere;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.CanelaOnebox-path {
+  font-family: @ob-mono;
+  font-size: 14px;
+}
+
+.CanelaOnebox-titleText {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.CanelaOnebox-number {
+  white-space: nowrap;
+  color: @ob-muted;
+  font-weight: 400;
+}
+
+.CanelaOnebox-ref {
+  display: inline-block;
+  margin: 6px 0 0;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: @ob-soft;
+  color: @ob-link;
+  font-family: @ob-mono;
+  font-size: 12px;
+}
+
+.CanelaOnebox-code {
+  margin: 8px 0 0;
+  padding: 8px 0;
+  border-radius: 8px;
+  background: @ob-soft;
+  font-family: @ob-mono;
+  font-size: 13px;
+  line-height: 1.55;
+  max-height: 420px;
+  overflow: auto;
+  white-space: pre;
+  // Cantos do fundo seguem a rolagem; as linhas ocupam a largura do texto.
+  overscroll-behavior-x: contain;
+  // Os botões "copiar"/"tela cheia" dos blocos de código não entram aqui.
+  .CanelaCodeBlock-buttons {
+    display: none;
+  }
+}
+
+.CanelaOnebox-line {
+  display: flex;
+  min-width: max-content;
+
+  &.is-highlighted {
+    background: color-mix(in srgb, @ob-link 14%, transparent);
+
+    .CanelaOnebox-lineNumber {
+      color: @ob-link;
+      font-weight: 600;
+    }
+  }
+}
+
+.CanelaOnebox-lineNumber {
+  flex: none;
+  // Fica à vista ao rolar o código para o lado.
+  position: sticky;
+  left: 0;
+  min-width: 3.5em;
+  padding: 0 10px 0 8px;
+  background: @ob-soft;
+  color: @ob-faint;
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid @ob-border;
+
+  .is-highlighted > & {
+    background: color-mix(in srgb, @ob-link 14%, @ob-soft);
+  }
+}
+
+.CanelaOnebox-lineCode {
+  padding: 0 12px;
+  background: none !important;
+  color: @ob-text;
+  font-size: inherit;
+  white-space: pre;
+}
+
+.CanelaOnebox-more {
+  display: inline-block;
+  margin-top: 6px;
+  color: @ob-muted !important;
+  font-size: 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.CanelaOnebox-state {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 5px;
+  margin-top: 1px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  &--open {
+    background: #1f883d;
+  }
+
+  &--closed {
+    background: #cf222e;
+  }
+
+  .CanelaOnebox--issue &--closed {
+    background: #8250df;
+  }
+
+  &--merged {
+    background: #8250df;
+  }
+
+  &--draft {
+    background: #6e7781;
+  }
+
+  &--release {
+    background: #1f883d;
+  }
+
+  &--prerelease {
+    background: #bf8700;
+  }
+}
+
+.CanelaOnebox-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.CanelaOnebox-label {
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid @ob-border;
+  line-height: 1.4;
+  color: @ob-muted;
+  font-size: 12px;
+}
+
+.CanelaOnebox-excerpt {
+  margin: 6px 0 0;
+  color: @ob-text;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.CanelaOnebox-meta,
+.CanelaOnebox-diff {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 8px;
+  color: @ob-muted;
+  font-size: 13px;
+}
+
+.CanelaOnebox-metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+
+  .icon {
+    width: 14px;
+    text-align: center;
+  }
+}
+
+.CanelaOnebox-additions {
+  color: #1f883d;
+  font-weight: 600;
+}
+
+.CanelaOnebox-deletions {
+  color: #cf222e;
+  font-weight: 600;
+}
+
+// O parágrafo do link vira o cartão: o link continua no HTML (copiar, sem JS),
+// escondido enquanto o cartão está à vista.
+.CanelaOnebox-host > a.CanelaOnebox-source-link {
+  display: none;
+}
+
+@keyframes CanelaOnebox-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+
+// A prévia do admin ("Testar um link").
+.CanelaOneboxTester-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  .FormControl {
+    flex: 1;
+    min-width: 0;
+  }
+}

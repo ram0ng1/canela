@@ -45,7 +45,8 @@ function decorateCode(body: HTMLElement): void {
   if (!gaps.codeButtons()) return;
 
   body.querySelectorAll<HTMLElement>('pre').forEach((pre) => {
-    if (pre.dataset[DONE]) return;
+    // O código de um cartão do onebox não ganha os botões.
+    if (pre.dataset[DONE] || pre.closest('.CanelaOnebox')) return;
 
     const code = pre.querySelector('code') || pre;
 

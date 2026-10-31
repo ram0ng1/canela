@@ -10,6 +10,7 @@ export type GroupKey =
   | 'topic'
   | 'composer'
   | 'templates'
+  | 'onebox'
   | 'people'
   | 'messages'
   | 'community'

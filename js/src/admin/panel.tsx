@@ -69,6 +69,9 @@ const ORDER: string[] = [
   // Editor e busca
   'composer',
   'templates',
+  // Onebox
+  'onebox-github',
+  'onebox-test',
   'drafts',
   'hashtags',
   'search-page',

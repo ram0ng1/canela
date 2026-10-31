@@ -296,6 +296,8 @@ ramon-canela:
         group_bugreports_desc: "O botão para marcar a tela e relatar um problema, e os relatórios que chegaram."
         group_templates: "Modelos do editor"
         group_templates_desc: "O texto com que um tópico novo já começa, por categoria: pré-preenchido, ou um formulário em que só os campos são preenchidos."
+        group_onebox: "Onebox"
+        group_onebox_desc: "Links que viram cartões dentro das postagens, como no Discourse: o link do GitHub sozinho numa linha mostra o arquivo, a issue, o pull request, o commit, a release ou o repositório."
         group_integrations_desc: O visual do tema para extensões de terceiros. Cada uma só vale com a extensão ligada.
         group_ai_desc: O provedor, o bot, o ajudante do editor, os resumos e as discussões relacionadas.
         group_system: "Mensagens automáticas"
@@ -611,6 +613,21 @@ ramon-canela:
         groups_activity_help: As postagens recentes dos membros na página do grupo.
         groups_profile_links_label: Grupos do perfil levam à página do grupo
         groups_profile_links_help: As pílulas de grupo no cartão do perfil viram links para /g/nome-do-grupo.
+      onebox:
+        github_title: "GitHub"
+        github_description: "Um link do GitHub sozinho numa linha vira um cartão: o arquivo com as linhas pedidas (#L10-L20), a issue ou o pull request com o estado, o commit, a release ou o repositório. O servidor busca e guarda em cache; quem lê não acessa o GitHub."
+        github_label: "Cartões de links do GitHub"
+        github_help: "Desligado, os links do GitHub ficam como links comuns."
+        token_label: "Token do GitHub (opcional)"
+        token_help: "Sem token, a API do GitHub aceita 60 pedidos por hora deste servidor (issues, PRs, commits e repositórios; os arquivos não contam). Use um token de acesso pessoal sem nenhuma permissão extra: os cartões só mostram repositórios públicos, mesmo que o token tenha acesso a privados."
+        token_saved: "Token salvo (digite para trocar)"
+        token_clear: "Apagar o token"
+        test_title: "Testar um link"
+        test_description: "Cole um link do GitHub para ver o cartão como ele aparece nas postagens."
+        test_placeholder: "https://github.com/dono/repositorio/blob/main/arquivo.php#L10-L20"
+        test_button: "Ver cartão"
+        test_none: "Esse link não vira cartão: o formato não é um dos aceitos, o repositório é privado ou não existe, ou o GitHub não respondeu."
+        formats: "Formatos aceitos: arquivo (com ou sem #L10-L20), issue, pull request, commit, release (/releases/tag/… ou /releases/latest) e repositório. O link precisa estar sozinho na linha."
       gaps:
         sidebar_category_dots_label: "Ponto de novidades nas tags"
         sidebar_category_dots_help: "Um ponto ao lado de cada tag com discussões novas ou não lidas, como o de \"Todas as Discussões\"."
@@ -3294,6 +3311,19 @@ ramon-canela:
       home: Voltar para o início
       placeholder: Procurar discussões por título ou palavras-chave…
 # forumaker/profile-cover não traz pt-BR: o editor de capa (thirdparty/profileCover).
+  lib:
+    onebox:
+      state_open: "Aberto"
+      state_closed: "Fechado"
+      state_merged: "Mesclado"
+      state_release: "Release"
+      state_prerelease: "Pré-release"
+      state_draft: "Rascunho"
+      comments: "{count, plural, one {# comentário} other {# comentários}}"
+      files: "{count, plural, one {# arquivo alterado} other {# arquivos alterados}}"
+      assets: "{count, plural, one {# arquivo} other {# arquivos}}"
+      commits: "{count, plural, one {# commit} other {# commits}}"
+      lines_of: "Linhas {from}–{to} de {total} · ver no GitHub"
 forumaker-profile-cover:
   forum:
     cover: Editar capa

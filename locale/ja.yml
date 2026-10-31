@@ -296,6 +296,8 @@ ramon-canela:
         group_bugreports_desc: "画面を囲んで問題を報告するボタンと、届いた報告。"
         group_templates: "エディターのテンプレート"
         group_templates_desc: "新しいトピックの最初に入る文章をカテゴリーごとに: 入力済みの文章か、項目だけを埋めるフォームです。"
+        group_onebox: "Onebox"
+        group_onebox_desc: "投稿内のリンクをカードとして表示します（Discourse と同様）。1行だけの GitHub リンクは、ファイル、Issue、プルリクエスト、コミット、リリース、リポジトリを表示します。"
         group_integrations_desc: サードパーティ拡張機能向けのテーマのデザインです。それぞれ対応する拡張機能が有効な場合のみ動作します。
         group_ai_desc: プロバイダー、ボット、投稿エディターのアシスタント、要約、関連スレッド。
         group_system: "自動メッセージ"
@@ -611,6 +613,21 @@ ramon-canela:
         groups_activity_help: グループページにメンバーの最近の投稿を表示します。
         groups_profile_links_label: プロフィールのグループをグループページにリンク
         groups_profile_links_help: プロフィールカードのグループのラベルが /g/グループ名 へのリンクになります。
+      onebox:
+        github_title: "GitHub"
+        github_description: "1行だけの GitHub リンクがカードになります：指定した行のファイル（#L10-L20）、状態つきの Issue やプルリクエスト、コミット、リリース、リポジトリ。サーバーが取得してキャッシュするので、読者は GitHub に接続しません。"
+        github_label: "GitHub リンクのカード"
+        github_help: "オフにすると、GitHub のリンクは通常のリンクのままです。"
+        token_label: "GitHub トークン（任意）"
+        token_help: "トークンなしでは、GitHub API はこのサーバーから1時間に60件まで受け付けます（Issue、PR、コミット、リポジトリ。ファイルは数えません）。追加の権限がない個人アクセストークンを使ってください。トークンが非公開リポジトリにアクセスできても、カードには公開リポジトリだけが表示されます。"
+        token_saved: "トークン保存済み（入力すると置き換えます）"
+        token_clear: "トークンを削除"
+        test_title: "リンクをテスト"
+        test_description: "GitHub のリンクを貼り付けると、投稿での表示と同じカードを確認できます。"
+        test_placeholder: "https://github.com/owner/repository/blob/main/file.php#L10-L20"
+        test_button: "カードを表示"
+        test_none: "このリンクはカードになりません：対応していない形式、非公開または存在しないリポジトリ、または GitHub が応答しませんでした。"
+        formats: "対応形式：ファイル（#L10-L20 の有無を問わず）、Issue、プルリクエスト、コミット、リリース（/releases/tag/… または /releases/latest）、リポジトリ。リンクは1行だけで書く必要があります。"
       gaps:
         sidebar_category_dots_label: "タグの未読ドット"
         sidebar_category_dots_help: "新しいディスカッションや未読のディスカッションがあるタグの横にドットを表示します（「すべてのディスカッション」と同じように）。"
@@ -3294,6 +3311,19 @@ ramon-canela:
       home: ホームに戻る
       placeholder: タイトルやキーワードでスレッドを検索…
 # forumaker/profile-cover には日本語がないため: カバーエディター（thirdparty/profileCover）。
+  lib:
+    onebox:
+      state_open: "オープン"
+      state_closed: "クローズ"
+      state_merged: "マージ済み"
+      state_release: "リリース"
+      state_prerelease: "プレリリース"
+      state_draft: "ドラフト"
+      comments: "{count, plural, other {# 件のコメント}}"
+      files: "{count, plural, other {# ファイル変更}}"
+      assets: "{count, plural, other {# 個のファイル}}"
+      commits: "{count, plural, other {# コミット}}"
+      lines_of: "{from}–{to} 行目（全 {total} 行）· GitHub で見る"
 forumaker-profile-cover:
   forum:
     cover: カバーを編集
