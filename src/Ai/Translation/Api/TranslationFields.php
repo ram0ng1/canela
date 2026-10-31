@@ -141,7 +141,8 @@ final class TranslationFields
 
                 $this->states[$key] = [
                     'locale' => $html !== null ? (string) $row->source_locale : $locale,
-                    'html' => $html,
+                    // Vazio: o modelo devolveu o mesmo texto, não há o que alternar.
+                    'html' => $html === '' ? null : $html,
                     'title' => null,
                     // Idioma por detectar também conta: o pedido detecta (com a
                     // IA, em lote) e grava, e o próximo carregamento já sabe.

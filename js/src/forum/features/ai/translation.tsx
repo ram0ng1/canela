@@ -360,9 +360,13 @@ async function flush(): Promise<void> {
 function indicator(kind: Kind, id: string, locale: string | null | undefined, keys: string[] = [`${kind}${id}`]): Mithril.Children {
   const translated = showing(kind, id);
   const language = languageName(locale);
-  const what = app.translator.trans(`ramon-canela.forum.ai.translation.${kind === 'p' ? 'original_language' : 'title_original_language'}`, {
-    language,
-  });
+  // `mul`: a postagem mistura línguas (títulos numa, itens noutra).
+  const what =
+    locale === 'mul'
+      ? app.translator.trans('ramon-canela.forum.ai.translation.original_mixed')
+      : app.translator.trans(`ramon-canela.forum.ai.translation.${kind === 'p' ? 'original_language' : 'title_original_language'}`, {
+          language,
+        });
   const action = app.translator.trans(`ramon-canela.forum.ai.translation.${translated ? 'click_to_show_original' : 'click_to_show_translation'}`);
 
   return (

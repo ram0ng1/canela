@@ -27,6 +27,28 @@ final class LanguageDetectorTest extends TestCase
         self::assertNull($detector->detect('ok'));
     }
 
+    /**
+     * Títulos em português e itens em inglês (as notas de uma versão): as
+     * poucas palavras comuns do inglês não bastam para dizer "inglês", e a
+     * IA decide (antes saía "en" e quem lia em inglês nunca via a tradução).
+     */
+    public function test_linguas_misturadas_ficam_para_a_ia(): void
+    {
+        $detector = new LanguageDetector();
+        $notes = '<r><H2>O que mudou no Tema Avocado</H2><LIST><LI>Melhoria (PR #82) por @ram0ng1</LI>'
+            .'<LI>feat: Enhance TeamPage and HomePage components (PR #75) por @ram0ng1</LI></LIST>'
+            .'<H2>Melhoria</H2><LIST><LI>Bump version to 2.0.0 in composer.json (PR #83) por @ram0ng1</LI>'
+            .'<LI>hero banner HTML (PR #80) por @ram0ng1</LI>'
+            .'<LI>Add customizable section titles for homepage settings (PR #79) por @ram0ng1</LI>'
+            .'<LI>Integrate realtime updates for discussions and likes (PR #78) por @ram0ng1</LI></LIST>'
+            .'<H2>Correções de Erros</H2><LIST><LI>Hide update banner in threads list (PR #84) por @ram0ng1</LI>'
+            .'<LI>Version release (PR #81) por @ram0ng1</LI></LIST><H2>Como atualizar</H2></r>';
+
+        self::assertNull($detector->detect($notes));
+        self::assertSame('en', $detector->detect('Yes, we will certainly consider that in the future. But we want to run a few more events first to gain experience.'));
+        self::assertSame('pt', $detector->detect('Sim, certamente consideraremos isso no futuro. Mas queremos primeiro realizar alguns eventos a mais para ganhar experiência.'));
+    }
+
     public function test_postagem_longa_e_lida_so_no_comeco(): void
     {
         $detector = new LanguageDetector();

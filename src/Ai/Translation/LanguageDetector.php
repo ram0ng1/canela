@@ -37,6 +37,18 @@ final class LanguageDetector
     private const MIN_HITS = 3;
 
     /**
+     * A fração das palavras do texto que precisa ser palavra comum da língua
+     * vencedora. Num texto de verdade numa língua só ela passa de 10%; abaixo
+     * disso o texto mistura línguas (títulos em português e itens em inglês)
+     * ou é quase só nomes, e as poucas palavras comuns não dizem a língua: a
+     * IA decide (e pode responder `mul`).
+     */
+    private const MIN_DENSITY = 0.1;
+
+    /** Mais de uma língua no mesmo texto (ISO 639-2): traduz o que não está no idioma de quem lê. */
+    public const MIXED = 'mul';
+
+    /**
      * Quanto do texto a detecção lê: o começo basta para saber a língua, e
      * uma postagem longa (até 64 KB de XML) não passa inteira pelas
      * expressões regulares a cada leitura.
@@ -75,6 +87,9 @@ final class LanguageDetector
     public static function plain(string $text): string
     {
         $text = (string) preg_replace('/<(C|CODE)>.*?<\/\1>|```.*?```|`[^`]*`/su', ' ', $text);
+        // Um bloco que termina não pode colar a última palavra na seguinte
+        // ("Tema</H2><LI>Melhoria" → "Tema Melhoria").
+        $text = (string) preg_replace('/<\/?(?:r|t|p|br|hr|li|list|quote|h[1-6]|table|tr|td|th|div)\b[^>]*>/iu', ' ', $text);
         $text = strip_tags($text);
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = (string) preg_replace('/https?:\/\/\S+|@\S+|#\S+/u', ' ', $text);
@@ -133,8 +148,9 @@ final class LanguageDetector
         $codes = array_keys($scores);
         [$best, $second] = [$scores[$codes[0]], $scores[$codes[1]]];
 
-        // Poucas palavras, ou duas línguas parecidas empatadas (pt/es): a IA decide.
-        if ($best < self::MIN_HITS || $best < $second * 1.6) {
+        // Poucas palavras, duas línguas parecidas empatadas (pt/es) ou palavras
+        // comuns de menos para o tamanho do texto (línguas misturadas): a IA decide.
+        if ($best < self::MIN_HITS || $best < $second * 1.6 || $best < count($tokens) * self::MIN_DENSITY) {
             return null;
         }
 

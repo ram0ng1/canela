@@ -1307,6 +1307,7 @@ ramon-canela:
     ai:
       translation:
         original_language: この投稿は元々 {language} で書かれました。
+        original_mixed: この投稿には複数の言語が含まれています。
         title_original_language: このタイトルは元々 {language} で書かれました。
         click_to_show_original: クリックして原文を表示します。
         translating: 翻訳中…
