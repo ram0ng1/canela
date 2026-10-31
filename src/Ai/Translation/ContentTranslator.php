@@ -845,7 +845,7 @@ final class ContentTranslator
         if (class_exists(\Locale::class)) {
             $name = \Locale::getDisplayName(str_replace('-', '_', $locale), 'en');
 
-            if (is_string($name) && $name !== '' && $name !== $locale) {
+            if ($name !== $locale) {
                 return $name;
             }
         }

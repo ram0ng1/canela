@@ -301,6 +301,7 @@ $features = [
     ...$feature('listroutes'),
     ...$feature('messages'),
     ...$feature('metoo'),
+    ...$feature('onebox'),
     ...$feature('preferences'),
     ...$feature('preload'),
     ...$feature('profile'),

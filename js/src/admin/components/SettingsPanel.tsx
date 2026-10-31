@@ -66,6 +66,12 @@ export const GROUPS: GroupDef[] = [
     description: () => trans(`${SHELL}.group_templates_desc`),
   },
   {
+    key: 'onebox',
+    icon: 'fas fa-link',
+    label: () => trans(`${SHELL}.group_onebox`),
+    description: () => trans(`${SHELL}.group_onebox_desc`),
+  },
+  {
     key: 'people',
     icon: 'far fa-user',
     label: () => trans(`${SHELL}.group_people`),

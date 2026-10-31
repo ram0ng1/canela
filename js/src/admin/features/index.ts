@@ -21,6 +21,7 @@ import SYSTEM_CARDS from './system';
 import EVENTS_CARDS from './events';
 import BUG_REPORT_CARDS from './bugreports';
 import TEMPLATE_CARDS from './templates';
+import ONEBOX_CARDS from './onebox';
 
 const FEATURE_CARDS: CardDef[] = [
   ...COMMUNITY_CARDS,
@@ -40,6 +41,7 @@ const FEATURE_CARDS: CardDef[] = [
   ...SYSTEM_CARDS,
   ...BUG_REPORT_CARDS,
   ...TEMPLATE_CARDS,
+  ...ONEBOX_CARDS,
 ];
 
 export default FEATURE_CARDS;

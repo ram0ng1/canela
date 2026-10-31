@@ -53,14 +53,15 @@ const requiresProvider = (): string | null => (configured() ? null : trans(`${KE
 /**
  * Texto de uma linha que salva sozinho depois de uma pausa. `secret` vira um
  * campo de senha que não mostra o valor gravado — só diz que existe —, e
- * gravar vazio apaga a chave.
+ * gravar vazio apaga a chave. `savedText` e `clearText` trocam os textos do
+ * campo secreto (o onebox usa o mesmo campo para o token do GitHub).
  */
-class AiText extends AdminComponent {
+export class AiText extends AdminComponent {
   draft: string | null = null;
   timer: ReturnType<typeof setTimeout> | undefined;
 
   view() {
-    const { settingKey, label, help, placeholder, secret } = this.attrs;
+    const { settingKey, label, help, placeholder, secret, savedText, clearText } = this.attrs;
     const stored = getStr(settingKey);
     const id = `CanelaAdmin-${String(settingKey).replace(/\W+/g, '-')}`;
 
@@ -75,14 +76,14 @@ class AiText extends AdminComponent {
           type={secret ? 'password' : 'text'}
           autocomplete={secret ? 'new-password' : 'off'}
           spellcheck={false}
-          placeholder={secret && stored ? trans(`${KEY}.key_saved`) : placeholder}
+          placeholder={secret && stored ? savedText || trans(`${KEY}.key_saved`) : placeholder}
           value={this.draft ?? (secret ? '' : stored)}
           oninput={(event: InputEvent) => this.store((event.target as HTMLInputElement).value)}
           onblur={() => this.flush()}
         />
         {secret && stored && (
           <button type="button" className="Button Button--link CanelaAiAdmin-clearKey" onclick={() => this.save('')}>
-            {trans(`${KEY}.key_clear`)}
+            {clearText || trans(`${KEY}.key_clear`)}
           </button>
         )}
         {help && <p className="helpText">{help}</p>}

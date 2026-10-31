@@ -55,7 +55,7 @@ class TranslationTest extends AbstractAiTestCase
     #[Test]
     public function a_resposta_com_linguas_misturadas_tambem_e_traduzida(): void
     {
-        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 2, 'queryParams' => ['filter' => ['discussion' => 1]]]));
+        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 2])->withQueryParams(['filter' => ['discussion' => '1']]));
         $posts = array_column($this->body($response)['data'] ?? [], 'attributes', 'id');
 
         $this->assertSame('pt', $posts['1']['canelaLocale']);
@@ -76,7 +76,7 @@ class TranslationTest extends AbstractAiTestCase
         $this->assertStringContainsString('"mul"', FakeLlm::$requests[0]->system);
 
         // A próxima leitura já traz as duas traduções.
-        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 2, 'queryParams' => ['filter' => ['discussion' => 1]]]));
+        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 2])->withQueryParams(['filter' => ['discussion' => '1']]));
         $posts = array_column($this->body($response)['data'] ?? [], 'attributes', 'id');
 
         $this->assertSame('mul', $posts['2']['canelaLocale']);
@@ -99,7 +99,7 @@ class TranslationTest extends AbstractAiTestCase
         $this->assertCount(1, FakeLlm::$requests);
         $this->assertStringContainsString('Translate this post into English', FakeLlm::$requests[0]->messages[0]['content']);
 
-        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 2, 'queryParams' => ['filter' => ['discussion' => 1]]]));
+        $response = $this->send($this->request('GET', '/api/posts', ['authenticatedAs' => 2])->withQueryParams(['filter' => ['discussion' => '1']]));
         $posts = array_column($this->body($response)['data'] ?? [], 'attributes', 'id');
 
         $this->assertFalse($posts['1']['canelaTranslatable']);
