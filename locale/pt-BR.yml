@@ -1307,6 +1307,7 @@ ramon-canela:
     ai:
       translation:
         original_language: Esta postagem foi originalmente escrita em {language}.
+        original_mixed: Esta postagem mistura mais de um idioma.
         title_original_language: Este título foi originalmente escrito em {language}.
         click_to_show_original: Clique para mostrar o original.
         translating: Traduzindo…
