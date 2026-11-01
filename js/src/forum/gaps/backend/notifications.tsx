@@ -82,7 +82,7 @@ export class InviteAcceptedNotification extends Notification {
   }
 
   href() {
-    const user = this.attrs.notification.subject() as unknown as User | false;
+    const user = this.attrs.notification.subject() as User | false;
 
     return user && typeof (user as any).slug === 'function' ? app.route.user(user) : app.route('index');
   }

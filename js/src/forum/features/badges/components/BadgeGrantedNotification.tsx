@@ -16,20 +16,20 @@ export default class BadgeGrantedNotification extends Notification {
   }
 
   href() {
-    const badge = this.attrs.notification.subject() as unknown as Badge | false;
+    const badge = this.attrs.notification.subject() as Badge | false;
     const username = app.session.user?.username();
 
     return badge ? badgeUrl(badge, username) : app.route('canela.badges');
   }
 
   content() {
-    const badge = this.attrs.notification.subject() as unknown as Badge | false;
+    const badge = this.attrs.notification.subject() as Badge | false;
 
     return t('badges.notification', { badge: badge ? badge.name() : '' });
   }
 
   excerpt() {
-    const badge = this.attrs.notification.subject() as unknown as Badge | false;
+    const badge = this.attrs.notification.subject() as Badge | false;
 
     return badge ? badge.description() : null;
   }

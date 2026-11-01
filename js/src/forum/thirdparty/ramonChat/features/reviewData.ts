@@ -37,7 +37,7 @@ export async function loadChatReports(): Promise<ChatReport[]> {
       {
         errorHandler: (error: { status?: number }) => (error?.status === 401 || error?.status === 403 || error?.status === 404 ? undefined : false),
       } as any
-    )) as unknown as any[];
+    )) as any[];
   } catch {
     return [];
   }

@@ -15,7 +15,7 @@ export default class MessageReactedNotification extends Notification {
   }
 
   message(): DialogMessage | null {
-    return (this.attrs.notification.subject() as unknown as DialogMessage | null | false) || null;
+    return (this.attrs.notification.subject() as DialogMessage | null | false) || null;
   }
 
   href() {
