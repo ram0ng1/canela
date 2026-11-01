@@ -5,7 +5,7 @@
  */
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
-import UserCard from 'flarum/forum/components/UserCard';
+import UserCard, { type IUserCardAttrs } from 'flarum/forum/components/UserCard';
 import LinkButton from 'flarum/common/components/LinkButton';
 import Link from 'flarum/common/components/Link';
 import Icon from 'flarum/common/components/Icon';
@@ -82,7 +82,8 @@ function extendProfileGroups() {
   extend(UserCard.prototype, 'contentItems', function (this: UserCard, items: ItemList<Mithril.Children>) {
     if (!items.has('canelaGroups') || !groupsEnabled() || !forumBool('canelaGroupsProfileLinks', true)) return;
 
-    const user = (this.attrs as { user: User }).user;
+    // O core 2.x-dev tipa o attr como `userd` (erro de digitação), mas passa `user`.
+    const user = (this.attrs as IUserCardAttrs & { user: User }).user;
     const groups = ((user.groups() || []) as (Group | undefined)[]).filter((group): group is Group => !!group);
 
     items.setContent(

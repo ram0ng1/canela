@@ -165,10 +165,17 @@ jobs:
         run: vendor/bin/phpunit -c tests/phpunit.unit.xml --testsuite unit
 
   js:
-    name: JS (formatação, tipos, lint, build)
+    name: JS × flarum/core ${{ matrix.flarum-core }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # Os typings mudam na ponta do core antes do PHP: os dois lados.
+        flarum-core:
+          - '^2.0.0'
+          - '2.x-dev'
     steps:
       - name: Harden runner
         uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2  # v2
@@ -192,6 +199,9 @@ jobs:
           path: ~/.cache/composer
           key: composer-${{ runner.os }}-${{ hashFiles('composer.json') }}
           restore-keys: composer-${{ runner.os }}-
+
+      - name: Fixar o flarum/core desta célula
+        run: composer require --no-update "flarum/core:${{ matrix.flarum-core }}"
 
       - name: Dependências PHP (para os typings do core)
         run: composer update --no-interaction --no-progress --prefer-dist --no-scripts

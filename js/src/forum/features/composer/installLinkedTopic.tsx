@@ -31,7 +31,7 @@ export async function replyAsLinkedTopic(discussion: Discussion): Promise<void> 
   const intro = t('composer.linked_topic.continuation', {
     link: `[${markdownText(discussion.title())}](${absoluteDiscussionUrl(discussion)})`,
   });
-  const tags = isTagsEnabled() ? ((discussion.tags?.() || []).filter(Boolean) as unknown as CanelaTag[]) : [];
+  const tags = isTagsEnabled() ? ((discussion.tags?.() || []).filter(Boolean) as CanelaTag[]) : [];
 
   // O texto vai junto para o tópico novo, então perguntar "descartar a
   // resposta?" não faz sentido: a trava de saída do composer é tirada antes.

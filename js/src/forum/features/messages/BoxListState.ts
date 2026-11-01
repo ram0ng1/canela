@@ -43,7 +43,7 @@ export default class BoxListState extends PaginatedListState<Model, BoxListParam
   }
 
   dialogs(): Dialog[] {
-    return this.getAllItems() as unknown as Dialog[];
+    return this.getAllItems() as Dialog[];
   }
 
   /** Tira a conversa da lista (arquivada, movida para a caixa ou deixada). */

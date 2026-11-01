@@ -85,7 +85,7 @@ export default class RelatedTopics extends Component<RelatedTopicsAttrs> {
 
   row(topic: RelatedTopic): Mithril.Children {
     const last = topic.lastPostedAt ? new Date(topic.lastPostedAt) : null;
-    const tags = topic.tagIds.map((id) => app.store.getById('tags', id) as unknown as CanelaTag | undefined).filter(Boolean) as CanelaTag[];
+    const tags = topic.tagIds.map((id) => app.store.getById('tags', id) as CanelaTag | undefined).filter(Boolean) as CanelaTag[];
 
     return (
       <tr className="CanelaSuggested-row">

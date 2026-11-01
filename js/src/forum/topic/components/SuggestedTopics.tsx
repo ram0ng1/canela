@@ -88,7 +88,7 @@ function fromDiscussion(topic: Discussion): Row {
 }
 
 function fromAi(topic: AiRelated): Row {
-  const tags = topic.tagIds.map((id) => app.store.getById('tags', id) as unknown as CanelaTag | undefined).filter(Boolean) as CanelaTag[];
+  const tags = topic.tagIds.map((id) => app.store.getById('tags', id) as CanelaTag | undefined).filter(Boolean) as CanelaTag[];
   const known = app.store.getById<Discussion>('discussions', topic.id);
   const views = known ? known.attribute<unknown>('viewCount') : null;
 
@@ -183,7 +183,7 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
   preloadedSuggested(discussion: Discussion, limit: number): Row[] | null {
     const payload = takePreloaded('discussions', this.suggestedParams(discussion, limit));
 
-    return payload ? this.rowsOf(discussion, app.store.pushPayload<Discussion[]>(payload) as unknown as Discussion[], limit) : null;
+    return payload ? this.rowsOf(discussion, app.store.pushPayload<Discussion[]>(payload) as Discussion[], limit) : null;
   }
 
   preloadedRelated(discussion: Discussion, limit: number): Row[] | null {
@@ -200,13 +200,13 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
 
     const payload = takePreloaded('discussions', params);
 
-    return payload ? this.rowsOf(discussion, app.store.pushPayload<Discussion[]>(payload) as unknown as Discussion[], limit) : null;
+    return payload ? this.rowsOf(discussion, app.store.pushPayload<Discussion[]>(payload) as Discussion[], limit) : null;
   }
 
   loadSuggested(discussion: Discussion, limit: number): Promise<Row[]> {
     return app.store
       .find<Discussion[]>('discussions', this.suggestedParams(discussion, limit), undefined, { errorHandler: () => {} })
-      .then((results) => this.rowsOf(discussion, results as unknown as Discussion[], limit))
+      .then((results) => this.rowsOf(discussion, results as Discussion[], limit))
       .catch(() => []);
   }
 
@@ -224,7 +224,7 @@ export default class SuggestedTopics extends Component<SuggestedTopicsAttrs> {
 
     return app.store
       .find<Discussion[]>('discussions', params, undefined, { errorHandler: () => {} })
-      .then((results) => this.rowsOf(discussion, results as unknown as Discussion[], limit))
+      .then((results) => this.rowsOf(discussion, results as Discussion[], limit))
       .catch(() => []);
   }
 
