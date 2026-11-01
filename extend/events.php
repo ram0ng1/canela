@@ -75,12 +75,19 @@ return [
         ->listen(Posted::class, SyncPostEvent::class)
         ->listen(Revised::class, SyncPostEvent::class),
 
+    // A discussão incluída nos posts (a página do tópico) também lê o evento:
+    // sem isto, uma consulta a mais por discussão. Desligado, nada carrega.
     (new Extend\ApiResource(PostResource::class))
-        ->fields(EventFields::post(...)),
+        ->fields(EventFields::post(...))
+        ->endpoint([Endpoint\Index::class, Endpoint\Show::class], static fn (Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->eagerLoad(
+            static fn (array $included): array => in_array('discussion', $included, true) && resolve(EventsSettings::class)->enabled() ? ['discussion.canelaEvent'] : []
+        )),
 
     (new Extend\ApiResource(DiscussionResource::class))
         ->fields(EventFields::discussion(...))
-        ->endpoint([Endpoint\Index::class, Endpoint\Show::class], static fn (Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->eagerLoad(['canelaEvent'])),
+        ->endpoint([Endpoint\Index::class, Endpoint\Show::class], static fn (Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->eagerLoad(
+            static fn (): array => resolve(EventsSettings::class)->enabled() ? ['canelaEvent'] : []
+        )),
 
     // A página /events (lista e calendário) abre direto pelo endereço.
     (new Extend\Frontend('forum'))

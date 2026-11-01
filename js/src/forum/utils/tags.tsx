@@ -81,7 +81,7 @@ export function discussionTags(discussion: Discussion): CanelaTag[] {
 
   const tags = discussion.tags?.();
 
-  return Array.isArray(tags) ? sortTags(tags.filter(Boolean) as unknown as CanelaTag[]) : [];
+  return Array.isArray(tags) ? sortTags(tags.filter(Boolean) as CanelaTag[]) : [];
 }
 
 /** Separa as tags da discussão em categoria e etiquetas. */

@@ -82,7 +82,8 @@ function extendProfileGroups() {
   extend(UserCard.prototype, 'contentItems', function (this: UserCard, items: ItemList<Mithril.Children>) {
     if (!items.has('canelaGroups') || !groupsEnabled() || !forumBool('canelaGroupsProfileLinks', true)) return;
 
-    const user = (this.attrs as { user: User }).user;
+    // O core 2.x-dev tipa o attr como `userd` (erro de digitação), mas passa `user`.
+    const user = (this.attrs as typeof this.attrs & { user: User }).user;
     const groups = ((user.groups() || []) as (Group | undefined)[]).filter((group): group is Group => !!group);
 
     items.setContent(
