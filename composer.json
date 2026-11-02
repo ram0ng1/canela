@@ -39,7 +39,7 @@
         "fof/pages": "^2.0",
         "fof/polls": "^3.0",
         "ernestdefoe/wardrobe": "^1.1",
-        "ramon/chat": "^0.3",
+        "ramon/chat": "^0.4",
         "flarum/testing": "^2.0",
         "flarum/phpstan": "^2.0",
         "flarum/suspend": "^2.0.0",
