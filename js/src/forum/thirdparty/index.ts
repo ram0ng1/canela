@@ -25,6 +25,7 @@ import installMarketplace from './marketplace';
 import installRamonChatFeatures from './ramonChat/features';
 import installWiki from './wiki';
 import installWidgets from './widgets';
+import installPages from './pages';
 import { isExtensionEnabled } from '../utils/settings';
 
 export default function installThirdParty(): void {
@@ -39,6 +40,7 @@ export default function installThirdParty(): void {
   if (isExtensionEnabled('ramon-verified')) installVerified();
   if (isExtensionEnabled('linkrobins-wiki')) installWiki();
   if (isExtensionEnabled('fof-forum-widgets-core')) installWidgets();
+  if (isExtensionEnabled('fof-pages')) installPages();
   if (isExtensionEnabled('ramon-marketplace')) installMarketplace();
   // Os recursos extras de chat por cima do ramon/chat (ramonChat/features).
   if ('ramon-chat' in flarum.extensions) installRamonChatFeatures();

@@ -33,6 +33,7 @@ final class AboutPages
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
         private readonly ExtensionManager $extensions,
+        private readonly LegalPages $legal,
     ) {
     }
 
@@ -102,10 +103,13 @@ final class AboutPages
         return $tabs;
     }
 
-    /** A página, se estiver na lista do admin e o ator puder vê-la. */
+    /**
+     * A página, se estiver na lista do admin (ou for a página de uma política,
+     * como os Termos) e o ator puder vê-la.
+     */
     public function find(User $actor, int $id): ?Page
     {
-        if ($id <= 0 || ! $this->enabled() || ! in_array($id, array_column($this->entries(), 'id'), true)) {
+        if ($id <= 0 || ! $this->enabled() || ! in_array($id, [...array_column($this->entries(), 'id'), ...$this->legal->pageIds()], true)) {
             return null;
         }
 

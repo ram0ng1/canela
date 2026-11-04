@@ -1,8 +1,8 @@
 /*
- * Destaques coloridos pela tag (como o tema avocado): numa página de tag, ou
- * numa discussão, a cor de destaque do tema passa a ser a cor da tag primária
- * — botões primários, links, aba ativa, anel de foco, fundo tingido, tudo o
- * que deriva de `--cn-accent`.
+ * Destaques coloridos pela tag (como o tema avocado e o ramon/colored): numa
+ * página de tag, ou numa discussão, a cor de destaque do tema passa a ser a
+ * cor da tag primária — botões primários, links, aba ativa, anel de foco,
+ * fundo tingido, tudo o que deriva de `--cn-accent`.
  *
  * Como toda a paleta do tema sai de uma variável só, basta trocá-la no
  * `<html>`: os tokens derivados (`oklch(from var(--cn-accent) …)`) se
@@ -31,11 +31,13 @@ function tagColor(tag: CanelaTag | null | undefined): string | null {
   return parent?.color() || null;
 }
 
-/** A tag primária da discussão: a filha mais específica, ou a primeira primária. */
+/**
+ * A tag que dá a cor da discussão: a primeira na ordem do flarum/tags (a
+ * primária de cima; sem primária, a primeira etiqueta), como o ramon/colored.
+ * A filha de uma primária vem depois da mãe, então não é ela que pinta.
+ */
 function primaryTagOf(discussion: Discussion): CanelaTag | null {
-  const primaries = discussionTags(discussion).filter((tag) => tag.position() !== null);
-
-  return primaries.find((tag) => tag.isChild()) ?? primaries[0] ?? null;
+  return discussionTags(discussion)[0] ?? null;
 }
 
 function activeColor(): string | null {
