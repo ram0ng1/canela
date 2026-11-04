@@ -4,6 +4,8 @@
  * Privacidade com um endereço (do fof/terms ou do admin do tema). As outras
  * políticas do fof/terms entram depois, com o próprio nome. Entre Diretrizes
  * e Termos ficam as páginas do fof/pages que o admin acrescentou à área.
+ * Uma página nunca aparece duas vezes: se a política aponta para uma página
+ * que já é aba extra, vale a aba extra (o rótulo e a posição escolhidos).
  */
 import app from 'flarum/forum/app';
 import LinkButton from 'flarum/common/components/LinkButton';
@@ -84,10 +86,20 @@ export default function AboutNav(active: string): Mithril.Children {
   if (forumBool('canelaAboutEnabled', true)) tabs.push(internal('canela.about', app.route('canela.about'), t('community.about.title')));
   if (guidelinesEnabled()) tabs.push(internal('canela.guidelines', app.route('canela.guidelines'), t('community.guidelines.title')));
 
-  aboutPages().forEach((page) => tabs.push(internal(aboutPageTab(Number(page.id)), aboutPageUrl(page), page.label, page.icon)));
+  // As páginas do fof/pages que já viraram aba (a escolha feita no Canela
+  // vale): uma política que aponta para uma delas não ganha outra aba.
+  const shown = new Set<number>();
+
+  aboutPages().forEach((page) => {
+    shown.add(Number(page.id));
+    tabs.push(internal(aboutPageTab(Number(page.id)), aboutPageUrl(page), page.label, page.icon));
+  });
 
   legalPages().forEach((page) => {
     const label = legalLabel(page);
+
+    if (page.pageId && shown.has(Number(page.pageId))) return;
+    if (page.pageId) shown.add(Number(page.pageId));
 
     // Uma página do fof/pages abre aqui dentro, com as mesmas abas e o layout
     // das Diretrizes (a área Sobre precisa estar ligada para a rota existir).
