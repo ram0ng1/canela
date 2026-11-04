@@ -1,0 +1,22 @@
+// ---------------------------------------------------------------------
+// fof/pages (/p/{id}-…): sem o hero cinza da extensão (thirdparty/pages.tsx
+// não o desenha); o título vai dentro do cartão, como o das Diretrizes.
+// Tudo preso à classe da página da extensão: sem ela, nada aqui casa.
+// ---------------------------------------------------------------------
+.PagePage .CanelaPages-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--cn-primary);
+  text-align: left;
+
+  @media (max-width: 767px) {
+    font-size: 1.3rem;
+  }
+}
+
+// Sem o hero, o conteúdo começa no topo da área, alinhado com as outras páginas.
+.PagePage .Pages-container {
+  padding-top: 0;
+}
