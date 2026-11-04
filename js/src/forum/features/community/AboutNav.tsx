@@ -95,7 +95,10 @@ export default function AboutNav(active: string): Mithril.Children {
     tabs.push(internal(aboutPageTab(Number(page.id)), aboutPageUrl(page), page.label, page.icon));
   });
 
-  legalPages().forEach((page) => {
+  // As políticas como abas podem sair no admin: ficam só as abas escolhidas.
+  const legal = forumBool('canelaLegalTabs', true) ? legalPages() : [];
+
+  legal.forEach((page) => {
     const label = legalLabel(page);
 
     if (page.pageId && shown.has(Number(page.pageId))) return;

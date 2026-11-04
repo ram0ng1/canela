@@ -66,6 +66,9 @@ return [
         ->default(Community::ABOUT_PAGES, '[]')
         ->default(Community::TOS_URL, '')
         ->default(Community::PRIVACY_URL, '')
+        // Desligado, as políticas não viram abas (o /tos e o /privacy continuam).
+        ->default(Community::LEGAL_TABS, true)
+        ->serializeToForum('canelaLegalTabs', Community::LEGAL_TABS, 'boolval')
         ->default(Community::DIRECTORY_ENABLED, true)
         ->serializeToForum('canelaDirectoryEnabled', Community::DIRECTORY_ENABLED, 'boolval')
         // Padrão desligado: o core só deixa membros listarem usuários, e abrir a

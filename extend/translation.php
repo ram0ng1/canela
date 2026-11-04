@@ -28,6 +28,7 @@ use Flarum\Extend;
 use Ramon\Canela\Ai\Translation\Api\TranslationFields;
 use Ramon\Canela\Ai\Translation\Listener\ForgetTranslations;
 use Ramon\Canela\Ai\Translation\TranslateController;
+use Ramon\Canela\Ai\Translation\TranslatePageController;
 
 return [
     (new Extend\ApiResource(ForumResource::class))
@@ -40,7 +41,9 @@ return [
         ->fields(static fn (): array => resolve(TranslationFields::class)->discussion()),
 
     (new Extend\Routes('api'))
-        ->post('/canela/ai/translate', 'canela.ai.translate', TranslateController::class),
+        ->post('/canela/ai/translate', 'canela.ai.translate', TranslateController::class)
+        // As páginas da área Sobre (Diretrizes, Termos, Privacidade, abas extras).
+        ->post('/canela/ai/translate-page', 'canela.ai.translate_page', TranslatePageController::class),
 
     (new Extend\Event())
         ->subscribe(ForgetTranslations::class),

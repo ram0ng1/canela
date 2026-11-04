@@ -880,6 +880,56 @@
 
 // O título da página, solto acima do índice, como os das outras páginas do
 // tema (Categorias, Emblemas): sem caixa e alinhado à esquerda.
+// O título e, ao lado, o 文A da tradução automática (RulesPage.translationToggle).
+.CanelaCommunityPage .CanelaRules-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 0.75rem;
+
+  .CanelaRules-title {
+    margin: 0;
+  }
+}
+
+.CanelaRules-translate {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  // Mostrando a tradução: aceso na cor de destaque, como o 文A das postagens.
+  color: var(--cn-accent);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-accent-low);
+  }
+
+  &.is-original {
+    color: var(--cn-primary-medium);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cn-hover);
+      color: var(--cn-primary-high);
+    }
+  }
+
+  &.is-working {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
 .CanelaCommunityPage .CanelaRules-title {
   margin: 0 0 0.75rem;
   font-size: 1.5rem;

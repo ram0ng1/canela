@@ -1,9 +1,13 @@
 import app from 'flarum/forum/app';
 import type Mithril from 'mithril';
 
+import Icon from 'flarum/common/components/Icon';
+
 import AboutNav from './AboutNav';
 import CommunityPage from './CommunityPage';
 import { t } from '../../utils/settings';
+import { aiApiUrl } from '../ai/state';
+import { autoTranslate, understoodLocales } from '../ai/translation';
 
 type RulesSection = { id: string; title: string; html: string };
 
@@ -11,6 +15,19 @@ export interface RulesPayload {
   html: string | null;
   title?: string;
 }
+
+/** A página traduzida pela IA (POST /canela/ai/translate-page). */
+interface PageTranslation {
+  html: string;
+  title: string;
+  locale: string;
+}
+
+/** Quantas rodadas o fórum pede uma página que volta "pendente" (uma página longa vai em partes). */
+const MAX_ROUNDS = 8;
+
+/** "pt-BR" e "pt" contam como o mesmo idioma. */
+const baseLanguage = (code: string) => code.split(/[-_]/)[0].toLowerCase();
 
 /**
  * Corta o HTML nos títulos `h2`: o que vem antes é a abertura (vai para o
@@ -85,6 +102,11 @@ export default abstract class RulesPage extends CommunityPage {
   html: string | null = null;
   pageTitle: string | null = null;
   failed = false;
+  /** A tradução para o idioma de quem lê, quando a IA a fez. */
+  translation: PageTranslation | null = null;
+  translating = false;
+  /** O 文A virou para o original. */
+  showOriginal = false;
 
   oninit(vnode: Mithril.Vnode<any, this>) {
     super.oninit(vnode);
@@ -109,9 +131,89 @@ export default abstract class RulesPage extends CommunityPage {
         this.html = data?.html || '';
         this.pageTitle = data?.title || null;
         this.loaded(data);
+        if (this.html) this.translate(0);
       })
       .catch(() => (this.failed = true))
       .finally(() => m.redraw());
+  }
+
+  /**
+   * A página para a tradução automática (`guidelines` ou `page:{id}`), ou
+   * null quando ela não se traduz.
+   */
+  translationSource(): string | null {
+    return null;
+  }
+
+  /**
+   * Pede a tradução depois de desenhar o original (a leitura nunca espera o
+   * modelo), com a tradução automática ligada e um idioma alvo no fórum. A
+   * página já no idioma de quem lê volta "skip"; a longa, "pending", e vai de
+   * novo até terminar.
+   */
+  translate(round: number): void {
+    const source = this.translationSource();
+    const target = app.forum.attribute<{ locale: string | null } | null>('canelaAiTranslation');
+
+    if (!source || !target?.locale || !autoTranslate()) return;
+
+    this.translating = true;
+
+    app
+      .request<{ html?: string; title?: string; locale?: string; pending?: boolean; retryAfter?: number }>({
+        method: 'POST',
+        url: aiApiUrl('translate-page'),
+        body: { source },
+        // Sem tradução, fica o original: não é um erro que a pessoa precise ver.
+        errorHandler: () => {},
+      })
+      .then((response) => {
+        if (response?.html) {
+          this.translation = { html: response.html, title: response.title || '', locale: response.locale || '' };
+          // Um idioma que a pessoa marcou como lido no original abre no original.
+          const base = baseLanguage(this.translation.locale);
+          this.showOriginal = understoodLocales().some((code) => baseLanguage(code) === base);
+          this.translating = false;
+        } else if (response?.pending && round < MAX_ROUNDS) {
+          window.setTimeout(() => this.translate(round + 1), response.retryAfter ? response.retryAfter * 1000 : 1500);
+
+          return;
+        } else {
+          this.translating = false;
+        }
+      })
+      .catch(() => (this.translating = false))
+      .finally(() => m.redraw());
+  }
+
+  /** O 文A ao lado do título: alterna a tradução e o original; girando enquanto traduz. */
+  translationToggle(): Mithril.Children {
+    if (this.translating) {
+      const label = t('ai.translation.translating');
+
+      return (
+        <span className="CanelaRules-translate is-working" role="status" aria-label={label} title={label}>
+          <Icon name="fas fa-spinner fa-spin" />
+        </span>
+      );
+    }
+
+    if (!this.translation) return null;
+
+    const label = t(this.showOriginal ? 'ai.translation.click_to_show_translation' : 'ai.translation.click_to_show_original');
+
+    return (
+      <button
+        type="button"
+        className={`CanelaRules-translate${this.showOriginal ? ' is-original' : ''}`}
+        aria-pressed={this.showOriginal ? 'false' : 'true'}
+        aria-label={label}
+        title={`${label} ${t('ai.translation.disclaimer')}`}
+        onclick={() => (this.showOriginal = !this.showOriginal)}
+      >
+        <Icon name="fas fa-language" />
+      </button>
+    );
   }
 
   /** O HTML e o título na resposta da API (as Diretrizes já vêm assim). */
@@ -127,7 +229,7 @@ export default abstract class RulesPage extends CommunityPage {
 
     if (this.failed) body = <p className="CanelaCommunity-empty">{t('community.load_error')}</p>;
     else if (this.html === null) body = this.skeleton();
-    else body = this.rules(this.html);
+    else body = this.rules(this.translation && !this.showOriginal ? this.translation.html : this.html);
 
     return (
       <div className="CanelaAbout CanelaGuidelines">
@@ -172,11 +274,15 @@ export default abstract class RulesPage extends CommunityPage {
 
   rules(html: string): Mithril.Children {
     const { intro, sections } = structure(html);
-    const title = this.pageTitle || this.title();
+    const translated = this.translation && !this.showOriginal ? this.translation.title : '';
+    const title = translated || this.pageTitle || this.title();
 
     return (
       <div className="CanelaRules">
-        <h1 className="CanelaRules-title">{title}</h1>
+        <div className="CanelaRules-heading">
+          <h1 className="CanelaRules-title">{title}</h1>
+          {this.translationToggle()}
+        </div>
 
         {/* Sem nenhum h2, o texto todo é o conteúdo: vai num cartão, com as regras numeradas. */}
         {intro &&
