@@ -44,6 +44,9 @@ final class Community
     public const TOS_URL = 'canela.tos_url';
     public const PRIVACY_URL = 'canela.privacy_url';
 
+    /** Termos e Privacidade (e as outras políticas do fof/terms) como abas do Sobre. */
+    public const LEGAL_TABS = 'canela.legal_tabs';
+
     public const DIRECTORY_ENABLED = 'canela.directory_enabled';
     public const DIRECTORY_GUESTS = 'canela.directory_guests';
 

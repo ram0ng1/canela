@@ -120,32 +120,41 @@ final class LegalPages
             return $pages;
         }
 
-        $ids = [];
+        $refs = [];
 
         foreach ($pages as $index => $page) {
-            $id = $this->localPageId($page['url']);
+            $ref = $this->localPage($page['url']);
 
-            if ($id > 0) {
-                $ids[$index] = $id;
+            if ($ref !== null) {
+                $refs[$index] = $ref;
             }
         }
 
-        if ($ids === []) {
+        if ($refs === []) {
             return $pages;
         }
 
+        $ids = array_values(array_filter($refs, 'is_int'));
+        $slugs = array_values(array_filter($refs, 'is_string'));
+
         try {
-            $slugs = Page::query()->whereIn('id', array_unique($ids))->pluck('slug', 'id');
+            $found = Page::query()
+                ->where(static function ($query) use ($ids, $slugs): void {
+                    $query->whereIn('id', $ids ?: [0])->orWhereIn('slug', $slugs ?: ['']);
+                })
+                ->get(['id', 'slug']);
         } catch (Throwable $error) {
             Log::warning('páginas do fof/pages nas políticas: '.$error->getMessage());
 
             return $pages;
         }
 
-        foreach ($ids as $index => $id) {
-            if ($slugs->has($id)) {
-                $pages[$index]['pageId'] = $id;
-                $pages[$index]['slug'] = trim((string) preg_replace('/[^\pL\pN_-]+/u', '-', (string) $slugs->get($id)), '-');
+        foreach ($refs as $index => $ref) {
+            $match = $found->first(static fn (Page $page): bool => is_int($ref) ? (int) $page->id === $ref : (string) $page->slug === $ref);
+
+            if ($match instanceof Page) {
+                $pages[$index]['pageId'] = (int) $match->id;
+                $pages[$index]['slug'] = trim((string) preg_replace('/[^\pL\pN_-]+/u', '-', (string) $match->slug), '-');
             }
         }
 
@@ -153,37 +162,32 @@ final class LegalPages
     }
 
     /**
-     * O id de uma página do fof/pages deste fórum (`/p/3-termos`, relativo ou
-     * completo); 0 para qualquer outro endereço.
+     * A página do fof/pages deste fórum que o endereço abre: o id
+     * (`/p/3-termos`, `/p/3`) ou o slug (`/p/termos`), relativo ou completo,
+     * com ou sem `www`. null para qualquer outro endereço.
      */
-    private function localPageId(string $url): int
+    private function localPage(string $url): int|string|null
     {
         $base = $this->url->to('forum')->base();
         $basePath = rtrim((string) parse_url($base, PHP_URL_PATH), '/');
         $host = parse_url($url, PHP_URL_HOST);
+        $bare = static fn (string $name): string => (string) preg_replace('/^www\./i', '', strtolower($name));
 
-        if ($host !== null && $host !== false && strcasecmp((string) $host, (string) parse_url($base, PHP_URL_HOST)) !== 0) {
-            return 0;
+        if (is_string($host) && $bare($host) !== $bare((string) parse_url($base, PHP_URL_HOST))) {
+            return null;
         }
 
-        $path = (string) parse_url($url, PHP_URL_PATH);
+        $path = rawurldecode((string) parse_url($url, PHP_URL_PATH));
 
         if ($basePath !== '' && str_starts_with($path, $basePath.'/')) {
             $path = substr($path, strlen($basePath));
         }
 
-        return preg_match('#^/p/(\d+)(?:-[^/]*)?/?$#', $path, $match) === 1 ? (int) $match[1] : 0;
-    }
-
-    public function url(string $key): ?string
-    {
-        foreach ($this->all() as $page) {
-            if ($page['key'] === $key) {
-                return $page['url'];
-            }
+        if (preg_match('#^/p/(\d+)(?:-[^/]*)?/?$#', $path, $match) === 1) {
+            return (int) $match[1];
         }
 
-        return null;
+        return preg_match('#^/p/([^/]+)/?$#', $path, $match) === 1 ? $match[1] : null;
     }
 
     /** @return iterable<object> */

@@ -595,6 +595,8 @@ ramon-canela:
         about_pages_up: 上へ
         about_pages_down: 下へ
         about_pages_remove: 概要エリアから外す
+        legal_tabs_label: "利用規約とプライバシーをタブとして表示"
+        legal_tabs_help: 'ポリシー（このカードと FoF Terms のもの）が概要のタブになります。オフにすると「概要エリアのページ」で選んだタブだけが残ります。/tos と /privacy は引き続き使えます。'
         tos_url_label: 利用規約のアドレス
         tos_url_help: 「利用規約」タブと /tos はここに移動します。名前に「terms」を含む FoF Terms のポリシーが優先されます。
         privacy_url_label: プライバシーポリシーのアドレス

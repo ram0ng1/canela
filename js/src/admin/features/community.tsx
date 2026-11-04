@@ -224,6 +224,7 @@ const COMMUNITY_CARDS: CardDef[] = [
     keywords: 'termos terms tos serviço service privacidade privacy política policy fof terms',
     body: () => (
       <>
+        {toggle('legal_tabs')}
         {text('tos_url', {
           type: 'url',
           placeholder: 'https://',

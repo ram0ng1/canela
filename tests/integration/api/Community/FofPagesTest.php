@@ -223,6 +223,26 @@ class FofPagesTest extends TestCase
         $this->assertSame('https://exemplo.com/privacidade', $this->send($this->request('GET', '/privacy'))->getHeaderLine('Location'));
     }
 
+    /**
+     * O endereço da política pelo slug (`/p/equipe`, como o fof/pages também
+     * aceita) ou completo com `www`: a página é reconhecida do mesmo jeito.
+     * E a chave das abas de políticas chega ao fórum (ligada por padrão).
+     */
+    #[Test]
+    public function politica_pelo_slug_ou_com_www_tambem_e_reconhecida(): void
+    {
+        $this->setting('canela.tos_url', '/p/equipe');
+        $this->setting('canela.privacy_url', 'http://www.localhost/p/1-guidelines');
+
+        $forum = $this->body($this->send($this->request('GET', '/api')))['data']['attributes'];
+        $legal = $forum['canelaLegalPages'];
+
+        $this->assertSame([3, 1], array_column($legal, 'pageId'));
+        $this->assertSame(['equipe', 'guidelines'], array_column($legal, 'slug'));
+        $this->assertTrue($forum['canelaLegalTabs']);
+        $this->assertStringEndsWith('/about/3-equipe', $this->send($this->request('GET', '/tos'))->getHeaderLine('Location'));
+    }
+
     /** Criar as Diretrizes é só do admin: membro recebe 403 e nada é criado. */
     #[Test]
     public function membro_nao_cria_diretrizes(): void

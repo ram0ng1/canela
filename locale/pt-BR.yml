@@ -595,6 +595,8 @@ ramon-canela:
         about_pages_up: Subir
         about_pages_down: Descer
         about_pages_remove: Tirar da área Sobre
+        legal_tabs_label: "Mostrar Termos e Privacidade como abas"
+        legal_tabs_help: 'As políticas (deste card e do FoF Terms) viram abas do Sobre. Desligado, ficam só as abas escolhidas em "Páginas da área Sobre"; o /tos e o /privacy continuam funcionando.'
         tos_url_label: Endereço dos Termos de Serviço
         tos_url_help: A aba "Termos de Serviço" e o endereço /tos levam para cá. Uma política do FoF Terms com "termos" no nome tem preferência.
         privacy_url_label: Endereço da Política de Privacidade
