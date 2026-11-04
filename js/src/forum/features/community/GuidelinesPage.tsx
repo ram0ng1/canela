@@ -26,4 +26,8 @@ export default class GuidelinesPage extends RulesPage {
   activeTab(): string {
     return 'canela.guidelines';
   }
+
+  translationSource(): string | null {
+    return 'guidelines';
+  }
 }

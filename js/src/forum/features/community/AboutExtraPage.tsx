@@ -41,6 +41,10 @@ export default class AboutExtraPage extends RulesPage {
     return aboutPageTab(this.pageId());
   }
 
+  translationSource(): string | null {
+    return this.pageId() > 0 ? `page:${this.pageId()}` : null;
+  }
+
   /** A página vem como recurso `canela-about-pages`: o HTML e o título estão nos atributos. */
   parse(response: unknown): RulesPayload {
     const attributes = (response as { data?: { attributes?: { html?: string; title?: string } } } | null)?.data?.attributes;
