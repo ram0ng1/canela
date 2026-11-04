@@ -1,12 +1,13 @@
 import app from 'flarum/forum/app';
 
-import { aboutPageTab, findAboutPage } from './AboutNav';
+import { aboutPageTab, findAboutPage, findLegalPage, legalLabel } from './AboutNav';
 import RulesPage, { type RulesPayload } from './RulesPage';
 import { t } from '../../utils/settings';
 
 /**
  * Uma aba extra da área Sobre (/about/{id-slug}): uma página do fof/pages
- * escolhida no admin, no mesmo layout das Diretrizes. O id vem na frente do
+ * escolhida no admin, ou a de uma política (Termos, Privacidade), no mesmo
+ * layout das Diretrizes. O id vem na frente do
  * parâmetro, como no /d/{id} do core; o slug é só enfeite. O conteúdo vem do
  * recurso `canela-about-pages` (GET /api/canela-about-pages/{id}).
  */
@@ -18,16 +19,18 @@ export default class AboutExtraPage extends RulesPage {
   }
 
   title(): string {
-    return findAboutPage(this.pageId())?.label || t('community.about.title');
+    const legal = findLegalPage(this.pageId());
+
+    return findAboutPage(this.pageId())?.label || (legal ? legalLabel(legal) : t('community.about.title'));
   }
 
   className(): string {
     return 'CanelaAboutExtraPage';
   }
 
-  /** Só as páginas da lista do admin que o fof/pages deixa a pessoa ver. */
+  /** Só as páginas da lista do admin (ou das políticas) que o fof/pages deixa a pessoa ver. */
   enabled(): boolean {
-    return !!findAboutPage(this.pageId());
+    return !!findAboutPage(this.pageId()) || !!findLegalPage(this.pageId());
   }
 
   endpoint(): string {

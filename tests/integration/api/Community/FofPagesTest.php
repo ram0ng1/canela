@@ -194,6 +194,35 @@ class FofPagesTest extends TestCase
         $this->assertEquals(404, $this->send($this->request('GET', '/api/canela-about-pages/equipe', ['authenticatedAs' => 1]))->getStatusCode());
     }
 
+    /**
+     * Termos e Privacidade numa página do fof/pages: a política leva o id e
+     * o slug da página, a área Sobre a abre (API e /about/{id}) mesmo fora da
+     * lista de abas extras, e o /tos leva para lá. Um endereço de fora fica
+     * como está.
+     */
+    #[Test]
+    public function termos_numa_pagina_abrem_na_area_sobre(): void
+    {
+        $this->setting('canela.tos_url', '/p/3-equipe');
+        $this->setting('canela.privacy_url', 'https://exemplo.com/privacidade');
+
+        $legal = $this->body($this->send($this->request('GET', '/api')))['data']['attributes']['canelaLegalPages'];
+
+        $this->assertSame(['tos', 'privacy'], array_column($legal, 'key'));
+        $this->assertSame(3, $legal[0]['pageId']);
+        $this->assertSame('equipe', $legal[0]['slug']);
+        $this->assertArrayNotHasKey('pageId', $legal[1]);
+
+        $this->assertEquals(200, $this->send($this->request('GET', '/api/canela-about-pages/3'))->getStatusCode());
+        $this->assertEquals(200, $this->send($this->request('GET', '/about/3-equipe'))->getStatusCode());
+
+        $tos = $this->send($this->request('GET', '/tos'));
+
+        $this->assertEquals(302, $tos->getStatusCode());
+        $this->assertStringEndsWith('/about/3-equipe', $tos->getHeaderLine('Location'));
+        $this->assertSame('https://exemplo.com/privacidade', $this->send($this->request('GET', '/privacy'))->getHeaderLine('Location'));
+    }
+
     /** Criar as Diretrizes é só do admin: membro recebe 403 e nada é criado. */
     #[Test]
     public function membro_nao_cria_diretrizes(): void

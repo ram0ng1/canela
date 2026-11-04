@@ -15,6 +15,9 @@ export interface LegalPage {
   key: string;
   title: string | null;
   url: string;
+  /** A página do fof/pages da política, quando o endereço é uma (abre na área Sobre). */
+  pageId?: number;
+  slug?: string;
 }
 
 /** Uma aba extra (atributo `canelaAboutPages` do fórum, já filtrado pela visibilidade). */
@@ -39,6 +42,15 @@ export function aboutPages(): AboutPageTab[] {
 
 export function findAboutPage(id: number): AboutPageTab | undefined {
   return aboutPages().find((page) => Number(page.id) === id);
+}
+
+/** A política (Termos, Privacidade…) que é a página `id` do fof/pages. */
+export function findLegalPage(id: number): LegalPage | undefined {
+  return legalPages().find((page) => Number(page.pageId) === id);
+}
+
+export function legalLabel(page: LegalPage): string {
+  return page.key === 'tos' ? t('community.legal.tos') : page.key === 'privacy' ? t('community.legal.privacy') : page.title || page.url;
 }
 
 /** O nome da aba ativa de uma página extra (cada uma tem o seu). */
@@ -75,7 +87,18 @@ export default function AboutNav(active: string): Mithril.Children {
   aboutPages().forEach((page) => tabs.push(internal(aboutPageTab(Number(page.id)), aboutPageUrl(page), page.label, page.icon)));
 
   legalPages().forEach((page) => {
-    const label = page.key === 'tos' ? t('community.legal.tos') : page.key === 'privacy' ? t('community.legal.privacy') : page.title || page.url;
+    const label = legalLabel(page);
+
+    // Uma página do fof/pages abre aqui dentro, com as mesmas abas e o layout
+    // das Diretrizes (a área Sobre precisa estar ligada para a rota existir).
+    if (page.pageId && forumBool('canelaAboutEnabled', true)) {
+      const param = page.slug ? `${page.pageId}-${page.slug}` : String(page.pageId);
+
+      tabs.push(internal(aboutPageTab(Number(page.pageId)), app.route('canela.about_page', { page: param }), label));
+
+      return;
+    }
+
     const external = /^https?:\/\//i.test(page.url);
 
     tabs.push(
