@@ -80,7 +80,7 @@ export default function installPosts(): void {
     );
   });
 
-  // O nome de usuário primeiro (canela.post_username_first, ligado por
+  // O nome de usuário primeiro (canela.post_username_first, desligado por
   // padrão): o nome de exibição vai depois, em CanelaPostNames.
   extend(PostUser.prototype, 'linkChildren', function (this: any, items: ItemList<Mithril.Children>, user: User) {
     if (!topicSettings.usernameFirst() || !items.has('username')) return;

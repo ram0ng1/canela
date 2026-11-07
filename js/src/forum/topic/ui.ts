@@ -48,7 +48,7 @@ export const topicSettings = {
   /** O "em resposta a" numa linha embaixo do nome, como no avocado (canela.topic_reply_to_style). */
   replyToLine: () => app.forum?.attribute('canelaTopicReplyToStyle') === 'avocado' && isExtensionEnabled('flarum-mentions'),
   /** O nome de usuário antes do nome de exibição nas postagens (canela.post_username_first). */
-  usernameFirst: () => forumBool('canelaPostUsernameFirst', true),
+  usernameFirst: () => forumBool('canelaPostUsernameFirst', false),
   newRepliesBar: () => forumBool('canelaNewRepliesBar', true) && isExtensionEnabled('flarum-realtime'),
 };
 

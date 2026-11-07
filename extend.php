@@ -120,9 +120,9 @@ $forumSettings = [
     // O "em resposta a" do post: 'discourse' (↩ nome à direita do cabeçalho)
     // ou 'avocado' (uma linha embaixo do nome: "↳ Em resposta a [avatar] Fulano").
     'canela.topic_reply_to_style' => ['canelaTopicReplyToStyle', 'discourse', null],
-    // O nome de usuário antes do nome de exibição nas postagens (ligado por
-    // padrão; desligado, o nome de exibição vem primeiro).
-    'canela.post_username_first' => ['canelaPostUsernameFirst', true, 'boolval'],
+    // O nome de usuário antes do nome de exibição nas postagens (desligado por
+    // padrão: o apelido do flarum/nicknames vem primeiro, como no core).
+    'canela.post_username_first' => ['canelaPostUsernameFirst', false, 'boolval'],
 
     // Extensões de terceiros (no visual do tema)
     'canela.thirdparty_solved' => ['canelaThirdPartySolved', true, 'boolval'],
