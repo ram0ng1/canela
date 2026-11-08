@@ -133,6 +133,8 @@ function loadResults(dir) {
         let pathKey;
         try { pathKey = new URL(rawUrl).pathname || '/'; } catch { pathKey = rawUrl; }
         if (pathKey.length > 1) pathKey = pathKey.replace(/\/$/, '');
+        // A rodada do celular fica ao lado da do computador, com a mesma URL.
+        if (lhr.configSettings?.formFactor === 'mobile') pathKey += ' (celular)';
         byUrl.set(pathKey, lhr);
       }
     }
@@ -235,7 +237,8 @@ function fmtSavings(o) {
 // --- tabela de métricas por URL ---
 for (const [pathKey, prLhr] of [...pr.entries()].sort()) {
   const baseLhr = base?.get(pathKey) ?? null;
-  const heading = pathKey === '/' ? 'Home (`/`)' : '`' + pathKey + '`';
+  const [path, device = ''] = pathKey.split(' ');
+  const heading = (path === '/' ? 'Home (`/`)' : '`' + path + '`') + (device ? ` ${device}` : '');
   lines.push(`## ${heading}`);
   lines.push('');
   lines.push('| Métrica | PR | Master (baseline) | Δ |');
@@ -279,6 +282,6 @@ lines.push('6. **`Extend\\Frontend->js()`** rodam síncronos — todo arquivo `j
 lines.push('7. **opcache + view cache** — no host: `opcache.enable=1`, `opcache.validate_timestamps=0` em produção, e `php flarum cache:clear` no deploy.');
 lines.push('8. **HTTP/2 + Brotli no host** — o Flarum gera bundles grandes; sem brotli você paga em transferência.');
 lines.push('');
-lines.push('<sub>Lighthouse desktop, 1 run por URL. 🟢 = melhorou vs main · 🔴 = regrediu.</sub>');
+lines.push('<sub>Lighthouse no computador e no celular, 1 run por URL. 🟢 = melhorou vs main · 🔴 = regrediu.</sub>');
 
 process.stdout.write(lines.join('\n') + '\n');

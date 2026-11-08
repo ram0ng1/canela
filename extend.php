@@ -352,6 +352,28 @@ return [
                 $document->preloads,
                 static fn (array $preload): bool => ! preg_match('#/fonts/fa-regular-400\.woff2#', (string) ($preload['href'] ?? ''))
             ));
+        })
+        // A fonte do texto (Inter ou Plus Jakarta Sans, só o subconjunto latino)
+        // desce junto com o CSS, em vez de esperar o navegador ler a folha: o
+        // primeiro texto já sai na fonte certa (FCP/LCP no celular e no
+        // computador). A URL é a mesma do url() de less/fonts.less.
+        ->content(static function (\Flarum\Frontend\Document $document): void {
+            $file = match ((new FontFamily())(resolve(\Flarum\Settings\SettingsRepositoryInterface::class)->get(FontFamily::SETTING))) {
+                FontFamily::INTER => 'inter-latin-wght-normal.woff2',
+                FontFamily::JAKARTA => 'plus-jakarta-sans-latin-wght-normal.woff2',
+                default => null,
+            };
+
+            if ($file === null) {
+                return;
+            }
+
+            $document->preloads[] = [
+                'href' => resolve(\Illuminate\Contracts\Filesystem\Factory::class)->disk('flarum-assets')->url('extensions/ramon-canela/fonts/'.$file),
+                'as' => 'font',
+                'type' => 'font/woff2',
+                'crossorigin' => '',
+            ];
         }),
 
     (new Extend\Frontend('admin'))

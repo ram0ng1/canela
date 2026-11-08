@@ -25,7 +25,7 @@ env:
 
 jobs:
   benchmark:
-    name: Lighthouse (3 paginas)
+    name: Lighthouse (3 paginas, computador e celular)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -162,6 +162,33 @@ jobs:
             cp -r "${GITHUB_WORKSPACE}/.lighthouseci/." /tmp/lhci-out/
           fi
           ls -la /tmp/lhci-out
+
+      # O mesmo no celular (o padrão do Lighthouse: tela de celular e rede 4G
+      # lenta simulada), que é o que o PageSpeed Insights mostra primeiro.
+      - name: Rodar Lighthouse CI no celular (3 URLs)
+        uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18  # v12
+        with:
+          urls: |
+            http://127.0.0.1:8080/
+            http://127.0.0.1:8080/tags
+            http://127.0.0.1:8080/all
+          configPath: ${{ env.EXT_DIR }}/.github/lighthouserc.mobile.json
+          uploadArtifacts: false
+          temporaryPublicStorage: false
+
+      # O `lhci collect` limpa a .lighthouseci a cada rodada: os resultados do
+      # computador já foram copiados no passo anterior, e os de agora são só
+      # os do celular.
+      - name: Mover resultados do celular
+        run: |
+          for dir in "${FLARUM_TEST_DIR}/.lighthouseci" "${GITHUB_WORKSPACE}/.lighthouseci"; do
+            if [ -d "$dir" ]; then
+              mkdir -p /tmp/lhci-out/mobile
+              cp -r "$dir/." /tmp/lhci-out/mobile/
+              break
+            fi
+          done
+          ls -la /tmp/lhci-out/mobile || true
 
       - name: Tornar log do PHP visivel em caso de falha
         if: failure()
