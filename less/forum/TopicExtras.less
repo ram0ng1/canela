@@ -1197,6 +1197,92 @@ button.CanelaTopicMap-stat {
 }
 
 // ---------------------------------------------------------------------
+// Atribuir tópico (features/assign): a pílula "Atribuído a [avatar] Fulano"
+// no cabeçalho do tópico e na lista, e a busca do modal.
+// ---------------------------------------------------------------------
+.CanelaAssignee {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px 0 9px;
+  border-radius: var(--cn-radius-pill);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-high);
+  font-size: 12px;
+  line-height: 1;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: none;
+    background: var(--cn-hover);
+  }
+
+  .Avatar {
+    --size: 16px;
+    width: 16px;
+    height: 16px;
+    font-size: 8px;
+    line-height: 16px;
+  }
+
+  .CanelaAssignee-label {
+    color: var(--cn-primary-medium);
+  }
+
+  .CanelaAssignee-name {
+    font-weight: 600;
+  }
+}
+
+.CanelaTopicHero .CanelaAssignee {
+  margin-top: var(--cn-space-2);
+}
+
+.CanelaAssignModal-results {
+  margin: 0 0 var(--cn-space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.CanelaAssignModal-user {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  width: 100%;
+  padding: 6px var(--cn-space-2);
+  border: 0;
+  border-radius: var(--cn-radius);
+  background: none;
+  color: var(--cn-primary);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--cn-hover);
+  }
+
+  .Avatar {
+    --size: 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+    line-height: 28px;
+  }
+}
+
+.CanelaAssignModal-name {
+  font-weight: 600;
+}
+
+.CanelaAssignModal-handle {
+  color: var(--cn-primary-medium);
+  font-size: var(--cn-font-down-1);
+}
+
+// ---------------------------------------------------------------------
 // Avisos de post (topic/postNotice.tsx): "primeira postagem" e "voltou
 // depois de N meses", uma faixa acima do texto.
 // ---------------------------------------------------------------------

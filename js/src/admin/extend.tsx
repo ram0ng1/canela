@@ -101,5 +101,16 @@ export default [
       }),
       'moderate',
       40
+    )
+    // Quem atribui tópicos a alguém (extend/assign.php). Respeita as
+    // permissões por tag.
+    .permission(
+      () => ({
+        icon: 'fas fa-user-check',
+        label: trans(`${KEY}.gaps.assign_permission`),
+        permission: 'discussion.canelaAssign',
+      }),
+      'moderate',
+      35
     ),
 ];

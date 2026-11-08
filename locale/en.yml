@@ -647,6 +647,7 @@ ramon-canela:
         not_found_template_signpost: "Signpost"
         not_found_template_signpost_help: "The signpost in the middle, the search strip and short lists of discussions."
         invite_permission: "Invite people (invite links)"
+        assign_permission: "Assign discussions to someone"
         lightbox_label: "Enlarge images (lightbox)"
         lightbox_help: "Clicking an image in a post opens it large over a dark background, with arrows between the images of the same post, zoom, \"Original image\" and \"Download\"."
         code_buttons_label: "Buttons on code blocks"
@@ -2522,6 +2523,17 @@ ramon-canela:
         invited_group: Invited {who} {when}
         removed_user: Removed {who} {when}
         user_left: '{who} removed themselves from this message {when}'
+    assign:
+      title: "Assign discussion"
+      placeholder: "Search by username…"
+      remove: "Remove {username}’s assignment"
+      notification: "{username} assigned a discussion to you"
+      label: "Assigned to"
+      assigned_to: "Assigned to {username}"
+      action: "Assign…"
+      change: "Change assignment…"
+      nav: "Assigned to me"
+      setting: "Someone assigns a discussion to me"
     metoo:
       label: Me too
       label_with_count: '{label} ({count})'
@@ -3497,3 +3509,10 @@ fof-oauth:
   forum:
     providers:
       passkey: Passkey
+# O registro do atribuir tópico no flarum/audit (extend/assign.php).
+flarum-audit:
+  lib:
+    browser:
+      discussion:
+        assigned: "Assigned {discussion} to {username}"
+        unassigned: "Removed the assignment from {discussion}"

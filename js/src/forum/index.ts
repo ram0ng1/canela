@@ -29,6 +29,7 @@ import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
 import installTemplates from './features/templates';
 import installOnebox from './features/onebox';
+import installAssign from './features/assign';
 import installGaps from './gaps';
 import installMotion from './motion';
 import installThirdParty from './thirdparty';
@@ -50,6 +51,7 @@ import userExtend from './user/extend';
 import listExtend from './list/extend';
 import composerExtend from './features/composer/extend';
 import authExtend from './features/auth/extend';
+import assignExtend from './features/assign/extend';
 
 // Modelos e rotas dos recursos com backend. Cada recurso decide sozinho se
 // aparece (pela configuração que o servidor serializa), então registrar as
@@ -70,6 +72,7 @@ export const extend = [
   ...userExtend,
   ...composerExtend,
   ...authExtend,
+  ...assignExtend,
 ];
 
 app.initializers.add('ramon-canela', () => {
@@ -107,6 +110,7 @@ app.initializers.add('ramon-canela', () => {
   installEvents();
   installCooked();
   installOnebox();
+  installAssign();
   installBugReports();
   installUserMenu();
   // A fila de revisão na página /flags (flarum/flags e approval).
