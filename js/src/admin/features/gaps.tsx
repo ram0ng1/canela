@@ -39,6 +39,25 @@ const help = (name: string) => () => trans(`${KEY}.${name}_help`);
 const backendOff = (): string | null => (getBool('canela.gaps_backend') ? null : trans(`${KEY}.backend_off`));
 
 const cards: CardDef[] = [
+  // ── Sistema: app e push ────────────────────────────────────────────────────
+  {
+    id: 'pwa',
+    group: 'system',
+    icon: 'fas fa-mobile-screen',
+    title: () => trans(`${KEY}.pwa_label`),
+    description: help('pwa'),
+    keywords: 'pwa app instalar install manifesto manifest celular mobile service worker',
+    master: 'canela.pwa_enabled',
+  },
+  {
+    id: 'push',
+    group: 'system',
+    icon: 'far fa-bell',
+    title: () => trans(`${KEY}.push_label`),
+    description: help('push'),
+    keywords: 'push notificações notifications navegador browser celular mobile vapid',
+    master: 'canela.push_enabled',
+  },
   // ── Tópico ─────────────────────────────────────────────────────────────────
   {
     id: 'post-content',

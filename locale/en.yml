@@ -685,6 +685,10 @@ ramon-canela:
         sidebar_custom_links_label: "Custom section links"
         sidebar_custom_links_help: "One link per line: Label | address | icon (optional, from Font Awesome). Addresses starting with / belong to the forum itself. Without links, the section does not show."
         inline_title_editor_help: "Whoever can rename sees a pencil next to the discussion title: the title becomes a field, with the tags button and ✓/✕ to save or cancel."
+        pwa_label: "Installable app (PWA)"
+        pwa_help: 'The forum can be installed as an app on phones and computers, with the name, color and icon from Appearance. For the browser to offer "Install", use a 512 px PNG favicon.'
+        push_label: "Browser push"
+        push_help: 'Notifications on phones and computers even with the forum closed. Each person turns it on in Settings → Notifications, and the table gets a Push column to pick the types. Needs HTTPS and a running queue so responses are not delayed.'
         post_notices_label: 'Post notices'
         post_notices_help: 'A strip above the text on someone’s first post ("welcome them") and when someone comes back after a long time ("their last post was 8 months ago"). The notice is decided when the post is created.'
         post_notice_months_label: 'Months for "welcome back"'
@@ -2523,6 +2527,29 @@ ramon-canela:
         invited_group: Invited {who} {when}
         removed_user: Removed {who} {when}
         user_left: '{who} removed themselves from this message {when}'
+    push:
+      title: "Browser notifications"
+      state_loading: "Checking this device…"
+      state_unsupported: "This browser does not support push notifications."
+      state_denied: "Notifications are blocked in this browser's permissions for this site."
+      state_off: "Get your notifications on this device even with the forum closed."
+      state_on: "On for this device. Pick the types in the Push column."
+      enable: "Turn on for this device"
+      disable: "Turn off for this device"
+      column: "Push"
+      error: "Could not change notifications for this device."
+      generic: "{username} has something new for you"
+      types:
+        newPost: "{username} replied"
+        postLiked: "{username} liked your post"
+        postMentioned: "{username} replied to your post"
+        userMentioned: "{username} mentioned you"
+        groupMentioned: "{username} mentioned your group"
+        discussionRenamed: "{username} renamed the discussion"
+        discussionLocked: "{username} locked the discussion"
+        canelaAssigned: "{username} assigned this discussion to you"
+        canelaPostEdited: "{username} edited your post"
+        canelaTopicLinked: "{username} linked your discussion"
     assign:
       title: "Assign discussion"
       placeholder: "Search by username…"

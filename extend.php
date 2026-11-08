@@ -320,6 +320,7 @@ $features = [
     ...$feature('preferences'),
     ...$feature('preload'),
     ...$feature('profile'),
+    ...$feature('push'),
     ...$feature('ramonchat'),
     ...$feature('realtime'),
     ...$feature('stats'),

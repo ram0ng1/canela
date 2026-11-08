@@ -29,6 +29,7 @@ import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
 import installTemplates from './features/templates';
 import installOnebox from './features/onebox';
+import installPush from './features/push';
 import installAssign from './features/assign';
 import installGaps from './gaps';
 import installMotion from './motion';
@@ -110,6 +111,7 @@ app.initializers.add('ramon-canela', () => {
   installEvents();
   installCooked();
   installOnebox();
+  installPush();
   installAssign();
   installBugReports();
   installUserMenu();

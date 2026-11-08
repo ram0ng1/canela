@@ -28,7 +28,8 @@
         }
     ],
     "require": {
-        "flarum/core": "^2.0.0"
+        "flarum/core": "^2.0.0",
+        "minishlink/web-push": "^9.0"
     },
     "require-dev": {
         "flarum/tags": "^2.0.0",
