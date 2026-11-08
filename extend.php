@@ -353,6 +353,14 @@ return [
                 static fn (array $preload): bool => ! preg_match('#/fonts/fa-regular-400\.woff2#', (string) ($preload['href'] ?? ''))
             ));
         })
+        // O conteúdo que o servidor já monta aparece antes do JS (ver
+        // views/prerender/content.blade.php). Só troca a view padrão do core:
+        // se outra extensão pôs a dela, fica a dela.
+        ->content(static function (\Flarum\Frontend\Document $document): void {
+            if ($document->contentView === 'flarum::frontend.content') {
+                $document->contentView = 'ramon-canela-prerender::content';
+            }
+        })
         // A fonte do texto (Inter ou Plus Jakarta Sans, só o subconjunto latino)
         // desce junto com o CSS, em vez de esperar o navegador ler a folha: o
         // primeiro texto já sai na fonte certa (FCP/LCP no celular e no
@@ -375,6 +383,9 @@ return [
                 'crossorigin' => '',
             ];
         }),
+
+    (new Extend\View())
+        ->namespace('ramon-canela-prerender', __DIR__.'/views/prerender'),
 
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')
