@@ -82,6 +82,25 @@ const cards: CardDef[] = [
     master: 'canela.inline_title_editor',
   },
   {
+    id: 'post-notices',
+    group: 'topic',
+    icon: 'fas fa-hand',
+    title: () => trans(`${KEY}.post_notices_label`),
+    description: help('post_notices'),
+    keywords: 'aviso notice primeira postagem first post boas-vindas welcome voltou returning back discourse',
+    master: 'canela.post_notices',
+    body: () => (
+      <AdminNumber
+        settingKey="canela.post_notice_months"
+        label={trans(`${KEY}.post_notice_months_label`)}
+        help={trans(`${KEY}.post_notice_months_help`)}
+        min={1}
+        max={60}
+        fallback={6}
+      />
+    ),
+  },
+  {
     id: 'share',
     group: 'topic',
     icon: 'fas fa-share-nodes',

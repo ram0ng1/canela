@@ -684,6 +684,10 @@ ramon-canela:
         sidebar_custom_links_label: "Custom section links"
         sidebar_custom_links_help: "One link per line: Label | address | icon (optional, from Font Awesome). Addresses starting with / belong to the forum itself. Without links, the section does not show."
         inline_title_editor_help: "Whoever can rename sees a pencil next to the discussion title: the title becomes a field, with the tags button and ✓/✕ to save or cancel."
+        post_notices_label: 'Post notices'
+        post_notices_help: 'A strip above the text on someone’s first post ("welcome them") and when someone comes back after a long time ("their last post was 8 months ago"). The notice is decided when the post is created.'
+        post_notice_months_label: 'Months for "welcome back"'
+        post_notice_months_help: 'How many months without posting before the next post gets the welcome back notice.'
         share_modal_help: "The Share button opens a window with the link, the copy button and the network buttons. When off, it only copies the link. On phones, the system share sheet is used."
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] shows the date and time in the reader's time zone. Takes effect after clearing the cache."
         invites_enabled_help: "Whoever has the \"Invite\" permission (Permissions) creates links with an expiry and a number of uses, in Share and in the \"More\" menu. Whoever joins through a link shows as invited, and the inviter gets \"Someone accepted your invite\". Requires open sign-up."
@@ -2815,6 +2819,8 @@ ramon-canela:
       embedded:
         go_to_post: Go to post
       post:
+        notice_first: 'This is the first time {username} has posted. Let’s welcome them to the community!'
+        notice_returning: 'Welcome back, {username}! Their last post was {ago}.'
         mention_unavailable: "post unavailable"
         in_reply_to: 'In reply to: click to show the post'
         reply_to_label: In reply to
