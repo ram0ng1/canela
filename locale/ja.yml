@@ -2527,6 +2527,7 @@ ramon-canela:
       action: "割り当て…"
       change: "割り当てを変更…"
       nav: "自分の担当"
+      setting: "ディスカッションが自分に割り当てられたとき"
     metoo:
       label: 私も
       label_with_count: '{label}（{count}）'

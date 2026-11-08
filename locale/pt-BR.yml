@@ -2527,6 +2527,7 @@ ramon-canela:
       action: "Atribuir…"
       change: "Mudar atribuição…"
       nav: "Atribuídos a mim"
+      setting: "Alguém me atribui um tópico"
     metoo:
       label: Eu também
       label_with_count: '{label} ({count})'

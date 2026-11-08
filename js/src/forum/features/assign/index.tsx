@@ -77,4 +77,14 @@ export default function installAssign(): void {
 
     params.filter = { ...(params.filter || {}), canelaAssigned: 'me' };
   });
+
+  // Pelo nome do módulo: o NotificationGrid vem no pedaço da página de
+  // configurações, carregado sob demanda.
+  extend('flarum/forum/components/NotificationGrid' as any, 'notificationTypes', function (items: ItemList<any>) {
+    items.add('canelaAssigned', {
+      name: 'canelaAssigned',
+      icon: 'fas fa-user-check',
+      label: t('assign.setting'),
+    });
+  });
 }

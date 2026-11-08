@@ -2527,6 +2527,7 @@ ramon-canela:
       action: "Assign…"
       change: "Change assignment…"
       nav: "Assigned to me"
+      setting: "Someone assigns a discussion to me"
     metoo:
       label: Me too
       label_with_count: '{label} ({count})'
