@@ -55,15 +55,22 @@ function activeColor(): string | null {
 }
 
 /**
- * Texto sobre a cor: escuro quando a cor é clara (amarelo, lima…), para o
- * botão primário continuar legível — a mesma conta YIQ que o core usa.
+ * Texto sobre a cor: o que der mais contraste (WCAG) entre o branco e o
+ * texto escuro do tema, para o botão primário continuar legível. Um verde
+ * como #34c759 com texto branco ficava em 2,2:1; com o escuro, 8:1.
  */
 function textOn(hex: string): string {
   const value = hex.replace('#', '');
   const full = value.length === 3 ? value.replace(/./g, (c) => c + c) : value;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const c = parseInt(full.slice(i, i + 2), 16) / 255;
 
-  return (r * 299 + g * 587 + b * 114) / 1000 >= 160 ? '#1a1a1a' : '#ffffff';
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+  // #1a1a1a tem luminância ~0,0103.
+  return 1.05 / (luminance + 0.05) >= (luminance + 0.05) / 0.0603 ? '#ffffff' : '#1a1a1a';
 }
 
 /**

@@ -213,17 +213,16 @@ let tagSort: 'count' | 'name' = 'count';
 
 function sortLink(key: 'count' | 'name', label: string): Mithril.Children {
   return (
-    <a
-      href="#"
-      className={classList('CanelaTagsPage-sort', { active: tagSort === key })}
+    <button
+      type="button"
+      className={classList('Button--ua-reset CanelaTagsPage-sort', { active: tagSort === key })}
       aria-pressed={tagSort === key ? 'true' : 'false'}
-      onclick={(event: MouseEvent) => {
-        event.preventDefault();
+      onclick={() => {
         tagSort = key;
       }}
     >
       {label}
-    </a>
+    </button>
   );
 }
 

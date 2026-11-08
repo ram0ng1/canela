@@ -147,8 +147,10 @@ export default class TopicMap extends Component<TopicMapAttrs> {
       stats.push(this.stat('replies', replies, t('topic.map.replies', { count: replies })));
     }
 
+    // <article>: o mapa fica dentro do PostStream (role="feed"), que só
+    // aceita artigos como filhos.
     return (
-      <section className={classList('CanelaTopicMap', `CanelaTopicMap--${position}`)} aria-label={t('topic.map.aria_label')}>
+      <article className={classList('CanelaTopicMap', `CanelaTopicMap--${position}`)} aria-label={t('topic.map.aria_label')}>
         <div className={classList('CanelaTopicMap-stats', { 'CanelaTopicMap-stats--single': stats.length === 1 })}>
           {stats}
 
@@ -171,7 +173,7 @@ export default class TopicMap extends Component<TopicMapAttrs> {
         {this.open === 'likes' && this.likesMenu(visible)}
         {this.open === 'links' && links && this.linksMenu(discussion, links.top)}
         {this.open === 'users' && this.usersMenu(top)}
-      </section>
+      </article>
     );
   }
 
