@@ -71,6 +71,20 @@ export default function installListHeader(): void {
 
     if (!vdom || !state) return;
 
+    // O core marca o <ul> como role="feed" e cada <li> como "article", papéis
+    // que lista e item não aceitam (axe/Lighthouse): fica a semântica nativa
+    // de lista, que o leitor de tela já anuncia com a contagem.
+    const discussions = Array.isArray(vdom.children)
+      ? (vdom.children as any[]).find((child) => child?.attrs?.className === 'DiscussionList-discussions')
+      : null;
+
+    if (discussions?.attrs) {
+      delete discussions.attrs.role;
+      const unrole = (nodes: any[] | undefined): void =>
+        nodes?.forEach((node) => (node?.tag === '[' ? unrole(node.children) : node?.attrs && delete node.attrs.role));
+      unrole(discussions.children);
+    }
+
     // Primeira página carregando (troca de filtro, categoria ou ordem): as
     // linhas do skeleton no lugar do spinner, debaixo do cabeçalho.
     const loadingFirst = state.isInitialLoading() && !state.hasItems();

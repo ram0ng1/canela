@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 use Flarum\Extend;
 use Ramon\Canela\Preload\AdminOnlyForumAttributes;
+use Ramon\Canela\Preload\DeferXsltPolyfill;
 use Ramon\Canela\Preload\PreBootShell;
 use Ramon\Canela\Preload\PreloadContent;
 
@@ -28,6 +29,8 @@ return [
         ->content(PreloadContent::class, -10)
         // A casca (classes do #app, encaixes do cabeçalho) antes da primeira pintura.
         ->content(PreBootShell::class)
+        // O polyfill do XSLT sem bloquear a primeira pintura (ver a classe).
+        ->content(DeferXsltPolyfill::class)
         // O que só o painel lê sai do documento do fórum (ver a classe).
         ->content(AdminOnlyForumAttributes::class, AdminOnlyForumAttributes::PRIORITY),
 ];

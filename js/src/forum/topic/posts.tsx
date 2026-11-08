@@ -67,6 +67,12 @@ export default function installPosts(): void {
 
     const user = this.attrs.post.user();
     const badges = user ? user.badges().toArray() : [];
+    const avatar = items.get('avatar') as any;
+
+    // O link do avatar (do core) só tem a imagem: sem nome, o leitor de
+    // tela lê só "link".
+    if (user && avatar?.attrs && avatar.attrs.href) avatar.attrs['aria-label'] = user.displayName();
+
     // A presença em modo "anel":
     // um anel verde em volta do avatar, sem pontinho.
     const online = !!user && user.isOnline();
@@ -94,6 +100,10 @@ export default function installPosts(): void {
   extend(PostUser.prototype, 'userViewItems', function (this: any, items: ItemList<Mithril.Children>, user: User) {
     const icons = userIcons(user, 'post');
     const name = items.has('postUser-name') ? (items.get('postUser-name') as any) : null;
+
+    // O nome do autor como h2: na página do tópico o título é o h1, e o h3 do
+    // core pulava um nível (heading-order do Lighthouse).
+    if (name?.tag === 'h3') name.tag = 'h2';
 
     if (!icons || !name || !Array.isArray(name.children)) return;
 
