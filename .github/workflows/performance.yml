@@ -131,7 +131,7 @@ jobs:
       - name: Subir servidor PHP embutido
         working-directory: ${{ env.FLARUM_TEST_DIR }}
         run: |
-          php -S 127.0.0.1:8080 -t public > /tmp/php.log 2>&1 &
+          php -S 127.0.0.1:8080 -t public "${EXT_DIR}/.github/scripts/php-router.php" > /tmp/php.log 2>&1 &
           echo $! > /tmp/php.pid
           for i in $(seq 1 15); do
             code=$(curl -sf -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/ || true)
