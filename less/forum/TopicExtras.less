@@ -1195,3 +1195,33 @@ button.CanelaTopicMap-stat {
     display: none;
   }
 }
+
+// ---------------------------------------------------------------------
+// Avisos de post (topic/postNotice.tsx): "primeira postagem" e "voltou
+// depois de N meses", uma faixa acima do texto.
+// ---------------------------------------------------------------------
+.CanelaPostNotice {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-2);
+  margin: 0 0 var(--cn-space-3);
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border-radius: var(--cn-radius);
+  background: var(--cn-primary-very-low);
+  color: var(--cn-primary-high);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+
+  .icon {
+    flex: none;
+    color: var(--cn-primary-medium);
+  }
+
+  &--first {
+    background: var(--cn-accent-low);
+
+    .icon {
+      color: var(--cn-accent);
+    }
+  }
+}

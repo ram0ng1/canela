@@ -684,6 +684,10 @@ ramon-canela:
         sidebar_custom_links_label: "カスタムセクションのリンク"
         sidebar_custom_links_help: "1 行に 1 つのリンク：ラベル | アドレス | アイコン（任意、Font Awesome）。/ で始まるアドレスはフォーラム内のものです。リンクがなければセクションは表示されません。"
         inline_title_editor_help: "名前を変更できる人には、ディスカッションのタイトルの横に鉛筆が表示されます。タイトルが入力欄になり、タグボタンと保存・取り消しの ✓/✕ が付きます。"
+        post_notices_label: '投稿のお知らせ'
+        post_notices_help: '初めての投稿（「歓迎しましょう」）や、久しぶりに戻ってきた人の投稿（「前回の投稿は 8 か月前」）の本文の上に帯を表示します。お知らせは投稿の作成時に決まります。'
+        post_notice_months_label: '「おかえり」までの月数'
+        post_notice_months_help: '何か月投稿がないと、次の投稿におかえりのお知らせが付くか。'
         share_modal_help: "共有ボタンで、リンク、コピーボタン、各ネットワークのボタンがあるウィンドウが開きます。オフのときはリンクをコピーするだけです。スマートフォンではシステムの共有シートが使われます。"
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] で、読者のタイムゾーンの日付と時刻を表示します。キャッシュを消去した後に有効になります。"
         invites_enabled_help: "「招待」の権限（権限）を持つ人は、有効期限と使用回数付きのリンクを、共有と「その他」メニューから作成できます。リンクから参加した人は招待されたユーザーとして表示され、招待した人には「○○さんが招待を承諾しました」と届きます。登録が開放されている必要があります。"
@@ -2810,6 +2814,8 @@ ramon-canela:
       embedded:
         go_to_post: 投稿へ移動
       post:
+        notice_first: '{username} さんの初めての投稿です。コミュニティへようこそ！'
+        notice_returning: '{username} さんが戻ってきました！前回の投稿は {ago} です。'
         mention_unavailable: "表示できない投稿"
         in_reply_to: '返信先: クリックで投稿を表示'
         reply_to_label: 返信先
