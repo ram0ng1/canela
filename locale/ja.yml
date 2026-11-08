@@ -647,6 +647,7 @@ ramon-canela:
         not_found_template_signpost: "道しるべ"
         not_found_template_signpost_help: "中央に道しるべ、検索バー、短いディスカッションの一覧。"
         invite_permission: "ユーザーを招待（招待リンク）"
+        assign_permission: "ディスカッションを担当者に割り当てる"
         lightbox_label: "画像の拡大（ライトボックス）"
         lightbox_help: "投稿内の画像をクリックすると、暗い背景の上に大きく表示されます。同じ投稿の画像間を移動する矢印、ズーム、「元の画像」、「ダウンロード」付き。"
         code_buttons_label: "コードブロックのボタン"
@@ -688,6 +689,10 @@ ramon-canela:
         pwa_help: 'フォーラムをスマートフォンやパソコンにアプリとしてインストールできます。名前・色・アイコンは外観の設定から取ります。ブラウザに「インストール」を表示させるには 512 px の PNG ファビコンを使ってください。'
         push_label: "ブラウザのプッシュ通知"
         push_help: 'フォーラムを閉じていてもスマートフォンやパソコンに通知が届きます。各ユーザーが 設定 → 通知 でオンにし、表にプッシュの列が追加されて種類を選べます。HTTPS と、応答を遅らせないためのキューが必要です。'
+        post_notices_label: '投稿のお知らせ'
+        post_notices_help: '初めての投稿（「歓迎しましょう」）や、久しぶりに戻ってきた人の投稿（「前回の投稿は 8 か月前」）の本文の上に帯を表示します。お知らせは投稿の作成時に決まります。'
+        post_notice_months_label: '「おかえり」までの月数'
+        post_notice_months_help: '何か月投稿がないと、次の投稿におかえりのお知らせが付くか。'
         share_modal_help: "共有ボタンで、リンク、コピーボタン、各ネットワークのボタンがあるウィンドウが開きます。オフのときはリンクをコピーするだけです。スマートフォンではシステムの共有シートが使われます。"
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] で、読者のタイムゾーンの日付と時刻を表示します。キャッシュを消去した後に有効になります。"
         invites_enabled_help: "「招待」の権限（権限）を持つ人は、有効期限と使用回数付きのリンクを、共有と「その他」メニューから作成できます。リンクから参加した人は招待されたユーザーとして表示され、招待した人には「○○さんが招待を承諾しました」と届きます。登録が開放されている必要があります。"
@@ -739,6 +744,8 @@ ramon-canela:
         verified_help: 'ramon/verified のバッジを、ユーザーアイコンのように名前のすぐ後ろ、文字と同じ行・同じ大きさで表示します（投稿ヘッダー、埋め込み投稿、「返信先」、ユーザーカード、プロフィール）。'
         wiki_label: 'テーマに合わせた Wiki'
         wiki_help: 'linkrobins/wiki の Wiki をテーマの見た目にします。目次はディスカッション一覧のように、記事は最初の投稿のように（マップと履歴つき）、執筆はディスカッションのコンポーザー（下書き、詳細オプション、よくある質問つき）で行い、サイドバーのコミュニティセクションに「Wiki」リンクを置きます。'
+        audit_label: 'テーマに合わせた監査ログ'
+        audit_help: 'flarum/audit のログをテーマの見た目にします。変更対象のアイコンをアバターに重ね、アクションを種類（作成、非表示、編集）ごとに色分けしたピルで表示し、日ごとにまとめ、Enter でフィルターを適用します。'
         ramon_chat_label: テーマスタイルのチャット（ramon/chat）
         ramon_chat_help: 'ramon/chat 拡張機能を テーマのチャットのように表示します：2 列目のないページ、ドロワー、メッセージ、エディター、スレッド、チャンネル画面。拡張機能が有効な場合、テーマ独自のチャットはこちらに切り替わります。'
         ramon_chat_sidebar_label: サイドバーのチャンネル
@@ -2543,6 +2550,17 @@ ramon-canela:
         canelaAssigned: "{username} さんがこのディスカッションをあなたに割り当てました"
         canelaPostEdited: "{username} さんがあなたの投稿を編集しました"
         canelaTopicLinked: "{username} さんがあなたのディスカッションをリンクしました"
+    assign:
+      title: "ディスカッションを割り当てる"
+      placeholder: "ユーザー名で検索…"
+      remove: "{username} さんの割り当てを解除"
+      notification: "{username} さんがあなたにディスカッションを割り当てました"
+      label: "担当"
+      assigned_to: "担当: {username}"
+      action: "割り当て…"
+      change: "割り当てを変更…"
+      nav: "自分の担当"
+      setting: "ディスカッションが自分に割り当てられたとき"
     metoo:
       label: 私も
       label_with_count: '{label}（{count}）'
@@ -2792,6 +2810,9 @@ ramon-canela:
         react_with: '{reaction} でリアクション'
         remove: リアクションを取り消す
         like_reaction: いいね
+      audit:
+        today: 今日
+        yesterday: 昨日
       polls:
         votes: '{count, plural, =0 {票} one {票} other {票}}'
       upload:
@@ -2837,6 +2858,8 @@ ramon-canela:
       embedded:
         go_to_post: 投稿へ移動
       post:
+        notice_first: '{username} さんの初めての投稿です。コミュニティへようこそ！'
+        notice_returning: '{username} さんが戻ってきました！前回の投稿は {ago} です。'
         mention_unavailable: "表示できない投稿"
         in_reply_to: '返信先: クリックで投稿を表示'
         reply_to_label: 返信先
@@ -3513,3 +3536,10 @@ fof-oauth:
   forum:
     providers:
       passkey: パスキー
+# O registro do atribuir tópico no flarum/audit (extend/assign.php).
+flarum-audit:
+  lib:
+    browser:
+      discussion:
+        assigned: "{discussion} を {username} さんに割り当てました"
+        unassigned: "{discussion} の割り当てを解除しました"

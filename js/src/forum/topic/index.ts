@@ -18,6 +18,7 @@ import { installSubscriptionBadge } from './components/TopicNotifications';
 import installReplyToComposer from './replyToComposer';
 import installMarkUnread from './markUnread';
 import installBackHistory from './backHistory';
+import installPostNotice from './postNotice';
 
 export default function installTopic(): void {
   // O composer no "em resposta a" do avocado (extends por nome de módulo:
@@ -40,5 +41,6 @@ export default function installTopic(): void {
     installTopicMap();
     installUserCard();
     installAuthorFilter();
+    installPostNotice();
   });
 }

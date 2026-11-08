@@ -647,6 +647,7 @@ ramon-canela:
         not_found_template_signpost: "Placa"
         not_found_template_signpost_help: "A placa de direção no centro, a faixa de busca e listas curtas de tópicos."
         invite_permission: "Convidar pessoas (links de convite)"
+        assign_permission: "Atribuir tópicos a alguém"
         lightbox_label: "Ampliar imagens (lightbox)"
         lightbox_help: "Clicar numa imagem da postagem abre a imagem grande sobre um fundo escuro, com setas entre as imagens da mesma postagem, zoom, \"Imagem original\" e \"Baixar\"."
         code_buttons_label: "Botões nos blocos de código"
@@ -688,6 +689,10 @@ ramon-canela:
         pwa_help: 'O fórum pode ser instalado como app no celular e no computador, com o nome, a cor e o ícone da Aparência. Para o navegador oferecer "Instalar", use um favicon PNG de 512 px.'
         push_label: "Push no navegador"
         push_help: 'Notificações no celular e no computador mesmo com o fórum fechado. Cada pessoa liga em Configurações → Notificações, e a tabela ganha a coluna Push para escolher os tipos. Precisa de HTTPS e de uma fila rodando para não atrasar as respostas.'
+        post_notices_label: 'Avisos de post'
+        post_notices_help: 'Uma faixa acima do texto na primeira postagem de alguém ("dê as boas-vindas") e quando alguém volta depois de muito tempo ("a última postagem foi há 8 meses"). O aviso é decidido quando o post é criado.'
+        post_notice_months_label: 'Meses para "voltou"'
+        post_notice_months_help: 'Quantos meses sem postar até a próxima postagem ganhar o aviso de volta.'
         share_modal_help: "O botão Compartilhar abre uma janela com o link, o botão de copiar e os botões das redes. Desligado, ele só copia o link. No celular vale a folha de compartilhamento do sistema."
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] mostra a data e a hora no fuso de quem lê. Vale depois de limpar o cache."
         invites_enabled_help: "Quem tem a permissão \"Convidar\" (Permissões) gera links com validade e número de usos, em Compartilhar e no menu \"Mais\". Quem entra por um link aparece como convidado e quem convidou recebe \"Fulano aceitou seu convite\". Precisa do cadastro aberto."
@@ -739,6 +744,8 @@ ramon-canela:
         verified_help: 'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como um ícone de usuário: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
         wiki_label: 'Wiki no padrão do tema'
         wiki_help: 'A wiki da linkrobins/wiki com a cara do tema: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever (com rascunho, opções avançadas e perguntas frequentes) e o link "Wiki" na seção da comunidade da barra lateral.'
+        audit_label: 'Log de auditoria no padrão do tema'
+        audit_help: 'O log do flarum/audit com a cara do tema: o ícone do que mudou sobre o avatar, a ação em pílula colorida pelo tipo (criou, ocultou, editou), as entradas agrupadas por dia e Enter para aplicar o filtro.'
         ramon_chat_label: Chat (ramon/chat) no visual do tema
         ramon_chat_help: 'O chat da extensão ramon/chat com a cara do chat do tema: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
         ramon_chat_sidebar_label: Canais na barra lateral
@@ -2543,6 +2550,17 @@ ramon-canela:
         canelaAssigned: "{username} atribuiu este tópico a você"
         canelaPostEdited: "{username} editou sua postagem"
         canelaTopicLinked: "{username} vinculou seu tópico"
+    assign:
+      title: "Atribuir tópico"
+      placeholder: "Buscar pelo nome de usuário…"
+      remove: "Remover a atribuição de {username}"
+      notification: "{username} atribuiu um tópico a você"
+      label: "Atribuído a"
+      assigned_to: "Atribuído a {username}"
+      action: "Atribuir…"
+      change: "Mudar atribuição…"
+      nav: "Atribuídos a mim"
+      setting: "Alguém me atribui um tópico"
     metoo:
       label: Eu também
       label_with_count: '{label} ({count})'
@@ -2792,6 +2810,9 @@ ramon-canela:
         react_with: Reagir com {reaction}
         remove: Remover a sua reação
         like_reaction: Curtir
+      audit:
+        today: Hoje
+        yesterday: Ontem
       polls:
         votes: '{count, plural, =0 {votos} one {voto} other {votos}}'
       upload:
@@ -2837,6 +2858,8 @@ ramon-canela:
       embedded:
         go_to_post: Ir para o post
       post:
+        notice_first: 'É a primeira postagem de {username}. Dê as boas-vindas à comunidade!'
+        notice_returning: '{username} voltou! A última postagem foi {ago}.'
         mention_unavailable: "postagem indisponível"
         in_reply_to: 'Em resposta a: clique para ver o post'
         reply_to_label: Em resposta a
@@ -3513,3 +3536,10 @@ fof-oauth:
   forum:
     providers:
       passkey: Chave de acesso (passkey)
+# O registro do atribuir tópico no flarum/audit (extend/assign.php).
+flarum-audit:
+  lib:
+    browser:
+      discussion:
+        assigned: "Atribuiu {discussion} a {username}"
+        unassigned: "Removeu a atribuição de {discussion}"
