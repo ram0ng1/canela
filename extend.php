@@ -218,6 +218,12 @@ $settings = (new Extend\Settings())
     // extensão habilitada e a integração ligada no admin (padrão: ligada).
     ->registerLessConfigVar('config-canela-wiki', 'canela.thirdparty_wiki', static fn ($value): string => ($value === null || (bool) $value) && resolve(\Flarum\Extension\ExtensionManager::class)->isEnabled('linkrobins-wiki') ? 'true' : 'false')
     ->registerLessConfigVar('config-canela-ai', 'canela.ai_enabled', static fn ($value): string => $value === null || (bool) $value ? 'true' : 'false')
+    // Marcadores, emblemas (com os níveis de confiança) e "Relatar problema":
+    // o CSS de cada um só entra com o recurso ligado, como o da IA.
+    ->registerLessConfigVar('config-canela-bookmarks', 'canela.bookmarks_enabled', static fn ($value): string => $value === null || (bool) $value ? 'true' : 'false')
+    ->registerLessConfigVar('config-canela-badges', 'canela.badges_enabled', static fn ($value): string => $value === null || (bool) $value ? 'true' : 'false')
+    ->registerLessConfigVar('config-canela-trust-levels', 'canela.trust_levels_enabled', static fn ($value): string => $value === null || (bool) $value ? 'true' : 'false')
+    ->registerLessConfigVar('config-canela-bug-reports', 'canela.bug_reports_enabled', static fn ($value): string => (bool) $value ? 'true' : 'false')
     // Indicador de carregamento com SVG (less/forum/Loader.less): o desenho vai
     // na folha como `data:`, e cada uma das chaves recompila a folha ao mudar.
     // Os valores saem de LoaderLess, que devolve o padrão do Flarum se algo
@@ -249,6 +255,11 @@ foreach ([
     'config-canela-tp-moderation' => ['fof-split', 'fof-merge-discussions', 'fof-ignore-users'],
     'config-canela-tp-verified' => ['ramon-verified'],
     'config-canela-tp-profile-cover' => ['forumaker-profile-cover'],
+    'config-canela-tp-best-answer' => ['fof-best-answer'],
+    'config-canela-tp-polls' => ['fof-polls'],
+    // As reações das mensagens usam o mesmo resumo, com ou sem o fof/reactions.
+    'config-canela-tp-reactions' => ['fof-reactions', 'flarum-messages'],
+    'config-canela-tp-messages' => ['flarum-messages'],
 ] as $var => $extensions) {
     $settings->registerLessConfigVar($var, 'canela.thirdparty_less', static function () use ($extensions): string {
         $manager = resolve(\Flarum\Extension\ExtensionManager::class);
