@@ -647,6 +647,7 @@ ramon-canela:
         not_found_template_signpost: "Placa"
         not_found_template_signpost_help: "A placa de direção no centro, a faixa de busca e listas curtas de tópicos."
         invite_permission: "Convidar pessoas (links de convite)"
+        assign_permission: "Atribuir tópicos a alguém"
         lightbox_label: "Ampliar imagens (lightbox)"
         lightbox_help: "Clicar numa imagem da postagem abre a imagem grande sobre um fundo escuro, com setas entre as imagens da mesma postagem, zoom, \"Imagem original\" e \"Baixar\"."
         code_buttons_label: "Botões nos blocos de código"
@@ -2516,6 +2517,16 @@ ramon-canela:
         invited_group: Convidou {who} {when}
         removed_user: Removeu {who} {when}
         user_left: '{who} se removeram desta mensagem {when}'
+    assign:
+      title: "Atribuir tópico"
+      placeholder: "Buscar pelo nome de usuário…"
+      remove: "Remover a atribuição de {username}"
+      notification: "{username} atribuiu um tópico a você"
+      label: "Atribuído a"
+      assigned_to: "Atribuído a {username}"
+      action: "Atribuir…"
+      change: "Mudar atribuição…"
+      nav: "Atribuídos a mim"
     metoo:
       label: Eu também
       label_with_count: '{label} ({count})'
@@ -3486,3 +3497,10 @@ fof-oauth:
   forum:
     providers:
       passkey: Chave de acesso (passkey)
+# O registro do atribuir tópico no flarum/audit (extend/assign.php).
+flarum-audit:
+  lib:
+    browser:
+      discussion:
+        assigned: "Atribuiu {discussion} a {username}"
+        unassigned: "Removeu a atribuição de {discussion}"

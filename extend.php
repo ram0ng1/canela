@@ -293,6 +293,7 @@ $feature = static fn (string $name): array => require __DIR__.'/extend/'.$name.'
 $features = [
     ...$feature('activity'),
     ...$feature('ai'),
+    ...$feature('assign'),
     ...$feature('auth'),
     ...$feature('backgrounds'),
     ...$feature('badges'),

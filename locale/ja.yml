@@ -647,6 +647,7 @@ ramon-canela:
         not_found_template_signpost: "道しるべ"
         not_found_template_signpost_help: "中央に道しるべ、検索バー、短いディスカッションの一覧。"
         invite_permission: "ユーザーを招待（招待リンク）"
+        assign_permission: "ディスカッションを担当者に割り当てる"
         lightbox_label: "画像の拡大（ライトボックス）"
         lightbox_help: "投稿内の画像をクリックすると、暗い背景の上に大きく表示されます。同じ投稿の画像間を移動する矢印、ズーム、「元の画像」、「ダウンロード」付き。"
         code_buttons_label: "コードブロックのボタン"
@@ -2516,6 +2517,16 @@ ramon-canela:
         invited_group: '{when}に {who} を招待しました'
         removed_user: '{when}に {who} さんを削除しました'
         user_left: '{when}に {who} さんがこのメッセージから退出しました'
+    assign:
+      title: "ディスカッションを割り当てる"
+      placeholder: "ユーザー名で検索…"
+      remove: "{username} さんの割り当てを解除"
+      notification: "{username} さんがあなたにディスカッションを割り当てました"
+      label: "担当"
+      assigned_to: "担当: {username}"
+      action: "割り当て…"
+      change: "割り当てを変更…"
+      nav: "自分の担当"
     metoo:
       label: 私も
       label_with_count: '{label}（{count}）'
@@ -3486,3 +3497,10 @@ fof-oauth:
   forum:
     providers:
       passkey: パスキー
+# O registro do atribuir tópico no flarum/audit (extend/assign.php).
+flarum-audit:
+  lib:
+    browser:
+      discussion:
+        assigned: "{discussion} を {username} さんに割り当てました"
+        unassigned: "{discussion} の割り当てを解除しました"
