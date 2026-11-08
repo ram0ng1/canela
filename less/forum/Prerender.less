@@ -1,0 +1,91 @@
+// =====================================================================
+// O conteúdo do servidor visível antes do JS (views/prerender): a lista
+// de tópicos e os posts num cartão parecido com o do tema, só até o
+// Flarum montar a página (o JS esconde o bloco no beforeMount).
+// =====================================================================
+
+// Com o conteúdo à vista, o "Carregando…" do core sobra (o script inline o
+// mostra com style="display: block").
+#flarum-loading:has(~ .CanelaPrerender) {
+  display: none !important;
+}
+
+.CanelaPrerender[hidden] {
+  display: none;
+}
+
+.CanelaPrerender > .container {
+  box-sizing: border-box;
+  max-width: 1110px;
+  margin: var(--cn-space-6) auto;
+  padding: var(--cn-space-6);
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-large);
+  color: var(--cn-primary);
+  font-family: var(--cn-font);
+
+  @media (max-width: 767px) {
+    margin: 0;
+    padding: var(--cn-space-4);
+    border: 0;
+    border-radius: 0;
+  }
+
+  h1 {
+    margin: 0 0 var(--cn-space-4);
+    font-size: var(--cn-font-up-3);
+    line-height: 1.25;
+  }
+
+  // A lista de tópicos (index) e a de tags.
+  ul {
+    margin: 0 0 var(--cn-space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    border-bottom: 1px solid var(--cn-border);
+
+    > a {
+      display: block;
+      padding: var(--cn-space-3) 0;
+      color: var(--cn-primary);
+      font-size: var(--cn-font-up-1);
+      font-weight: 500;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+  }
+
+  // Os posts de um tópico.
+  article {
+    padding: var(--cn-space-3) 0;
+  }
+
+  .PostUser-name {
+    margin: 0 0 var(--cn-space-2);
+    color: var(--cn-primary-high);
+    font-size: 1em;
+  }
+
+  .Post-body {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--cn-border);
+  }
+
+  > a {
+    color: var(--cn-accent);
+  }
+}

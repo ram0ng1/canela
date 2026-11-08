@@ -3,6 +3,7 @@ import normalizeRevManifest from '../common/revManifest';
 
 import installIcons from './icons';
 import installPreload from './utils/preload';
+import installPrerender from './utils/prerender';
 import installShell from './shell/installShell';
 import installList from './list';
 import installUser from './user';
@@ -76,6 +77,7 @@ app.initializers.add('ramon-canela', () => {
   normalizeRevManifest();
   // Antes de tudo: as páginas que pedem dados no boot já encontram a resposta pronta.
   installPreload();
+  installPrerender();
   installIcons();
   // Tema base: casca, lista, perfil e tópico.
   installShell();
