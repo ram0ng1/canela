@@ -41,12 +41,12 @@ final class AssigneeFields
                 ->nullable()
                 ->writable(fn (Discussion $discussion, Context $context) => $context->updating() && $context->getActor()->can('canelaAssign', $discussion))
                 ->set(function (Discussion $discussion, ?User $assignee, Context $context): void {
-                    if ($discussion->canela_assignee_id === $assignee?->id) {
+                    if ($discussion->getAttribute('canela_assignee_id') === $assignee?->id) {
                         return;
                     }
 
                     $actor = $context->getActor();
-                    $discussion->canela_assignee_id = $assignee?->id;
+                    $discussion->setAttribute('canela_assignee_id', $assignee?->id);
                     $discussion->raise(new Assigned($discussion, $actor, $assignee));
 
                     if ($assignee && $assignee->id !== $actor->id) {
