@@ -4,18 +4,17 @@
  * tópico vinculado e a pré-visualização lado a lado. Cada um pode ser
  * desligado no card "Editor" do admin (`canela.composer_*`).
  */
-import installEmoji from './emoji/installEmoji';
-import installSimilarTopics from './installSimilarTopics';
 import installHashtags from './installHashtags';
 import installDrafts from './drafts/installDrafts';
 import installLinkedTopic from './installLinkedTopic';
 import installPreview from './installPreview';
+import installComposerChunks from '../../composer/lazy';
 
 export default function installComposer() {
-  installEmoji();
-  installSimilarTopics();
   installHashtags();
   installDrafts();
   installLinkedTopic();
   installPreview();
+  // Emoji, tópicos semelhantes, o menu do `@` e o modal de tags: sob demanda.
+  installComposerChunks();
 }

@@ -26,10 +26,8 @@ import ComposerActionTitle from './ComposerActionTitle';
 import ComposerFields from './ComposerFields';
 import { missingTagsMessage, normalizeTags, selectableTags, type RuleTag } from './tagRules';
 import installModals from './installModals';
-import installTagModal from './tagModal';
 import installAlignComposer from './alignComposer';
 import installMobileViewport from './mobileViewport';
-import installMentionsDropdown from './mentionsDropdown';
 import installCaret from './caret';
 import { isMorphing, morphComposer } from './morph';
 import installToolbar, { addMoreAction, richMode, setPlaceholderProvider } from './installToolbar';
@@ -396,13 +394,10 @@ export default function installComposerShell() {
   installToolbar();
   // Os modais de entrar/cadastrar (a casca de UI mora junto da do composer).
   installModals();
-  // O modal de tags do flarum/tags no desenho do seletor de tags do composer.
-  installTagModal();
   installAlignComposer();
   // No celular, o composer cabe acima do teclado (o do iOS cobre a página).
   installMobileViewport();
-  // O menu do `@`/`#` do flarum/mentions no desenho do tema, e a medida do
-  // cursor que ele usa sem recalcular a página inteira.
-  installMentionsDropdown();
+  // A medida do cursor que o menu do `@`/`#` usa sem recalcular a página
+  // inteira (o menu em si desce com o editor: ./lazy.ts).
   installCaret();
 }
