@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ramon\Canela\Push;
 
 use Flarum\Discussion\Discussion;
+use Flarum\Http\SlugManager;
 use Flarum\Http\UrlGenerator;
 use Flarum\Locale\TranslatorInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
@@ -39,7 +40,7 @@ final class SendPushJob extends AbstractJob
         parent::__construct();
     }
 
-    public function handle(Push $push, UrlGenerator $url, TranslatorInterface $translator, SettingsRepositoryInterface $settings): void
+    public function handle(Push $push, UrlGenerator $url, TranslatorInterface $translator, SettingsRepositoryInterface $settings, SlugManager $slugs): void
     {
         $keys = $push->keys();
         $webPush = new WebPush(['VAPID' => [
@@ -55,7 +56,7 @@ final class SendPushJob extends AbstractJob
         $link = match (true) {
             $subject instanceof Post && $discussion !== null => $url->to('forum')->route('discussion', ['id' => $discussion->id, 'near' => $subject->number]),
             $discussion !== null => $url->to('forum')->route('discussion', ['id' => $discussion->id]),
-            $subject instanceof User => $url->to('forum')->route('user', ['username' => $subject->slug]),
+            $subject instanceof User => $url->to('forum')->route('user', ['username' => $slugs->forResource(User::class)->toSlug($subject)]),
             default => $url->to('forum')->base(),
         };
 
@@ -80,7 +81,7 @@ final class SendPushJob extends AbstractJob
                     'title' => $discussion?->title ?: (string) $settings->get('forum_title'),
                     'body' => $what,
                     'url' => $link,
-                    'tag' => $type.'-'.($discussion?->id ?? $subject->getKey()),
+                    'tag' => $type.'-'.($discussion->id ?? $subject->getKey()),
                     'icon' => $from?->avatar_url,
                 ]),
             );

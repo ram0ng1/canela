@@ -46,7 +46,9 @@ final class PushNotificationDriver implements NotificationDriverInterface
 
         if ($ids && PushSubscription::query()->whereIn('user_id', $ids)->exists()) {
             // A fila resolvida na hora de enfileirar, como o driver de e-mail do core.
-            $this->container->make(Queue::class)->push(new SendPushJob($blueprint, $ids));
+            /** @var Queue $queue */
+            $queue = $this->container->make(Queue::class);
+            $queue->push(new SendPushJob($blueprint, $ids));
         }
     }
 
