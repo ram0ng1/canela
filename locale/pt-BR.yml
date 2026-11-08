@@ -739,6 +739,8 @@ ramon-canela:
         verified_help: 'O selo do ramon/verified logo depois do nome, na linha do texto e do tamanho dele, como um ícone de usuário: no cabeçalho do post, nos posts embutidos, no "em resposta a", no cartão e no perfil.'
         wiki_label: 'Wiki no padrão do tema'
         wiki_help: 'A wiki da linkrobins/wiki com a cara do tema: o índice como a lista de discussões, o artigo como o primeiro post (com o mapa e o histórico), o composer de discussão para escrever (com rascunho, opções avançadas e perguntas frequentes) e o link "Wiki" na seção da comunidade da barra lateral.'
+        audit_label: 'Log de auditoria no padrão do tema'
+        audit_help: 'O log do flarum/audit com a cara do tema: o ícone do que mudou sobre o avatar, a ação em pílula colorida pelo tipo (criou, ocultou, editou), as entradas agrupadas por dia e Enter para aplicar o filtro.'
         ramon_chat_label: Chat (ramon/chat) no visual do tema
         ramon_chat_help: 'O chat da extensão ramon/chat com a cara do chat do tema: a página sem a segunda coluna, a gaveta, as mensagens, o editor, os fios e as telas de canais. Com ela ligada, o chat do tema dá lugar ao da extensão.'
         ramon_chat_sidebar_label: Canais na barra lateral
@@ -2769,6 +2771,9 @@ ramon-canela:
         react_with: Reagir com {reaction}
         remove: Remover a sua reação
         like_reaction: Curtir
+      audit:
+        today: Hoje
+        yesterday: Ontem
       polls:
         votes: '{count, plural, =0 {votos} one {voto} other {votos}}'
       upload:

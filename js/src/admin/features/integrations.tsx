@@ -177,6 +177,16 @@ const cards: CardDef[] = [
     master: 'canela.thirdparty_wiki',
     extensions: ['linkrobins-wiki'],
   },
+  {
+    id: 'thirdparty-audit',
+    group: 'integrations',
+    icon: 'fas fa-book',
+    title: () => trans(`${KEY}.audit_label`),
+    description: help('audit'),
+    keywords: 'auditoria audit log registro moderação moderation flarum',
+    master: 'canela.thirdparty_audit',
+    extensions: ['flarum-audit'],
+  },
 ];
 
 export default cards;
