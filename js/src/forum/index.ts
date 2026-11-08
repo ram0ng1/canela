@@ -29,6 +29,7 @@ import installReview from './review';
 import installComposerShell from './composer/installComposerShell';
 import installTemplates from './features/templates';
 import installOnebox from './features/onebox';
+import installPush from './features/push';
 import installGaps from './gaps';
 import installMotion from './motion';
 import installThirdParty from './thirdparty';
@@ -107,6 +108,7 @@ app.initializers.add('ramon-canela', () => {
   installEvents();
   installCooked();
   installOnebox();
+  installPush();
   installBugReports();
   installUserMenu();
   // A fila de revisão na página /flags (flarum/flags e approval).

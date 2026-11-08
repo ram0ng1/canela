@@ -418,3 +418,32 @@
     max-width: none;
   }
 }
+
+// ---------------------------------------------------------------------
+// Push no navegador (features/push): o texto do estado e o botão de ligar
+// ou desligar neste aparelho, numa linha.
+// ---------------------------------------------------------------------
+.CanelaPush {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cn-space-2) var(--cn-space-4);
+  margin: 0 0 var(--cn-space-4);
+  padding: var(--cn-space-3) var(--cn-space-4);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+
+  .CanelaPush-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .helpText {
+    margin: 0;
+  }
+}

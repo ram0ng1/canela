@@ -684,6 +684,10 @@ ramon-canela:
         sidebar_custom_links_label: "カスタムセクションのリンク"
         sidebar_custom_links_help: "1 行に 1 つのリンク：ラベル | アドレス | アイコン（任意、Font Awesome）。/ で始まるアドレスはフォーラム内のものです。リンクがなければセクションは表示されません。"
         inline_title_editor_help: "名前を変更できる人には、ディスカッションのタイトルの横に鉛筆が表示されます。タイトルが入力欄になり、タグボタンと保存・取り消しの ✓/✕ が付きます。"
+        pwa_label: "インストール可能なアプリ（PWA）"
+        pwa_help: 'フォーラムをスマートフォンやパソコンにアプリとしてインストールできます。名前・色・アイコンは外観の設定から取ります。ブラウザに「インストール」を表示させるには 512 px の PNG ファビコンを使ってください。'
+        push_label: "ブラウザのプッシュ通知"
+        push_help: 'フォーラムを閉じていてもスマートフォンやパソコンに通知が届きます。各ユーザーが 設定 → 通知 でオンにし、表にプッシュの列が追加されて種類を選べます。HTTPS と、応答を遅らせないためのキューが必要です。'
         share_modal_help: "共有ボタンで、リンク、コピーボタン、各ネットワークのボタンがあるウィンドウが開きます。オフのときはリンクをコピーするだけです。スマートフォンではシステムの共有シートが使われます。"
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] で、読者のタイムゾーンの日付と時刻を表示します。キャッシュを消去した後に有効になります。"
         invites_enabled_help: "「招待」の権限（権限）を持つ人は、有効期限と使用回数付きのリンクを、共有と「その他」メニューから作成できます。リンクから参加した人は招待されたユーザーとして表示され、招待した人には「○○さんが招待を承諾しました」と届きます。登録が開放されている必要があります。"
@@ -2516,6 +2520,29 @@ ramon-canela:
         invited_group: '{when}に {who} を招待しました'
         removed_user: '{when}に {who} さんを削除しました'
         user_left: '{when}に {who} さんがこのメッセージから退出しました'
+    push:
+      title: "ブラウザ通知"
+      state_loading: "この端末を確認しています…"
+      state_unsupported: "このブラウザはプッシュ通知に対応していません。"
+      state_denied: "このサイトの通知はブラウザの権限でブロックされています。"
+      state_off: "フォーラムを閉じていても、この端末で通知を受け取れます。"
+      state_on: "この端末でオンです。プッシュの列で種類を選んでください。"
+      enable: "この端末でオンにする"
+      disable: "この端末でオフにする"
+      column: "プッシュ"
+      error: "この端末の通知を変更できませんでした。"
+      generic: "{username} さんから新しいお知らせがあります"
+      types:
+        newPost: "{username} さんが返信しました"
+        postLiked: "{username} さんがあなたの投稿にいいねしました"
+        postMentioned: "{username} さんがあなたの投稿に返信しました"
+        userMentioned: "{username} さんがあなたをメンションしました"
+        groupMentioned: "{username} さんがあなたのグループをメンションしました"
+        discussionRenamed: "{username} さんがディスカッションの名前を変更しました"
+        discussionLocked: "{username} さんがディスカッションをロックしました"
+        canelaAssigned: "{username} さんがこのディスカッションをあなたに割り当てました"
+        canelaPostEdited: "{username} さんがあなたの投稿を編集しました"
+        canelaTopicLinked: "{username} さんがあなたのディスカッションをリンクしました"
     metoo:
       label: 私も
       label_with_count: '{label}（{count}）'

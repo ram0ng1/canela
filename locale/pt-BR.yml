@@ -684,6 +684,10 @@ ramon-canela:
         sidebar_custom_links_label: "Links da seção personalizada"
         sidebar_custom_links_help: "Um link por linha: Rótulo | endereço | ícone (opcional, do Font Awesome). Endereços que começam com / são do próprio fórum. Sem links, a seção não aparece."
         inline_title_editor_help: "Quem pode renomear vê um lápis ao lado do título da discussão: o título vira um campo, com o botão de tags e ✓/✕ para salvar ou desistir."
+        pwa_label: "App instalável (PWA)"
+        pwa_help: 'O fórum pode ser instalado como app no celular e no computador, com o nome, a cor e o ícone da Aparência. Para o navegador oferecer "Instalar", use um favicon PNG de 512 px.'
+        push_label: "Push no navegador"
+        push_help: 'Notificações no celular e no computador mesmo com o fórum fechado. Cada pessoa liga em Configurações → Notificações, e a tabela ganha a coluna Push para escolher os tipos. Precisa de HTTPS e de uma fila rodando para não atrasar as respostas.'
         share_modal_help: "O botão Compartilhar abre uma janela com o link, o botão de copiar e os botões das redes. Desligado, ele só copia o link. No celular vale a folha de compartilhamento do sistema."
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] mostra a data e a hora no fuso de quem lê. Vale depois de limpar o cache."
         invites_enabled_help: "Quem tem a permissão \"Convidar\" (Permissões) gera links com validade e número de usos, em Compartilhar e no menu \"Mais\". Quem entra por um link aparece como convidado e quem convidou recebe \"Fulano aceitou seu convite\". Precisa do cadastro aberto."
@@ -2516,6 +2520,29 @@ ramon-canela:
         invited_group: Convidou {who} {when}
         removed_user: Removeu {who} {when}
         user_left: '{who} se removeram desta mensagem {when}'
+    push:
+      title: "Notificações no navegador"
+      state_loading: "Verificando este aparelho…"
+      state_unsupported: "Este navegador não aceita notificações push."
+      state_denied: "As notificações estão bloqueadas nas permissões do navegador para este site."
+      state_off: "Receba as notificações neste aparelho mesmo com o fórum fechado."
+      state_on: "Ligadas neste aparelho. Escolha os tipos na coluna Push."
+      enable: "Ativar neste aparelho"
+      disable: "Desativar neste aparelho"
+      column: "Push"
+      error: "Não foi possível mudar as notificações deste aparelho."
+      generic: "{username} tem uma novidade para você"
+      types:
+        newPost: "{username} respondeu"
+        postLiked: "{username} curtiu sua postagem"
+        postMentioned: "{username} respondeu à sua postagem"
+        userMentioned: "{username} mencionou você"
+        groupMentioned: "{username} mencionou seu grupo"
+        discussionRenamed: "{username} renomeou o tópico"
+        discussionLocked: "{username} trancou o tópico"
+        canelaAssigned: "{username} atribuiu este tópico a você"
+        canelaPostEdited: "{username} editou sua postagem"
+        canelaTopicLinked: "{username} vinculou seu tópico"
     metoo:
       label: Eu também
       label_with_count: '{label} ({count})'
