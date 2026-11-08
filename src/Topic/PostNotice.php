@@ -46,7 +46,7 @@ final class PostNotice
     {
         $post = $event->post;
 
-        if (! $post instanceof CommentPost || ! $post->user_id || ! $this->settings->get(self::ENABLED)) {
+        if (! $post->user_id || ! $this->settings->get(self::ENABLED)) {
             return;
         }
 
@@ -77,9 +77,9 @@ final class PostNotice
     {
         return [
             Schema\Attribute::make('canelaNotice')
-                ->get(fn (Post $post) => $post->canela_notice && $this->settings->get(self::ENABLED) ? [
-                    'type' => $post->canela_notice,
-                    'since' => $post->canela_notice_since ? Carbon::parse($post->canela_notice_since)->toIso8601String() : null,
+                ->get(fn (Post $post) => $post->getAttribute('canela_notice') && $this->settings->get(self::ENABLED) ? [
+                    'type' => $post->getAttribute('canela_notice'),
+                    'since' => $post->getAttribute('canela_notice_since') ? Carbon::parse($post->getAttribute('canela_notice_since'))->toIso8601String() : null,
                 ] : null),
         ];
     }
