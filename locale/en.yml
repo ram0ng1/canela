@@ -735,6 +735,8 @@ ramon-canela:
         verified_help: 'The ramon/verified badge right after the name, on the text line and at its size, like a user icon: in the post header, embedded posts, "in reply to", the user card and the profile.'
         wiki_label: 'Wiki in the theme style'
         wiki_help: 'The linkrobins/wiki wiki with the theme look: the index as the discussion list, the article as the first post (with the map and the history), the discussion composer for writing (with draft, advanced options and FAQ) and the "Wiki" link in the community section of the sidebar.'
+        audit_label: 'Audit log in the theme style'
+        audit_help: 'The flarum/audit log with the theme look: an icon for what changed on the avatar, the action as a pill colored by kind (created, hidden, edited), entries grouped by day and Enter to apply the filter.'
         ramon_chat_label: Chat (ramon/chat) in the theme style
         ramon_chat_help: 'The ramon/chat extension looking like the theme''s chat: the page without a second column, the drawer, messages, composer, threads and channel screens. With the extension enabled, the theme''s own chat steps aside for it.'
         ramon_chat_sidebar_label: Channels in the sidebar
@@ -2765,6 +2767,9 @@ ramon-canela:
         react_with: React with {reaction}
         remove: Remove your reaction
         like_reaction: Like
+      audit:
+        today: Today
+        yesterday: Yesterday
       polls:
         votes: '{count, plural, =0 {votes} one {vote} other {votes}}'
       upload:

@@ -42,6 +42,8 @@ export const thirdParty = {
    */
   ramonChatUserButton: () =>
     thirdParty.ramonChat() && !isExtensionEnabled('flarum-messages') && forumBool('canelaThirdPartyRamonChatUserButton', true),
+  /** flarum/audit: o log de auditoria com ícones, pílulas de ação e grupos por dia. */
+  audit: () => isExtensionEnabled('flarum-audit') && forumBool('canelaThirdPartyAudit', true),
   /** ramon/marketplace: a loja no visual do tema (páginas no cartão, títulos como os heros, ícones Lucide). */
   marketplace: () => isExtensionEnabled('ramon-marketplace') && forumBool('canelaThirdPartyMarketplace', true),
   /** ramon/marketplace: os links da loja como a seção recolhível "Loja" da barra lateral. */

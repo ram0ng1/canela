@@ -142,6 +142,8 @@ $forumSettings = [
     // linkrobins/wiki no padrão do tema (thirdparty/wiki): índice, artigo,
     // edição e o "Wiki" da barra lateral.
     'canela.thirdparty_wiki' => ['canelaThirdPartyWiki', true, 'boolval'],
+    // flarum/audit: o log de auditoria no visual do tema (thirdparty/audit).
+    'canela.thirdparty_audit' => ['canelaThirdPartyAudit', true, 'boolval'],
     // ramon/chat no visual do chat do tema (thirdparty/ramonChat): a chave
     // geral, as seções da barra lateral, a aba do menu e o botão do cartão.
     'canela.thirdparty_ramon_chat' => ['canelaThirdPartyRamonChat', true, 'boolval'],
@@ -260,6 +262,7 @@ foreach ([
     // As reações das mensagens usam o mesmo resumo, com ou sem o fof/reactions.
     'config-canela-tp-reactions' => ['fof-reactions', 'flarum-messages'],
     'config-canela-tp-messages' => ['flarum-messages'],
+    'config-canela-tp-audit' => ['flarum-audit'],
 ] as $var => $extensions) {
     $settings->registerLessConfigVar($var, 'canela.thirdparty_less', static function () use ($extensions): string {
         $manager = resolve(\Flarum\Extension\ExtensionManager::class);
