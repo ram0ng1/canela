@@ -126,6 +126,11 @@ const ORDER: string[] = [
   'ai-gists',
   'ai-related',
   'ai-access',
+  // Assistente
+  'assistant-account',
+  'assistant-assign',
+  'assistant-auto',
+  'assistant-style',
 ];
 
 const rank = (card: CardDef) => {

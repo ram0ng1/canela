@@ -12,6 +12,7 @@ import EXTRAS_CARDS from './extras';
 import PROFILE_CARDS from './profile';
 import BADGES_CARDS from './badges';
 import AI_CARDS from './ai';
+import ASSISTANT_CARDS from './assistant';
 import CHAT_CARDS from './chat';
 import GAPS_CARDS from './gaps';
 import METOO_CARDS from './metoo';
@@ -34,6 +35,7 @@ const FEATURE_CARDS: CardDef[] = [
   ...PROFILE_CARDS,
   ...BADGES_CARDS,
   ...AI_CARDS,
+  ...ASSISTANT_CARDS,
   ...INTEGRATION_CARDS,
   ...RAMON_CHAT_FEATURE_CARDS,
   ...CHAT_CARDS,

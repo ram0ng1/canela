@@ -18,7 +18,8 @@ export type GroupKey =
   | 'bugreports'
   | 'system'
   | 'integrations'
-  | 'ai';
+  | 'ai'
+  | 'assistant';
 
 export interface CardDef {
   /** Identificador estável: âncora do card, chave do Mithril e alvo dos links "depende de". */

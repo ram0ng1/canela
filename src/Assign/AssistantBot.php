@@ -13,22 +13,41 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Assign;
 
+use Flarum\Discussion\Discussion;
+use Flarum\Extension\ExtensionManager;
+use Flarum\Post\CommentPost;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Ramon\Canela\System\SystemUser;
 
 /**
- * O assistente do "Atribuir tópico": uma conta à parte da do sistema
- * (`assistente`) que, quando recebe um tópico, responde nele com a IA do tema
- * (AssistantReplyJob). O admin cria a conta pelo painel; o id fica em
- * `canela.assign_bot_user_id`.
+ * O assistente de IA: uma conta à parte da do sistema (`assistente`) que
+ * responde nos tópicos com a IA do tema (AssistantReplyJob), quando recebe um
+ * tópico atribuído ou, sozinho, nas tags escolhidas. O admin cria a conta e
+ * configura tudo na aba "Assistente"; o id fica em `canela.assign_bot_user_id`.
  */
 final class AssistantBot
 {
     public const SETTING = 'canela.assign_bot_user_id';
 
+    /** Responde quando um tópico é atribuído a ele. */
+    public const ON_ASSIGN = 'canela.assistant_on_assign';
+
+    /** Responde sozinho nas tags de AUTO_TAGS (ids separados por vírgula). */
+    public const AUTO = 'canela.assistant_auto';
+    public const AUTO_TAGS = 'canela.assistant_auto_tags';
+
+    /** `first`: só na abertura do tópico; `all`: em toda postagem nova. */
+    public const AUTO_MODE = 'canela.assistant_auto_mode';
+
+    /** O padrão da resposta: a persona (vazio = a padrão do bot), o tamanho e instruções extras. */
+    public const PERSONA = 'canela.assistant_persona';
+    public const LENGTH = 'canela.assistant_length';
+    public const INSTRUCTIONS = 'canela.assistant_instructions';
+
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
+        private readonly ExtensionManager $extensions,
     ) {
     }
 
@@ -62,5 +81,69 @@ final class AssistantBot
         }
 
         return $user;
+    }
+
+    public function onAssign(): bool
+    {
+        return (bool) $this->settings->get(self::ON_ASSIGN);
+    }
+
+    public function persona(): ?string
+    {
+        $id = (string) $this->settings->get(self::PERSONA);
+
+        return $id !== '' ? $id : null;
+    }
+
+    /** `short`, `medium` ou `long`. */
+    public function length(): string
+    {
+        $length = (string) $this->settings->get(self::LENGTH);
+
+        return in_array($length, ['short', 'long'], true) ? $length : 'medium';
+    }
+
+    public function instructions(): string
+    {
+        return trim((string) $this->settings->get(self::INSTRUCTIONS));
+    }
+
+    public function autoMode(): string
+    {
+        return $this->settings->get(self::AUTO_MODE) === 'all' ? 'all' : 'first';
+    }
+
+    /**
+     * A postagem pede a resposta automática: de gente (não do assistente nem
+     * de outra conta do sistema), num tópico das tags escolhidas.
+     */
+    public function replies(CommentPost $post): bool
+    {
+        $author = $post->user;
+
+        return $author !== null
+            && ! $this->is($author)
+            && ! str_ends_with((string) $author->email, '@'.SystemUser::EMAIL_DOMAIN)
+            && $post->discussion !== null
+            && $this->autoReplies($post->discussion);
+    }
+
+    /** O tópico está numa das tags da resposta automática (e ela está ligada). */
+    public function autoReplies(Discussion $discussion): bool
+    {
+        if (! $this->settings->get(self::AUTO) || $this->id() === null) {
+            return false;
+        }
+
+        $tags = array_filter(array_map('intval', explode(',', (string) $this->settings->get(self::AUTO_TAGS))));
+
+        if ($tags === [] || ! $this->extensions->isEnabled('flarum-tags')) {
+            return false;
+        }
+
+        return $discussion->getConnection()->table('discussion_tag')
+            ->where('discussion_id', $discussion->id)
+            ->whereIn('tag_id', $tags)
+            ->exists();
     }
 }

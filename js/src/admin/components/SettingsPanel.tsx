@@ -119,6 +119,12 @@ export const GROUPS: GroupDef[] = [
     label: () => trans(`${KEY}.group_ai`),
     description: () => trans(`${SHELL}.group_ai_desc`),
   },
+  {
+    key: 'assistant',
+    icon: 'fas fa-robot',
+    label: () => trans(`${SHELL}.group_assistant`),
+    description: () => trans(`${SHELL}.group_assistant_desc`),
+  },
 ];
 
 const TAB_STORAGE_KEY = 'canela.admin.tab';
