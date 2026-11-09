@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * O service worker em /sw.js (na raiz, para valer para o fórum todo): mostra
+ * O service worker em /canela-sw (na raiz, para valer para o fórum todo): mostra
  * o push e, no clique, foca a aba que já está no endereço ou abre uma nova.
  */
 final class ServiceWorkerController implements RequestHandlerInterface

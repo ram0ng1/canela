@@ -1,7 +1,7 @@
 /*
  * PWA e push no navegador (backend em extend/push.php):
  *
- * - registra o /sw.js depois do load, sem pesar na primeira pintura;
+ * - registra o /canela-sw depois do load, sem pesar na primeira pintura;
  * - a coluna "Push" na tabela de notificações (o canal do servidor);
  * - em Configurações → Notificações, o botão que liga ou desliga o push
  *   neste aparelho (pede a permissão do navegador e grava o aparelho).
@@ -20,7 +20,7 @@ const pushKey = () => app.forum.attribute<string | null>('canelaPushKey') || nul
 const base = () => String(app.forum.attribute('baseUrl') || '').replace(/\/$/, '');
 
 function registration(): Promise<ServiceWorkerRegistration> {
-  return navigator.serviceWorker.register(`${base()}/sw.js`, { scope: `${base()}/` });
+  return navigator.serviceWorker.register(`${base()}/canela-sw`, { scope: `${base()}/` });
 }
 
 /** A chave VAPID (base64url) no formato que o PushManager pede. */
@@ -34,7 +34,7 @@ function send(method: 'POST' | 'DELETE', body: unknown) {
   return app.request({ method, url: `${app.forum.attribute('apiUrl')}/canela-push-subscriptions`, body });
 }
 
-type State = 'loading' | 'unsupported' | 'denied' | 'off' | 'on';
+type State = 'loading' | 'unsupported' | 'error' | 'denied' | 'off' | 'on';
 
 class PushToggle extends Component {
   status: State = 'loading';
@@ -55,7 +55,8 @@ class PushToggle extends Component {
         m.redraw();
       })
       .catch(() => {
-        this.status = 'unsupported';
+        // O navegador aceita push, mas o service worker não carregou.
+        this.status = 'error';
         m.redraw();
       });
   }
