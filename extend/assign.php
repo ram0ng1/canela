@@ -25,12 +25,21 @@ use Flarum\Discussion\Search\DiscussionSearcher;
 use Flarum\Extend;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\User;
+use Illuminate\Contracts\Queue\Queue;
 use Ramon\Canela\Assign\Assigned;
 use Ramon\Canela\Assign\AssignedBlueprint;
 use Ramon\Canela\Assign\AssignedFilter;
 use Ramon\Canela\Assign\AssigneeFields;
+use Ramon\Canela\Assign\AssistantBot;
+use Ramon\Canela\Assign\AssistantReplyJob;
+use Ramon\Canela\Assign\CreateAssistantController;
+use Ramon\Canela\System\Api\SystemUserPresenter;
 
 return [
+    (new Extend\Settings())
+        ->default(AssigneeFields::ENABLED, false)
+        ->serializeToForum('canelaAssign', AssigneeFields::ENABLED, 'boolval'),
+
     (new Extend\Model(Discussion::class))
         ->belongsTo('canelaAssignee', User::class, 'canela_assignee_id'),
 
@@ -42,8 +51,29 @@ return [
     (new Extend\ApiResource(ForumResource::class))
         ->fields(fn () => [
             Schema\Boolean::make('canelaCanAssign')
-                ->get(fn ($forum, Context $context) => $context->getActor()->hasPermission('discussion.canelaAssign')),
+                ->get(fn ($forum, Context $context) => resolve(AssigneeFields::class)->enabled() && $context->getActor()->hasPermission('discussion.canelaAssign')),
+            // O assistente (ou null): o card do admin e a sugestão no modal.
+            Schema\Arr::make('canelaAssistant')
+                ->nullable()
+                ->get(function () {
+                    $user = resolve(AssigneeFields::class)->enabled() ? resolve(AssistantBot::class)->get() : null;
+
+                    return $user ? resolve(SystemUserPresenter::class)->present($user) : null;
+                }),
         ]),
+
+    (new Extend\Routes('api'))
+        ->post('/canela/assign-assistant', 'canela.assign_assistant.create', CreateAssistantController::class),
+
+    // Atribuído ao assistente: ele responde no tópico, pela fila.
+    (new Extend\Event())
+        ->listen(Assigned::class, function (Assigned $event): void {
+            if ($event->assignee && resolve(AssistantBot::class)->is($event->assignee)) {
+                /** @var Queue $queue */
+                $queue = resolve(Queue::class);
+                $queue->push(new AssistantReplyJob((int) $event->discussion->id, (int) $event->actor->id));
+            }
+        }),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(DiscussionSearcher::class, AssignedFilter::class),

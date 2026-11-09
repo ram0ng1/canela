@@ -19,6 +19,7 @@ use Flarum\Post\CommentPost;
 use Flarum\Post\Event\Posted;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Ramon\Canela\System\SystemUser;
 
 /**
  * Avisos de post, como no Discourse: "primeira postagem de Fulano" e
@@ -47,6 +48,11 @@ final class PostNotice
         $post = $event->post;
 
         if (! $post->user_id || ! $this->settings->get(self::ENABLED)) {
+            return;
+        }
+
+        // As contas que não são de gente (sistema, assistente) não ganham aviso.
+        if (str_ends_with((string) $post->user?->email, '@'.SystemUser::EMAIL_DOMAIN)) {
             return;
         }
 

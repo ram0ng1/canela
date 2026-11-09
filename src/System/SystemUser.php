@@ -97,10 +97,26 @@ final class SystemUser
      */
     public function create(string $bio): User
     {
-        $username = 'system';
+        $user = self::account('system', $bio);
+
+        $this->settings->set(self::SETTING, (string) $user->id);
+        $this->user = $user;
+        $this->loadedFor = (int) $user->id;
+
+        return $user;
+    }
+
+    /**
+     * Uma conta que não é de gente: `$base` (ou `$base1`, `$base2`… se já
+     * existir), e-mail de um domínio que não recebe nada e senha aleatória e
+     * descartada. Também serve ao assistente do "Atribuir tópico".
+     */
+    public static function account(string $base, string $bio): User
+    {
+        $username = $base;
 
         for ($i = 1; User::query()->where('username', $username)->exists(); $i++) {
-            $username = 'system'.$i;
+            $username = $base.$i;
         }
 
         // Direto no modelo, sem a API de cadastro: nenhum evento de cadastro ou
@@ -127,10 +143,6 @@ final class SystemUser
         }
 
         $user->save();
-
-        $this->settings->set(self::SETTING, (string) $user->id);
-        $this->user = $user;
-        $this->loadedFor = (int) $user->id;
 
         return $user;
     }

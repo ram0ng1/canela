@@ -16,6 +16,7 @@ import AdminTextarea from './AdminTextarea';
 import NotFoundPicker from '../components/NotFoundPicker';
 import { getBool, getStr, trans } from '../util';
 import type { CardDef } from '../types';
+import AssistantCard from './assign';
 
 const KEY = 'ramon-canela.admin.settings.gaps';
 
@@ -99,6 +100,16 @@ const cards: CardDef[] = [
     description: help('inline_title_editor'),
     keywords: 'título title editar edit lápis pencil renomear rename etiquetas tags categoria category',
     master: 'canela.inline_title_editor',
+  },
+  {
+    id: 'assign',
+    group: 'topic',
+    icon: 'fas fa-user-check',
+    title: () => trans(`${KEY}.assign_label`),
+    description: help('assign'),
+    keywords: 'atribuir assign responsável assignee tópico discourse assistente assistant bot ia ai claude',
+    master: 'canela.assign_enabled',
+    body: () => <AssistantCard />,
   },
   {
     id: 'post-notices',

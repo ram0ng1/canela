@@ -648,6 +648,14 @@ ramon-canela:
         not_found_template_signpost_help: "A placa de direção no centro, a faixa de busca e listas curtas de tópicos."
         invite_permission: "Convidar pessoas (links de convite)"
         assign_permission: "Atribuir tópicos a alguém"
+        assign_label: "Atribuir tópico"
+        assign_help: "Um responsável por tópico, como o assign do Discourse. Quem tem a permissão \"Atribuir tópicos a alguém\" atribui pelo menu do tópico (inclusive a si mesmo), e quem foi atribuído pode sair sozinho."
+        assign_bot_missing: "Crie o assistente para poder atribuir tópicos à IA: ele responde no tópico com a persona padrão do bot. É uma conta própria, separada da conta do sistema."
+        assign_bot_create: "Criar o assistente"
+        assign_bot_created_as: "Assistente: {name}"
+        assign_bot_help: "Atribua um tópico ao assistente para ele responder com a IA do tema. Conta no limite diário de IA de quem atribuiu, e só funciona com a IA configurada e para quem pode usá-la. Troque o nome, o avatar e a bio no perfil."
+        assign_bot_open_profile: "Abrir o perfil"
+        assign_bot_bio: "Assistente de IA do fórum. Atribua um tópico a mim e eu respondo."
         lightbox_label: "Ampliar imagens (lightbox)"
         lightbox_help: "Clicar numa imagem da postagem abre a imagem grande sobre um fundo escuro, com setas entre as imagens da mesma postagem, zoom, \"Imagem original\" e \"Baixar\"."
         code_buttons_label: "Botões nos blocos de código"
@@ -2562,6 +2570,9 @@ ramon-canela:
       change: "Mudar atribuição…"
       nav: "Atribuídos a mim"
       setting: "Alguém me atribui um tópico"
+      assign_self: "Atribuir a mim"
+      unassign_self: "Remover minha atribuição"
+      assistant: "Assistente de IA: responde no tópico"
     metoo:
       label: Eu também
       label_with_count: '{label} ({count})'

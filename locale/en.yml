@@ -648,6 +648,14 @@ ramon-canela:
         not_found_template_signpost_help: "The signpost in the middle, the search strip and short lists of discussions."
         invite_permission: "Invite people (invite links)"
         assign_permission: "Assign discussions to someone"
+        assign_label: "Assign discussions"
+        assign_help: "One person in charge of each discussion, like Discourse assign. Members with the \"Assign discussions\" permission assign from the discussion menu (including to themselves), and the assignee can always remove themselves."
+        assign_bot_missing: "Create the assistant to assign discussions to the AI: it replies in the discussion with the bot's default persona. It is its own account, separate from the system account."
+        assign_bot_create: "Create the assistant"
+        assign_bot_created_as: "Assistant: {name}"
+        assign_bot_help: "Assign a discussion to the assistant and it replies with the theme's AI. It counts towards the daily AI limit of whoever assigned it, and only works with the AI configured and for people allowed to use it. Change the name, avatar and bio on its profile."
+        assign_bot_open_profile: "Open profile"
+        assign_bot_bio: "The forum's AI assistant. Assign a discussion to me and I will reply."
         lightbox_label: "Enlarge images (lightbox)"
         lightbox_help: "Clicking an image in a post opens it large over a dark background, with arrows between the images of the same post, zoom, \"Original image\" and \"Download\"."
         code_buttons_label: "Buttons on code blocks"
@@ -2562,6 +2570,9 @@ ramon-canela:
       change: "Change assignment…"
       nav: "Assigned to me"
       setting: "Someone assigns a discussion to me"
+      assign_self: "Assign to me"
+      unassign_self: "Remove my assignment"
+      assistant: "AI assistant: replies in the discussion"
     metoo:
       label: Me too
       label_with_count: '{label} ({count})'

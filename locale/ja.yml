@@ -648,6 +648,14 @@ ramon-canela:
         not_found_template_signpost_help: "中央に道しるべ、検索バー、短いディスカッションの一覧。"
         invite_permission: "ユーザーを招待（招待リンク）"
         assign_permission: "ディスカッションを担当者に割り当てる"
+        assign_label: "ディスカッションの割り当て"
+        assign_help: "Discourse の assign のように、ディスカッションごとに担当者を決めます。「ディスカッションを割り当てる」権限を持つ人はメニューから割り当てられ（自分自身にも）、担当者はいつでも自分を外せます。"
+        assign_bot_missing: "アシスタントを作成すると、ディスカッションを AI に割り当てられます。ボットの既定のペルソナでディスカッションに返信します。システムアカウントとは別のアカウントです。"
+        assign_bot_create: "アシスタントを作成"
+        assign_bot_created_as: "アシスタント: {name}"
+        assign_bot_help: "ディスカッションをアシスタントに割り当てると、テーマの AI で返信します。割り当てた人の 1 日の AI 上限に数えられ、AI が設定されていて、その人が AI を使える場合のみ動作します。名前・アバター・自己紹介はプロフィールで変更できます。"
+        assign_bot_open_profile: "プロフィールを開く"
+        assign_bot_bio: "フォーラムの AI アシスタントです。ディスカッションを割り当てると返信します。"
         lightbox_label: "画像の拡大（ライトボックス）"
         lightbox_help: "投稿内の画像をクリックすると、暗い背景の上に大きく表示されます。同じ投稿の画像間を移動する矢印、ズーム、「元の画像」、「ダウンロード」付き。"
         code_buttons_label: "コードブロックのボタン"
@@ -2562,6 +2570,9 @@ ramon-canela:
       change: "割り当てを変更…"
       nav: "自分の担当"
       setting: "ディスカッションが自分に割り当てられたとき"
+      assign_self: "自分に割り当てる"
+      unassign_self: "自分の割り当てを解除"
+      assistant: "AI アシスタント: ディスカッションに返信"
     metoo:
       label: 私も
       label_with_count: '{label}（{count}）'

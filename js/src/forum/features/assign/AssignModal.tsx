@@ -15,6 +15,11 @@ import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
+import saveAssignee from './save';
+
+interface AssistantData {
+  id: number;
+}
 
 export interface AssignModalAttrs extends IInternalModalAttrs {
   discussion: Discussion;
@@ -36,9 +41,22 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
 
   content(): Mithril.Children {
     const current = (this.attrs.discussion as any).canelaAssignee?.() || null;
+    const me = app.session.user;
+    const bot = app.forum.attribute<AssistantData | null>('canelaAssistant');
+    const assistant = bot ? app.store.getById<User>('users', String(bot.id)) : null;
+
+    // Atalhos acima da busca: a própria pessoa e o assistente de IA.
+    const shortcuts = [me, assistant].filter((user): user is User => !!user && user !== current);
 
     return (
       <div className="Modal-body">
+        {shortcuts.length ? (
+          <ul className="CanelaAssignModal-results CanelaAssignModal-shortcuts">
+            {shortcuts.map((user) => (
+              <li>{this.userButton(user, user === me ? t('assign.assign_self') : t('assign.assistant'))}</li>
+            ))}
+          </ul>
+        ) : null}
         <div className="Form-group">
           <input
             className="FormControl"
@@ -55,13 +73,7 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
         <ul className="CanelaAssignModal-results">
           {this.searching ? <LoadingIndicator size="small" /> : null}
           {this.results.map((user) => (
-            <li>
-              <button type="button" className="CanelaAssignModal-user" disabled={this.saving} onclick={() => this.assign(user)}>
-                <Avatar user={user} />
-                <span className="CanelaAssignModal-name">{username(user)}</span>
-                <span className="CanelaAssignModal-handle">@{user.username()}</span>
-              </button>
-            </li>
+            <li>{this.userButton(user)}</li>
           ))}
         </ul>
         {current ? (
@@ -76,6 +88,30 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
         ) : null}
       </div>
     );
+  }
+
+  userButton(user: User, hint?: string): Mithril.Children {
+    return (
+      <button type="button" className="CanelaAssignModal-user" disabled={this.saving} onclick={() => this.assign(user)}>
+        <Avatar user={user} />
+        <span className="CanelaAssignModal-name">{username(user)}</span>
+        <span className="CanelaAssignModal-handle">{hint || `@${user.username()}`}</span>
+      </button>
+    );
+  }
+
+  oninit(vnode: Mithril.Vnode<AssignModalAttrs, this>) {
+    super.oninit(vnode);
+
+    // O assistente nem sempre está no store: busca para o atalho aparecer.
+    const bot = app.forum.attribute<AssistantData | null>('canelaAssistant');
+
+    if (bot && !app.store.getById('users', String(bot.id))) {
+      app.store
+        .find<User>('users', String(bot.id))
+        .then(() => m.redraw())
+        .catch(() => {});
+    }
   }
 
   search = debounce(250, () => {
@@ -103,8 +139,7 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
   assign(user: User | null) {
     this.saving = true;
 
-    this.attrs.discussion
-      .save({ relationships: { canelaAssignee: user } } as any)
+    saveAssignee(this.attrs.discussion, user)
       .then(() => this.hide())
       .catch(() => {})
       .finally(() => {
