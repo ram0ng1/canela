@@ -83,7 +83,9 @@ return [
             $bot = resolve(AssistantBot::class);
 
             if ($event->assignee && $bot->is($event->assignee) && $bot->onAssign()) {
-                resolve(Queue::class)->push(new AssistantReplyJob((int) $event->discussion->id, (int) $event->actor->id));
+                /** @var Queue $queue */
+                $queue = resolve(Queue::class);
+                $queue->push(new AssistantReplyJob((int) $event->discussion->id, (int) $event->actor->id));
             }
         })
         // A resposta automática nas tags escolhidas. A abertura vem pelo
@@ -93,14 +95,18 @@ return [
             $post = $event->discussion->firstPost;
 
             if ($post instanceof CommentPost && resolve(AssistantBot::class)->replies($post)) {
-                resolve(Queue::class)->push(new AssistantReplyJob((int) $event->discussion->id, (int) $post->user_id, (int) $post->id));
+                /** @var Queue $queue */
+                $queue = resolve(Queue::class);
+                $queue->push(new AssistantReplyJob((int) $event->discussion->id, (int) $post->user_id, (int) $post->id));
             }
         })
         ->listen(Posted::class, function (Posted $event): void {
             $post = $event->post;
 
             if ((int) $post->number > 1 && ($bot = resolve(AssistantBot::class))->autoMode() === 'all' && $bot->replies($post)) {
-                resolve(Queue::class)->push(new AssistantReplyJob((int) $post->discussion_id, (int) $post->user_id, (int) $post->id));
+                /** @var Queue $queue */
+                $queue = resolve(Queue::class);
+                $queue->push(new AssistantReplyJob((int) $post->discussion_id, (int) $post->user_id, (int) $post->id));
             }
         }),
 

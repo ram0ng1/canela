@@ -184,7 +184,7 @@ final class AssistantReplyJob extends AbstractJob
 
         foreach ($posts as $post) {
             /** @var CommentPost $post */
-            $lines[] = sprintf('#%d — %s:', $post->number, $post->user?->display_name ?? '?');
+            $lines[] = sprintf('#%d — %s:', $post->number, $post->user->display_name ?? '?');
             $lines[] = trim((string) $post->content);
             $lines[] = '';
         }
