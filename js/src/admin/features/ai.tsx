@@ -44,7 +44,7 @@ const configured = (): boolean =>
     ? getStr('canela.ai_anthropic_key') !== ''
     : getStr('canela.ai_openai_base_url') !== '' && getStr('canela.ai_openai_model') !== '';
 
-const requiresProvider = (): string | null => (configured() ? null : trans(`${KEY}.requires_provider`));
+export const requiresProvider = (): string | null => (configured() ? null : trans(`${KEY}.requires_provider`));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Controles próprios

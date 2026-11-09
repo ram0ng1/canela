@@ -101,6 +101,15 @@ const cards: CardDef[] = [
     master: 'canela.inline_title_editor',
   },
   {
+    id: 'assign',
+    group: 'topic',
+    icon: 'fas fa-user-check',
+    title: () => trans(`${KEY}.assign_label`),
+    description: help('assign'),
+    keywords: 'atribuir assign responsável assignee tópico discourse',
+    master: 'canela.assign_enabled',
+  },
+  {
     id: 'post-notices',
     group: 'topic',
     icon: 'fas fa-hand',
