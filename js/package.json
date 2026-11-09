@@ -5,7 +5,7 @@
     "prettier": "@flarum/prettier-config",
     "devDependencies": {
         "@flarum/prettier-config": "^1.0.0",
-        "@typescript-eslint/parser": "^8.72.0",
+        "@typescript-eslint/parser": "^8.72.1",
         "cross-env": "^10.1.0",
         "eslint": "^9.39.5",
         "eslint-plugin-react": "^7.37.5",
@@ -14,7 +14,7 @@
         "lucide": "0.555.0",
         "prettier": "^3.4.2",
         "typescript": "^5.9.3",
-        "webpack": "^5.112.1",
+        "webpack": "^5.112.2",
         "webpack-cli": "^7.3.1"
     },
     "scripts": {
