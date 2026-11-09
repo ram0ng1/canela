@@ -31,6 +31,7 @@ import RecipientChooser from './RecipientChooser';
 import ComposerActionTitle from '../../composer/ComposerActionTitle';
 import { isExtensionEnabled, t } from '../../utils/settings';
 import { boxesOn, dialogHref, dialogTitle, messageGroup, messagesOn, type Dialog } from './util';
+import FieldError from '../../components/FieldError';
 
 const COMPOSER = 'ext:flarum/messages/forum/components/MessageComposer';
 
@@ -184,8 +185,13 @@ export default function installComposer(): void {
           group={messageGroup() ? fields.canelaGroup : undefined}
           groupContact
         />
-        {/* A metade direita fica vazia (a das etiquetas, sem etiquetas em mensagem), com o traço no meio. */}
-        <div className="CanelaComposerFields-cell CanelaMessageFields-rest" aria-hidden="true" />
+        {/* A metade direita (a das etiquetas, sem etiquetas em mensagem): vazia, ou o aviso de destinatário faltando. */}
+        <div className="CanelaComposerFields-cell CanelaMessageFields-rest">
+          <FieldError
+            id="CanelaRecipients-error"
+            message={fields.canelaRecipientsError && !this.recipients().length ? t('messages.composer.recipients_missing') : null}
+          />
+        </div>
       </div>,
       500
     );
@@ -237,10 +243,11 @@ export default function installComposer(): void {
     if (title) data.canelaTitle = title;
   });
 
-  // Mensagem sem destinatário não sai: o envio fica desabilitado.
+  // Mensagem sem destinatário não sai: o aviso aparece ao lado do campo.
   override(COMPOSER as any, 'onsubmit', function (this: any, original: () => void) {
     if (messagesOn() && !this.attrs.replyingTo && !this.recipients().length) {
-      app.alerts.show({ type: 'error' }, t('messages.composer.recipients_missing'));
+      // O aviso aparece ao lado do campo (headerItems), não num alerta.
+      this.composer.fields.canelaRecipientsError = true;
       document.querySelector<HTMLInputElement>('.Composer .CanelaRecipients-input')?.focus();
       return;
     }

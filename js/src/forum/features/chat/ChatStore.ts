@@ -12,6 +12,7 @@
 import app from 'flarum/forum/app';
 
 import * as api from './api';
+import { ct } from './flags';
 import { caps, chatOn, countReaction, meId, playSound, preference, readLocal, writeLocal } from './utils';
 import type { ChatChannel, ChatEvent, ChatMessage, ChatRoute, ChatThread, ChatUpload } from './types';
 
@@ -310,7 +311,7 @@ export class ChatPane {
       staged.stagedKey ||= `s${++stagedCounter}`;
 
       if (toThread) {
-        app.alerts.show({ type: 'error' }, detail || String(error?.message || error));
+        app.alerts.show({ type: 'error' }, detail || ct('errors.send_failed'));
       }
     } finally {
       this.sending = false;

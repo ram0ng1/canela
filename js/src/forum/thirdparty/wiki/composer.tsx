@@ -24,6 +24,7 @@ import { t } from '../../utils/settings';
 import { thirdParty } from '../settings';
 import { categoryChooser, ensureCategories } from './categories';
 import { wikiArticleUrl, wt } from './shared';
+import FieldError, { invalidAttrs } from '../../components/FieldError';
 
 const COMPOSER_BODY = 'flarum/forum/components/ComposerBody';
 
@@ -45,6 +46,8 @@ export interface ArticleDraft {
   isDraft: boolean;
   faq: FaqEntry[];
   optionsOpen: boolean;
+  /** Publicou sem título: o aviso embaixo do campo. */
+  titleError?: boolean;
 }
 
 let faqUid = 0;
@@ -288,10 +291,13 @@ function makeArticleComposer(ComposerBody: any): any {
             disabled={disabled}
             placeholder={wt('compose.title_placeholder', 'Article title')}
             aria-label={wt('compose.title_label', 'Title')}
+            {...invalidAttrs('CanelaWikiTitle-error', draft.titleError)}
             oninput={(e: InputEvent) => {
               draft.title = (e.target as HTMLInputElement).value;
+              draft.titleError = false;
             }}
           />
+          <FieldError id="CanelaWikiTitle-error" message={draft.titleError ? wt('errors.title_required', 'Please enter a title.') : null} />
         </h3>,
         100
       );
@@ -310,7 +316,13 @@ function makeArticleComposer(ComposerBody: any): any {
       const title = draft.title.trim();
       const content = String(this.composer.fields.content() || '').trim();
 
-      if (!title) return showError(wt('errors.title_required', 'Please enter a title.'));
+      if (!title) {
+        // O aviso aparece embaixo do título, com o foco nele.
+        draft.titleError = true;
+        m.redraw.sync();
+        document.querySelector<HTMLInputElement>('.Composer .DiscussionComposer-title')?.focus();
+        return;
+      }
       if (!content) return showError(wt('errors.empty_body', 'Please write the article body before submitting.'));
 
       const positionRaw = draft.position.trim();

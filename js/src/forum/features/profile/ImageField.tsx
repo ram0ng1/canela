@@ -11,6 +11,7 @@ import Button from 'flarum/common/components/Button';
 import type User from 'flarum/common/models/User';
 
 import { t } from '../../utils/settings';
+import FieldError from '../../components/FieldError';
 import { coverUploadEnabled, cssImage, externalImagesEnabled } from './data';
 
 export type ImageKind = 'cover' | 'card-background';
@@ -34,6 +35,8 @@ export interface ImageFieldAttrs extends ComponentAttrs {
 
 export default class ImageField extends Component<ImageFieldAttrs> {
   loading = false;
+  /** O erro do último envio, mostrado embaixo dos botões. */
+  error: string | null = null;
 
   view() {
     const { kind, label, help, value } = this.attrs;
@@ -69,6 +72,8 @@ export default class ImageField extends Component<ImageFieldAttrs> {
             />
           )}
         </div>
+        {coverUploadEnabled() && <p className="helpText CanelaProfileImage-limits">{t('profile.settings.upload_limits', { max: '4 MB' })}</p>}
+        <FieldError id={`${id}-error`} message={this.error} />
 
         {externalImagesEnabled() && (
           <input
@@ -102,7 +107,8 @@ export default class ImageField extends Component<ImageFieldAttrs> {
 
   upload(file: File) {
     if (file.size > MAX_BYTES) {
-      app.alerts.show({ type: 'error' }, t('profile.settings.image_too_large', { max: '4 MB' }));
+      this.error = t('profile.settings.image_too_large', { max: '4 MB' });
+      m.redraw();
       return;
     }
 
@@ -139,6 +145,7 @@ export default class ImageField extends Component<ImageFieldAttrs> {
     const user = this.attrs.user;
 
     this.loading = true;
+    this.error = null;
     m.redraw();
 
     app
@@ -147,13 +154,17 @@ export default class ImageField extends Component<ImageFieldAttrs> {
         url: `${app.forum.attribute('apiUrl')}/users/${user.id()}/canela-${this.attrs.kind}`,
         // FormData vai como está; o core serializaria em JSON.
         ...(body ? { serialize: (raw: any) => raw, body } : {}),
+        // O erro fica embaixo do campo, não no alerta do core.
+        errorHandler: (error: any) => {
+          this.error = error?.response?.errors?.[0]?.detail || t('profile.settings.upload_failed');
+        },
       })
       .then((payload) => {
         app.store.pushPayload(payload);
         this.attrs.onstored(this.storedValue());
       })
       .catch(() => {
-        // O core já mostra o erro da API num alerta.
+        // O errorHandler acima já guardou a mensagem.
       })
       .finally(() => {
         this.loading = false;

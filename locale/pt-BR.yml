@@ -738,7 +738,7 @@ ramon-canela:
         share_modal_help: "O botão Compartilhar abre uma janela com o link, o botão de copiar e os botões das redes. Desligado, ele só copia o link. No celular vale a folha de compartilhamento do sistema."
         local_dates_help: "[date=2026-10-20 time=14:00 timezone=\"America/Sao_Paulo\"] mostra a data e a hora no fuso de quem lê. Vale depois de limpar o cache."
         invites_enabled_help: "Quem tem a permissão \"Convidar\" (Permissões) gera links com validade e número de usos, em Compartilhar e no menu \"Mais\". Quem entra por um link aparece como convidado e quem convidou recebe \"Fulano aceitou seu convite\". Precisa do cadastro aberto."
-        not_found_page_help: "\"Oops! Essa página não existe ou é privada.\", com \"Voltar para o início\" e a busca, no lugar da página de erro simples. O modelo escolhido abaixo define o desenho e quais discussões aparecem."
+        not_found_page_help: "\"Não encontramos esta página.\", com \"Voltar para o início\" e a busca, no lugar da página de erro simples. O modelo escolhido abaixo define o desenho e quais discussões aparecem."
         sidebar_home_link_help: "O primeiro link da barra lateral. Quando ele leva à lista de discussões, \"Todas as Discussões\" passa a abrir a lista de Recentes, para os dois não ficarem marcados juntos."
         backend_off: "O backend destes recursos (extend/gaps.php) ainda não está carregado no servidor."
         cooked_title: "Conteúdo das postagens"
@@ -1407,7 +1407,7 @@ ramon-canela:
         page_title: Conversas com IA
         title: Bot de IA
         header: Como posso ajudar?
-        placeholder: Faça uma pergunta...
+        placeholder: Faça uma pergunta…
         submit: Enviar pergunta
         disclaimer: A IA generativa pode cometer erros. Confira as informações principais.
         new: Nova pergunta
@@ -1430,7 +1430,7 @@ ramon-canela:
         today: Hoje
         last_7_days: Últimos sete dias
         last_30_days: Últimos 30 dias
-        not_allowed: Você não tem acesso ao bot de IA.
+        not_allowed: O bot de IA não está liberado para a sua conta.
         log_in: Entre para conversar com o bot de IA.
       search:
         placeholder: Pesquisar ou perguntar à IA
@@ -1456,10 +1456,10 @@ ramon-canela:
         discard: Descartar
         regen: Tentar novamente
         copy: Copiar
-        copied: Copiou!
-        no_content_error: Primeiro adicione conteúdo para realizar ações de IA nele
-        custom_prompt_placeholder: Insira um prompt personalizado...
-        custom_prompt_submit: Enviar prompt
+        copied: Copiado
+        no_content_error: Escreva algo no editor para usar a IA.
+        custom_prompt_placeholder: Diga o que a IA deve fazer com o texto…
+        custom_prompt_submit: Aplicar
         translate: Traduzir para {language}
         proofread: Revisar texto
         simplify: Simplificar
@@ -1637,7 +1637,7 @@ ramon-canela:
       more_message_actions: Mais ações
       scroll_to_bottom: Rolar para a parte inferior
       scroll_to_new_messages: Ver novas mensagens
-      invalid_access: Você não tem acesso para ver este canal de chat
+      invalid_access: Este canal é restrito. Peça acesso a quem administra o canal.
       load_more: Carregar mais
       enable: Ativar chat
       disabled_for_you: O chat está desativado para você. Ative-o em Configurações → Chat.
@@ -1657,22 +1657,22 @@ ramon-canela:
       placeholder_thread: Conversar no fio
       placeholder_users: Conversar com {commaSeparatedNames}
       placeholder_group: Chat em grupo
-      placeholder_silenced: Você não pode enviar mensagens neste momento.
+      placeholder_silenced: O envio de mensagens está pausado para a sua conta.
       placeholder_new_message_disallowed:
         archived: Canal arquivado, não é possível enviar novas mensagens no momento.
         closed: Canal fechado, não é possível enviar novas mensagens no momento.
         read_only: Canal somente para leitura, não é possível enviar novas mensagens no momento.
       retry_staged_message:
-        title: Erro de rede
-        action: Enviar novamente?
+        title: Não enviada
+        action: Tentar de novo
       upload_errors:
-        too_large: grande demais
-        failed: falhou
+        too_large: Arquivo grande demais. Escolha um menor.
+        failed: Não foi possível enviar. Tente de novo.
       aria_roles:
-        composer: Compositor de chat
+        composer: Escrever mensagem
       composer:
         send: Enviar
-        toggle_toolbar: Ativar/desativar barra de ferramentas
+        toggle_toolbar: Mostrar ou ocultar a formatação
       chat_message_separator:
         today: Hoje
         yesterday: Ontem
@@ -1796,8 +1796,8 @@ ramon-canela:
         process_started: O canal foi excluído.
       channel_edit_name_slug_modal:
         input_placeholder: Adicionar um nome
-        slug_label: Slug
-        slug_description: Um slug de canal é usado na URL em vez do nome do canal
+        slug_label: Endereço
+        slug_description: A parte do link do canal, no lugar do nome. Use letras minúsculas, números e hífens.
       channel_edit_description_modal:
         input_placeholder: Adicione uma descrição
         description: Diga às pessoas do que se trata este canal
@@ -1901,21 +1901,22 @@ ramon-canela:
         settings_mention: Alguém me menciona no chat
         settings_message: Recebo uma mensagem direta no chat
       errors:
-        too_fast: Você está enviando mensagens rápido demais. Espere alguns segundos.
+        send_failed: "Não foi possível enviar. Verifique a conexão e tente de novo."
+        too_fast: Aguarde alguns segundos para enviar a próxima mensagem.
         message_empty: A mensagem está vazia.
         message_too_long: A mensagem é muito longa. As mensagens devem ter no máximo {count} caracteres.
         reply_not_found: A mensagem respondida não existe mais.
         thread_not_found: Este fio não existe mais.
-        invalid_emoji: Reação inválida.
+        invalid_emoji: Esta reação não está disponível. Escolha outra.
         too_many_reactions: Uma mensagem aceita no máximo {count} reações diferentes.
         too_many_pins: Um canal aceita no máximo {count} mensagens fixadas.
         tag_not_found: Tag não encontrada.
         invalid_status: Este canal não pode voltar a esse estado.
         name_required: Dê um nome ao canal.
         name_too_long: O nome pode ter no máximo {count} caracteres.
-        slug_taken: Já existe um canal com esse slug.
+        slug_taken: Já existe um canal com esse endereço. Escolha outro.
         description_too_long: A descrição pode ter no máximo {count} caracteres.
-        cannot_dm: Desculpe, você não pode enviar mensagens diretas.
+        cannot_dm: As mensagens diretas não estão disponíveis para a sua conta.
         too_many_users: Uma conversa aceita no máximo {count} participantes.
         user_not_found: Usuário(a) não encontrado(a).
         user_cannot_chat: '{username} desativou o chat'
@@ -2666,8 +2667,10 @@ ramon-canela:
         cover_forumaker_help: Uma imagem larga no topo do seu perfil, que também aparece no fundo do seu cartão de usuário quando você não escolhe um fundo próprio para ele. No editor dá para enviar, remover e escolher a parte da imagem que fica à mostra.
         no_image: Nenhuma imagem
         upload: Enviar imagem
+        upload_limits: "JPG, PNG, GIF ou WebP, até {max}."
         remove_image: Remover imagem
         image_too_large: A imagem passa de {max}. Escolha uma menor.
+        upload_failed: "Não foi possível enviar a imagem. Tente de novo."
         title_none: "Sem título"
         title_badge_help: "Escolha um dos seus emblemas que pode virar título."
       moderation:
@@ -2920,7 +2923,7 @@ ramon-canela:
         more_replies: '{count, plural, one {Ver mais # resposta} other {Ver mais # respostas}}'
         like: Curtir este post
         unlike: Desfazer a curtida
-        cannot_like: Você não pode curtir este post
+        cannot_like: Curtir não está disponível neste post
         like_guest: Cadastre-se ou entre para curtir este post
         go_to_quoted: Ir para o post citado
         who_liked: Quem curtiu
@@ -3157,7 +3160,7 @@ ramon-canela:
       select_placeholder: "Escolha…"
       replace_confirm: "Trocar o que você escreveu pelo texto do modelo?"
       load_failed: "Não deu para carregar o modelo. Tente de novo."
-      missing_required: "Preencha o campo \"{field}\" antes de publicar."
+      field_required: "Este campo é obrigatório."
       choose_required: "Escolha um modelo antes de publicar."
     bug_reports:
       button: "Relatar um problema"
@@ -3221,8 +3224,8 @@ ramon-canela:
         invalid_title: O nome precisa ter entre 1 e 120 caracteres.
         message_length: A mensagem deve ter entre {min} e {max} caracteres.
         invalid_mode: Ação de IA desconhecida.
-        no_content: Primeiro adicione conteúdo para realizar ações de IA nele.
-        no_prompt: Escreva o prompt personalizado.
+        no_content: Escreva algo no editor para usar a IA.
+        no_prompt: Escreva o que a IA deve fazer.
       personas:
         general_name: Ajudante do fórum
         general_description: Bot de IA de propósito geral capaz de realizar várias tarefas
@@ -3382,7 +3385,7 @@ ramon-canela:
       already_granted: Essa pessoa já tem este emblema, e ele não pode ser concedido mais de uma vez.
       invalid_reason: O motivo deve ter até 500 caracteres; um link precisa começar com http:// ou https://.
     messages:
-      recipients_limit: Desculpe, uma mensagem pode ter no máximo {max} destinatários.
+      recipients_limit: Uma mensagem aceita até {max} destinatários. Remova alguns para enviar.
       invite_empty: Escolha alguém para convidar.
       invite_group_invalid: Este grupo não recebe mensagens.
       invite_group_already: '{group} já participa desta mensagem.'
@@ -3396,15 +3399,15 @@ ramon-canela:
       invalid_title: "O título precisa ser o nome de um emblema que você ganhou e que pode virar título."
       external_image_disabled: "Este fórum só aceita imagens enviadas; endereços de outros sites estão desligados."
     invites:
-      too_many: Você já tem convites ativos demais. Apague algum antes de gerar outro.
+      too_many: Você chegou ao limite de convites ativos. Revogue um para gerar outro.
     events:
       invalid_status: A resposta precisa ser vou, interessado ou não vou.
       full: O evento já atingiu o número máximo de participantes.
   views:
     not_found:
       page_title: Página não encontrada
-      title: Oops! Essa página não existe ou é privada.
-      hint: 'O endereço pode ter sido digitado errado, ou o conteúdo foi removido ou é restrito.'
+      title: Não encontramos esta página.
+      hint: 'O link pode estar incompleto, ou o conteúdo foi removido ou só está disponível para alguns membros.'
       popular_topics: Discussões populares
       recent_topics: Discussões recentes
       see_more: Mais
@@ -3557,7 +3560,7 @@ linkrobins-wiki:
       delete_article_forever: 'Não foi possível excluir o artigo para sempre.'
       upload: 'Não foi possível enviar o arquivo.'
       upload_no_files: 'O envio não retornou nenhum arquivo. Tente de novo.'
-      unknown: 'Erro desconhecido.'
+      unknown: 'Algo deu errado do nosso lado. Tente de novo em instantes.'
   api:
     title_required: 'O artigo precisa de um título.'
     content_required: 'O artigo precisa de conteúdo.'

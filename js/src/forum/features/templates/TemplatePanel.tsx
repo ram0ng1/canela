@@ -12,6 +12,7 @@ import classList from 'flarum/common/utils/classList';
 import type Mithril from 'mithril';
 
 import { t } from '../../utils/settings';
+import FieldError from '../../components/FieldError';
 import type { TemplateData, TemplateField } from '../../../common/templates';
 import type { TemplateState } from './model';
 
@@ -52,7 +53,7 @@ export default class TemplatePanel extends Component<TemplatePanelAttrs> {
       disabled,
       'aria-required': field.required ? 'true' : undefined,
       'aria-invalid': invalid ? 'true' : undefined,
-      'aria-describedby': field.description ? `${id}-help` : undefined,
+      'aria-describedby': [field.description ? `${id}-help` : '', invalid ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined,
     };
 
     let control: Mithril.Children;
@@ -87,6 +88,7 @@ export default class TemplatePanel extends Component<TemplatePanelAttrs> {
           )}
         </label>
         {control}
+        <FieldError id={`${id}-error`} message={invalid ? t('templates.field_required') : null} />
         {field.description && (
           <p className="CanelaTemplateField-help helpText" id={`${id}-help`}>
             {field.description}

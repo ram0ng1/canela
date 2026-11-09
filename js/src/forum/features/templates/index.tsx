@@ -292,8 +292,9 @@ export default function installTemplates(): void {
         const missing = missingRequired(state.template.fields, state.values);
 
         if (missing.length) {
+          // O erro aparece embaixo de cada campo (TemplatePanel); o foco vai
+          // para o primeiro.
           state.invalid = new Set(missing.map((field) => field.key));
-          app.alerts.show({ type: 'error' }, t('templates.missing_required', { field: missing[0].label }));
           focusField(missing[0].key);
           m.redraw();
 

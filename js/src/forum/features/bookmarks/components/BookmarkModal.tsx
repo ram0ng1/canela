@@ -19,6 +19,7 @@ import type Mithril from 'mithril';
 import { t } from '../../../utils/settings';
 import { bookmarkRecord, createBookmark, deleteBookmark, postBookmark, updateBookmark } from '../actions';
 import { availablePresets, fromLocalInputs, presetDate, presetHint, reminderLabel, toLocalInputs, type ReminderPreset } from '../reminders';
+import FieldError, { invalidAttrs } from '../../../components/FieldError';
 
 export interface BookmarkModalAttrs extends IFormModalAttrs {
   post: Post;
@@ -44,6 +45,8 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
 
   /** O lembrete que já existia: continua valendo se nenhum atalho for escolhido. */
   existingReminder: Date | null = null;
+  /** A data personalizada não está no futuro: o aviso embaixo dela. */
+  dateError = false;
 
   oninit(vnode: Mithril.Vnode<BookmarkModalAttrs, this>) {
     super.oninit(vnode);
@@ -173,9 +176,18 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
 
         {preset === 'custom' && selected && (
           <div className="CanelaBookmarkModal-custom">
-            <input className="FormControl" type="date" aria-label={t('bookmarks.modal.custom_date')} bidi={this.customDate} />
+            <input
+              className="FormControl"
+              type="date"
+              aria-label={t('bookmarks.modal.custom_date')}
+              bidi={this.customDate}
+              {...invalidAttrs('CanelaBookmarkModal-custom-error', this.dateError)}
+            />
             <input className="FormControl" type="time" aria-label={t('bookmarks.modal.custom_time')} bidi={this.customTime} />
           </div>
+        )}
+        {preset === 'custom' && selected && (
+          <FieldError id="CanelaBookmarkModal-custom-error" message={this.dateError ? t('bookmarks.modal.invalid_date') : null} />
         )}
       </div>
     );
@@ -211,7 +223,8 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
     const reminderAt = this.chosenReminder();
 
     if (reminderAt === false) {
-      this.alertAttrs = { type: 'error', content: t('bookmarks.modal.invalid_date') };
+      // O aviso aparece embaixo da data personalizada.
+      this.dateError = true;
       m.redraw();
       return;
     }
@@ -221,7 +234,7 @@ export default class BookmarkModal extends FormModal<BookmarkModalAttrs> {
     const changes = { name: this.name(), reminderAt };
 
     this.loading = true;
-    this.alertAttrs = null;
+    this.dateError = false;
 
     (bookmark ? updateBookmark(post, bookmark, changes) : createBookmark(post, changes))
       .then(() => this.hide())

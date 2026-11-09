@@ -552,6 +552,17 @@
   background: var(--cn-surface);
 }
 
+// "Adicione pelo menos um destinatário.", ao lado do campo.
+.CanelaMessageFields-rest:has(.CanelaFieldError) {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+
+  .CanelaFieldError {
+    margin: 0;
+  }
+}
+
 .CanelaRecipients--idle .CanelaSelectKit-empty {
   display: none;
 }

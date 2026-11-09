@@ -1,9 +1,7 @@
 {{--
     O content.blade.php do core, com uma diferença: o conteúdo que o servidor
-    já monta (a lista de tópicos, os posts de um tópico, as tags) aparece
-    antes do JS, em vez de ficar num <noscript>. O primeiro desenho da página
-    deixa de esperar o forum.js baixar e rodar; o tema esconde este bloco logo
-    antes de o Flarum montar a página (js/src/forum/utils/prerender.ts).
+    já monta (a lista de tópicos, os posts de um tópico, as tags) fica no
+    HTML, escondido quando há JS e visível sem ele.
 --}}
 <div id="flarum-loading" style="display: none">
     {{ $translator->trans('core.views.content.loading_text') }}
@@ -25,6 +23,10 @@
     </div>
 </div>
 
-<div id="flarum-content" class="CanelaPrerender">
+{{-- Com JS o bloco fica escondido: mostrado antes do boot, a lista simples
+     ("Todas as Discussões") piscava a cada F5 antes da página de verdade.
+     Sem JS (e para quem lê o HTML) o conteúdo continua aqui. --}}
+<noscript><style>#flarum-content.CanelaPrerender { display: block !important; }</style></noscript>
+<div id="flarum-content" class="CanelaPrerender" style="display: none">
     {!! $content !!}
 </div>

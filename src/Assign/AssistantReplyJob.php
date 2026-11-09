@@ -81,17 +81,39 @@ final class AssistantReplyJob extends AbstractJob
         $assistant = $bot->get();
         $persona = $personas->find($bot->persona());
 
-        if (! $discussion || ! $actor || ! $assistant || $persona === null || ! $settings->available()) {
+        // Cada desistência fica no log: em produção, sem isso, "não respondeu"
+        // não dizia por quê.
+        $skip = fn (string $why) => $log->info('[canela] O assistente não respondeu ao tópico '.$this->discussionId.': '.$why);
+
+        if (! $discussion || ! $actor || ! $assistant) {
+            $skip('o tópico, o autor ou a conta do assistente não existe mais');
+
+            return;
+        }
+
+        if ($persona === null) {
+            $skip('a persona escolhida na aba Assistente não existe');
+
+            return;
+        }
+
+        if (! $settings->available()) {
+            $skip('a IA está desligada ou sem chave de API');
+
             return;
         }
 
         $post = $this->postId ? CommentPost::query()->whereKey($this->postId)->where('discussion_id', $discussion->id)->whereNull('hidden_at')->first() : null;
 
         if ($this->postId ? ! $post || ! $bot->autoReplies($discussion) : ! $bot->onAssign() || ! $settings->canUse($actor) || (int) $discussion->getAttribute('canela_assignee_id') !== $bot->id()) {
+            $skip($this->postId ? 'a postagem sumiu ou o tópico saiu das tags da resposta automática' : 'quem atribuiu não pode usar a IA, ou o tópico não está mais com o assistente');
+
             return;
         }
 
         if (! $usage->claim($actor)) {
+            $skip('@'.$actor->username.' chegou ao limite diário de pedidos à IA');
+
             return;
         }
 
@@ -146,6 +168,8 @@ final class AssistantReplyJob extends AbstractJob
         $text = trim($outcome['text']);
 
         if ($text === '' || $outcome['stopReason'] === 'refusal') {
+            $skip('a IA devolveu uma resposta vazia ou recusou o pedido');
+
             return;
         }
 
@@ -154,16 +178,23 @@ final class AssistantReplyJob extends AbstractJob
             $text = sprintf('@"%s"#p%d %s', $actor->display_name, $post->id, $text);
         }
 
-        $api->forResource(PostResource::class)
-            ->forEndpoint('create')
-            ->process([
-                'data' => [
-                    'attributes' => ['content' => $text],
-                    'relationships' => [
-                        'discussion' => ['data' => ['type' => 'discussions', 'id' => (string) $discussion->id]],
+        try {
+            $api->forResource(PostResource::class)
+                ->forEndpoint('create')
+                ->process([
+                    'data' => [
+                        'attributes' => ['content' => $text],
+                        'relationships' => [
+                            'discussion' => ['data' => ['type' => 'discussions', 'id' => (string) $discussion->id]],
+                        ],
                     ],
-                ],
-            ], [], ['actor' => $assistant]);
+                ], [], ['actor' => $assistant]);
+        } catch (Throwable $error) {
+            // Na fila síncrona a exceção derrubaria o pedido de quem postou ou
+            // atribuiu; aqui ela vira aviso (permissão de responder na tag,
+            // tópico trancado, limite de postagens seguidas…).
+            $log->warning('[canela] O assistente não conseguiu publicar no tópico '.$discussion->id.': '.$error->getMessage());
+        }
     }
 
     /** O título, a primeira postagem e as últimas, em texto. */
