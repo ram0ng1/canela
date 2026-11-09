@@ -28,13 +28,14 @@ use Flarum\Discussion\Search\DiscussionSearcher;
 use Flarum\Extend;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\User;
-use Illuminate\Contracts\Queue\Queue;
+use Illuminate\Console\Scheduling\Event as ScheduledEvent;
 use Ramon\Canela\Assign\Assigned;
 use Ramon\Canela\Assign\AssignedBlueprint;
 use Ramon\Canela\Assign\AssignedFilter;
 use Ramon\Canela\Assign\AssigneeFields;
 use Ramon\Canela\Assign\AssistantBot;
-use Ramon\Canela\Assign\AssistantReplyJob;
+use Ramon\Canela\Assign\AssistantQueue;
+use Ramon\Canela\Assign\Console\SendPendingReplies;
 use Ramon\Canela\Assign\CreateAssistantController;
 use Ramon\Canela\System\Api\SystemUserPresenter;
 
@@ -48,6 +49,10 @@ return [
         ->default(AssistantBot::PERSONA, '')
         ->default(AssistantBot::LENGTH, 'medium')
         ->default(AssistantBot::INSTRUCTIONS, '')
+        ->default(AssistantBot::MENTION, true)
+        ->default(AssistantBot::QUOTE, true)
+        ->default(AssistantBot::LIKE, false)
+        ->default(AssistantBot::DELAY, 0)
         ->serializeToForum('canelaAssign', AssigneeFields::ENABLED, 'boolval'),
 
     (new Extend\Model(Discussion::class))
@@ -83,9 +88,7 @@ return [
             $bot = resolve(AssistantBot::class);
 
             if ($event->assignee && $bot->is($event->assignee) && $bot->onAssign()) {
-                /** @var Queue $queue */
-                $queue = resolve(Queue::class);
-                $queue->push(new AssistantReplyJob((int) $event->discussion->id, (int) $event->actor->id));
+                resolve(AssistantQueue::class)->reply((int) $event->discussion->id, (int) $event->actor->id);
             }
         })
         // A resposta automática nas tags escolhidas. A abertura vem pelo
@@ -95,20 +98,21 @@ return [
             $post = $event->discussion->firstPost;
 
             if ($post instanceof CommentPost && resolve(AssistantBot::class)->replies($post)) {
-                /** @var Queue $queue */
-                $queue = resolve(Queue::class);
-                $queue->push(new AssistantReplyJob((int) $event->discussion->id, (int) $post->user_id, (int) $post->id));
+                resolve(AssistantQueue::class)->reply((int) $event->discussion->id, (int) $post->user_id, (int) $post->id);
             }
         })
         ->listen(Posted::class, function (Posted $event): void {
             $post = $event->post;
 
             if ((int) $post->number > 1 && ($bot = resolve(AssistantBot::class))->autoMode() === 'all' && $bot->replies($post)) {
-                /** @var Queue $queue */
-                $queue = resolve(Queue::class);
-                $queue->push(new AssistantReplyJob((int) $post->discussion_id, (int) $post->user_id, (int) $post->id));
+                resolve(AssistantQueue::class)->reply((int) $post->discussion_id, (int) $post->user_id, (int) $post->id);
             }
         }),
+
+    // A espera antes de responder, na fila síncrona.
+    (new Extend\Console())
+        ->command(SendPendingReplies::class)
+        ->schedule(SendPendingReplies::class, static fn (ScheduledEvent $event) => SendPendingReplies::schedule($event)),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(DiscussionSearcher::class, AssignedFilter::class),
