@@ -135,6 +135,27 @@ final class AssistantBot
         }
     }
 
+    /**
+     * O processador de grupos (Extend\User::permissionGroups): o assistente
+     * sempre tira as permissões de Membro e do grupo dele, mesmo que a conta
+     * não esteja com o e-mail confirmado (sem isso o core o trata como
+     * visitante e ignora os grupos; só o Admin, que o core checa à parte,
+     * funcionava).
+     *
+     * @param int[] $groupIds
+     * @return int[]
+     */
+    public function permissionGroups(User $user, array $groupIds): array
+    {
+        if (! $this->is($user)) {
+            return $groupIds;
+        }
+
+        $group = (int) $this->settings->get(self::GROUP);
+
+        return array_values(array_unique([...$groupIds, Group::MEMBER_ID, ...($group > 0 ? [$group] : [])]));
+    }
+
     public function onAssign(): bool
     {
         return (bool) $this->settings->get(self::ON_ASSIGN);
