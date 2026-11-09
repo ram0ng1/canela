@@ -2573,6 +2573,10 @@ ramon-canela:
       assign_self: "Atribuir a mim"
       unassign_self: "Remover minha atribuição"
       assistant: "Assistente de IA: responde no tópico"
+      current: "Atribuído agora"
+      remove_short: "Remover"
+      suggestions: "Sugestões"
+      empty: "Ninguém encontrado com esse nome."
     metoo:
       label: Eu também
       label_with_count: '{label} ({count})'

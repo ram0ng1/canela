@@ -1240,18 +1240,76 @@ button.CanelaTopicMap-stat {
   margin-top: var(--cn-space-2);
 }
 
+// O modal: quem está atribuído agora em cima, a busca, e a lista (sugestões
+// sem busca, resultados com ela) em linhas neutras de avatar, nome e @.
+.CanelaAssignModal {
+  .Modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cn-space-3);
+  }
+}
+
+.CanelaAssignModal-current {
+  display: flex;
+  align-items: center;
+  gap: var(--cn-space-3);
+  padding: var(--cn-space-2) var(--cn-space-3);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+
+  .CanelaAssignModal-info {
+    flex: 1 1 auto;
+  }
+}
+
+.CanelaAssignModal-remove {
+  flex: none;
+  color: ~"color-mix(in oklch, var(--cn-danger) 80%, var(--cn-primary))" !important;
+}
+
+.CanelaAssignModal-search {
+  position: relative;
+
+  > .icon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: var(--cn-primary-medium);
+    pointer-events: none;
+  }
+
+  .FormControl {
+    width: 100%;
+    max-width: none;
+    padding-left: 36px;
+  }
+}
+
+.CanelaAssignModal-section {
+  margin-bottom: calc(~"-1 * var(--cn-space-2)");
+}
+
 .CanelaAssignModal-results {
-  margin: 0 0 var(--cn-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
   padding: 0;
   list-style: none;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .CanelaAssignModal-user {
   display: flex;
   align-items: center;
-  gap: var(--cn-space-2);
+  gap: var(--cn-space-3);
   width: 100%;
-  padding: 6px var(--cn-space-2);
+  padding: var(--cn-space-2);
   border: 0;
   border-radius: var(--cn-radius);
   background: none;
@@ -1261,25 +1319,76 @@ button.CanelaTopicMap-stat {
 
   &:hover,
   &:focus-visible {
-    background: var(--cn-hover);
+    background: var(--cn-primary-very-low);
   }
 
-  .Avatar {
-    --size: 28px;
-    width: 28px;
-    height: 28px;
-    font-size: 13px;
-    line-height: 28px;
+  &:focus-visible {
+    outline: 2px solid var(--cn-focus, var(--cn-accent));
+    outline-offset: -2px;
   }
+
+  &:hover .CanelaAssignModal-go,
+  &:focus-visible .CanelaAssignModal-go {
+    opacity: 1;
+  }
+}
+
+.CanelaAssignModal-user,
+.CanelaAssignModal-current {
+  .Avatar {
+    --size: 36px;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+    line-height: 36px;
+  }
+}
+
+.CanelaAssignModal-info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
 }
 
 .CanelaAssignModal-name {
+  overflow: hidden;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.CanelaAssignModal-handle {
+.CanelaAssignModal-handle,
+.CanelaAssignModal-caption {
+  overflow: hidden;
   color: var(--cn-primary-medium);
   font-size: var(--cn-font-down-1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CanelaAssignModal-section {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--cn-font-down-2);
+}
+
+.CanelaAssignModal-go {
+  flex: none;
+  color: var(--cn-primary-medium);
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.CanelaAssignModal-empty {
+  margin: 0;
+  padding: var(--cn-space-3) 0;
+  color: var(--cn-primary-medium);
+  text-align: center;
 }
 
 // ---------------------------------------------------------------------

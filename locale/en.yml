@@ -2573,6 +2573,10 @@ ramon-canela:
       assign_self: "Assign to me"
       unassign_self: "Remove my assignment"
       assistant: "AI assistant: replies in the discussion"
+      current: "Currently assigned"
+      remove_short: "Remove"
+      suggestions: "Suggestions"
+      empty: "Nobody found with that name."
     metoo:
       label: Me too
       label_with_count: '{label} ({count})'

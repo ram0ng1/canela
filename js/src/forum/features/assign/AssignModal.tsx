@@ -48,16 +48,25 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
     // Atalhos acima da busca: a própria pessoa e o assistente de IA.
     const shortcuts = [me, assistant].filter((user): user is User => !!user && user !== current);
 
+    const searching = this.query().trim().length >= 2;
+    const list = searching ? this.results.filter((user) => user !== current) : shortcuts;
+
     return (
       <div className="Modal-body">
-        {shortcuts.length ? (
-          <ul className="CanelaAssignModal-results CanelaAssignModal-shortcuts">
-            {shortcuts.map((user) => (
-              <li>{this.userButton(user, user === me ? t('assign.assign_self') : t('assign.assistant'))}</li>
-            ))}
-          </ul>
+        {current ? (
+          <div className="CanelaAssignModal-current">
+            <Avatar user={current} />
+            <span className="CanelaAssignModal-info">
+              <span className="CanelaAssignModal-caption">{t('assign.current')}</span>
+              <span className="CanelaAssignModal-name">{username(current)}</span>
+            </span>
+            <Button className="Button Button--text CanelaAssignModal-remove" icon="fas fa-user-xmark" disabled={this.saving} onclick={() => this.assign(null)}>
+              {t('assign.remove_short')}
+            </Button>
+          </div>
         ) : null}
-        <div className="Form-group">
+        <div className="CanelaAssignModal-search">
+          <i className="icon fas fa-magnifying-glass" aria-hidden="true" />
           <input
             className="FormControl"
             type="search"
@@ -70,22 +79,14 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
             oncreate={(vnode: Mithril.VnodeDOM) => (vnode.dom as HTMLInputElement).focus()}
           />
         </div>
+        {!searching && list.length ? <div className="CanelaAssignModal-caption CanelaAssignModal-section">{t('assign.suggestions')}</div> : null}
         <ul className="CanelaAssignModal-results">
-          {this.searching ? <LoadingIndicator size="small" /> : null}
-          {this.results.map((user) => (
-            <li>{this.userButton(user)}</li>
+          {list.map((user) => (
+            <li>{this.userButton(user, searching ? undefined : user === me ? t('assign.assign_self') : t('assign.assistant'))}</li>
           ))}
         </ul>
-        {current ? (
-          <Button
-            className="Button Button--block CanelaAssignModal-remove"
-            icon="fas fa-user-xmark"
-            disabled={this.saving}
-            onclick={() => this.assign(null)}
-          >
-            {t('assign.remove', { username: username(current) })}
-          </Button>
-        ) : null}
+        {this.searching ? <LoadingIndicator size="small" /> : null}
+        {searching && !this.searching && !list.length ? <p className="CanelaAssignModal-empty">{t('assign.empty')}</p> : null}
       </div>
     );
   }
@@ -94,8 +95,11 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
     return (
       <button type="button" className="CanelaAssignModal-user" disabled={this.saving} onclick={() => this.assign(user)}>
         <Avatar user={user} />
-        <span className="CanelaAssignModal-name">{username(user)}</span>
-        <span className="CanelaAssignModal-handle">{hint || `@${user.username()}`}</span>
+        <span className="CanelaAssignModal-info">
+          <span className="CanelaAssignModal-name">{username(user)}</span>
+          <span className="CanelaAssignModal-handle">{hint || `@${user.username()}`}</span>
+        </span>
+        <i className="icon fas fa-chevron-right CanelaAssignModal-go" aria-hidden="true" />
       </button>
     );
   }

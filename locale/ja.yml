@@ -2573,6 +2573,10 @@ ramon-canela:
       assign_self: "自分に割り当てる"
       unassign_self: "自分の割り当てを解除"
       assistant: "AI アシスタント: ディスカッションに返信"
+      current: "現在の担当"
+      remove_short: "解除"
+      suggestions: "おすすめ"
+      empty: "その名前のユーザーは見つかりません。"
     metoo:
       label: 私も
       label_with_count: '{label}（{count}）'
