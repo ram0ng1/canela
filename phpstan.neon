@@ -13,6 +13,7 @@ parameters:
         - vendor/flarum/tags/extend.php
         - vendor/flarum/flags/extend.php
         - vendor/flarum/suspend/extend.php
+        - vendor/flarum/likes/extend.php
     excludePaths:
         analyse:
             - *.blade.php
@@ -20,4 +21,5 @@ parameters:
             - vendor/flarum/tags/extend.php
             - vendor/flarum/flags/extend.php
             - vendor/flarum/suspend/extend.php
+            - vendor/flarum/likes/extend.php
     databaseMigrationsPath: ['migrations']
