@@ -99,7 +99,12 @@ const cards: CardDef[] = [
     lockedBy: needsAccount,
     body: () => (
       <>
-        <AdminSelect settingKey="canela.assistant_persona" label={trans(`${KEY}.persona_label`)} help={trans(`${KEY}.persona_help`)} options={personaOptions()} />
+        <AdminSelect
+          settingKey="canela.assistant_persona"
+          label={trans(`${KEY}.persona_label`)}
+          help={trans(`${KEY}.persona_help`)}
+          options={personaOptions()}
+        />
         <AdminSelect
           settingKey="canela.assistant_length"
           label={trans(`${KEY}.length_label`)}

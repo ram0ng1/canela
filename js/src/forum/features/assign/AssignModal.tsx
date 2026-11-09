@@ -60,7 +60,12 @@ export default class AssignModal extends Modal<AssignModalAttrs> {
               <span className="CanelaAssignModal-caption">{t('assign.current')}</span>
               <span className="CanelaAssignModal-name">{username(current)}</span>
             </span>
-            <Button className="Button Button--text CanelaAssignModal-remove" icon="fas fa-user-xmark" disabled={this.saving} onclick={() => this.assign(null)}>
+            <Button
+              className="Button Button--text CanelaAssignModal-remove"
+              icon="fas fa-user-xmark"
+              disabled={this.saving}
+              onclick={() => this.assign(null)}
+            >
               {t('assign.remove_short')}
             </Button>
           </div>

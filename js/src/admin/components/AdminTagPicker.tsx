@@ -127,4 +127,3 @@ export default class AdminTagPicker extends AdminComponent {
     );
   }
 }
-
