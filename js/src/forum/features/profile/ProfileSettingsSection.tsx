@@ -36,6 +36,7 @@ import EmojiPicker from './EmojiPicker';
 import ImageField from './ImageField';
 import type Badge from '../badges/models/Badge';
 import type UserBadge from '../badges/models/UserBadge';
+import FieldError, { invalidAttrs } from '../../components/FieldError';
 
 /** Opções do "Limpar depois de…". */
 const CLEAR_OPTIONS = ['never', '30m', '1h', '4h', 'today', 'week', 'custom'] as const;
@@ -65,6 +66,8 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
   draft!: Draft;
   saved!: Draft;
   saving = false;
+  /** Status com "Personalizado" e sem data: o aviso embaixo do campo de data. */
+  statusUntilError = false;
   /** Os títulos que a pessoa pode escolher sozinha: os emblemas que ganhou e que viram título. */
   titleOptions: string[] | null = null;
 
@@ -319,7 +322,17 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
                 aria-label={t('profile.status.clear_custom')}
                 min={localDateTime(new Date())}
                 value={this.draft.statusCustom}
-                oninput={(event: InputEvent) => (this.draft.statusCustom = (event.target as HTMLInputElement).value)}
+                {...invalidAttrs('CanelaProfile-statusUntil-error', this.statusUntilError)}
+                oninput={(event: InputEvent) => {
+                  this.draft.statusCustom = (event.target as HTMLInputElement).value;
+                  this.statusUntilError = false;
+                }}
+              />
+            )}
+            {this.draft.statusClear === 'custom' && (
+              <FieldError
+                id="CanelaProfile-statusUntil-error"
+                message={this.statusUntilError ? t('profile.settings.status_custom_required') : null}
               />
             )}
           </div>
@@ -445,7 +458,10 @@ export default class ProfileSettingsSection extends Component<ProfileSettingsSec
     if (this.saving || !this.dirty()) return;
 
     if (this.draft.statusClear === 'custom' && (this.draft.statusEmoji || this.draft.statusText.trim()) && !this.statusUntil()) {
-      app.alerts.show({ type: 'error' }, t('profile.settings.status_custom_required'));
+      this.statusUntilError = true;
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLInputElement>('.CanelaProfileSettings-statusClear input[type="datetime-local"]')?.focus()
+      );
       return;
     }
 

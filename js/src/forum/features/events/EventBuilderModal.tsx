@@ -13,6 +13,9 @@ import type Mithril from 'mithril';
 import { buildEvent, browserZone, emptyForm, findEvent, type EventForm } from './bbcode';
 import { eventsSettings } from './model';
 import { t } from '../../utils/settings';
+import FieldError, { invalidAttrs } from '../../components/FieldError';
+
+let inputCounter = 0;
 
 export interface EventBuilderModalAttrs extends IFormModalAttrs {}
 
@@ -56,7 +59,8 @@ export default class EventBuilderModal extends FormModal<EventBuilderModalAttrs>
   private startTime = '';
   private endDate = '';
   private endTime = '';
-  private error = '';
+  /** O campo com erro ("start" ou "end") e a mensagem, mostrada embaixo dele. */
+  private error: { field: 'start' | 'end'; message: string } | null = null;
 
   oninit(vnode: Mithril.Vnode<EventBuilderModalAttrs, this>) {
     super.oninit(vnode);
@@ -90,16 +94,41 @@ export default class EventBuilderModal extends FormModal<EventBuilderModalAttrs>
   }
 
   private input(label: string, value: string, set: (value: string) => void, attrs: Record<string, unknown> = {}): Mithril.Children {
+    const id = `CanelaEventBuilder-${++inputCounter}`;
+
     return (
       <div className="Form-group">
-        <label>{label}</label>
-        <input className="FormControl" value={value} oninput={(e: InputEvent) => set((e.target as HTMLInputElement).value)} {...attrs} />
+        <label for={id}>{label}</label>
+        <input id={id} className="FormControl" value={value} oninput={(e: InputEvent) => set((e.target as HTMLInputElement).value)} {...attrs} />
       </div>
     );
   }
 
+  /** Muda um campo de data/hora e apaga o erro daquela linha. */
+  private setter(field: 'start' | 'end', set: (value: string) => void): (value: string) => void {
+    return (value) => {
+      set(value);
+      if (this.error?.field === field) this.error = null;
+      // Fim antes do início: avisa já, sem esperar o envio.
+      if (this.endBeforeStart()) this.error = { field: 'end', message: t('events.builder.error_end') };
+      else if (this.error?.field === 'end') this.error = null;
+    };
+  }
+
+  private endBeforeStart(): boolean {
+    if (!this.startDate || !this.endDate) return false;
+
+    return `${this.endDate} ${this.endTime || this.startTime || '00:00'}` <= `${this.startDate} ${this.startTime || '00:00'}`;
+  }
+
+  private fieldError(field: 'start' | 'end'): Mithril.Children {
+    return <FieldError id={`CanelaEventBuilder-${field}-error`} message={this.error?.field === field ? this.error.message : null} />;
+  }
+
   content() {
     const form = this.form;
+    // Ids estáveis entre redesenhos para o `for` dos rótulos.
+    inputCounter = 0;
 
     // Horizontal: à esquerda o "quando"
     // (datas, fuso, repetição), à direita o "onde e como" (tipo, endereço,
@@ -116,13 +145,35 @@ export default class EventBuilderModal extends FormModal<EventBuilderModalAttrs>
 
           <div className="CanelaEventBuilder-col">
             <div className="CanelaEventBuilder-row">
-              {this.input(t('events.builder.start'), this.startDate, (v) => (this.startDate = v), { type: 'date', required: true })}
-              {this.input(t('events.builder.time'), this.startTime, (v) => (this.startTime = v), { type: 'time' })}
+              {this.input(
+                t('events.builder.start'),
+                this.startDate,
+                this.setter('start', (v) => (this.startDate = v)),
+                { type: 'date', required: true, ...invalidAttrs('CanelaEventBuilder-start-error', this.error?.field === 'start') }
+              )}
+              {this.input(
+                t('events.builder.time'),
+                this.startTime,
+                this.setter('start', (v) => (this.startTime = v)),
+                { type: 'time' }
+              )}
             </div>
+            {this.fieldError('start')}
             <div className="CanelaEventBuilder-row">
-              {this.input(t('events.builder.end'), this.endDate, (v) => (this.endDate = v), { type: 'date' })}
-              {this.input(t('events.builder.time'), this.endTime, (v) => (this.endTime = v), { type: 'time' })}
+              {this.input(
+                t('events.builder.end'),
+                this.endDate,
+                this.setter('end', (v) => (this.endDate = v)),
+                { type: 'date', ...invalidAttrs('CanelaEventBuilder-end-error', this.error?.field === 'end') }
+              )}
+              {this.input(
+                t('events.builder.time'),
+                this.endTime,
+                this.setter('end', (v) => (this.endTime = v)),
+                { type: 'time' }
+              )}
             </div>
+            {this.fieldError('end')}
 
             <div className="Form-group">
               <label>{t('events.builder.timezone')}</label>
@@ -195,8 +246,6 @@ export default class EventBuilderModal extends FormModal<EventBuilderModalAttrs>
                 oninput={(e: InputEvent) => (form.description = (e.target as HTMLTextAreaElement).value)}
               />
             </div>
-
-            {this.error && <p className="CanelaEventBuilder-error">{this.error}</p>}
           </div>
 
           <div className="CanelaEventBuilder-full CanelaEventBuilder-buttons">
@@ -218,7 +267,7 @@ export default class EventBuilderModal extends FormModal<EventBuilderModalAttrs>
     event.preventDefault();
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(this.startDate)) {
-      this.error = t('events.builder.error_start');
+      this.error = { field: 'start', message: t('events.builder.error_start') };
       return;
     }
 
@@ -226,7 +275,7 @@ export default class EventBuilderModal extends FormModal<EventBuilderModalAttrs>
     const end = this.endDate ? `${this.endDate} ${this.endTime || this.startTime || '00:00'}` : '';
 
     if (end && end <= start) {
-      this.error = t('events.builder.error_end');
+      this.error = { field: 'end', message: t('events.builder.error_end') };
       return;
     }
 

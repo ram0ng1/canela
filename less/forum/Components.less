@@ -1418,3 +1418,24 @@ textarea.FormControl {
   white-space: nowrap;
   max-width: none;
 }
+
+// Erro colado ao campo (FieldError): logo abaixo do controle, em vermelho.
+.CanelaFieldError {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 6px 0 0;
+  color: var(--cn-danger);
+  font-size: var(--cn-font-down-1);
+  line-height: 1.4;
+
+  .icon {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+}
+
+.FormControl[aria-invalid='true'] {
+  border-color: var(--cn-danger);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--cn-danger) 20%, transparent);
+}

@@ -1901,6 +1901,7 @@ ramon-canela:
         settings_mention: チャットで誰かが自分をメンションしたとき
         settings_message: チャットのダイレクトメッセージを受け取ったとき
       errors:
+        send_failed: "送信できませんでした。接続を確認してもう一度お試しください。"
         too_fast: メッセージの送信が速すぎます。数秒お待ちください。
         message_empty: メッセージが空です。
         message_too_long: メッセージが長すぎます。メッセージは最大 {count} 文字までです。
@@ -2666,8 +2667,10 @@ ramon-canela:
         cover_forumaker_help: プロフィール上部のワイドな画像で、カード専用の背景を選んでいない場合はユーザーカードの背景にも表示されます。エディターでアップロード、削除、表示する部分の選択ができます。
         no_image: 画像なし
         upload: 画像をアップロード
+        upload_limits: "JPG、PNG、GIF、WebP（{max}まで）"
         remove_image: 画像を削除
         image_too_large: 画像が {max} を超えています。もっと小さい画像を選んでください。
+        upload_failed: "画像をアップロードできませんでした。もう一度お試しください。"
         title_none: "肩書きなし"
         title_badge_help: "肩書きとして使える獲得済みバッジから選んでください。"
       moderation:
@@ -3157,7 +3160,7 @@ ramon-canela:
       select_placeholder: "選択…"
       replace_confirm: "書いた内容をテンプレートの文章に置き換えますか？"
       load_failed: "テンプレートを読み込めませんでした。もう一度お試しください。"
-      missing_required: "投稿する前に「{field}」を入力してください。"
+      field_required: "この項目は必須です。"
       choose_required: "投稿する前にテンプレートを選んでください。"
     bug_reports:
       button: "問題を報告"

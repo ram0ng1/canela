@@ -49,6 +49,8 @@ export interface ComposerFieldsAttrs extends ComponentAttrs {
   categories?: boolean;
   /** Mostrar a metade das tags secundárias (padrão: sim, se houver alguma). */
   labels?: boolean;
+  /** O mínimo que faltou ao publicar: a mensagem aparece no seletor dele. */
+  error?: { kind: 'primary' | 'secondary'; message: string } | null;
 }
 
 function matches(tag: CanelaTag, filter: string): boolean {
@@ -89,7 +91,13 @@ function categoryLabel(tag: CanelaTag): Mithril.Children {
 
 export default class ComposerFields extends Component<ComposerFieldsAttrs> {
   view(): Mithril.Children {
-    const { disabled, categories = true } = this.attrs;
+    const { disabled, categories = true, error } = this.attrs;
+    const errorNote = (kind: 'primary' | 'secondary') =>
+      error?.kind === kind ? (
+        <div className="CanelaSelectKit-note is-error" role="alert">
+          {error.message}
+        </div>
+      ) : null;
     const limits = tagLimits();
     const selectable = selectableTags(this.attrs.discussion);
     const selected = this.selected();
@@ -113,10 +121,11 @@ export default class ComposerFields extends Component<ComposerFieldsAttrs> {
       <div className="CanelaComposerFields">
         {showCategories && (
           <SelectKit
-            className={`CanelaComposerFields-cell CanelaComposerFields-category${chosenPrimary.length ? ' has-selection' : ''}`}
+            className={`CanelaComposerFields-cell CanelaComposerFields-category${chosenPrimary.length ? ' has-selection' : ''}${error?.kind === 'primary' ? ' is-invalid' : ''}`}
             label={t('composer.shell.category_placeholder')}
             disabled={disabled}
             filterIcon
+            before={errorNote('primary')}
             header={
               chosenPrimary.length ? (
                 <span className="CanelaComposerFields-value">{chosenPrimary.map((tag, i) => [i > 0 ? ', ' : null, categoryLabel(tag)])}</span>
@@ -131,7 +140,7 @@ export default class ComposerFields extends Component<ComposerFieldsAttrs> {
         )}
         {showLabels && (
           <SelectKit
-            className={`CanelaComposerFields-cell CanelaComposerFields-tags${chosenOthers.length ? ' has-selection' : ''}`}
+            className={`CanelaComposerFields-cell CanelaComposerFields-tags${chosenOthers.length ? ' has-selection' : ''}${error?.kind === 'secondary' ? ' is-invalid' : ''}`}
             label={t('composer.shell.tags_placeholder')}
             disabled={disabled}
             caret="fas fa-plus"
@@ -149,7 +158,8 @@ export default class ComposerFields extends Component<ComposerFieldsAttrs> {
                 </span>
               </>
             }
-            before={
+            before={[
+              errorNote('secondary'),
               chosenOthers.length ? (
                 <div className="CanelaSelectKit-selected">
                   {chosenOthers.map((tag) => (
@@ -165,8 +175,8 @@ export default class ComposerFields extends Component<ComposerFieldsAttrs> {
                     </button>
                   ))}
                 </div>
-              ) : null
-            }
+              ) : null,
+            ]}
             rows={(filter: string) => this.labelRows(filter, selected, selectable, limits)}
             onselect={(key: string) => this.chooseLabel(key, selectable, limits)}
             emptyText={

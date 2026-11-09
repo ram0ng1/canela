@@ -294,8 +294,10 @@ function installHeader(): void {
           <ComposerFields
             tags={allowed}
             disabled={disabled}
+            error={this.composer.fields.canelaTagError || null}
             onchange={(tags: any[]) => {
               this.composer.fields.tags = tags;
+              this.composer.fields.canelaTagError = null;
             }}
           />,
           500
@@ -334,7 +336,9 @@ function installTagRequirements(): void {
     const missing = selectableTags().length ? missingTagsMessage(tags) : null;
     if (!missing) return original(...args);
 
-    app.alerts.show({ type: 'error' }, missing.message);
+    // A mensagem vai dentro do seletor que falta preencher, não num alerta.
+    this.composer.fields.canelaTagError = missing;
+    m.redraw.sync();
 
     const cell = missing.kind === 'primary' ? 'category' : 'tags';
     const chooser = document.querySelector(`.CanelaComposerFields-${cell}:not(.is-expanded) .CanelaSelectKit-header`) as HTMLElement | null;
