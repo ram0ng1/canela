@@ -15,6 +15,7 @@ namespace Ramon\Canela\Assign;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
+use Flarum\Group\Group;
 use Flarum\Post\CommentPost;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
@@ -55,6 +56,12 @@ final class AssistantBot
 
     public const MAX_DELAY = 1440;
 
+    /** O grupo oculto do assistente, onde ficam as permissões só dele. */
+    public const GROUP = 'canela.assistant_group_id';
+
+    /** O que o grupo ganha ao ser criado: responder sem o captcha do fof/recaptcha. */
+    private const GROUP_PERMISSIONS = ['fof-recaptcha.postWithoutCaptcha'];
+
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
         private readonly ExtensionManager $extensions,
@@ -90,7 +97,42 @@ final class AssistantBot
             $this->settings->set(self::SETTING, (string) $user->id);
         }
 
+        $this->ensureGroup($user);
+
         return $user;
+    }
+
+    /**
+     * Põe o assistente no grupo oculto "Assistente" (criado na primeira vez,
+     * já com GROUP_PERMISSIONS). As permissões do Flarum vêm só dos grupos:
+     * sem isso, um fórum que tirou "Postar sem reCAPTCHA" dos membros barra
+     * toda resposta dele, que não tem como resolver o captcha. O admin ajusta
+     * o grupo na página de permissões (responder em tags restritas, etc.).
+     */
+    public function ensureGroup(User $assistant): void
+    {
+        $group = Group::query()->find((int) $this->settings->get(self::GROUP));
+
+        if (! $group instanceof Group) {
+            $group = new Group();
+            $group->name_singular = 'Assistente';
+            $group->name_plural = 'Assistentes';
+            $group->icon = 'fas fa-robot';
+            $group->is_hidden = true;
+            $group->save();
+
+            $group->getConnection()->table('group_permission')->insert(array_map(
+                static fn (string $permission) => ['group_id' => $group->id, 'permission' => $permission],
+                self::GROUP_PERMISSIONS,
+            ));
+
+            $this->settings->set(self::GROUP, (string) $group->id);
+        }
+
+        if (! $assistant->groups()->whereKey($group->id)->exists()) {
+            $assistant->groups()->attach($group->id);
+            $assistant->unsetRelation('groups');
+        }
     }
 
     public function onAssign(): bool
