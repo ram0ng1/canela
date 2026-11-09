@@ -55,6 +55,10 @@ return [
         ->default(AssistantBot::DELAY, 0)
         ->serializeToForum('canelaAssign', AssigneeFields::ENABLED, 'boolval'),
 
+    // As permissões do assistente vêm do grupo oculto dele (o reCAPTCHA).
+    (new Extend\User())
+        ->permissionGroups(fn (User $user, array $groupIds): array => resolve(AssistantBot::class)->permissionGroups($user, $groupIds)),
+
     (new Extend\Model(Discussion::class))
         ->belongsTo('canelaAssignee', User::class, 'canela_assignee_id'),
 
