@@ -107,8 +107,16 @@ final class AssistantReplyJob extends AbstractJob
 
         $post = $this->postId ? $discussion->comments()->whereKey($this->postId)->whereNull('hidden_at')->first() : null;
 
-        if ($this->postId ? ! $post || ! $bot->autoReplies($discussion) : ! $bot->onAssign() || ! $settings->canUse($actor) || (int) $discussion->getAttribute('canela_assignee_id') !== $bot->id()) {
-            $skip($this->postId ? 'a postagem sumiu ou o tópico saiu das tags da resposta automática' : 'quem atribuiu não pode usar a IA, ou o tópico não está mais com o assistente');
+        // Nos dois casos, só para quem pode usar a IA (a permissão "Usar a IA"):
+        // quem não pode não ganha resposta postando nas tags nem atribuindo.
+        if (! $settings->canUse($actor)) {
+            $skip('@'.$actor->username.' não tem permissão para usar a IA');
+
+            return;
+        }
+
+        if ($this->postId ? ! $post || ! $bot->autoReplies($discussion) : ! $bot->onAssign() || (int) $discussion->getAttribute('canela_assignee_id') !== $bot->id()) {
+            $skip($this->postId ? 'a postagem sumiu ou o tópico saiu das tags da resposta automática' : 'o tópico não está mais com o assistente');
 
             return;
         }

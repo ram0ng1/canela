@@ -639,7 +639,7 @@ ramon-canela:
         on_assign_label: "Responder quando um tópico for atribuído a ele"
         on_assign_help: "Com o \"Atribuir tópico\" ligado, o assistente aparece como sugestão e responde no tópico que receber. Conta no limite diário de IA de quem atribuiu, e só funciona para quem pode usar a IA."
         auto_label: "Responder sozinho em certas tags"
-        auto_help: "O assistente responde sem ninguém pedir nos tópicos das tags marcadas. Conta no limite diário de IA de quem postou; ele nunca responde a si mesmo nem à conta do sistema."
+        auto_help: "O assistente responde sem ninguém pedir nos tópicos das tags marcadas. Só responde a quem pode usar a IA e conta no limite diário dessa pessoa; ele nunca responde a si mesmo nem à conta do sistema."
         tags_label: "Em quais tags"
         tags_help: "Marque as tags de suporte (por exemplo: Suporte, Dúvidas). Nenhuma marcada: ele não responde sozinho em lugar nenhum."
         tags_loading: "Carregando as tags…"
