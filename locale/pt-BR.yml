@@ -2531,6 +2531,7 @@ ramon-canela:
       title: "Notificações no navegador"
       state_loading: "Verificando este aparelho…"
       state_unsupported: "Este navegador não aceita notificações push."
+      state_error: "Não foi possível preparar as notificações neste aparelho. Recarregue a página e tente de novo."
       state_denied: "As notificações estão bloqueadas nas permissões do navegador para este site."
       state_off: "Receba as notificações neste aparelho mesmo com o fórum fechado."
       state_on: "Ligadas neste aparelho. Escolha os tipos na coluna Push."

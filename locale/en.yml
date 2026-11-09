@@ -2531,6 +2531,7 @@ ramon-canela:
       title: "Browser notifications"
       state_loading: "Checking this device…"
       state_unsupported: "This browser does not support push notifications."
+      state_error: "Could not set up notifications on this device. Reload the page and try again."
       state_denied: "Notifications are blocked in this browser's permissions for this site."
       state_off: "Get your notifications on this device even with the forum closed."
       state_on: "On for this device. Pick the types in the Push column."

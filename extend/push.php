@@ -14,7 +14,7 @@
  *
  * - /manifest.webmanifest e o <link> no <head>: o fórum pode ser instalado
  *   como app (nome, cor e ícone da Aparência);
- * - /sw.js, o service worker que mostra o push e abre o tópico no clique;
+ * - /canela-sw, o service worker que mostra o push e abre o tópico no clique;
  * - o canal "Push" das notificações (driver do core, com a coluna própria em
  *   Configurações → Notificações) e a rota que grava o aparelho.
  *
@@ -40,8 +40,10 @@ return [
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),
 
+    // Sem ".js" no endereço: a configuração de nginx do Flarum serve qualquer
+    // *.js como arquivo estático e devolvia 404 para o service worker.
     (new Extend\Routes('forum'))
-        ->get('/sw.js', 'canela.sw', ServiceWorkerController::class)
+        ->get('/canela-sw', 'canela.sw', ServiceWorkerController::class)
         ->get('/manifest.webmanifest', 'canela.manifest', ManifestController::class),
 
     (new Extend\Routes('api'))
