@@ -113,6 +113,10 @@ final class AssistantReplyJob extends AbstractJob
             return;
         }
 
+        // Antes das ferramentas: as permissões do ator ficam guardadas no
+        // primeiro uso.
+        $bot->ensureGroup($assistant);
+
         if (! $usage->claim($actor)) {
             $skip('@'.$actor->username.' chegou ao limite diário de pedidos à IA');
 
