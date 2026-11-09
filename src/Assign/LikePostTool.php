@@ -15,7 +15,6 @@ namespace Ramon\Canela\Assign;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Likes\Event\PostWasLiked;
-use Flarum\Post\CommentPost;
 use Flarum\User\User;
 use Ramon\Canela\Ai\Llm\ToolDefinition;
 use Ramon\Canela\Ai\Tools\AiTool;
@@ -58,7 +57,7 @@ final class LikePostTool implements AiTool
     public function run(array $input, User $actor): ToolOutput
     {
         $number = (int) ($input['number'] ?? 0);
-        $post = CommentPost::query()->where('discussion_id', $this->discussion->id)->where('number', $number)->whereNull('hidden_at')->first();
+        $post = $this->discussion->comments()->where('number', $number)->whereNull('hidden_at')->first();
         $activity = ['tool' => self::NAME, 'number' => $number];
 
         if (! $post || (int) $post->user_id === (int) $actor->id) {

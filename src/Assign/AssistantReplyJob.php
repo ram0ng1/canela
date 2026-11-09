@@ -105,7 +105,7 @@ final class AssistantReplyJob extends AbstractJob
             return;
         }
 
-        $post = $this->postId ? CommentPost::query()->whereKey($this->postId)->where('discussion_id', $discussion->id)->whereNull('hidden_at')->first() : null;
+        $post = $this->postId ? $discussion->comments()->whereKey($this->postId)->whereNull('hidden_at')->first() : null;
 
         if ($this->postId ? ! $post || ! $bot->autoReplies($discussion) : ! $bot->onAssign() || ! $settings->canUse($actor) || (int) $discussion->getAttribute('canela_assignee_id') !== $bot->id()) {
             $skip($this->postId ? 'a postagem sumiu ou o tópico saiu das tags da resposta automática' : 'quem atribuiu não pode usar a IA, ou o tópico não está mais com o assistente');
@@ -143,7 +143,7 @@ final class AssistantReplyJob extends AbstractJob
 
         $system = $prompt->system($persona, $actor, $webSearch)."\n\n".implode("\n", array_filter([
             match (true) {
-                $post === null => sprintf('%s (@%s, usuário %d) atribuiu a você o tópico abaixo, para que você ajude.', $actor->display_name, $actor->username, $actor->id),
+                $post === null => sprintf('%s (@"%s"#%d) atribuiu a você o tópico abaixo, para que você ajude.', $actor->display_name, str_replace('"', "'", (string) $actor->display_name), $actor->id),
                 (int) $post->number === 1 => sprintf('%s (@%s) abriu o tópico abaixo; responda ajudando.', $actor->display_name, $actor->username),
                 default => sprintf('Responda à postagem #%d, de %s (@%s), no tópico abaixo.', $post->number, $actor->display_name, $actor->username),
             },
@@ -220,8 +220,8 @@ final class AssistantReplyJob extends AbstractJob
     private function actionHints(AssistantBot $bot): array
     {
         return array_values(array_filter([
-            $bot->can('mention') ? 'Para mencionar alguém da conversa, escreva @"Nome"#<usuário> (ex.: @"Ana Souza"#12); para responder a uma postagem específica, @"Nome"#p<postagem> (ex.: @"Ana Souza"#p45). Use os números do tópico abaixo e mencione só quando ajudar.' : null,
-            $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, comece a linha com > e a menção dela: > @\"Nome\"#p<postagem> texto citado. Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
+            $bot->can('mention') ? 'Menções no formato do Flarum: cada postagem do tópico abaixo traz as duas prontas. Para responder a uma postagem, use a menção dela (@"Nome"#p45); para chamar a pessoa, a do autor (@"Nome"#12). Copie exatamente como estão, mencione só quando ajudar, e nunca escreva os números soltos no texto (nada de "p45" ou "usuário 12").' : null,
+            $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, como o \"Citar\" do Flarum: a linha começa com > e a menção da postagem, seguida do texto citado (> @\"Nome\"#p45 texto citado). Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
             $bot->can('like') ? 'Você pode curtir postagens com a ferramenta like_post: uma solução que funcionou, uma boa explicação, um agradecimento. Não curte por curtir nem as suas próprias.' : null,
         ]));
     }
@@ -235,7 +235,7 @@ final class AssistantReplyJob extends AbstractJob
      */
     private function allowedMentions(string $text, Discussion $discussion, int $actorId, bool $enabled): string
     {
-        $posts = CommentPost::query()->where('discussion_id', $discussion->id)->whereNull('hidden_at')->pluck('user_id', 'id');
+        $posts = $discussion->comments()->whereNull('hidden_at')->pluck('user_id', 'id');
         $userIds = $posts->values()->map(static fn ($id) => (int) $id)->push($actorId)->unique();
         $usernames = User::query()->whereKey($userIds->all())->pluck('username')->map(static fn ($name) => mb_strtolower((string) $name))->all();
 
@@ -262,8 +262,9 @@ final class AssistantReplyJob extends AbstractJob
     /** O título, a primeira postagem e as últimas, em texto. */
     private function transcript(Discussion $discussion): string
     {
-        $posts = CommentPost::query()
-            ->where('discussion_id', $discussion->id)
+        // comments(), e não CommentPost::query(): esta não filtra o tipo, e as
+        // postagens de evento (tags, título…) têm o conteúdo em array ("Array").
+        $posts = $discussion->comments()
             ->whereNull('hidden_at')
             ->orderBy('number')
             ->with('user')
@@ -277,8 +278,10 @@ final class AssistantReplyJob extends AbstractJob
 
         foreach ($posts as $post) {
             /** @var CommentPost $post */
-            // Os ids vão junto para a IA poder mencionar e citar (actionHints).
-            $lines[] = sprintf('#%d (postagem p%d) — %s (@%s, usuário %d):', $post->number, $post->id, $post->user->display_name ?? '?', $post->user->username ?? '?', $post->user_id);
+            // O cabeçalho já no formato do flarum/mentions (a postagem e o
+            // autor), para a IA copiar as menções em vez de escrever ids soltos.
+            $name = str_replace('"', "'", (string) ($post->user->display_name ?? '?'));
+            $lines[] = sprintf('#%d · postagem @"%s"#p%d · autor @"%s"#%d', $post->number, $name, $post->id, $name, $post->user_id);
             $lines[] = trim((string) $post->content);
             $lines[] = '';
         }
