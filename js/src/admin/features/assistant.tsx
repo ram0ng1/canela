@@ -1,7 +1,8 @@
 /*
  * A aba "Assistente": a conta do assistente de IA (separada da do sistema),
  * quando ele responde (tópico atribuído a ele, ou sozinho nas tags
- * escolhidas) e o padrão da resposta. As chaves são `canela.assistant_*`, de
+ * escolhidas), o padrão da resposta e as ações (mencionar, citar, curtir,
+ * esperar antes de responder). As chaves são `canela.assistant_*`, de
  * extend/assign.php (a classe AssistantBot).
  */
 import app from 'flarum/admin/app';
@@ -9,7 +10,9 @@ import isExtensionEnabled from 'flarum/admin/utils/isExtensionEnabled';
 
 import { AdminNotice } from '../components/AdminCard';
 import AdminSelect from '../components/AdminSelect';
+import AdminNumber from '../components/AdminNumber';
 import AdminTagPicker from '../components/AdminTagPicker';
+import AdminToggle from '../components/AdminToggle';
 import AdminTextarea from './AdminTextarea';
 import AssistantCard from './assign';
 import { requiresProvider } from './ai';
@@ -118,6 +121,37 @@ const cards: CardDef[] = [
           help={trans(`${KEY}.instructions_help`)}
           placeholder={trans(`${KEY}.instructions_placeholder`)}
           rows={4}
+        />
+      </>
+    ),
+  },
+  {
+    id: 'assistant-actions',
+    group: 'assistant',
+    icon: 'fas fa-hand-pointer',
+    title: () => trans(`${KEY}.actions_title`),
+    description: () => trans(`${KEY}.actions_help`),
+    keywords: 'assistente assistant mencionar mention citar quote curtir like esperar delay minutos minutes natural',
+    dependsOn: AI,
+    lockedBy: needsAccount,
+    body: () => (
+      <>
+        {(['mention', 'quote', 'like'] as const).map((name) => (
+          <AdminToggle
+            settingKey={`canela.assistant_${name}`}
+            label={trans(`${KEY}.${name}_label`)}
+            help={trans(`${KEY}.${name}_help`)}
+            extension={name === 'like' ? 'flarum-likes' : 'flarum-mentions'}
+          />
+        ))}
+        <AdminNumber
+          settingKey="canela.assistant_delay"
+          label={trans(`${KEY}.delay_label`)}
+          help={trans(`${KEY}.delay_help`)}
+          min={0}
+          max={1440}
+          fallback={0}
+          suffix={trans(`${KEY}.delay_suffix`)}
         />
       </>
     ),

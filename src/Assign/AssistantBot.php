@@ -45,6 +45,16 @@ final class AssistantBot
     public const LENGTH = 'canela.assistant_length';
     public const INSTRUCTIONS = 'canela.assistant_instructions';
 
+    /** O que ele pode fazer além de escrever: mencionar, citar e curtir. */
+    public const MENTION = 'canela.assistant_mention';
+    public const QUOTE = 'canela.assistant_quote';
+    public const LIKE = 'canela.assistant_like';
+
+    /** Minutos de espera antes de responder (0 = na hora), para parecer gente. */
+    public const DELAY = 'canela.assistant_delay';
+
+    public const MAX_DELAY = 1440;
+
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
         private readonly ExtensionManager $extensions,
@@ -106,6 +116,21 @@ final class AssistantBot
     public function instructions(): string
     {
         return trim((string) $this->settings->get(self::INSTRUCTIONS));
+    }
+
+    /** `mention`, `quote` ou `like`: a ação está ligada (e a extensão dela também). */
+    public function can(string $action): bool
+    {
+        $key = ['mention' => self::MENTION, 'quote' => self::QUOTE, 'like' => self::LIKE][$action] ?? null;
+
+        return $key !== null
+            && (bool) $this->settings->get($key)
+            && $this->extensions->isEnabled($action === 'like' ? 'flarum-likes' : 'flarum-mentions');
+    }
+
+    public function delay(): int
+    {
+        return max(0, min(self::MAX_DELAY, (int) $this->settings->get(self::DELAY)));
     }
 
     public function autoMode(): string
