@@ -131,19 +131,36 @@ const cards: CardDef[] = [
     icon: 'fas fa-hand-pointer',
     title: () => trans(`${KEY}.actions_title`),
     description: () => trans(`${KEY}.actions_help`),
-    keywords: 'assistente assistant mencionar mention citar quote curtir like esperar delay minutos minutes natural',
+    keywords:
+      'assistente assistant mencionar mention citar quote curtir like título title renomear rename tags buscar search fontes sources discuss flarum esperar delay minutos minutes natural',
     dependsOn: AI,
     lockedBy: needsAccount,
     body: () => (
       <>
-        {(['mention', 'quote', 'like'] as const).map((name) => (
+        {(
+          [
+            ['mention', 'flarum-mentions'],
+            ['quote', 'flarum-mentions'],
+            ['like', 'flarum-likes'],
+            ['rename', undefined],
+            ['retag', 'flarum-tags'],
+            ['external', undefined],
+          ] as const
+        ).map(([name, extension]) => (
           <AdminToggle
             settingKey={`canela.assistant_${name}`}
             label={trans(`${KEY}.${name}_label`)}
             help={trans(`${KEY}.${name}_help`)}
-            extension={name === 'like' ? 'flarum-likes' : 'flarum-mentions'}
+            extension={extension}
           />
         ))}
+        <AdminTextarea
+          settingKey="canela.assistant_external_sources"
+          label={trans(`${KEY}.external_sources_label`)}
+          help={trans(`${KEY}.external_sources_help`)}
+          placeholder="https://discuss.flarum.org"
+          rows={3}
+        />
         <AdminNumber
           settingKey="canela.assistant_delay"
           label={trans(`${KEY}.delay_label`)}

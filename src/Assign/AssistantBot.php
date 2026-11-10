@@ -51,6 +51,15 @@ final class AssistantBot
     public const QUOTE = 'canela.assistant_quote';
     public const LIKE = 'canela.assistant_like';
 
+    /** Arrumar o tópico: o título (para ficar uniforme) e as tags. */
+    public const RENAME = 'canela.assistant_rename';
+    public const RETAG = 'canela.assistant_retag';
+
+    /** Buscar em outras fontes: fóruns Flarum, um endereço por linha. */
+    public const EXTERNAL = 'canela.assistant_external';
+    public const EXTERNAL_SOURCES = 'canela.assistant_external_sources';
+    public const DEFAULT_EXTERNAL_SOURCES = 'https://discuss.flarum.org';
+
     /** Minutos de espera antes de responder (0 = na hora), para parecer gente. */
     public const DELAY = 'canela.assistant_delay';
 
@@ -61,6 +70,9 @@ final class AssistantBot
 
     /** O que o grupo ganha ao ser criado: responder sem o captcha do fof/recaptcha. */
     private const GROUP_PERMISSIONS = ['fof-recaptcha.postWithoutCaptcha'];
+
+    /** As que seguem as ações: ligada, o grupo tem a permissão; desligada, não. */
+    private const ACTION_PERMISSIONS = [self::RENAME => 'discussion.rename', self::RETAG => 'discussion.tag'];
 
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
@@ -129,6 +141,16 @@ final class AssistantBot
             $this->settings->set(self::GROUP, (string) $group->id);
         }
 
+        foreach (self::ACTION_PERMISSIONS as $setting => $permission) {
+            $rows = $group->getConnection()->table('group_permission')->where(['group_id' => $group->id, 'permission' => $permission]);
+
+            if ((bool) $this->settings->get($setting)) {
+                $rows->insertOrIgnore(['group_id' => $group->id, 'permission' => $permission]);
+            } else {
+                $rows->delete();
+            }
+        }
+
         if (! $assistant->groups()->whereKey($group->id)->exists()) {
             $assistant->groups()->attach($group->id);
             $assistant->unsetRelation('groups');
@@ -181,14 +203,37 @@ final class AssistantBot
         return trim((string) $this->settings->get(self::INSTRUCTIONS));
     }
 
-    /** `mention`, `quote` ou `like`: a ação está ligada (e a extensão dela também). */
+    /** `mention`, `quote`, `like`, `rename`, `retag` ou `external`: a ação está ligada (e a extensão dela também). */
     public function can(string $action): bool
     {
-        $key = ['mention' => self::MENTION, 'quote' => self::QUOTE, 'like' => self::LIKE][$action] ?? null;
+        [$key, $extension] = [
+            'mention' => [self::MENTION, 'flarum-mentions'],
+            'quote' => [self::QUOTE, 'flarum-mentions'],
+            'like' => [self::LIKE, 'flarum-likes'],
+            'rename' => [self::RENAME, null],
+            'retag' => [self::RETAG, 'flarum-tags'],
+            'external' => [self::EXTERNAL, null],
+        ][$action] ?? [null, null];
 
         return $key !== null
             && (bool) $this->settings->get($key)
-            && $this->extensions->isEnabled($action === 'like' ? 'flarum-likes' : 'flarum-mentions');
+            && ($extension === null || $this->extensions->isEnabled($extension));
+    }
+
+    /**
+     * As fontes da busca externa: os endereços https da lista (um por linha,
+     * sem a barra no fim). Sem nenhum válido, o discuss.flarum.org.
+     *
+     * @return list<string>
+     */
+    public function externalSources(): array
+    {
+        $sources = array_filter(
+            array_map(static fn (string $line) => rtrim(trim($line), '/'), preg_split('/[\s,]+/', (string) $this->settings->get(self::EXTERNAL_SOURCES)) ?: []),
+            static fn (string $url) => str_starts_with($url, 'https://') && parse_url($url, PHP_URL_HOST),
+        );
+
+        return array_slice(array_values(array_unique($sources)), 0, 10) ?: [self::DEFAULT_EXTERNAL_SOURCES];
     }
 
     public function delay(): int
