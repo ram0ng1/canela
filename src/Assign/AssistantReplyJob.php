@@ -141,10 +141,6 @@ final class AssistantReplyJob extends AbstractJob
             $tools[ReadTopicTool::NAME] = $readTool;
         }
 
-        if ($bot->can('like')) {
-            $tools[LikePostTool::NAME] = new LikePostTool($discussion, $events);
-        }
-
         $webSearch = $persona['web'] && $llm->supportsWebSearch();
 
         [$lengthHint, $maxTokens] = self::LENGTHS[$bot->length()];
@@ -192,6 +188,23 @@ final class AssistantReplyJob extends AbstractJob
             return;
         }
 
+        // A decisão de curtir vem na última linha ("Curtir: #2, #5" ou
+        // "Curtir: nenhuma"), pedida em toda resposta: uma ferramenta
+        // opcional os modelos quase nunca chamam. A linha não é publicada.
+        $likes = [];
+
+        if (preg_match('/\n*^[ \t*_]*Curtir[*_]*:(.*)\z/imu', $text, $match, PREG_OFFSET_CAPTURE)) {
+            $text = trim(substr($text, 0, $match[0][1]));
+            preg_match_all('/#?(\d+)/', $match[1][0], $numbers);
+            $likes = $bot->can('like') ? array_map(intval(...), $numbers[1]) : [];
+        }
+
+        if ($text === '') {
+            $skip('a IA devolveu só a decisão de curtir, sem resposta');
+
+            return;
+        }
+
         $text = $this->allowedMentions($text, $discussion, (int) $actor->id, $bot->can('mention') || $bot->can('quote'));
 
         // Respondendo a uma postagem do meio: a menção liga a resposta a ela
@@ -220,14 +233,11 @@ final class AssistantReplyJob extends AbstractJob
             return;
         }
 
-        // A curtida na postagem respondida (ou na primeira, quando atribuído)
-        // não depende da IA lembrar da ferramenta: os modelos quase nunca a
-        // chamam por conta própria. A like_post fica para curtir outras.
-        if ($bot->can('like')) {
-            $why = (new LikePostTool($discussion, $events))->like($post ?? $discussion->firstPost, $assistant);
+        if ($likes !== []) {
+            $skipped = (new PostLiker($discussion, $events))->like($likes, $assistant);
 
-            if ($why !== null) {
-                $log->info('[canela] O assistente não curtiu a postagem respondida no tópico '.$discussion->id.': ela '.$why);
+            if ($skipped !== []) {
+                $log->info('[canela] O assistente não curtiu no tópico '.$discussion->id.': '.implode(', ', $skipped));
             }
         }
     }
@@ -243,7 +253,7 @@ final class AssistantReplyJob extends AbstractJob
         return array_values(array_filter([
             $bot->can('mention') ? 'Menções no formato do Flarum: cada postagem do tópico abaixo traz as duas prontas. Para responder a uma postagem, use a menção dela (@"Nome"#p45); para chamar a pessoa, a do autor (@"Nome"#12). Copie exatamente como estão, mencione só quando ajudar, e nunca escreva os números soltos no texto (nada de "p45" ou "usuário 12").' : null,
             $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, como o \"Citar\" do Flarum: a linha começa com > e a menção da postagem, seguida do texto citado (> @\"Nome\"#p45 texto citado). Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
-            $bot->can('like') ? 'A postagem que você responde já leva a sua curtida. Com a ferramenta like_post você pode curtir outras que ajudaram: uma solução que funcionou, uma boa explicação, um agradecimento. Não curte por curtir nem as suas próprias.' : null,
+            $bot->can('like') ? 'Você decide se curte postagens do tópico, como alguém da comunidade: a que você responde, se for uma boa pergunta, ou outras que ajudaram (uma solução que funcionou, uma boa explicação, um agradecimento). Não curta por curtir nem as suas próprias. Termine sempre com uma última linha só com a decisão, que não é publicada: "Curtir: #2, #5" com os números das postagens, ou "Curtir: nenhuma".' : null,
         ]));
     }
 
