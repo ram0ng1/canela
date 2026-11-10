@@ -131,7 +131,8 @@ const cards: CardDef[] = [
     icon: 'fas fa-hand-pointer',
     title: () => trans(`${KEY}.actions_title`),
     description: () => trans(`${KEY}.actions_help`),
-    keywords: 'assistente assistant mencionar mention citar quote curtir like título title renomear rename tags buscar search fontes sources discuss flarum esperar delay minutos minutes natural',
+    keywords:
+      'assistente assistant mencionar mention citar quote curtir like título title renomear rename tags buscar search fontes sources discuss flarum esperar delay minutos minutes natural',
     dependsOn: AI,
     lockedBy: needsAccount,
     body: () => (
