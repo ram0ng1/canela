@@ -42,7 +42,12 @@ final class AssistantQueue
         $job = new AssistantReplyJob($discussionId, $actorId, $postId);
         $minutes = $this->bot->delay();
 
-        if ($minutes === 0) {
+        if ($minutes === 0 && $this->queue instanceof SyncQueue) {
+            // Na fila síncrona, no fim do pedido: no meio dele, o Flarum ainda
+            // grava as tags do tópico novo depois do Started e desfaria a
+            // troca de tags que o assistente decidiu.
+            register_shutdown_function(fn () => $this->queue->push($job));
+        } elseif ($minutes === 0) {
             $this->queue->push($job);
         } elseif (! $this->queue instanceof SyncQueue) {
             $this->queue->later(Carbon::now()->addMinutes($minutes), $job);

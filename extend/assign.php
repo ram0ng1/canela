@@ -52,6 +52,10 @@ return [
         ->default(AssistantBot::MENTION, true)
         ->default(AssistantBot::QUOTE, true)
         ->default(AssistantBot::LIKE, false)
+        ->default(AssistantBot::RENAME, false)
+        ->default(AssistantBot::RETAG, false)
+        ->default(AssistantBot::EXTERNAL, false)
+        ->default(AssistantBot::EXTERNAL_URL, AssistantBot::DEFAULT_EXTERNAL_URL)
         ->default(AssistantBot::DELAY, 0)
         ->serializeToForum('canelaAssign', AssigneeFields::ENABLED, 'boolval'),
 

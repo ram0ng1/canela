@@ -15,7 +15,7 @@ import AdminTagPicker from '../components/AdminTagPicker';
 import AdminToggle from '../components/AdminToggle';
 import AdminTextarea from './AdminTextarea';
 import AssistantCard from './assign';
-import { requiresProvider } from './ai';
+import { AiText, requiresProvider } from './ai';
 import { getStr, trans } from '../util';
 import type { CardDef } from '../types';
 
@@ -131,19 +131,34 @@ const cards: CardDef[] = [
     icon: 'fas fa-hand-pointer',
     title: () => trans(`${KEY}.actions_title`),
     description: () => trans(`${KEY}.actions_help`),
-    keywords: 'assistente assistant mencionar mention citar quote curtir like esperar delay minutos minutes natural',
+    keywords: 'assistente assistant mencionar mention citar quote curtir like título title renomear rename tags buscar search discuss flarum esperar delay minutos minutes natural',
     dependsOn: AI,
     lockedBy: needsAccount,
     body: () => (
       <>
-        {(['mention', 'quote', 'like'] as const).map((name) => (
+        {(
+          [
+            ['mention', 'flarum-mentions'],
+            ['quote', 'flarum-mentions'],
+            ['like', 'flarum-likes'],
+            ['rename', undefined],
+            ['retag', 'flarum-tags'],
+            ['external', undefined],
+          ] as const
+        ).map(([name, extension]) => (
           <AdminToggle
             settingKey={`canela.assistant_${name}`}
             label={trans(`${KEY}.${name}_label`)}
             help={trans(`${KEY}.${name}_help`)}
-            extension={name === 'like' ? 'flarum-likes' : 'flarum-mentions'}
+            extension={extension}
           />
         ))}
+        <AiText
+          settingKey="canela.assistant_external_url"
+          label={trans(`${KEY}.external_url_label`)}
+          help={trans(`${KEY}.external_url_help`)}
+          placeholder="https://discuss.flarum.org"
+        />
         <AdminNumber
           settingKey="canela.assistant_delay"
           label={trans(`${KEY}.delay_label`)}

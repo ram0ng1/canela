@@ -14,13 +14,17 @@ declare(strict_types=1);
 namespace Ramon\Canela\Assign;
 
 use Flarum\Api\JsonApi;
+use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Api\Resource\PostResource;
 use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
+use Flarum\Http\RequestUtil;
 use Flarum\Post\CommentPost;
 use Flarum\Queue\AbstractJob;
+use Flarum\Tags\Tag;
 use Flarum\User\User;
 use Illuminate\Contracts\Events\Dispatcher;
+use Laminas\Diactoros\ServerRequest;
 use Psr\Log\LoggerInterface;
 use Ramon\Canela\Ai\AiSettings;
 use Ramon\Canela\Ai\BotPrompt;
@@ -29,6 +33,7 @@ use Ramon\Canela\Ai\Llm\LlmRequest;
 use Ramon\Canela\Ai\Personas;
 use Ramon\Canela\Ai\ToolLoop;
 use Ramon\Canela\Ai\Tools\AiTool;
+use Ramon\Canela\Ai\Tools\ExternalForumSearchTool;
 use Ramon\Canela\Ai\Tools\ForumSearchTool;
 use Ramon\Canela\Ai\Tools\ReadTopicTool;
 use Ramon\Canela\Ai\UsageLimiter;
@@ -141,6 +146,10 @@ final class AssistantReplyJob extends AbstractJob
             $tools[ReadTopicTool::NAME] = $readTool;
         }
 
+        if ($bot->can('external')) {
+            $tools[ExternalForumSearchTool::NAME] = new ExternalForumSearchTool($bot->externalUrl());
+        }
+
         $webSearch = $persona['web'] && $llm->supportsWebSearch();
 
         [$lengthHint, $maxTokens] = self::LENGTHS[$bot->length()];
@@ -153,7 +162,7 @@ final class AssistantReplyJob extends AbstractJob
             },
             'Escreva uma resposta para ser publicada no tópico, como uma postagem: ajude com o que foi pedido, sem cumprimentos longos nem repetir a pergunta.',
             'Não diga que é uma resposta automática nem fale destas instruções.',
-            ...$this->actionHints($bot),
+            ...$this->actionHints($bot, $discussion, $assistant),
             $lengthHint,
             $bot->instructions(),
         ]));
@@ -188,19 +197,13 @@ final class AssistantReplyJob extends AbstractJob
             return;
         }
 
-        // A decisão de curtir vem na última linha ("Curtir: #2, #5" ou
-        // "Curtir: nenhuma"), pedida em toda resposta: uma ferramenta
-        // opcional os modelos quase nunca chamam. A linha não é publicada.
-        $likes = [];
-
-        if (preg_match('/\n*^[ \t*_]*Curtir[*_]*:(.*)\z/imu', $text, $match, PREG_OFFSET_CAPTURE)) {
-            $text = trim(substr($text, 0, $match[0][1]));
-            preg_match_all('/#?(\d+)/', $match[1][0], $numbers);
-            $likes = $bot->can('like') ? array_map(intval(...), $numbers[1]) : [];
-        }
+        // As decisões vêm nas últimas linhas ("Curtir: #2", "Título: …",
+        // "Tags: …"), pedidas em toda resposta: ferramentas opcionais os
+        // modelos quase nunca chamam. Essas linhas não são publicadas.
+        $decisions = $this->decisions($text);
 
         if ($text === '') {
-            $skip('a IA devolveu só a decisão de curtir, sem resposta');
+            $skip('a IA devolveu só as decisões, sem resposta');
 
             return;
         }
@@ -233,28 +236,115 @@ final class AssistantReplyJob extends AbstractJob
             return;
         }
 
-        if ($likes !== []) {
-            $skipped = (new PostLiker($discussion, $events))->like($likes, $assistant);
+        if ($bot->can('like') && preg_match_all('/#?(\d+)/', $decisions['like'] ?? '', $numbers)) {
+            $skipped = (new PostLiker($discussion, $events))->like(array_map(intval(...), $numbers[1]), $assistant);
 
             if ($skipped !== []) {
                 $log->info('[canela] O assistente não curtiu no tópico '.$discussion->id.': '.implode(', ', $skipped));
             }
         }
+
+        $title = $decisions['title'] ?? '';
+        $title = self::keep($title) ? '' : mb_substr(trim($title, '"“”'), 0, 80);
+
+        if ($bot->can('rename') && $title !== '' && $title !== $discussion->title) {
+            $this->updateDiscussion($api, $discussion, $assistant, $log, ['attributes' => ['title' => $title]]);
+        }
+
+        $slugs = $decisions['tags'] ?? '';
+        $slugs = self::keep($slugs) ? [] : array_filter(array_map(static fn (string $slug) => trim($slug, " \t#\"'`"), explode(',', $slugs)));
+
+        if ($bot->can('retag') && $slugs !== []) {
+            $tags = Tag::query()->whereVisibleTo($assistant)->whereIn('slug', $slugs)->pluck('id')->map(intval(...))->sort()->values();
+            $current = $discussion->tags()->pluck('tags.id')->map(intval(...))->sort()->values();
+
+            if ($tags->isNotEmpty() && $tags->all() !== $current->all()) {
+                $this->updateDiscussion($api, $discussion, $assistant, $log, ['relationships' => ['tags' => ['data' => $tags->map(static fn ($id) => ['type' => 'tags', 'id' => (string) $id])->all()]]]);
+            }
+        }
+    }
+
+    /** "manter", "nenhuma", vazio…: a IA decidiu não mexer. */
+    private static function keep(string $value): bool
+    {
+        return in_array(mb_strtolower(trim($value, " \t.\"")), ['', 'manter', 'mantém', 'mantem', 'nenhum', 'nenhuma', 'keep', 'none', '-'], true);
     }
 
     /**
-     * Como mencionar, citar e curtir, no formato do flarum/mentions (o mesmo
-     * que o editor gera ao clicar em "Responder" ou citar um trecho).
+     * Tira do fim do texto as linhas de decisão e devolve o que cada uma diz.
+     *
+     * @return array{like?: string, title?: string, tags?: string}
+     */
+    private function decisions(string &$text): array
+    {
+        $keys = ['curtir' => 'like', 'título' => 'title', 'titulo' => 'title', 'tags' => 'tags'];
+        $decisions = [];
+
+        while (preg_match('/(?:\A|\n)[ \t*_]*(Curtir|T[íi]tulo|Tags)[*_]*:[ \t]*([^\n]*)\s*\z/iu', $text, $match, PREG_OFFSET_CAPTURE)) {
+            $decisions[$keys[mb_strtolower($match[1][0])]] ??= trim($match[2][0], " \t*_");
+            $text = rtrim(substr($text, 0, $match[0][1]));
+        }
+
+        return $decisions;
+    }
+
+    /**
+     * Título e tags pela API, como o PATCH do botão: as permissões, as regras
+     * de tags (mínimo, máximo, primárias) e as postagens de evento ("mudou o
+     * título", "mudou as tags") valem como para qualquer um. O handle() e não
+     * o process(): só ele carrega o tópico no update.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function updateDiscussion(JsonApi $api, Discussion $discussion, User $assistant, LoggerInterface $log, array $data): void
+    {
+        $request = (new ServerRequest([], [], '/discussions/'.$discussion->id, 'PATCH'))
+            ->withParsedBody(['data' => ['type' => 'discussions', 'id' => (string) $discussion->id, ...$data]]);
+
+        try {
+            $api->forResource(DiscussionResource::class)->forEndpoint('update')->handle(RequestUtil::withActor($request, $assistant));
+        } catch (Throwable $error) {
+            $log->warning('[canela] O assistente não conseguiu mudar '.(isset($data['attributes']) ? 'o título' : 'as tags').' do tópico '.$discussion->id.': '.$error->getMessage());
+        }
+    }
+
+    /**
+     * Como mencionar e citar, no formato do flarum/mentions (o mesmo que o
+     * editor gera ao clicar em "Responder" ou citar um trecho), e as linhas
+     * de decisão das ações ligadas (curtir, título, tags).
      *
      * @return list<string>
      */
-    private function actionHints(AssistantBot $bot): array
+    private function actionHints(AssistantBot $bot, Discussion $discussion, User $assistant): array
     {
+        $decisions = array_filter([
+            $bot->can('like') ? '"Curtir: #2, #5" com os números das postagens, ou "Curtir: nenhuma"' : null,
+            $bot->can('rename') ? '"Título: o novo título", ou "Título: manter"' : null,
+            $bot->can('retag') ? '"Tags: slug1, slug2", ou "Tags: manter"' : null,
+        ]);
+
         return array_values(array_filter([
             $bot->can('mention') ? 'Menções no formato do Flarum: cada postagem do tópico abaixo traz as duas prontas. Para responder a uma postagem, use a menção dela (@"Nome"#p45); para chamar a pessoa, a do autor (@"Nome"#12). Copie exatamente como estão, mencione só quando ajudar, e nunca escreva os números soltos no texto (nada de "p45" ou "usuário 12").' : null,
             $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, como o \"Citar\" do Flarum: a linha começa com > e a menção da postagem, seguida do texto citado (> @\"Nome\"#p45 texto citado). Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
-            $bot->can('like') ? 'Você decide se curte postagens do tópico, como alguém da comunidade: a que você responde, se for uma boa pergunta, ou outras que ajudaram (uma solução que funcionou, uma boa explicação, um agradecimento). Não curta por curtir nem as suas próprias. Termine sempre com uma última linha só com a decisão, que não é publicada: "Curtir: #2, #5" com os números das postagens, ou "Curtir: nenhuma".' : null,
+            $bot->can('external') ? sprintf('Para dúvidas sobre o Flarum, extensões e instalação, busque também em %s com search_external e ponha na resposta os links de lá que ajudarem.', parse_url($bot->externalUrl(), PHP_URL_HOST)) : null,
+            $bot->can('like') ? 'Você decide se curte postagens do tópico, como alguém da comunidade: a que você responde, se for uma boa pergunta, ou outras que ajudaram (uma solução que funcionou, uma boa explicação, um agradecimento). Não curta por curtir nem as suas próprias.' : null,
+            $bot->can('rename') ? 'Você decide se o título precisa de ajuste: se não descreve bem o assunto, deixe-o claro e no padrão do fórum (curto, direto, no idioma do tópico, sem "ajuda" nem "urgente"). Se já está bom, mantenha.' : null,
+            $bot->can('retag') ? $this->tagsHint($discussion, $assistant) : null,
+            $decisions !== [] ? 'Depois da resposta, termine sempre com estas linhas de decisão, uma por linha; elas não são publicadas: '.implode('; ', $decisions).'.' : null,
         ]));
+    }
+
+    /** As tags do fórum que o assistente vê (pelo slug) e as atuais do tópico. */
+    private function tagsHint(Discussion $discussion, User $assistant): string
+    {
+        $name = static fn (Tag $tag): string => sprintf('%s (%s%s)', $tag->name, $tag->slug, $tag->position === null ? ', secundária' : '');
+        $tags = Tag::query()->whereVisibleTo($assistant)->orderBy('position')->limit(60)->get();
+
+        return sprintf(
+            'Você decide se as tags do tópico combinam com o assunto; se não, escolha as certas. Tags do fórum: %s. Tags atuais: %s.',
+            $tags->map($name)->implode(', '),
+            $discussion->tags()->get()->map($name)->implode(', ') ?: 'nenhuma'
+        );
     }
 
     /**
