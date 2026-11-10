@@ -671,7 +671,7 @@ ramon-canela:
         quote_label: "Citar postagens"
         quote_help: "Pode citar uma postagem inteira ou só o trecho que importa, como o \"Citar\" do editor."
         like_label: "Curtir postagens"
-        like_help: "Pode curtir postagens do tópico que ajudaram: uma solução, uma boa explicação, um agradecimento."
+        like_help: "Curte a postagem que respondeu e, quando fizer sentido, outras do tópico que ajudaram: uma solução, uma boa explicação, um agradecimento."
         delay_label: "Esperar antes de responder"
         delay_help: "Minutos entre a postagem (ou a atribuição) e a resposta, para parecer mais natural. 0 responde na hora. Sem um worker de fila, a espera depende do agendador do Flarum no cron (php flarum schedule:run a cada minuto)."
         delay_suffix: "min"

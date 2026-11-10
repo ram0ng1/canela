@@ -15,6 +15,7 @@ namespace Ramon\Canela\Assign;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Likes\Event\PostWasLiked;
+use Flarum\Post\Post;
 use Flarum\User\User;
 use Ramon\Canela\Ai\Llm\ToolDefinition;
 use Ramon\Canela\Ai\Tools\AiTool;
@@ -58,14 +59,31 @@ final class LikePostTool implements AiTool
     {
         $number = (int) ($input['number'] ?? 0);
         $post = $this->discussion->comments()->where('number', $number)->whereNull('hidden_at')->first();
-        $activity = ['tool' => self::NAME, 'number' => $number];
+        $error = $this->like($post, $actor);
 
-        if (! $post || (int) $post->user_id === (int) $actor->id) {
-            return new ToolOutput(sprintf('A postagem #%d não existe neste tópico ou é sua.', $number), $activity, true);
+        if ($error !== null) {
+            return new ToolOutput(sprintf('A postagem #%d %s.', $number, $error), ['tool' => self::NAME, 'number' => $number], true);
+        }
+
+        return new ToolOutput(sprintf('Postagem #%d curtida.', $number), ['tool' => self::NAME, 'number' => $number]);
+    }
+
+    /**
+     * Curte a postagem como o botão: só deste tópico, nunca as próprias e com
+     * a permissão de curtir. Devolve por que não curtiu, ou null.
+     */
+    public function like(?Post $post, User $actor): ?string
+    {
+        if (! $post || (int) $post->discussion_id !== (int) $this->discussion->id || $post->hidden_at !== null || $post->type !== 'comment') {
+            return 'não existe neste tópico';
+        }
+
+        if ((int) $post->user_id === (int) $actor->id) {
+            return 'é sua';
         }
 
         if (! $actor->can('like', $post)) {
-            return new ToolOutput(sprintf('Sem permissão para curtir a postagem #%d.', $number), $activity, true);
+            return 'não pode ser curtida (sem a permissão de curtir)';
         }
 
         // O mesmo que o `isLiked` do flarum/likes faz (o JsonApi::process não
@@ -75,6 +93,6 @@ final class LikePostTool implements AiTool
             $this->events->dispatch(new PostWasLiked($post, $actor));
         }
 
-        return new ToolOutput(sprintf('Postagem #%d curtida.', $number), $activity);
+        return null;
     }
 }

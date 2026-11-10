@@ -216,6 +216,19 @@ final class AssistantReplyJob extends AbstractJob
             // atribuiu; aqui ela vira aviso (permissão de responder na tag,
             // tópico trancado, limite de postagens seguidas…).
             $log->warning('[canela] O assistente não conseguiu publicar no tópico '.$discussion->id.': '.$error->getMessage());
+
+            return;
+        }
+
+        // A curtida na postagem respondida (ou na primeira, quando atribuído)
+        // não depende da IA lembrar da ferramenta: os modelos quase nunca a
+        // chamam por conta própria. A like_post fica para curtir outras.
+        if ($bot->can('like')) {
+            $why = (new LikePostTool($discussion, $events))->like($post ?? $discussion->firstPost, $assistant);
+
+            if ($why !== null) {
+                $log->info('[canela] O assistente não curtiu a postagem respondida no tópico '.$discussion->id.': ela '.$why);
+            }
         }
     }
 
@@ -230,7 +243,7 @@ final class AssistantReplyJob extends AbstractJob
         return array_values(array_filter([
             $bot->can('mention') ? 'Menções no formato do Flarum: cada postagem do tópico abaixo traz as duas prontas. Para responder a uma postagem, use a menção dela (@"Nome"#p45); para chamar a pessoa, a do autor (@"Nome"#12). Copie exatamente como estão, mencione só quando ajudar, e nunca escreva os números soltos no texto (nada de "p45" ou "usuário 12").' : null,
             $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, como o \"Citar\" do Flarum: a linha começa com > e a menção da postagem, seguida do texto citado (> @\"Nome\"#p45 texto citado). Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
-            $bot->can('like') ? 'Você pode curtir postagens com a ferramenta like_post: uma solução que funcionou, uma boa explicação, um agradecimento. Não curte por curtir nem as suas próprias.' : null,
+            $bot->can('like') ? 'A postagem que você responde já leva a sua curtida. Com a ferramenta like_post você pode curtir outras que ajudaram: uma solução que funcionou, uma boa explicação, um agradecimento. Não curte por curtir nem as suas próprias.' : null,
         ]));
     }
 

@@ -671,7 +671,7 @@ ramon-canela:
         quote_label: "Quote posts"
         quote_help: "Can quote a whole post or just the part that matters, like the editor's \"Quote\"."
         like_label: "Like posts"
-        like_help: "Can like posts in the topic that helped: a solution, a good explanation, a thank-you."
+        like_help: "Likes the post it replied to and, when it makes sense, other posts in the topic that helped: a solution, a good explanation, a thank-you."
         delay_label: "Wait before replying"
         delay_help: "Minutes between the post (or the assignment) and the reply, so it feels more natural. 0 replies right away. Without a queue worker, the wait relies on Flarum's scheduler in cron (php flarum schedule:run every minute)."
         delay_suffix: "min"
