@@ -21,18 +21,22 @@ use Ramon\Canela\Support\Dates;
 use Throwable;
 
 /**
- * Busca em outro fórum Flarum (`search_external`), pela API pública dele:
- * por padrão o discuss.flarum.org. Devolve título, link de lá, data,
- * respostas e o começo do primeiro post, para a IA citar os links.
+ * Busca em outras fontes (`search_external`): fóruns Flarum, pela API
+ * pública de cada um (por padrão o discuss.flarum.org). Devolve título,
+ * link de lá, data, respostas e o começo do primeiro post, para a IA pôr
+ * os links na resposta.
  */
-final class ExternalForumSearchTool implements AiTool
+final class ExternalSearchTool implements AiTool
 {
     public const NAME = 'search_external';
 
     private const LIMIT = 6;
 
+    /**
+     * @param list<string> $sources endereços https, sem a barra no fim
+     */
     public function __construct(
-        private readonly string $baseUrl,
+        private readonly array $sources,
         private ?Client $client = null,
     ) {
     }
@@ -40,13 +44,16 @@ final class ExternalForumSearchTool implements AiTool
     #[\Override]
     public function definition(): ToolDefinition
     {
+        $hosts = array_map(self::host(...), $this->sources);
+
         return new ToolDefinition(
             self::NAME,
-            sprintf('Busca discussões em %s (outro fórum Flarum) por palavras-chave, de preferência em inglês. Devolve até %d discussões com título, link, data, respostas e um trecho; ponha na resposta os links que ajudarem.', $this->host(), self::LIMIT),
+            sprintf('Busca discussões em outras fontes (fóruns Flarum: %s) por palavras-chave, de preferência em inglês. Sem "source", busca em todas. Devolve título, link, data, respostas e um trecho; ponha na resposta os links que ajudarem.', implode(', ', $hosts)),
             [
                 'type' => 'object',
                 'properties' => [
                     'query' => ['type' => 'string', 'description' => 'Palavras-chave da busca.'],
+                    'source' => ['type' => 'string', 'enum' => $hosts, 'description' => 'Só esta fonte (opcional).'],
                 ],
                 'required' => ['query'],
                 'additionalProperties' => false,
@@ -64,11 +71,29 @@ final class ExternalForumSearchTool implements AiTool
             return new ToolOutput('Erro: a busca precisa de palavras-chave.', $activity, true);
         }
 
+        $sources = array_values(array_filter($this->sources, static fn (string $url) => ! isset($input['source']) || self::host($url) === $input['source'])) ?: $this->sources;
+        $limit = max(2, intdiv(self::LIMIT * 2, count($sources) + 1));
+        $blocks = [];
+
+        foreach ($sources as $source) {
+            $lines = $this->search($source, $query, $limit, $activity);
+            $blocks[] = sprintf("Em %s:\n%s", self::host($source), $lines === [] ? '- nada encontrado' : implode("\n", $lines));
+        }
+
+        return new ToolOutput(sprintf("Resultados para \"%s\":\n%s", $query, implode("\n\n", $blocks)), $activity);
+    }
+
+    /**
+     * @param array{results: list<array<string, string>>} $activity
+     * @return list<string>
+     */
+    private function search(string $source, string $query, int $limit, array &$activity): array
+    {
         try {
-            $response = ($this->client ??= new Client())->get($this->baseUrl.'/api/discussions', [
+            $response = ($this->client ??= new Client())->get($source.'/api/discussions', [
                 'query' => [
                     'filter' => ['q' => $query],
-                    'page' => ['limit' => self::LIMIT],
+                    'page' => ['limit' => $limit],
                     'include' => 'firstPost',
                     'fields' => ['discussions' => 'title,slug,commentCount,createdAt,firstPost', 'posts' => 'contentHtml'],
                 ],
@@ -79,7 +104,7 @@ final class ExternalForumSearchTool implements AiTool
             ]);
             $json = json_decode((string) $response->getBody(), true, 64, JSON_THROW_ON_ERROR);
         } catch (Throwable $error) {
-            return new ToolOutput(sprintf('Erro: a busca em %s falhou (%s).', $this->host(), $error->getMessage()), $activity, true);
+            return [sprintf('- a busca falhou (%s)', $error->getMessage())];
         }
 
         $posts = [];
@@ -94,9 +119,9 @@ final class ExternalForumSearchTool implements AiTool
 
         foreach ((array) ($json['data'] ?? []) as $discussion) {
             $attributes = (array) ($discussion['attributes'] ?? []);
-            $url = $this->baseUrl.'/d/'.rawurlencode((string) ($attributes['slug'] ?? $discussion['id'] ?? ''));
+            $url = $source.'/d/'.rawurlencode((string) ($attributes['slug'] ?? $discussion['id'] ?? ''));
             $html = $posts[(string) ($discussion['relationships']['firstPost']['data']['id'] ?? '')] ?? '';
-            $excerpt = mb_substr(trim((string) preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5))), 0, 300);
+            $excerpt = mb_substr(trim((string) preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string) preg_replace('#<(script|style)\b.*?</\1>#is', '', $html)), ENT_QUOTES | ENT_HTML5))), 0, 300);
 
             $activity['results'][] = ['id' => (string) ($discussion['id'] ?? ''), 'title' => (string) ($attributes['title'] ?? ''), 'url' => $url];
             $lines[] = sprintf(
@@ -109,15 +134,11 @@ final class ExternalForumSearchTool implements AiTool
             );
         }
 
-        $content = $lines === []
-            ? sprintf('Nada encontrado em %s para "%s".', $this->host(), $query)
-            : sprintf("Resultados em %s para \"%s\":\n%s", $this->host(), $query, implode("\n", $lines));
-
-        return new ToolOutput($content, $activity);
+        return $lines;
     }
 
-    private function host(): string
+    private static function host(string $url): string
     {
-        return (string) parse_url($this->baseUrl, PHP_URL_HOST);
+        return (string) parse_url($url, PHP_URL_HOST);
     }
 }

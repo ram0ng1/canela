@@ -55,10 +55,10 @@ final class AssistantBot
     public const RENAME = 'canela.assistant_rename';
     public const RETAG = 'canela.assistant_retag';
 
-    /** Buscar em outro fórum Flarum (o endereço é escolhido no admin). */
+    /** Buscar em outras fontes: fóruns Flarum, um endereço por linha. */
     public const EXTERNAL = 'canela.assistant_external';
-    public const EXTERNAL_URL = 'canela.assistant_external_url';
-    public const DEFAULT_EXTERNAL_URL = 'https://discuss.flarum.org';
+    public const EXTERNAL_SOURCES = 'canela.assistant_external_sources';
+    public const DEFAULT_EXTERNAL_SOURCES = 'https://discuss.flarum.org';
 
     /** Minutos de espera antes de responder (0 = na hora), para parecer gente. */
     public const DELAY = 'canela.assistant_delay';
@@ -220,12 +220,20 @@ final class AssistantBot
             && ($extension === null || $this->extensions->isEnabled($extension));
     }
 
-    /** O fórum Flarum da busca externa (https, sem a barra no fim). */
-    public function externalUrl(): string
+    /**
+     * As fontes da busca externa: os endereços https da lista (um por linha,
+     * sem a barra no fim). Sem nenhum válido, o discuss.flarum.org.
+     *
+     * @return list<string>
+     */
+    public function externalSources(): array
     {
-        $url = rtrim(trim((string) $this->settings->get(self::EXTERNAL_URL)), '/');
+        $sources = array_filter(
+            array_map(static fn (string $line) => rtrim(trim($line), '/'), preg_split('/[\s,]+/', (string) $this->settings->get(self::EXTERNAL_SOURCES)) ?: []),
+            static fn (string $url) => str_starts_with($url, 'https://') && parse_url($url, PHP_URL_HOST),
+        );
 
-        return str_starts_with($url, 'https://') ? $url : self::DEFAULT_EXTERNAL_URL;
+        return array_slice(array_values(array_unique($sources)), 0, 10) ?: [self::DEFAULT_EXTERNAL_SOURCES];
     }
 
     public function delay(): int

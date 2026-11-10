@@ -33,7 +33,7 @@ use Ramon\Canela\Ai\Llm\LlmRequest;
 use Ramon\Canela\Ai\Personas;
 use Ramon\Canela\Ai\ToolLoop;
 use Ramon\Canela\Ai\Tools\AiTool;
-use Ramon\Canela\Ai\Tools\ExternalForumSearchTool;
+use Ramon\Canela\Ai\Tools\ExternalSearchTool;
 use Ramon\Canela\Ai\Tools\ForumSearchTool;
 use Ramon\Canela\Ai\Tools\ReadTopicTool;
 use Ramon\Canela\Ai\UsageLimiter;
@@ -147,7 +147,7 @@ final class AssistantReplyJob extends AbstractJob
         }
 
         if ($bot->can('external')) {
-            $tools[ExternalForumSearchTool::NAME] = new ExternalForumSearchTool($bot->externalUrl());
+            $tools[ExternalSearchTool::NAME] = new ExternalSearchTool($bot->externalSources());
         }
 
         $webSearch = $persona['web'] && $llm->supportsWebSearch();
@@ -326,7 +326,7 @@ final class AssistantReplyJob extends AbstractJob
         return array_values(array_filter([
             $bot->can('mention') ? 'Menções no formato do Flarum: cada postagem do tópico abaixo traz as duas prontas. Para responder a uma postagem, use a menção dela (@"Nome"#p45); para chamar a pessoa, a do autor (@"Nome"#12). Copie exatamente como estão, mencione só quando ajudar, e nunca escreva os números soltos no texto (nada de "p45" ou "usuário 12").' : null,
             $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, como o \"Citar\" do Flarum: a linha começa com > e a menção da postagem, seguida do texto citado (> @\"Nome\"#p45 texto citado). Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
-            $bot->can('external') ? sprintf('Para dúvidas sobre o Flarum, extensões e instalação, busque também em %s com search_external e ponha na resposta os links de lá que ajudarem.', parse_url($bot->externalUrl(), PHP_URL_HOST)) : null,
+            $bot->can('external') ? sprintf('Para dúvidas sobre o Flarum, extensões e instalação, busque também nas outras fontes (%s) com search_external e ponha na resposta os links de lá que ajudarem.', implode(', ', array_map(static fn (string $url) => parse_url($url, PHP_URL_HOST), $bot->externalSources()))) : null,
             $bot->can('like') ? 'Você decide se curte postagens do tópico, como alguém da comunidade: a que você responde, se for uma boa pergunta, ou outras que ajudaram (uma solução que funcionou, uma boa explicação, um agradecimento). Não curta por curtir nem as suas próprias.' : null,
             $bot->can('rename') ? 'Você decide se o título precisa de ajuste: se não descreve bem o assunto, deixe-o claro e no padrão do fórum (curto, direto, no idioma do tópico, sem "ajuda" nem "urgente"). Se já está bom, mantenha.' : null,
             $bot->can('retag') ? $this->tagsHint($discussion, $assistant) : null,

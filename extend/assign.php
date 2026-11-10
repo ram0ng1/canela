@@ -55,7 +55,7 @@ return [
         ->default(AssistantBot::RENAME, false)
         ->default(AssistantBot::RETAG, false)
         ->default(AssistantBot::EXTERNAL, false)
-        ->default(AssistantBot::EXTERNAL_URL, AssistantBot::DEFAULT_EXTERNAL_URL)
+        ->default(AssistantBot::EXTERNAL_SOURCES, AssistantBot::DEFAULT_EXTERNAL_SOURCES)
         ->default(AssistantBot::DELAY, 0)
         ->serializeToForum('canelaAssign', AssigneeFields::ENABLED, 'boolval'),
 
