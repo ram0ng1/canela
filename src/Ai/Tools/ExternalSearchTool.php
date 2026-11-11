@@ -48,7 +48,7 @@ final class ExternalSearchTool implements AiTool
 
         return new ToolDefinition(
             self::NAME,
-            sprintf('Busca discussões em outras fontes (fóruns Flarum: %s) por palavras-chave, de preferência em inglês. Sem "source", busca em todas. Devolve título, link, data, respostas e um trecho; ponha na resposta os links que ajudarem.', implode(', ', $hosts)),
+            sprintf('Só para tópicos do assunto dessas fontes. Busca discussões em outras fontes (fóruns Flarum: %s) por palavras-chave, de preferência em inglês. Sem "source", busca em todas. Devolve título, link, data, respostas e o começo do primeiro post; para ler as respostas, use read_external com o link.', implode(', ', $hosts)),
             [
                 'type' => 'object',
                 'properties' => [
