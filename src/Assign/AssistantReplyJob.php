@@ -294,7 +294,7 @@ final class AssistantReplyJob extends AbstractJob
         try {
             $api->forResource(DiscussionResource::class)->forEndpoint('update')->handle(RequestUtil::withActor($request, $assistant));
         } catch (Throwable $error) {
-            $log->warning('[canela] O assistente não conseguiu mudar '.(isset($data['attributes']) ? 'o título' : 'as tags').' do tópico '.$discussion->id.': '.$error->getMessage());
+            $log->warning('[canela] O assistente não conseguiu mudar '.(isset($data['attributes']) ? 'o título' : 'as tags').' do tópico '.$discussion->id.': '.($error->getMessage() !== '' ? $error->getMessage() : $error::class));
         }
     }
 
@@ -332,7 +332,7 @@ final class AssistantReplyJob extends AbstractJob
             return null;
         }
 
-        return sprintf('Você pode %s deste tópico: isso é feito logo depois de você publicar a resposta, não por ela. Nunca diga que não pode fazer isso nem ensine a pessoa a fazer. Se pedirem ou se precisar, diga em uma frase o que vai fazer (por exemplo, o título novo); senão, não fale disso (nada de "o melhor é mover para outra tag").', preg_replace('/, ([^,]+)$/', ' e $1', implode(', ', $actions)));
+        return sprintf('Você pode %s deste tópico: isso é feito logo depois de você publicar a resposta, não por ela. Nunca diga que não pode fazer isso nem ensine a pessoa a fazer. Se pedirem ou se for importante, comente como um moderador faria numa discussão: uma frase curta no fim, no passado, sem tom de chat (nada de "Pode deixar!" ou "Vou mudar..."), por exemplo "Ajustei o título e movi para Off-topic, que combina mais com o assunto." Senão, não fale disso (nada de "o melhor é mover para outra tag").', preg_replace('/, ([^,]+)$/', ' e $1', implode(', ', $actions)));
     }
 
     /**

@@ -72,8 +72,6 @@ final class AssistantBot
     private const GROUP_PERMISSIONS = ['fof-recaptcha.postWithoutCaptcha'];
 
     /** As que seguem as ações: ligada, o grupo tem a permissão; desligada, não. */
-    private const ACTION_PERMISSIONS = [self::RENAME => 'discussion.rename', self::RETAG => 'discussion.tag'];
-
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
         private readonly ExtensionManager $extensions,
@@ -139,16 +137,6 @@ final class AssistantBot
             ));
 
             $this->settings->set(self::GROUP, (string) $group->id);
-        }
-
-        foreach (self::ACTION_PERMISSIONS as $setting => $permission) {
-            $rows = $group->getConnection()->table('group_permission')->where(['group_id' => $group->id, 'permission' => $permission]);
-
-            if ((bool) $this->settings->get($setting)) {
-                $rows->insertOrIgnore(['group_id' => $group->id, 'permission' => $permission]);
-            } else {
-                $rows->delete();
-            }
         }
 
         if (! $assistant->groups()->whereKey($group->id)->exists()) {
