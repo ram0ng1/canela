@@ -48,6 +48,7 @@ final class AssistantActions
             'Você é o assistente de um fórum e acabou de responder no tópico abaixo. Agora decida as ações sobre o tópico, como alguém da equipe.',
             'Responda só com um objeto JSON, sem texto antes ou depois, com estes campos:',
             ...array_map(static fn (string $field) => '- '.$field, $fields),
+            'Se a sua resposta disse que ia mudar o título ou as tags, faça exatamente o que ela disse.',
             $bot->instructions() !== '' ? 'Instruções do fórum (valem para as ações também): '.$bot->instructions() : null,
         ]));
 

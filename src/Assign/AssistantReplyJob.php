@@ -311,8 +311,28 @@ final class AssistantReplyJob extends AbstractJob
             $bot->can('mention') ? 'Menções no formato do Flarum: cada postagem do tópico abaixo traz as duas prontas. Para responder a uma postagem, use a menção dela (@"Nome"#p45); para chamar a pessoa, a do autor (@"Nome"#12). Copie exatamente como estão, mencione só quando ajudar, e nunca escreva os números soltos no texto (nada de "p45" ou "usuário 12").' : null,
             $bot->can('quote') ? "Para citar uma postagem, inteira ou só o trecho que importa, como o \"Citar\" do Flarum: a linha começa com > e a menção da postagem, seguida do texto citado (> @\"Nome\"#p45 texto citado). Cada linha da citação começa com >, e uma linha em branco separa a citação da sua resposta. Prefira o trecho curto à postagem inteira." : null,
             $bot->can('external') ? sprintf('Há outras fontes (%s): só quando o tópico for do assunto delas, busque com search_external, leia as discussões que importam com read_external (o que foi respondido, não só o começo) e ponha na resposta os links de lá que ajudarem. Se o tópico não tem a ver com elas, não busque e não ponha links delas; se a busca não trouxer nada do mesmo assunto, também não.', implode(', ', array_map(static fn (string $url) => parse_url($url, PHP_URL_HOST), $bot->externalSources()))) : null,
-            $bot->can('like') || $bot->can('rename') || $bot->can('retag') ? 'Curtidas, título e tags do tópico são decididos à parte, depois da resposta: não fale deles nela (nada de "o melhor é mover para outra tag").' : null,
+            $this->topicActionsHint($bot),
         ]));
+    }
+
+    /**
+     * As ações sobre o tópico vêm numa chamada à parte (AssistantActions),
+     * depois da resposta; a resposta precisa saber que elas existem para não
+     * dizer "não consigo mudar o título" e mudar logo em seguida.
+     */
+    private function topicActionsHint(AssistantBot $bot): ?string
+    {
+        $actions = array_keys(array_filter([
+            'curtir postagens' => $bot->can('like'),
+            'mudar o título' => $bot->can('rename'),
+            'mudar as tags' => $bot->can('retag'),
+        ]));
+
+        if ($actions === []) {
+            return null;
+        }
+
+        return sprintf('Você pode %s deste tópico: isso é feito logo depois de você publicar a resposta, não por ela. Nunca diga que não pode fazer isso nem ensine a pessoa a fazer. Se pedirem ou se precisar, diga em uma frase o que vai fazer (por exemplo, o título novo); senão, não fale disso (nada de "o melhor é mover para outra tag").', preg_replace('/, ([^,]+)$/', ' e $1', implode(', ', $actions)));
     }
 
     /**
