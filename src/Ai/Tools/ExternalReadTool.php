@@ -64,6 +64,7 @@ final class ExternalReadTool implements AiTool
         $url = trim((string) ($input['url'] ?? ''));
         $activity = ['tool' => self::NAME, 'url' => $url];
         $source = null;
+        $id = '';
 
         foreach ($this->sources as $candidate) {
             if (preg_match('#^'.preg_quote($candidate, '#').'/d/(\d+)#', $url, $match)) {
@@ -72,7 +73,7 @@ final class ExternalReadTool implements AiTool
             }
         }
 
-        if ($source === null) {
+        if ($source === null || $id === '') {
             return new ToolOutput('Erro: o link não é de uma discussão das outras fontes registradas.', $activity, true);
         }
 
