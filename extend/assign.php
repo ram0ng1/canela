@@ -29,6 +29,7 @@ use Flarum\Extend;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\User;
 use Illuminate\Console\Scheduling\Event as ScheduledEvent;
+use Ramon\Canela\Assign\Access\AssistantPolicy;
 use Ramon\Canela\Assign\Assigned;
 use Ramon\Canela\Assign\AssignedBlueprint;
 use Ramon\Canela\Assign\AssignedFilter;
@@ -62,6 +63,11 @@ return [
     // As permissões do assistente vêm do grupo oculto dele (o reCAPTCHA).
     (new Extend\User())
         ->permissionGroups(fn (User $user, array $groupIds): array => resolve(AssistantBot::class)->permissionGroups($user, $groupIds)),
+
+    // Curtir, renomear e mudar tags, quando ligados, sem o assistente ser admin.
+    (new Extend\Policy())
+        ->modelPolicy(Discussion::class, AssistantPolicy::class)
+        ->modelPolicy(Flarum\Tags\Tag::class, AssistantPolicy::class),
 
     (new Extend\Model(Discussion::class))
         ->belongsTo('canelaAssignee', User::class, 'canela_assignee_id'),
