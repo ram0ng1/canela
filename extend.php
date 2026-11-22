@@ -328,6 +328,7 @@ $features = [
     ...$feature('templates'),
     ...$feature('topic'),
     ...$feature('translation'),
+    ...$feature('updates'),
     ...$feature('usersummary'),
     ...$feature('validation'),
 ];

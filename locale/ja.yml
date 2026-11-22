@@ -276,6 +276,8 @@ ramon-canela:
       palette_light: ライト
       palette_dark: ダーク
       shell:
+        update_blocked: "このフォーラムの composer.json は {constraint} に固定されているため、composer update では Canela の次のバージョンに上がりません（0.x ではキャレットは同じマイナーを超えません）。"
+        update_blocked_fix: "フォーラムのフォルダで一度だけ実行してください:"
         group_navigation: ヘッダーとサイドバー
         group_auth: ログインと新規登録
         group_auth_desc: ログインと新規登録のページ：表示するタイミング、レイアウト、背景、テキスト。
