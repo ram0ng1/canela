@@ -865,6 +865,9 @@ ramon-canela:
         anthropic_model_help: ボット、概要、書き換えを行うヘルパーモード（説明、カスタムプロンプト）で使用します。Sonnet は品質とコストのバランスが良く、Opus が最も高性能です。
         fast_model_label: 高速モデル
         fast_model_help: '短いタスク用：会話のタイトル、校正、翻訳、タイトルとタグの提案、一覧の要旨。'
+        advisor_model_label: 'アドバイザー'
+        advisor_model_help: 'メインモデルより強力なモデルが、回答の途中でボットとトピックへのアシスタントの返信を導きます（1回の返信につき最大2回の相談）。返信はメインモデルが書き、相談ごとにアドバイザーの料金で課金されます。アドバイザーがメインモデルより強力な場合のみ有効です（例：Sonnet に Opus）。'
+        advisor_off: 'オフ'
         openai_url_label: API ベース URL
         openai_url_help: /v1 までのアドレス。テーマが /chat/completions を付加します。例：https://api.openai.com/v1、https://openrouter.ai/api/v1、http://localhost:11434/v1。
         openai_key_label: API キー

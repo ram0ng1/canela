@@ -23,6 +23,9 @@ namespace Ramon\Canela\Ai\Llm;
  * - Opus e Sonnet pedem o `fallbacks: "default"`: quando um classificador de
  *   segurança recusa um pedido legítimo, a própria API refaz o pedido no
  *   modelo recomendado para aquele caso, em vez de devolver a recusa.
+ * - Com um advisor (`advisor_20260301`, beta), o modelo principal consulta um
+ *   modelo mais forte no meio da resposta, no servidor da Anthropic. O
+ *   resultado (às vezes criptografado) volta literalmente no próximo pedido.
  * - Cache automático do prompt (`cache_control` no topo): numa conversa longa
  *   o histórico repetido sai bem mais barato a partir da segunda mensagem.
  */
@@ -33,6 +36,11 @@ final class AnthropicClient implements LlmClient
     private const VERSION = '2023-06-01';
 
     private const FALLBACK_BETA = 'server-side-fallback-2026-07-01';
+
+    private const ADVISOR_BETA = 'advisor-tool-2026-03-01';
+
+    /** Consultas ao advisor por turno: a orientação no começo e, se travar, mais uma. */
+    private const ADVISOR_MAX_USES = 2;
 
     public function __construct(
         private readonly HttpTransport $http,
@@ -49,8 +57,13 @@ final class AnthropicClient implements LlmClient
             'anthropic-version' => self::VERSION,
         ];
 
-        if (isset($body['fallbacks'])) {
-            $headers['anthropic-beta'] = self::FALLBACK_BETA;
+        $betas = array_filter([
+            isset($body['fallbacks']) ? self::FALLBACK_BETA : null,
+            $request->advisor !== '' ? self::ADVISOR_BETA : null,
+        ]);
+
+        if ($betas !== []) {
+            $headers['anthropic-beta'] = implode(',', $betas);
         }
 
         if ($onText === null) {
@@ -134,6 +147,15 @@ final class AnthropicClient implements LlmClient
                 'type' => self::dynamicWebSearch($request->model) ? 'web_search_20260209' : 'web_search_20250305',
                 'name' => 'web_search',
                 'max_uses' => 5,
+            ];
+        }
+
+        if ($request->advisor !== '') {
+            $tools[] = [
+                'type' => 'advisor_20260301',
+                'name' => 'advisor',
+                'model' => $request->advisor,
+                'max_uses' => self::ADVISOR_MAX_USES,
             ];
         }
 
@@ -242,7 +264,7 @@ final class AnthropicClient implements LlmClient
             }
         }
 
-        $known = ['text', 'thinking', 'redacted_thinking', 'tool_use', 'server_tool_use', 'web_search_tool_result', 'web_fetch_tool_result'];
+        $known = ['text', 'thinking', 'redacted_thinking', 'tool_use', 'server_tool_use', 'web_search_tool_result', 'web_fetch_tool_result', 'advisor_tool_result'];
         $out = [];
 
         foreach ($blocks as $index => $block) {
@@ -259,9 +281,11 @@ final class AnthropicClient implements LlmClient
             $out[] = $block;
         }
 
-        // Um server_tool_use sem o resultado logo depois não pode voltar.
+        // Um server_tool_use sem o resultado logo depois não pode voltar — menos
+        // o do advisor: pendente (pause_turn, ou junto de uma ferramenta nossa),
+        // ele volta como veio e a API roda a consulta no começo do próximo pedido.
         return array_values(array_filter($out, static function (array $block, int $index) use ($out): bool {
-            if (($block['type'] ?? '') !== 'server_tool_use') {
+            if (($block['type'] ?? '') !== 'server_tool_use' || ($block['name'] ?? '') === 'advisor') {
                 return true;
             }
 
