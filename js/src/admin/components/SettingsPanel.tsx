@@ -11,6 +11,7 @@
 import type { CardDef, GroupKey } from '../types';
 import { firstOff, getBool, noteInteraction, registerDeps, saveState, toList, trans } from '../util';
 import { AdminCard, lockReason } from './AdminCard';
+import UpdateNotice from './UpdateNotice';
 
 const KEY = 'ramon-canela.admin.settings';
 const SHELL = `${KEY}.shell`;
@@ -351,6 +352,8 @@ export function createPanel(cards: CardDef[]): any {
               </div>
               <SaveIndicator />
             </div>
+
+            <UpdateNotice />
 
             {pool.length === 0 ? (
               <p className="CanelaAdmin-empty">{trans(`${KEY}.search_empty`)}</p>

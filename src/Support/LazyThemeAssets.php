@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ramon\Canela\Support;
 
+use Ernestdefoe\Wardrobe\CoreAssetSeam;
 use Ernestdefoe\Wardrobe\ThemeAssets;
 use Ernestdefoe\Wardrobe\ThemeRegistry;
 use Ernestdefoe\Wardrobe\WarmThemeAssets;
@@ -47,9 +48,12 @@ final class LazyThemeAssets extends ThemeAssets
         private readonly Cache $store,
         VersionerInterface $versioner
     ) {
-        // O Wardrobe 1.1.4 passou a pedir o versionador; as versões anteriores
-        // ignoram o argumento a mais.
-        parent::__construct($app, $themes, $config, $store, $versioner);
+        // O Wardrobe 1.1.4 passou a pedir o versionador (as versões anteriores
+        // ignoram o argumento a mais), e o 1.1.6 trocou o container pelo
+        // CoreAssetSeam no primeiro argumento.
+        $first = class_exists(CoreAssetSeam::class) ? $app->make(CoreAssetSeam::class) : $app;
+
+        parent::__construct($first, $themes, $config, $store, $versioner);
     }
 
     #[\Override]

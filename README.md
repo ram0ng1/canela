@@ -24,12 +24,26 @@ The whole palette comes from Flarum's primary color, in light and dark mode, so 
 ## Installation
 
 ```sh
-composer require ramon/canela
+composer require ramon/canela:"*"
 php flarum migrate
 php flarum cache:clear
 ```
 
 Enable Canela on the Extensions page. Every setting is in the admin panel with a description next to it. Bookmark reminders and daily badges use the Flarum scheduler, so run `php flarum schedule:run` from cron every minute.
+
+## Updating
+
+```sh
+composer update ramon/canela -W
+php flarum migrate
+php flarum cache:clear
+```
+
+Canela is still in `0.x`, and Composer treats a caret constraint there as "this minor only": `^0.1.11` never goes past `0.1.x`. If you installed with a plain `composer require ramon/canela`, your `composer.json` has that kind of constraint and `composer update` stops at the last `0.1` release. Run this once to move to the newest version and stop it from happening again:
+
+```sh
+composer require ramon/canela:"*" -W
+```
 
 ## Languages
 

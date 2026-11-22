@@ -276,6 +276,8 @@ ramon-canela:
       palette_light: Claro
       palette_dark: Escuro
       shell:
+        update_blocked: "O composer.json deste fórum fixa {constraint}, então o composer update não traz a próxima versão do Canela (em 0.x, o caret não passa da mesma minor)."
+        update_blocked_fix: "Rode uma vez, na pasta do fórum:"
         group_navigation: Cabeçalho e barra lateral
         group_auth: Entrar e cadastrar
         group_auth_desc: 'As páginas de entrar e de cadastro: quando aparecem, o leiaute, o fundo e os textos.'
