@@ -32,7 +32,7 @@ jobs:
       # §35.13 I3 — auditar egress. Esse job toca em FLARUM_API_KEY,
       # então harden-runner é especialmente importante aqui.
       - name: Harden Runner
-        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2  # v2.22.2
+        uses: step-security/harden-runner@aebdcf6156ab6691adf63218240e476564a1ed4c  # v2.23.0
         with:
           egress-policy: audit
 
