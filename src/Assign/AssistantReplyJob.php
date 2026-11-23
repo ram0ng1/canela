@@ -21,7 +21,6 @@ use Flarum\Extension\ExtensionManager;
 use Flarum\Http\RequestUtil;
 use Flarum\Post\CommentPost;
 use Flarum\Queue\AbstractJob;
-use Flarum\Tags\Tag;
 use Flarum\User\User;
 use Illuminate\Contracts\Events\Dispatcher;
 use Laminas\Diactoros\ServerRequest;
@@ -259,7 +258,7 @@ final class AssistantReplyJob extends AbstractJob
         }
 
         if ($bot->can('retag') && $decision['tags'] !== []) {
-            $tags = Tag::query()->whereVisibleTo($assistant)->whereIn('slug', $decision['tags'])->get();
+            $tags = $actions->allowedTags($discussion)->whereIn('slug', $decision['tags']);
             // Tag filha sem a mãe o flarum/tags recusa: a mãe vai junto.
             $ids = $tags->pluck('id')->merge($tags->pluck('parent_id')->filter())->map(intval(...))->unique()->sort()->values();
             $current = $discussion->tags()->pluck('tags.id')->map(intval(...))->sort()->values();
@@ -373,15 +372,15 @@ final class AssistantReplyJob extends AbstractJob
     {
         // comments(), e não CommentPost::query(): esta não filtra o tipo, e as
         // postagens de evento (tags, título…) têm o conteúdo em array ("Array").
-        $posts = $discussion->comments()
-            ->whereNull('hidden_at')
-            ->orderBy('number')
-            ->with('user')
-            ->get();
+        // O comments() do core já deixa de fora as ocultas e as privadas (as
+        // que esperam aprovação no flarum/approval).
+        $visible = static fn () => $discussion->comments()->with('user');
 
-        if ($posts->count() > self::RECENT + 1) {
-            $posts = $posts->take(1)->concat($posts->slice(-self::RECENT));
-        }
+        // A primeira e as últimas, cada uma na sua consulta: sem carregar o
+        // tópico inteiro para usar só as pontas.
+        $first = $visible()->orderBy('number')->limit(1)->get();
+        $recent = $visible()->where('number', '>', (int) $first->first()?->number)->orderByDesc('number')->limit(self::RECENT)->get()->reverse();
+        $posts = $first->concat($recent);
 
         $lines = ['Tópico: '.$discussion->title, ''];
 

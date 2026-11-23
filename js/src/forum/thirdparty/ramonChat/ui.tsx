@@ -307,13 +307,23 @@ export class ChannelRow extends Component<ChannelRowAttrs> {
   }
 }
 
+/**
+ * O texto puro de uma mensagem. O HTML passa pelo DOMParser, e não por
+ * innerHTML num <div>: no documento inerte nada executa (um <img onerror>)
+ * nem baixa. O texto-fonte, quando não há HTML, já é texto: não passa por
+ * parser nenhum.
+ */
+export function plainText(html: unknown, source?: unknown): string {
+  if (typeof html === 'string' && html !== '') {
+    return new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
+  }
+
+  return typeof source === 'string' ? source : '';
+}
+
 /** O começo do texto da última mensagem, sem as marcações. */
 function excerpt(message: any): string {
-  const html = String(message.contentHtml?.() || message.content?.() || '');
-  const div = document.createElement('div');
-  div.innerHTML = html;
-
-  return (div.textContent || '').trim().slice(0, 120);
+  return plainText(message.contentHtml?.(), message.content?.()).trim().slice(0, 120);
 }
 
 export interface ChannelsListAttrs extends ComponentAttrs {
