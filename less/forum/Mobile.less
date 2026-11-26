@@ -114,6 +114,12 @@
     order: 2;
   }
 
+  // Com o rodapé da barra ligado, o idioma vai para o menu: o cabeçalho do
+  // celular não tem espaço para o nome do fórum, Entrar e a pílula juntos.
+  .Canela .Header-secondary .Header-controls > li.item-locale:has(.CanelaHeaderLocale--inMenu) {
+    display: none;
+  }
+
   .Canela .CanelaHeader-search,
   .Canela .Header-secondary .Header-controls > li.item-search {
     order: 3;

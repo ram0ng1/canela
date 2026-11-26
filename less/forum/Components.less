@@ -1429,3 +1429,23 @@ textarea.FormControl {
   border-color: var(--cn-danger);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--cn-danger) 20%, transparent);
 }
+
+// A lista vazia com o próximo passo (busca sem resultado, Seguindo, categoria
+// vazia): a frase principal, a dica num tom abaixo e, na busca, "Limpar busca".
+.CanelaListEmpty {
+  text-align: center;
+
+  .CanelaListEmpty-title {
+    margin: 0 0 var(--cn-space-2);
+    color: var(--cn-primary);
+  }
+
+  .CanelaListEmpty-hint {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .CanelaListEmpty-action {
+    margin-top: var(--cn-space-4);
+  }
+}

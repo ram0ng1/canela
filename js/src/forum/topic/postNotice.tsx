@@ -28,6 +28,12 @@ export default function installPostNotice(): void {
 
     if (!notice || post.isHidden() || this.isEditing?.()) return;
 
+    // O aviso é um convite para responder: só aparece para quem pode
+    // responder, e nunca para o próprio autor (ninguém se dá as boas-vindas).
+    const viewer = app.session.user;
+
+    if (!viewer || viewer === post.user() || !post.discussion()?.canReply?.()) return;
+
     const name = username(post.user());
     const since = notice.since ? new Date(notice.since) : null;
     const returning = notice.type === 'returning' && since;

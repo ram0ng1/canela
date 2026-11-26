@@ -167,7 +167,7 @@ ramon-canela:
       sidebar_enabled_help: A coluna à esquerda com a navegação e as tags. Desligada, o fórum volta à navegação padrão do Flarum.
       sidebar_open_default_label: Começar aberta
       sidebar_open_default_help: Como a barra aparece para quem ainda não a abriu nem fechou pelo botão do cabeçalho. Depois disso vale a escolha de cada visitante, guardada no navegador.
-      sidebar_new_topic_label: Botão "Iniciar Discussão"
+      sidebar_new_topic_label: Botão "Iniciar discussão"
       sidebar_new_topic_help: O botão no topo da barra que abre o editor de uma nova discussão.
       sidebar_footer_label: Rodapé da barra
       sidebar_footer_help: 'Os botões no fim da barra: tema claro ou escuro, nova discussão e atalhos de teclado.'
@@ -1503,6 +1503,7 @@ ramon-canela:
       forgot_heading: Redefinir senha
       back_to_login: Voltar para entrar
       back_to_forum: Voltar ao fórum
+      remember_me: Lembrar de mim
       or: ou
       panel_login_title: Que bom ver você de novo
       panel_login_text: Entre para continuar as conversas, responder e acompanhar o que importa para você.
@@ -2093,20 +2094,20 @@ ramon-canela:
         or: ou
         body_placeholder_formats: Digite aqui. Use {formats} para formatar.
         drag_images: Arraste ou cole imagens.
-        action_new_topic: Iniciar Discussão
+        action_new_topic: Iniciar discussão
         action_reply: Discussão
         action_edit: Editando postagem
         reply_to_topic_desc: Responder à discussão, não a uma postagem específica
         reply_as_new_topic_desc: Criar uma nova discussão relacionada a esta discussão
         saved_draft: Rascunho de postagem em andamento. Toque para retomar.
-        category_placeholder: Tag primária…
+        category_placeholder: Categoria…
         tags_placeholder: Tags opcionais…
         title_placeholder: Digite um título, ou cole um link aqui
         body_placeholder: Digite aqui.
         body_placeholder_markdown: Digite aqui. Use a barra de ferramentas ou Markdown para formatar.
         body_placeholder_bbcode: Digite aqui. Use BBCode para formatar.
         body_placeholder_markdown_bbcode: Digite aqui. Use Markdown ou BBCode para formatar.
-        submit_new_topic: Publicar Discussão
+        submit_new_topic: Publicar discussão
         submit_reply: Responder
         submit_edit: Salvar edição
         discard: Descartar
@@ -2119,8 +2120,8 @@ ramon-canela:
         no_tags: Nenhuma tag disponível.
         no_category: (sem tag)
         remove_tag: Remover tag
-        max_primary_tags: "{count, plural, one {Limite de 1 tag primária atingido. Remova a escolhida para trocar.} other {Limite de # tags primárias atingido. Remova uma para escolher outra.}}"
-        max_secondary_tags: "{count, plural, one {Limite de 1 tag secundária atingido (as tags filhas também contam).} other {Limite de # tags secundárias atingido (as tags filhas também contam).}}"
+        max_primary_tags: "{count, plural, one {Limite de 1 categoria atingido. Remova a escolhida para trocar.} other {Limite de # categorias atingido. Remova uma para escolher outra.}}"
+        max_secondary_tags: "{count, plural, one {Limite de 1 tag atingido (as subcategorias também contam).} other {Limite de # tags atingido (as subcategorias também contam).}}"
         bold_label: N
         switch_to_markdown: Mudar para o editor Markdown
         switch_to_rich: Mostrar o texto formatado
@@ -2128,12 +2129,12 @@ ramon-canela:
         toggle_direction: Alternar direção
         add_poll: Criar enquete
         edit_poll: Editar enquete
-        action_create_topic: Iniciar Discussão
+        action_create_topic: Iniciar discussão
         create_topic_desc: Criar uma nova discussão
     tag_modal:
       edit_title: Editar tags
-      primary_heading: Tags primárias
-      secondary_heading: Tags secundárias
+      primary_heading: Categorias
+      secondary_heading: Tags
     modals:
       login_title: Boas-vindas outra vez
       signup_title: Criar sua conta
@@ -2162,7 +2163,7 @@ ramon-canela:
         tabs_label: O que pesquisar
         tab_topics: Discussões
         tab_posts: Postagens
-        tab_categories: Tags
+        tab_categories: Categorias
         tab_users: Usuários(as)
         input_label: Termo de pesquisa
         input_placeholder: Pesquisar
@@ -2187,8 +2188,8 @@ ramon-canela:
         posts_filters_note: Na busca de postagens valem só o autor, uma tag, as curtidas e os marcadores; os outros filtros são para discussões.
         filter_author: Postado por
         filter_author_placeholder: nome de usuário
-        filter_category: Na tag primária
-        filter_category_any: Qualquer tag primária
+        filter_category: Na categoria
+        filter_category_any: Qualquer categoria
         filter_tags: Com as tags
         filter_tags_add: Adicionar tag…
         filter_tag_remove: Remover a tag {name}
@@ -2323,7 +2324,7 @@ ramon-canela:
         home: Início
         latest: Recentes
         top: Melhores
-        categories: Tags
+        categories: Categorias
         notifications: Notificações
         profile: Perfil
         settings: Configurações
@@ -2437,7 +2438,7 @@ ramon-canela:
       sidebar:
         home: Início
         my_messages: Minhas mensagens
-        new_in_category: Há discussões novas ou não lidas nesta tag
+        new_in_category: Há discussões novas ou não lidas nesta categoria
         review: Revisar
         faq: Perguntas frequentes
         tos: Termos de serviço
@@ -2460,6 +2461,13 @@ ramon-canela:
       created_at: 'Criado em: {date}'
       last_reply_at: 'Última resposta: {date}'
       read_more: ler mais
+      empty_search: Nenhuma discussão encontrada para “{query}”.
+      empty_search_hint: Confira a grafia ou tente palavras mais gerais.
+      empty_search_clear: Limpar busca
+      empty_following: Você ainda não segue nenhuma discussão.
+      empty_following_hint: Abra uma discussão e toque em Seguir (o sino) para receber as respostas e encontrá-la aqui.
+      empty_tag: Ainda não há discussões aqui.
+      empty_tag_hint: Que tal começar a primeira?
     nav:
       label: Navegação da lista de discussões
       latest: Recentes
@@ -2467,34 +2475,34 @@ ramon-canela:
       newest: Novos
       unread: Não lidos
       top: Melhores
-      categories_link: Tags
+      categories_link: Categorias
       more: Mais ordenações
       sort_label: Escolher a lista
-      categories: tags
-      subcategories: tags filhas
-      tags: tags secundárias
-      all_categories: Todas as tags
+      categories: Categorias
+      subcategories: Subcategorias
+      tags: Tags
+      all_categories: Todas as categorias
       all_subcategories: Tudo em {name}
-      all_tags: Todas as tags secundárias
-      new_topic: Iniciar Discussão
+      all_tags: Todas as tags
+      new_topic: Iniciar discussão
       remove_filter: remover filtro
-      no_subcategory: nenhuma tag filha
-      no_tags: sem tags secundárias
+      no_subcategory: nenhuma subcategoria
+      no_tags: sem tags
       search_placeholder: Pesquisar...
       no_results: Nenhum resultado encontrado.
       filter_for_more: Filtre para ver mais...
     hero:
-      subcategories: Tags filhas
+      subcategories: Subcategorias
     categories:
-      category: Tag
+      category: Categoria
       topics: Discussões
       latest: Último
-      tags_title: Tags secundárias
+      tags_title: Tags
       tags_sort_by: Ordenar por
       tags_sort_count: contagem
       tags_sort_name: nome
       tags_all: Todas as tags
-      tags_none: Nenhuma tag secundária ainda.
+      tags_none: Nenhuma tag ainda.
     messages:
       reactions:
         react: Reagir
@@ -2765,20 +2773,20 @@ ramon-canela:
     sidebar:
       label: Barra lateral
       toggle: Abrir ou fechar a barra lateral
-      new_topic: Iniciar Discussão
+      new_topic: Iniciar discussão
       topics: Todas as Discussões
       my_posts: Minhas postagens
       my_messages: Minhas mensagens
       admin: Administração
       more: Mais
-      categories: Tags
-      tags: Tags secundárias
-      all_categories: Todas as tags
-      all_tags: Todas as tags secundárias
+      categories: Categorias
+      tags: Tags
+      all_categories: Todas as categorias
+      all_tags: Todas as tags
       notifications: Notificações
       settings: Configurações
-      customize_categories: Personalizar tags
-      customize_tags: Personalizar tags secundárias
+      customize_categories: Personalizar categorias
+      customize_tags: Personalizar tags
       customize_filter: Filtrar…
       customize_community: Personalizar
       customize_community_help: 'Desmarque os itens que devem ir para dentro do "Mais" e arraste-os pela alça para mudar a ordem. A escolha vale neste navegador.'
@@ -3148,10 +3156,10 @@ ramon-canela:
       empty:
         generic: Não há itens nesta lista.
         notifications_title: Você ainda não tem nenhuma notificação
-        notifications_body_1: Neste painel, você receberá notificações sobre atividades relevantes, inclusive respostas às suas discussões e postagens, quando você for citado(a) ou mencionado(a) (<b>@mentions</b>) por alguém e quando as discussões que você estiver acompanhando receberem respostas. As notificações também serão enviadas por e-mail quando você passar algum tempo sem entrar com a conta.
-        notifications_body_2: Procure por {icon} para decidir sobre quais discussões e tags específicas você quer receber notificações. Para obter mais informações, verifique suas <a>preferências de notificações</a>.
+        notifications_body_1: Aqui chegam as respostas às suas discussões, as menções a você e as novidades das discussões que você segue.
+        notifications_body_2: Escolha o que receber pelo {icon} de cada discussão ou nas <a>preferências de notificação</a>.
         page_title: Você ainda não tem nenhuma notificação
-        page_body_1: Você receberá notificações sobre atividades relevantes, inclusive respostas às suas discussões e postagens, quando você for citado(a) ou mencionado(a) (<b>@mentions</b>) por alguém e quando as discussões que você estiver acompanhando receberem respostas. As notificações também serão enviadas por e-mail quando você passar algum tempo sem entrar com a conta.
+        page_body_1: Aqui chegam as respostas às suas discussões, as menções a você e as novidades das discussões que você segue. Se você passar um tempo sem entrar, elas também vão por e-mail.
         likes_title: Você ainda não recebeu nenhuma curtida
         likes_body_1: Você receberá uma notificação aqui sempre que alguém curtir uma de suas postagens, para que possa saber o que os outros estão achando valioso. Outros também verão o mesmo quando você curtir as postagens deles!
         likes_body_2: Notificações de curtidas nunca são enviadas para seu e-mail, mas você pode configurar a forma de receber notificações sobre curtidas no site ajustando suas <a>preferências de notificação</a>.

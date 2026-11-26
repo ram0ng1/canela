@@ -49,6 +49,7 @@ export default class SearchMenu extends Component<SearchMenuAttrs> {
   protected open = false;
   protected lastEnter = 0;
   protected inputId = '';
+  protected syncedTerm = '';
 
   protected onDocumentPress = (event: Event) => {
     if (!this.open) return;
@@ -66,10 +67,22 @@ export default class SearchMenu extends Component<SearchMenuAttrs> {
     // O primeiro menu usa o id `search-term`; o do banner, outro.
     this.inputId = instances++ === 0 ? 'search-term' : `search-term-${instances}`;
 
-    // Depois de uma busca na lista (`/?q=`), o campo continua mostrando o termo.
-    const active = app.search.state.getValue?.();
+    this.syncTerm();
+  }
 
-    if (active && !state.term) state.term = active;
+  /**
+   * Depois de uma busca na lista (`/?q=`), o campo mostra o termo. Vale também
+   * para quem abre um link de busca direto: o cabeçalho monta antes da lista
+   * ler o `q`, então a sincronia roda a cada desenho, uma vez por termo novo.
+   */
+  syncTerm(): void {
+    const active = app.search.state.getValue?.() || '';
+
+    if (active === this.syncedTerm) return;
+
+    this.syncedTerm = active;
+
+    if (active && !this.open) state.term = active;
   }
 
   oncreate(vnode: Mithril.VnodeDOM<SearchMenuAttrs, this>) {
@@ -95,6 +108,8 @@ export default class SearchMenu extends Component<SearchMenuAttrs> {
 
   view(): Mithril.Children {
     const location = this.attrs.location;
+
+    this.syncTerm();
 
     return (
       <div

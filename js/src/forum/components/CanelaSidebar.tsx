@@ -13,6 +13,7 @@ import type Mithril from 'mithril';
 import SidebarSection from './SidebarSection';
 import DraftsMenu, { showDraftsMenu } from '../features/composer/drafts/DraftsMenu';
 import { FooterColorMode, FooterPaletteSelector } from '../shell/colorMode';
+import LocaleSwitcher from '../shell/LocaleSwitcher';
 import { getCommunityMore, getCommunityOrder, getSidebarPicks, type SidebarSectionName } from '../utils/sidebarPrefs';
 import { forumBool, forumInt, isExtensionEnabled, t } from '../utils/settings';
 import {
@@ -271,6 +272,12 @@ export default class CanelaSidebar extends IndexSidebar {
       );
     }
 
+    // No celular o idioma sai do cabeçalho (apertado demais) e vem para cá,
+    // no menu; no computador o rodapé não mostra este item (CSS).
+    if (Object.keys(app.data.locales || {}).length > 1) {
+      items.add('locale', <div className="CanelaSidebar-footerLocale">{LocaleSwitcher()}</div>, 85);
+    }
+
     items.add(
       'shortcuts',
       <Button icon="far fa-keyboard" onclick={() => app.modal.show(() => import('./KeyboardShortcutsModal'))}>
@@ -389,8 +396,10 @@ export default class CanelaSidebar extends IndexSidebar {
       items.add('theme', <FooterColorMode />, 100);
     }
 
-    // O "+" do rodapé, só para quem está logado.
-    if (app.session.user)
+    // O "+" do rodapé, só para quem está logado e quando o botão grande
+    // "Iniciar discussão" do topo da barra está desligado: os dois juntos
+    // eram o mesmo botão duas vezes na mesma barra.
+    if (app.session.user && !forumBool('canelaSidebarNewTopic', true))
       items.add(
         'newTopic',
         <Button
@@ -402,6 +411,12 @@ export default class CanelaSidebar extends IndexSidebar {
         />,
         90
       );
+
+    // No celular o idioma sai do cabeçalho (apertado demais) e vem para cá,
+    // no menu; no computador o rodapé não mostra este item (CSS).
+    if (Object.keys(app.data.locales || {}).length > 1) {
+      items.add('locale', <div className="CanelaSidebar-footerLocale">{LocaleSwitcher()}</div>, 85);
+    }
 
     items.add(
       'shortcuts',

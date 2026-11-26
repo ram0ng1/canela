@@ -109,6 +109,27 @@ function pageClass(mode: AuthMode, Base: any): any {
       ];
     }
 
+    // "Lembrar de mim" em maiúscula de frase; o pacote de idioma diz "Lembrar de Mim".
+    fields() {
+      const items = super.fields();
+
+      if (mode === 'login' && items.has('remember')) {
+        items.setContent(
+          'remember',
+          <div className="Form-group">
+            <div>
+              <label className="checkbox">
+                <input type="checkbox" bidi={this.remember} disabled={this.loading} />
+                {t('auth.remember_me')}
+              </label>
+            </div>
+          </div>
+        );
+      }
+
+      return items;
+    }
+
     hide() {
       m.route.set(app.route('index'));
     }
