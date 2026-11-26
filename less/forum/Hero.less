@@ -47,6 +47,20 @@
   flex: 1 1 0;
   min-width: 0;
 }
+
+// A arte da identidade (ou a imagem do admin), na ponta direita.
+.CanelaWelcome-art {
+  flex: 0 0 auto;
+  width: clamp(180px, 22vw, 260px);
+
+  .CanelaBrandImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+  }
+}
 .CanelaWelcome.Hero .CanelaWelcome-title {
   font-size: clamp(~"1.728rem, 4vw, 2.296rem");
   font-weight: 700;
@@ -137,6 +151,10 @@
 
   .CanelaWelcome-search {
     max-width: none;
+  }
+
+  .CanelaWelcome-art {
+    display: none;
   }
 }
 

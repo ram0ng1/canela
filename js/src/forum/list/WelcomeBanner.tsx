@@ -1,6 +1,7 @@
 /*
  * O banner de boas-vindas: título grande, a mensagem de boas-vindas
- * do admin e um campo de busca em pílula, sobre o fundo tingido da página.
+ * do admin, um campo de busca em pílula e a arte da identidade, sobre o
+ * fundo tingido da página.
  *
  * Herda do Hero do core para manter a classe `.Hero` — o IndexPage mede a
  * altura dela para devolver o leitor ao mesmo ponto da lista.
@@ -12,6 +13,7 @@ import ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
 import { forumBool } from '../utils/settings';
+import { brandArt } from '../brand';
 
 export default class WelcomeBanner extends Hero {
   className(): string {
@@ -42,6 +44,11 @@ export default class WelcomeBanner extends Hero {
         50
       );
     }
+
+    // A arte da identidade (ou a imagem do admin), ao lado do texto.
+    const art = brandArt('welcome');
+
+    if (art) items.add('art', <div className="CanelaWelcome-art">{art}</div>, 10);
 
     return items;
   }

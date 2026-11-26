@@ -18,5 +18,5 @@
     @include('ramon-canela-gaps::not-found.home')
     @include('ramon-canela-gaps::not-found.topics', ['lists' => ['recent'], 'limit' => 4])
   </div>
-  <div class="panel illustration">@include('ramon-canela-gaps::not-found.art-map')</div>
+  <div class="panel illustration">@include('ramon-canela-gaps::not-found.art', ['art' => 'art-map'])</div>
 </main>

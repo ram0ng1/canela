@@ -83,7 +83,8 @@
     .topics li > a { flex-basis: 100%; }
     .badge { display: inline-flex; align-items: center; gap: .35em; color: var(--text-high); font-size: .875rem; }
     .badge i { width: .6em; height: .6em; border-radius: 2px; background: var(--c, #999); display: inline-block; }
-    .illustration svg { display: block; width: 100%; height: auto; }
+    .illustration svg, .illustration img { display: block; width: 100%; height: auto; }
+    .illustration:not(:has(*)) { display: none; }
     @@media (max-width: 640px) {
       .search { padding: 1.5rem 1.5rem 2rem; }
       .search form, .search--inline form { flex-direction: column; flex-wrap: wrap; gap: 1rem; }

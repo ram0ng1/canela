@@ -1,0 +1,196 @@
+// =====================================================================
+// Identidade visual gerada pelo nome do fórum (js/src/common/brand).
+//
+// O SVG só traz formas e classes; as cores saem daqui, todas da primária:
+// a segunda cor gira o matiz pela quantidade que o nome sorteou
+// (--cn-brand-hue, no style do SVG), e os tons claros misturam com o fundo
+// da página, então o claro e o escuro acertam sozinhos. Fica em common: o
+// admin mostra a mesma arte na prévia.
+//
+// O movimento é curto e só entra sem prefers-reduced-motion e sem o
+// "Sem animação" do admin (html.CanelaBrand-still).
+// =====================================================================
+
+.CanelaBrand {
+  --cn-brand-a: var(--cn-accent, var(--primary-color));
+  --cn-brand-b: ~"oklch(from var(--cn-brand-a) clamp(.45, l, .72) c calc(h + var(--cn-brand-hue, 60)))";
+  --cn-brand-bg: var(--body-bg, #fff);
+  --cn-brand-soft: ~"color-mix(in srgb, var(--cn-brand-a) 12%, var(--cn-brand-bg))";
+  --cn-brand-mid: ~"color-mix(in srgb, var(--cn-brand-a) 45%, var(--cn-brand-bg))";
+  --cn-brand-line: ~"color-mix(in srgb, var(--cn-brand-a) 22%, transparent)";
+  --cn-brand-ink: var(--cn-accent-text, #fff);
+
+  display: block;
+  overflow: visible;
+  font-family: var(--cn-font, inherit);
+
+  .CanelaBrand-shape {
+    fill: var(--cn-brand-a);
+  }
+
+  .CanelaBrand-spark,
+  .CanelaBrand-piece--b {
+    fill: var(--cn-brand-b);
+    stroke: var(--cn-brand-b);
+  }
+
+  .CanelaBrand-piece--a {
+    fill: var(--cn-brand-a);
+    stroke: var(--cn-brand-a);
+  }
+
+  .CanelaBrand-piece {
+    stroke-width: 2.4;
+    stroke-linecap: round;
+  }
+
+  .CanelaBrand-initials {
+    fill: var(--cn-brand-ink);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  .CanelaBrand-initials--muted {
+    fill: var(--cn-brand-mid);
+  }
+
+  .CanelaBrand-outline {
+    fill: var(--cn-brand-soft);
+    stroke: var(--cn-brand-mid);
+    stroke-width: 2.5;
+    stroke-dasharray: 7 6;
+    stroke-linecap: round;
+  }
+
+  .CanelaBrand-ground,
+  .CanelaBrand-backdrop {
+    fill: var(--cn-brand-soft);
+  }
+
+  .CanelaBrand-pattern {
+    fill: var(--cn-brand-line);
+    stroke: var(--cn-brand-line);
+    stroke-width: 1.5;
+  }
+
+  .CanelaBrand-bubble--a > rect,
+  .CanelaBrand-bubble--a > path {
+    fill: var(--cn-brand-a);
+  }
+
+  .CanelaBrand-bubble--b > rect,
+  .CanelaBrand-bubble--b > path {
+    fill: var(--cn-brand-b);
+  }
+
+  .CanelaBrand-bubble--soft > rect,
+  .CanelaBrand-bubble--soft > path {
+    fill: var(--cn-brand-bg);
+    stroke: var(--cn-brand-mid);
+    stroke-width: 2;
+  }
+
+  .CanelaBrand-bubbleInk {
+    fill: var(--cn-brand-ink);
+  }
+
+  .CanelaBrand-bubble--soft .CanelaBrand-bubbleInk {
+    fill: var(--cn-brand-mid);
+    stroke: none;
+  }
+
+  .CanelaBrand-orbitPath {
+    fill: none;
+    stroke: var(--cn-brand-line);
+    stroke-width: 2;
+    stroke-dasharray: 2 10;
+    stroke-linecap: round;
+  }
+}
+
+// O monograma do cabeçalho tem o tamanho da letra do título.
+.CanelaBrandSlot {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-inline-end: 0.45em;
+
+  .CanelaBrand--header {
+    width: 1.6em;
+    height: 1.6em;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Movimento: o selo surge, as peças flutuam devagar, a órbita gira e os
+// balões sobem. Nada passa de alguns pixels.
+// ---------------------------------------------------------------------
+@keyframes cn-brand-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+}
+
+@keyframes cn-brand-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes cn-brand-float {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes cn-brand-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.CanelaBrand-still) .CanelaBrand {
+    .CanelaBrand-seal,
+    .CanelaBrand-bubble,
+    .CanelaBrand-float,
+    .CanelaBrand-orbit {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .CanelaBrand-pop .CanelaBrand-seal {
+      animation: cn-brand-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+    }
+
+    .CanelaBrand-bubble {
+      animation: cn-brand-rise 0.4s 0.2s ease-out both;
+    }
+
+    .CanelaBrand-bubble + .CanelaBrand-bubble {
+      animation-delay: 0.32s;
+    }
+
+    .CanelaBrand-float {
+      animation: cn-brand-float 6s ease-in-out infinite;
+    }
+
+    .CanelaBrand-orbit {
+      animation: cn-brand-turn 60s linear infinite;
+    }
+
+    .CanelaBrand-pattern {
+      animation: cn-brand-rise 0.6s ease-out both;
+    }
+  }
+
+  // O monograma do cabeçalho dá uma volta curta quando o mouse passa.
+  html:not(.CanelaBrand-still) #home-link:hover .CanelaBrand--header .CanelaBrand-seal {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: cn-brand-pop 0.35s ease-out;
+  }
+}

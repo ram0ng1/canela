@@ -8,7 +8,7 @@
 </style>
 <main class="classic">
   <div class="heading">
-    <div class="illustration">@include('ramon-canela-gaps::not-found.art-magnifier')</div>
+    <div class="illustration">@include('ramon-canela-gaps::not-found.art', ['art' => 'art-magnifier'])</div>
     <div class="title-wrapper">
       <h1 class="title">{{ $t('title') }}</h1>
       @include('ramon-canela-gaps::not-found.home')

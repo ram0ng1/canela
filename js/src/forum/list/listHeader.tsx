@@ -19,6 +19,7 @@ import { forumBool, t } from '../utils/settings';
 import { listHasViews } from './metrics';
 import { activeSort } from './sorts';
 import listSkeleton from './listSkeleton';
+import { brandArt } from '../brand';
 
 /**
  * Se a última lista carregada tinha a coluna de visualizações: enquanto a
@@ -69,16 +70,18 @@ function headerView(state: DiscussionListState, showViews: boolean): Mithril.Chi
  * A lista vazia com o que fazer a seguir, no lugar do "Parece que não há
  * discussões aqui." do core: a busca repete o termo e oferece limpar;
  * Seguindo ensina a seguir; uma categoria ou tag vazia convida a começar.
- * Nos outros casos fica o texto do core.
+ * Nos outros casos fica o texto do core. Em cima, a arte da identidade.
  */
 function emptyView(state: DiscussionListState): Mithril.Children | null {
   const params = (state.getParams?.() || {}) as Record<string, any>;
   const query = String(params.q || '').trim();
   const route = app.current.get('routeName');
+  const art = brandArt('empty');
   const hint = (title: string, text: string, action?: Mithril.Children) => (
     <div className="Placeholder CanelaListEmpty">
+      {art && <div className="CanelaListEmpty-art">{art}</div>}
       <p className="CanelaListEmpty-title">{title}</p>
-      <p className="CanelaListEmpty-hint">{text}</p>
+      {text && <p className="CanelaListEmpty-hint">{text}</p>}
       {action}
     </div>
   );
@@ -97,7 +100,7 @@ function emptyView(state: DiscussionListState): Mithril.Children | null {
 
   if (params.tags) return hint(t('list.empty_tag'), t('list.empty_tag_hint'));
 
-  return null;
+  return art ? hint(app.translator.trans('core.forum.discussion_list.empty_text', {}, true) as string, '') : null;
 }
 
 export default function installListHeader(): void {

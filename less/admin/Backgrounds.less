@@ -68,3 +68,32 @@
     font-size: 13px;
   }
 }
+
+// A prévia da identidade (card "Identidade visual", BrandEditor).
+.CanelaBrandPreview {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--control-bg);
+
+  &-mark {
+    flex: 0 0 72px;
+  }
+
+  &-scene {
+    flex: 1 1 auto;
+    max-width: 320px;
+  }
+}
+
+.CanelaBrandArea-preview {
+  display: block;
+  max-width: 220px;
+  max-height: 140px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  object-fit: contain;
+}

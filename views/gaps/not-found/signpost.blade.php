@@ -7,7 +7,7 @@
   .signpost .topics { text-align: left; }
 </style>
 <main class="signpost">
-  <div class="illustration">@include('ramon-canela-gaps::not-found.art-signpost')</div>
+  <div class="illustration">@include('ramon-canela-gaps::not-found.art', ['art' => 'art-signpost'])</div>
   <h1 class="title">{{ $t('title') }}</h1>
   <p class="subtitle">{{ $t('hint') }}</p>
   @include('ramon-canela-gaps::not-found.home')
