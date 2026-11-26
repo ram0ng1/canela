@@ -36,6 +36,7 @@ import installMotion from './motion';
 import installThirdParty from './thirdparty';
 import installSearchMenu from './search';
 import installAuth from './features/auth';
+import installBrand from './brand';
 import installActionTooltips from './topic/actionTooltips';
 
 import communityExtend from './features/community/extend';
@@ -132,6 +133,7 @@ app.initializers.add('ramon-canela', () => {
 
   // Entrar e cadastrar em página própria (/login, /signup).
   installAuth();
+  installBrand();
 
   // Dicas nos botões só de ícone da barra de ações do post: por último, para
   // enxergar os botões de todos os recursos e extensões.

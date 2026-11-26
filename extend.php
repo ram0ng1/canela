@@ -301,6 +301,7 @@ $features = [
     ...$feature('backgrounds'),
     ...$feature('badges'),
     ...$feature('bookmarks'),
+    ...$feature('brand'),
     ...$feature('bugreports'),
     // O chat dá lugar ao ramon/chat, quando ele está habilitado: duas rotas
     // /chat derrubariam o boot (o tema adapta a extensão, em thirdparty/).

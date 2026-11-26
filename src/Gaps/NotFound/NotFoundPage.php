@@ -21,6 +21,7 @@ use Flarum\User\Guest;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Collection;
+use Ramon\Canela\Brand\Brand;
 use Ramon\Canela\Gaps\GapsSettings;
 use Ramon\Canela\Support\NullOrder;
 use Ramon\Canela\Theme\FontFamily;
@@ -83,12 +84,34 @@ final class NotFoundPage
                 'logo' => $logo ? $asset((string) $logo) : null,
                 'color' => $this->color(),
                 'font' => $this->font(fn (string $file) => $asset('extensions/ramon-canela/fonts/'.$file)),
+                'art' => $this->art($asset),
                 'popular' => $this->topics('popular'),
                 'recent' => $this->topics('recent'),
             ];
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * A arte da página (card "Identidade visual" no admin): `theme` é a
+     * ilustração do modelo, `none` tira, e a imagem enviada vira a URL. Com
+     * a identidade desligada, fica a ilustração do modelo, como antes dela.
+     */
+    private function art(callable $asset): string
+    {
+        if (! (bool) $this->settings->get('canela.brand_enabled', true)) {
+            return 'theme';
+        }
+
+        $mode = Brand::mode($this->settings->get(Brand::modeKey('not_found')));
+        $image = $this->settings->get(Brand::imageKey('not_found'));
+
+        if ($mode === 'image') {
+            return is_string($image) && $image !== '' ? $asset($image) : 'theme';
+        }
+
+        return $mode;
     }
 
     private function color(): string

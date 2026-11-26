@@ -501,6 +501,27 @@ html.CanelaAuthRoute {
     margin-bottom: 10vh;
   }
 
+  // A arte no painel colorido: a identidade em branco sobre a primária.
+  &-art {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+
+    .CanelaBrand {
+      --cn-brand-a: #fff;
+      --cn-brand-ink: var(--cn-accent);
+      --cn-brand-line: rgba(255, 255, 255, 0.22);
+    }
+
+    .CanelaBrandImage {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 320px;
+      object-fit: contain;
+    }
+  }
+
   // `.CanelaAuthPanel` duas vezes: o `.Canela h2` do tema é mais forte.
   & &-title {
     margin: 0 0 12px;

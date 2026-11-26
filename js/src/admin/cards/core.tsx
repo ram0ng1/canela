@@ -16,6 +16,7 @@ import AdminSelect from '../components/AdminSelect';
 import AdminNumber from '../components/AdminNumber';
 import { PalettePreview } from '../components/PalettePreview';
 import LoaderPicker from '../components/LoaderPicker';
+import BrandEditor from '../components/BrandEditor';
 import ContentWidthControl from '../components/ContentWidthControl';
 import { AuthPagesEditor, ForumBackgroundEditor } from '../components/AppearanceDraft';
 import type { CardDef } from '../types';
@@ -111,6 +112,19 @@ const CORE_CARDS: CardDef[] = [
         {toggle('content_card')}
       </>
     ),
+  },
+  {
+    // A identidade gerada pelo nome do fórum (extend/brand.php): a chave
+    // geral desliga todas as artes de uma vez; cada área ainda tem o "Nada".
+    id: 'brand',
+    group: 'appearance',
+    icon: 'fas fa-wand-magic-sparkles',
+    title: () => trans('ramon-canela.admin.brand.title'),
+    description: () => trans('ramon-canela.admin.brand.description'),
+    keywords:
+      'identidade marca brand logo monograma iniciais ilustração ilustrações illustration arte artes imagem animação animações cabeçalho boas-vindas vazio login 404',
+    master: 'canela.brand_enabled',
+    body: () => <BrandEditor />,
   },
   {
     id: 'colored-accents',

@@ -16,6 +16,7 @@ import type Mithril from 'mithril';
 import { t } from '../../utils/settings';
 import { applyBackground } from '../../shell/backgrounds';
 import { previewState, previewText } from '../../shell/preview';
+import { brandArt } from '../../brand';
 
 export type AuthMode = 'login' | 'signup' | 'forgot';
 export type AuthLayout = 'card' | 'discourse' | 'split';
@@ -316,15 +317,17 @@ export default class AuthPage extends Page<IPageAttrs> {
     return authLogo();
   }
 
-  /** O painel colorido da tela dividida: o logo, o título e a frase do admin (ou os padrões). */
+  /** O painel colorido da tela dividida: o logo, a arte da identidade, o título e a frase do admin (ou os padrões). */
   panel(mode: AuthMode): Mithril.Children {
     const key = mode === 'signup' ? 'signup' : 'login';
     const title = authText(key === 'signup' ? 'canelaAuthPanelSignupTitle' : 'canelaAuthPanelLoginTitle');
     const text = authText(key === 'signup' ? 'canelaAuthPanelSignupText' : 'canelaAuthPanelLoginText');
+    const art = brandArt('auth');
 
     return (
       <aside className="CanelaAuthPanel">
         <div className="CanelaAuthPanel-logo">{authLogo()}</div>
+        {art && <div className="CanelaAuthPanel-art">{art}</div>}
         <div className="CanelaAuthPanel-body">
           <h2 className="CanelaAuthPanel-title">{title || t(`auth.panel_${key}_title`)}</h2>
           <p className="CanelaAuthPanel-text">{text || t(`auth.panel_${key}_text`)}</p>
