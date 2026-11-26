@@ -15,7 +15,9 @@ namespace Ramon\Canela\Assign;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Tags\Tag;
+use Flarum\User\Guest;
 use Flarum\User\User;
+use Illuminate\Support\Collection;
 use Ramon\Canela\Ai\Llm\LlmClient;
 use Ramon\Canela\Ai\Llm\LlmRequest;
 use Throwable;
@@ -37,7 +39,7 @@ final class AssistantActions
         $fields = array_filter([
             $bot->can('like') ? '"like": os números (#N) das postagens a curtir, como alguém da comunidade curtiria: a pergunta que você respondeu, se for boa, e as que ajudaram (uma solução que funcionou, uma boa explicação, um agradecimento, alguém dizendo que resolveu). Nunca as suas. [] se nenhuma.' : null,
             $bot->can('rename') ? '"title": um título novo se o atual não descreve bem o assunto ou foge do padrão do fórum (curto, direto, no idioma do tópico, sem "ajuda" nem "urgente"); "" para manter.' : null,
-            $bot->can('retag') ? '"tags": os slugs das tags certas se as atuais não combinam com o assunto (o assunto manda, não o que a pessoa escolheu); [] para manter. '.$this->tags($discussion, $assistant) : null,
+            $bot->can('retag') ? '"tags": os slugs das tags certas se as atuais não combinam com o assunto (o assunto manda, não o que a pessoa escolheu); [] para manter. '.$this->tags($discussion) : null,
         ]);
 
         if ($fields === []) {
@@ -70,10 +72,33 @@ final class AssistantActions
         ];
     }
 
-    /** As tags que o assistente vê (pelo slug, com a mãe das filhas) e as atuais. */
-    private function tags(Discussion $discussion, User $assistant): string
+    /**
+     * As tags que o assistente pode pôr no tópico: as que o autor do tópico
+     * vê e pode usar (a habilidade `addToDiscussion` do flarum/tags), mais as
+     * que o tópico já tem. Não as do assistente: ele tem `forceAllow` nas
+     * tags, e o texto do tópico, que o modelo lê, não pode levar o tópico
+     * para uma tag restrita que o autor não pode usar. As tags filhas sem a
+     * mãe na lista ficam de fora: o flarum/tags pede as duas.
+     *
+     * @return Collection<int, Tag>
+     */
+    public function allowedTags(Discussion $discussion): Collection
     {
-        $all = Tag::query()->whereVisibleTo($assistant)->orderBy('position')->limit(80)->get();
+        $author = $discussion->user ?? new Guest();
+
+        $tags = Tag::query()->whereVisibleTo($author)->orderBy('position')->limit(80)->get()
+            ->filter(static fn (Tag $tag): bool => $author->can('addToDiscussion', $tag))
+            ->concat($discussion->tags()->get())
+            ->unique('id');
+        $ids = $tags->pluck('id')->map(intval(...))->all();
+
+        return $tags->filter(static fn (Tag $tag): bool => $tag->parent_id === null || in_array((int) $tag->parent_id, $ids, true))->values();
+    }
+
+    /** As tags que o assistente pode usar (pelo slug, com a mãe das filhas) e as atuais. */
+    private function tags(Discussion $discussion): string
+    {
+        $all = $this->allowedTags($discussion);
         $byId = $all->keyBy('id');
         $name = static fn (Tag $tag): string => sprintf(
             '%s%s (%s%s)',

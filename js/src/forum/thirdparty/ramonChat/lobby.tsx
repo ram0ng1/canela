@@ -23,7 +23,7 @@ import { formatWith } from '../../utils/dates';
 import { t } from '../../utils/settings';
 import { channelUrl, chatState, openChannel, ramonChannelIcon, ramonModule, type RamonChannel } from './bridge';
 import { safely, sidebarHooks } from './hooks';
-import { ChatFooter, Navbar, UnreadIndicator, ct, toDrawer, type NavbarAction } from './ui';
+import { ChatFooter, Navbar, UnreadIndicator, ct, plainText, toDrawer, type NavbarAction } from './ui';
 
 export type LobbyTab = 'channels' | 'dms';
 
@@ -70,11 +70,12 @@ function lastMessageText(channel: RamonChannel): string {
 
   if (!last) return '';
 
-  const html = String(safely(() => last.contentHtml?.() || last.content?.() || '', ''));
-  const div = document.createElement('div');
-  div.innerHTML = html;
-
-  const text = (div.textContent || '').replace(/\s+/g, ' ').trim();
+  const text = plainText(
+    safely(() => last.contentHtml?.(), null),
+    safely(() => last.content?.(), null)
+  )
+    .replace(/\s+/g, ' ')
+    .trim();
   const author = safely(() => last.user?.()?.displayName?.() || '', '');
   const mine = safely(() => last.user?.() === app.session.user, false);
 

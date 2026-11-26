@@ -43,11 +43,13 @@ final class SendPushJob extends AbstractJob
     public function handle(Push $push, UrlGenerator $url, TranslatorInterface $translator, SettingsRepositoryInterface $settings, SlugManager $slugs): void
     {
         $keys = $push->keys();
+        // Timeout curto e sem seguir redirecionamentos: com a fila síncrona o
+        // envio roda dentro da requisição de quem gerou a notificação.
         $webPush = new WebPush(['VAPID' => [
             'subject' => $url->to('forum')->base(),
             'publicKey' => $keys['publicKey'],
             'privateKey' => $keys['privateKey'],
-        ]]);
+        ]], [], 5, ['allow_redirects' => false, 'connect_timeout' => 5]);
 
         $subject = $this->blueprint->getSubject();
         $from = $this->blueprint->getFromUser();
@@ -67,6 +69,11 @@ final class SendPushJob extends AbstractJob
         $users = User::query()->whereIn('id', $this->userIds)->get()->keyBy('id');
 
         foreach ($subscriptions as $subscription) {
+            // Os aparelhos gravados antes da lista de serviços também passam por ela.
+            if (! Push::allowedEndpoint($subscription->endpoint)) {
+                continue;
+            }
+
             $user = $users->get($subscription->user_id);
             // No idioma da pessoa, sem trocar o do tradutor (com a fila síncrona
             // o job roda dentro da própria requisição).
