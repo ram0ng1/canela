@@ -865,6 +865,9 @@ ramon-canela:
         anthropic_model_help: Usado no bot, nos resumos e nos modos do ajudante que reescrevem (explicar, prompt personalizado). O Sonnet equilibra qualidade e custo; o Opus é o mais capaz.
         fast_model_label: Modelo rápido
         fast_model_help: 'Para as tarefas curtas: títulos das conversas, revisão, tradução, sugestão de título e de tags, resumos curtos da lista.'
+        advisor_model_label: 'Advisor (orientador)'
+        advisor_model_help: 'Um modelo mais forte que o principal orienta o bot e as respostas do assistente nos tópicos, no meio da resposta (até 2 consultas por resposta). A resposta continua sendo escrita pelo modelo principal; cada consulta é cobrada na tarifa do advisor. Só vale quando o advisor é mais forte que o modelo principal (ex.: Sonnet com Opus).'
+        advisor_off: 'Desligado'
         openai_url_label: URL base da API
         openai_url_help: 'O endereço até o /v1; o tema acrescenta /chat/completions. Ex.: https://api.openai.com/v1, https://openrouter.ai/api/v1, http://localhost:11434/v1.'
         openai_key_label: Chave da API

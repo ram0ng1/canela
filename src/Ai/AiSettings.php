@@ -38,6 +38,9 @@ final class AiSettings
 
     public const ANTHROPIC_FAST_MODEL = 'canela.ai_anthropic_fast_model';
 
+    /** O advisor da Anthropic: um modelo mais forte que orienta o principal no meio da resposta. Vazio = desligado. */
+    public const ANTHROPIC_ADVISOR_MODEL = 'canela.ai_anthropic_advisor_model';
+
     public const OPENAI_URL = 'canela.ai_openai_base_url';
 
     public const OPENAI_KEY = 'canela.ai_openai_key';
@@ -133,6 +136,8 @@ final class AiSettings
             self::ANTHROPIC_KEY => '',
             self::ANTHROPIC_MODEL => 'claude-sonnet-5-5',
             self::ANTHROPIC_FAST_MODEL => 'claude-haiku-5-5',
+            // Desligado de saída: cada consulta ao advisor é cobrada na tarifa dele.
+            self::ANTHROPIC_ADVISOR_MODEL => '',
             self::OPENAI_URL => 'https://api.openai.com/v1',
             self::OPENAI_KEY => '',
             self::OPENAI_MODEL => '',
@@ -246,6 +251,28 @@ final class AiSettings
         return $this->provider() === self::PROVIDER_ANTHROPIC
             ? ($this->string(self::ANTHROPIC_MODEL) ?: 'claude-sonnet-5-5')
             : $this->string(self::OPENAI_MODEL);
+    }
+
+    /**
+     * O advisor do modelo principal, ou '' quando não vale: desligado, outro
+     * provedor, ou um advisor que não é mais forte que o principal (a API
+     * recusa o par com 400, e um par de iguais só gastaria mais).
+     */
+    public function advisorModel(): string
+    {
+        $advisor = $this->provider() === self::PROVIDER_ANTHROPIC ? $this->string(self::ANTHROPIC_ADVISOR_MODEL) : '';
+
+        $main = self::tier($this->mainModel());
+
+        return $main > 0 && self::tier($advisor) > $main ? $advisor : '';
+    }
+
+    /** haiku < sonnet < opus < fable; 0 para um modelo desconhecido. */
+    private static function tier(string $model): int
+    {
+        return preg_match('/^claude-(haiku|sonnet|opus|fable)-5/', $model, $match)
+            ? ['haiku' => 1, 'sonnet' => 2, 'opus' => 3, 'fable' => 4][$match[1]]
+            : 0;
     }
 
     /** O modelo das tarefas curtas (título, etiquetas, revisão, resumos curtos). */

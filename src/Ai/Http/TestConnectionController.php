@@ -64,8 +64,15 @@ final class TestConnectionController implements RequestHandlerInterface
 
         $results = [];
 
-        foreach (array_unique([$this->settings->mainModel(), $this->settings->fastModel()]) as $model) {
-            $results[] = $this->model($model);
+        $main = $this->settings->mainModel();
+        $fast = $this->settings->fastModel();
+
+        // Com o advisor ligado, o modelo principal é testado com ele: um par que
+        // a API recusa aparece aqui, e não na primeira resposta do bot.
+        $results[] = $this->model($main, $this->settings->advisorModel());
+
+        if ($fast !== $main) {
+            $results[] = $this->model($fast);
         }
 
         return new JsonResponse(['data' => $results]);
@@ -74,8 +81,9 @@ final class TestConnectionController implements RequestHandlerInterface
     /**
      * @return array{target: string, ok: bool, message: string, ms: int}
      */
-    private function model(string $model): array
+    private function model(string $model, string $advisor = ''): array
     {
+        $target = $advisor !== '' ? $model.' + advisor '.$advisor : $model;
         $started = microtime(true);
 
         try {
@@ -83,11 +91,11 @@ final class TestConnectionController implements RequestHandlerInterface
                 throw new LlmException('not_configured', 'Nenhum modelo configurado.');
             }
 
-            $result = $this->llm->make()->send(new LlmRequest($model, '', [['role' => 'user', 'content' => 'Responda apenas: ok']], [], 512, 'low'));
+            $result = $this->llm->make()->send(new LlmRequest($model, '', [['role' => 'user', 'content' => 'Responda apenas: ok']], [], 512, 'low', false, $advisor));
 
-            return ['target' => $model, 'ok' => true, 'message' => trim(mb_substr($result->text, 0, 80)) ?: $result->stopReason, 'ms' => (int) ((microtime(true) - $started) * 1000)];
+            return ['target' => $target, 'ok' => true, 'message' => trim(mb_substr($result->text, 0, 80)) ?: $result->stopReason, 'ms' => (int) ((microtime(true) - $started) * 1000)];
         } catch (LlmException $error) {
-            return ['target' => $model, 'ok' => false, 'message' => $error->getMessage(), 'ms' => (int) ((microtime(true) - $started) * 1000)];
+            return ['target' => $target, 'ok' => false, 'message' => $error->getMessage(), 'ms' => (int) ((microtime(true) - $started) * 1000)];
         }
     }
 
