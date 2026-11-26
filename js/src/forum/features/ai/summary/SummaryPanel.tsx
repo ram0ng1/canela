@@ -92,7 +92,7 @@ class SummaryState {
       this.open = false;
       this.closing = false;
       m.redraw();
-    }, 250);
+    }, 150);
   }
 
   reset(): void {

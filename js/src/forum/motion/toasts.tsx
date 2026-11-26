@@ -21,7 +21,7 @@ import { prefersReducedMotion } from './motionUtils';
 // `DToast.duration` e o `auto-close-toast` do float-kit.
 const SHORT_MS = 3000;
 const LONG_MS = 5000;
-const CSS_TRANSITION_DELAY_MS = 300;
+const CSS_TRANSITION_DELAY_MS = 200;
 const FADE_OUT_CLASS = 'CanelaToast--fadeOut';
 // `DToast`: velocidade (px/ms) do peteleco que fecha; e o recuo ao fechar.
 const VELOCITY_THRESHOLD = -1.2;

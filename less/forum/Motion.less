@@ -1,6 +1,6 @@
 // =====================================================================
 // Movimento: os @keyframes do núcleo, a barra de carregamento do topo, o
-// spinner, o skeleton, as dicas, os toasts, o fechamento dos menus, o "link
+// spinner, o skeleton, as dicas, os toasts, o "link
 // copiado", as reticências de "digitando", o aviso de tópicos novos e o link
 // de pular para o conteúdo.
 //
@@ -15,17 +15,6 @@
 // nas áreas: cn-float-down/up (Components), cn-toast-opening (Components),
 // canela-fade-highlight (List), canelaHighlight e canelaHeartBump (Posts).
 // ---------------------------------------------------------------------
-@keyframes cn-dissolve-up {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-}
-
 @keyframes cn-rotate-forever {
   0% {
     transform: rotate(0deg);
@@ -63,13 +52,8 @@
 
 // O `float-down`, para o aviso de tópicos novos.
 @keyframes cn-motion-float-down {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -226,7 +210,7 @@
 // Dicas: o cartão branco de raio 8, borda e
 // sombra de dropdown, 0,5rem de respiro, até 350px, a 10px do gatilho e a
 // seta arredondada com contorno. Aparece em 0,15s
-// (ease-in) e some na hora.
+// (ease-out) e some na hora.
 // ---------------------------------------------------------------------
 // A seta, em duas camadas: o contorno e, 1px por dentro, o
 // preenchimento na cor do cartão.
@@ -237,7 +221,7 @@
   --tooltip-arrow-width: 10px;
   font-size: 16px;
   line-height: 1.4;
-  transition: opacity 0.15s ease-in;
+  transition: opacity 0.15s ease-out;
 
   // Some na hora (a dica não anima ao fechar).
   &:not(.in) {
@@ -327,8 +311,8 @@
 // ---------------------------------------------------------------------
 // Toasts: 0,5rem de respiro, o
 // ícone numa coluna de 32px × 2,3em, o texto em `--cn-primary-high` (o título
-// em negrito) e o ✕ transparente à direita. Entram subindo 2vh em 0,3s
-// (Components.less) e saem esmaecendo em 0,5s.
+// em negrito) e o ✕ transparente à direita. Entram e saem esmaecendo
+// (150ms e 200ms).
 // ---------------------------------------------------------------------
 .AlertManager .Alert.CanelaToast {
   padding: 0.5rem;
@@ -478,7 +462,7 @@
   border-radius: var(--cn-radius);
   background: var(--cn-surface);
   box-shadow: var(--cn-shadow-dropdown);
-  animation: cn-toast-opening 0.3s ease-in-out;
+  animation: cn-toast-opening 150ms ease-out;
   transition: border-color 0.15s;
   will-change: transform;
 
@@ -606,22 +590,8 @@
 }
 
 // ---------------------------------------------------------------------
-// Fechamento dos menus: o fantasma (motion/menus.ts) sobe esmaecendo em
-// 125ms (`cn-dissolve-up`), ou desce se o menu abria para cima.
-// ---------------------------------------------------------------------
-.CanelaMenuGhost {
-  z-index: var(--zindex-dropdown, 1030);
-  pointer-events: none;
-
-  > .Dropdown-menu {
-    display: block;
-    animation: cn-dissolve-up 125ms ease forwards !important;
-  }
-}
-
-// ---------------------------------------------------------------------
 // "Link copiado!": o certo verde se desenha no
-// canto do botão (20px, traço 4, 1s) e o aviso aparece 1,5rem acima.
+// canto do botão (20px, traço 4, 300ms) e o aviso aparece 1,5rem acima.
 // ---------------------------------------------------------------------
 .CanelaFeedback {
   position: relative;
@@ -648,7 +618,7 @@
     stroke-width: 4;
     stroke-dasharray: 100;
     stroke-dashoffset: 100;
-    animation: cn-draw 1s forwards;
+    animation: cn-draw 300ms ease-out forwards;
   }
 }
 
@@ -670,7 +640,7 @@
 .CanelaFeedback--transition {
   .CanelaFeedback-alert,
   .CanelaFeedback-check {
-    transition: opacity 0.25s, color 0.25s;
+    transition: opacity 150ms, color 150ms;
   }
 }
 
@@ -724,7 +694,7 @@
 
 // ---------------------------------------------------------------------
 // "Há N tópicos novos" na lista: o aviso azul-claro centrado sobre a lista, que
-// desce em 250ms.
+// esmaece em 150ms.
 // ---------------------------------------------------------------------
 .DiscussionList-update.Button {
   display: flex;
@@ -745,7 +715,7 @@
   line-height: 1.4;
   white-space: normal;
   box-shadow: none;
-  animation: cn-motion-float-down 250ms ease-in-out forwards;
+  animation: cn-motion-float-down 150ms ease-out;
 
   &:hover,
   &:focus-visible,
@@ -771,7 +741,7 @@
 
 // ---------------------------------------------------------------------
 // "Responder" (o único botão que esmaece na barra do post): 70% de opacidade que
-// acende ao passar sobre o post, em 0,7s.
+// acende ao passar sobre o post, em 150ms.
 //
 // O esmaecido é feito na cor, não na `opacity`: animar a opacidade põe o
 // botão numa camada própria do compositor enquanto a transição dura, e os
@@ -781,7 +751,7 @@
 // ---------------------------------------------------------------------
 .no-touch .CanelaPostAction--reply.Button {
   color: color-mix(in srgb, var(--cn-primary-high) 70%, transparent);
-  transition: color 0.7s ease-in-out;
+  transition: color 150ms ease-out;
 }
 
 .no-touch .Post:hover .CanelaPostAction--reply.Button,
@@ -806,8 +776,8 @@
 }
 
 // ---------------------------------------------------------------------
-// "Ir para o conteúdo": escondido 75px acima da tela, desce
-// em 0,15s ao receber o foco e sobe em 0,3s ao perder.
+// "Ir para o conteúdo": escondido 75px acima da tela, aparece ao receber o
+// foco. Sem animação: é um atalho de teclado.
 // ---------------------------------------------------------------------
 a.sr-only-focusable-custom {
   position: fixed;
@@ -824,7 +794,6 @@ a.sr-only-focusable-custom {
   border: 0;
   background: var(--cn-link);
   color: var(--cn-surface);
-  transition: top 0.3s ease-out;
 
   &:focus,
   &:visited {
@@ -834,7 +803,6 @@ a.sr-only-focusable-custom {
   &:focus {
     top: 0;
     background: var(--cn-link);
-    transition: top 0.15s ease-in;
   }
 }
 
@@ -843,10 +811,6 @@ a.sr-only-focusable-custom {
 // skeleton continuam — são estado, não enfeite).
 // ---------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
-  .CanelaMenuGhost > .Dropdown-menu {
-    animation-duration: 0s !important;
-  }
-
   .tooltip {
     transition: none;
   }

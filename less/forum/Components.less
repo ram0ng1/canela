@@ -315,7 +315,7 @@ textarea.FormControl {
     font-weight: 400;
     line-height: 1.2;
     pointer-events: none;
-    transition: 0.2s;
+    transition: top 150ms ease-out, font-size 150ms ease-out;
   }
 
   > .FormControl:focus + .CanelaFloat-label,
@@ -409,27 +409,17 @@ textarea.FormControl {
 // ---------------------------------------------------------------------
 // Dropdowns e menus: cartão branco de
 // raio 8, borda e sombra; itens de 8px × 4px com o
-// ícone a 8px do texto. Abre descendo (`float-down`, 250ms).
+// ícone a 8px do texto. Abre esmaecendo (`float-down`, 150ms).
 // ---------------------------------------------------------------------
 @keyframes cn-float-down {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
 @keyframes cn-float-up {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -494,9 +484,9 @@ textarea.FormControl {
     }
   }
 
-  // Abre descendo.
+  // Abre esmaecendo.
   .Dropdown.open > .Dropdown-menu {
-    animation: cn-float-down 250ms ease forwards;
+    animation: cn-float-down 150ms ease-out;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -594,14 +584,14 @@ textarea.FormControl {
   vertical-align: middle;
 }
 
-// O fundo: preto a 60%, aparece em 300ms e some em 250ms.
+// O fundo: preto a 60%, aparece em 200ms e some em 150ms.
 .Modal-backdrop {
   background: #000;
-  transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 150ms ease-out;
 
   &[data-showing] {
     opacity: 0.6;
-    transition: opacity 300ms ease;
+    transition: opacity 200ms ease-out;
   }
 }
 
@@ -664,8 +654,8 @@ textarea.FormControl {
     // Entrada e saída animadas. O core troca as classes
     // `in`/`out` e espera o fim da transição para seguir.
     opacity: 0;
-    transform: scale(0.7);
-    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.95);
+    transition: transform 200ms ease-out, opacity 200ms ease-out;
 
     &.in {
       opacity: 1;
@@ -1198,11 +1188,11 @@ textarea.FormControl {
 // Alertas. Na página: faixa de cor clara, sem raio.
 // Os avisos que aparecem e somem (o AlertManager) são os toasts:
 // cartão branco com borda e sombra no alto à direita,
-// entrando de 2vh abaixo em 300ms.
+// esmaecendo em 150ms.
 // ---------------------------------------------------------------------
 @keyframes cn-toast-opening {
   from {
-    transform: translateY(2vh);
+    opacity: 0;
   }
 }
 
@@ -1234,8 +1224,8 @@ textarea.FormControl {
     background: var(--cn-surface);
     color: var(--cn-primary);
     box-shadow: var(--cn-shadow-dropdown);
-    animation: cn-toast-opening 0.3s ease-in-out;
-    transition: opacity 0.5s;
+    animation: cn-toast-opening 150ms ease-out;
+    transition: opacity 200ms ease-out;
 
     &:hover {
       border-color: var(--cn-primary-300);
@@ -1281,7 +1271,7 @@ textarea.FormControl {
 
 .tooltip {
   font-size: var(--cn-font-down-1);
-  transition: opacity 0.15s ease-in;
+  transition: opacity 0.15s ease-out;
 }
 
 .tooltip-inner {
