@@ -1,8 +1,8 @@
 /*
  * O retorno das ações do post (`post-action-feedback`):
  * depois de copiar o link, um "certo" verde se desenha no canto do botão
- * (`draw`, 1s) e "Link copiado!" aparece em cima dele; os dois esmaecem
- * (0,25s) e somem em 2,5s.
+ * (`draw`, 300ms) e "Link copiado!" aparece em cima dele; os dois esmaecem
+ * (150ms) e somem em 2,5s.
  *
  * O botão de link do tópico avisa que copiou pela classe
  * `CanelaPostAction--copied`; o clique só arma a espera por ela.
@@ -10,7 +10,7 @@
 import { t } from '../utils/settings';
 
 const TIMEOUT = 2500;
-const TRANSITION_BUFFER = 250;
+const TRANSITION_BUFFER = 150;
 const WAIT_MS = 1500;
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
