@@ -178,10 +178,10 @@ function selectedPost(): { element: HTMLElement; post: Post } | null {
   return element && post ? { element, post } : null;
 }
 
-function scrollToTop(element: HTMLElement, fast: boolean): void {
+function scrollToTop(element: HTMLElement): void {
   const top = element.getBoundingClientRect().top + window.scrollY - headerOffset() - 8;
 
-  window.scrollTo({ top: Math.max(0, top), behavior: fast ? 'auto' : 'smooth' });
+  window.scrollTo({ top: Math.max(0, top) });
 }
 
 /** Posts longos rolam por página antes de trocar. */
@@ -219,12 +219,12 @@ function movePostSelection(direction: number, scrollWithinPosts: boolean): void 
     const screenBottom = screenTop + window.innerHeight;
 
     if (direction < 0 && screenTop > begin - offset + 1) {
-      window.scrollTo({ top: Math.max(screenTop - window.innerHeight + 3 * offset, begin - offset), behavior: 'smooth' });
+      window.scrollTo({ top: Math.max(screenTop - window.innerHeight + 3 * offset, begin - offset) });
       return;
     }
 
     if (direction > 0 && screenBottom < end - offset) {
-      window.scrollTo({ top: Math.min(screenBottom - 3 * offset, end - window.innerHeight), behavior: 'smooth' });
+      window.scrollTo({ top: Math.min(screenBottom - 3 * offset, end - window.innerHeight) });
       return;
     }
   }
@@ -234,7 +234,7 @@ function movePostSelection(direction: number, scrollWithinPosts: boolean): void 
 
   list.forEach((item) => item.classList.remove(SELECTED));
   next.classList.add(SELECTED);
-  scrollToTop(next, fast);
+  scrollToTop(next);
 }
 
 // ---------------------------------------------------------------------------

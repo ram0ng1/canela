@@ -487,3 +487,11 @@
     }
   }
 }
+
+// Com a barra lateral aberta e o botão grande "Iniciar discussão" nela, o
+// botão da lista seria o mesmo botão duas vezes na tela: fica só o da barra.
+@media @tablet-up {
+  .Canela--sidebarOpen:has(.CanelaSidebar-newTopicButton) .CanelaNav .CanelaNav-newTopic {
+    display: none;
+  }
+}

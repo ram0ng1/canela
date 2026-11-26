@@ -388,8 +388,7 @@
   padding: 0;
   box-sizing: border-box;
   pointer-events: none !important;
-  transition: all 100ms ease-in;
-  transition-property: bottom, padding-bottom;
+  transition: bottom 100ms ease-out, padding-bottom 100ms ease-out;
 }
 
 .chat-drawer {
@@ -1049,7 +1048,6 @@
 @keyframes chat-message-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
 }
 
@@ -1182,7 +1180,7 @@
   }
 
   img:not(.emoji) {
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: max-height 200ms ease-out;
 
     &:hover {
       cursor: pointer;
@@ -1407,7 +1405,7 @@
 
   // A primeira reação de um emoji entra crescendo.
   &.is-new {
-    animation: chat-reaction-pop 0.2s ease-out;
+    animation: chat-reaction-pop 150ms ease-out;
   }
 
   &[disabled] {
@@ -1418,7 +1416,6 @@
 
 @keyframes chat-reaction-pop {
   from {
-    transform: scale(0.6);
     opacity: 0;
   }
 }
@@ -1838,8 +1835,8 @@
   color: var(--cn-secondary);
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.1);
-  transition: opacity 0.25s ease, transform 0.5s ease;
+  transform: scale(0.95);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
 
   .icon {
     margin: 0;
@@ -2119,11 +2116,6 @@ textarea.chat-composer__input {
 }
 
 .chat-composer-button.--emoji {
-  transition: transform 0.1s ease-in-out;
-
-  &:hover {
-    transform: scale(1.1);
-  }
 
   .is-focused & .icon {
     color: var(--cn-link);
@@ -2133,16 +2125,8 @@ textarea.chat-composer__input {
 .chat-composer-button.-send {
   will-change: transform;
 
-  .icon {
-    transition: transform 0.1s;
-  }
-
   .is-send-enabled.is-focused & .icon {
     color: var(--cn-link);
-  }
-
-  .is-send-enabled &:hover .icon {
-    transform: scale(1.2);
   }
 
   .is-sending & {
@@ -3139,13 +3123,8 @@ textarea.chat-composer__input {
 }
 
 @keyframes chat-pop-in {
-  0% {
-    transform: scale(0.1);
+  from {
     opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
   }
 }
 
@@ -3262,7 +3241,7 @@ textarea.chat-composer__input {
   background: var(--cn-accent);
   font-size: var(--cn-font-up-3);
   box-shadow: 0 5px 5px -1px rgba(0, 0, 0, 0.25);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
 
   .icon {
     margin: 0;
@@ -3783,7 +3762,7 @@ html.has-full-page-chat {
 
   .chat-message-container {
     // Segurar a mensagem dá um "aperto" antes de abrir as ações.
-    transition: transform 400ms;
+    transition: transform 200ms ease-out;
 
     &:not(.-user-info-hidden) .chat-message {
       padding-top: 0.75em;

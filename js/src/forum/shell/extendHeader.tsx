@@ -39,7 +39,9 @@ export default function extendHeader() {
     if (items.has('locale')) {
       // O seletor de idioma: o código do idioma atual numa pílula e, aberto,
       // os nomes dos idiomas num balão com seta.
-      items.setContent('locale', LocaleSwitcher());
+      // Com o rodapé da barra ligado, no celular ele sai daqui e aparece no
+      // menu (a classe marca que o rodapé tem a cópia).
+      items.setContent('locale', LocaleSwitcher(sidebarFooter ? 'CanelaHeaderLocale--inMenu' : ''));
 
       // Para o visitante, o "PT" vem depois de Cadastrar-se/Entrar;
       // logado, ele vem antes dos ícones.

@@ -44,13 +44,13 @@ function move(event: KeyboardEvent): void {
   options[(options.indexOf(event.currentTarget as HTMLElement) + step + options.length) % options.length]?.focus();
 }
 
-export default function LocaleSwitcher(): Mithril.Children {
+export default function LocaleSwitcher(className = ''): Mithril.Children {
   const locales = (app.data.locales || {}) as Record<string, string>;
   const current = (app.data.locale || 'en') as string;
 
   return (
     <Dropdown
-      className="CanelaLocale"
+      className={`CanelaLocale ${className}`.trim()}
       buttonClassName="Button CanelaLocale-toggle"
       menuClassName="Dropdown-menu--right CanelaLocale-menu"
       caretIcon="fas fa-angle-down"

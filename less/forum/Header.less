@@ -67,8 +67,6 @@
     font-size: ~"clamp(1rem, 2.5vw, 1.2853rem)";
     font-weight: 700;
     line-height: 1.2;
-    // O logo aparece com um fade de 0,5s ao carregar.
-    animation: canela-fade-in 0.5s;
 
     a {
       display: flex;
@@ -448,7 +446,7 @@
   flex-direction: column;
   justify-content: center;
   min-width: 0;
-  animation: canela-header-topic-in 0.25s ease-out;
+  animation: canela-header-topic-in 150ms ease-out;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -458,12 +456,6 @@
 @keyframes canela-header-topic-in {
   from {
     opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 

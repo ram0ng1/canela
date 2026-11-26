@@ -65,6 +65,41 @@ function headerView(state: DiscussionListState, showViews: boolean): Mithril.Chi
   );
 }
 
+/**
+ * A lista vazia com o que fazer a seguir, no lugar do "Parece que não há
+ * discussões aqui." do core: a busca repete o termo e oferece limpar;
+ * Seguindo ensina a seguir; uma categoria ou tag vazia convida a começar.
+ * Nos outros casos fica o texto do core.
+ */
+function emptyView(state: DiscussionListState): Mithril.Children | null {
+  const params = (state.getParams?.() || {}) as Record<string, any>;
+  const query = String(params.q || '').trim();
+  const route = app.current.get('routeName');
+  const hint = (title: string, text: string, action?: Mithril.Children) => (
+    <div className="Placeholder CanelaListEmpty">
+      <p className="CanelaListEmpty-title">{title}</p>
+      <p className="CanelaListEmpty-hint">{text}</p>
+      {action}
+    </div>
+  );
+
+  if (query) {
+    return hint(
+      t('list.empty_search', { query }),
+      t('list.empty_search_hint'),
+      <button type="button" className="Button CanelaListEmpty-action" onclick={() => m.route.set(window.location.pathname)}>
+        {t('list.empty_search_clear')}
+      </button>
+    );
+  }
+
+  if (route === 'following') return hint(t('list.empty_following'), t('list.empty_following_hint'));
+
+  if (params.tags) return hint(t('list.empty_tag'), t('list.empty_tag_hint'));
+
+  return null;
+}
+
 export default function installListHeader(): void {
   extend(DiscussionList.prototype, 'view', function (this: DiscussionList, vdom: Mithril.Vnode<any, any>) {
     const state = (this as any).attrs.state as DiscussionListState;
@@ -97,6 +132,12 @@ export default function installListHeader(): void {
       'CanelaList--views': showViews,
       'CanelaList--posters': forumBool('canelaListPosters', true),
     });
+
+    if (state.isEmpty() && Array.isArray(vdom.children)) {
+      const empty = emptyView(state);
+
+      if (empty) vdom.children = [empty as any];
+    }
 
     // A lista vazia devolve só o Placeholder: sem linhas, sem cabeçalho.
     if (!forumBool('canelaListHeader', true) || state.isEmpty() || !Array.isArray(vdom.children)) return;

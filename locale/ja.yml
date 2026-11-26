@@ -1505,6 +1505,8 @@ ramon-canela:
       signup_page_title: 新規登録
       forgot_heading: パスワードをリセット
       back_to_login: ログインに戻る
+      back_to_forum: フォーラムに戻る
+      remember_me: ログイン状態を保持
       or: または
       panel_login_title: おかえりなさい
       panel_login_text: ログインして会話の続きに参加し、返信や気になるトピックの確認をしましょう。
@@ -2101,7 +2103,7 @@ ramon-canela:
         reply_to_topic_desc: 特定の投稿ではなく、スレッドに返信します
         reply_as_new_topic_desc: このスレッドに関連する新しいスレッドを作成します
         saved_draft: 投稿の下書きがあります。タップして再開します。
-        category_placeholder: プライマリタグ…
+        category_placeholder: カテゴリー…
         tags_placeholder: タグ（任意）…
         title_placeholder: タイトルを入力するか、リンクを貼り付けてください
         body_placeholder: ここに入力してください。
@@ -2121,8 +2123,8 @@ ramon-canela:
         no_tags: 利用できるタグはありません。
         no_category: （タグなし）
         remove_tag: タグを削除
-        max_primary_tags: "{count, plural, other {プライマリタグは # 個までです。別のタグを選ぶには、選択済みのタグを外してください。}}"
-        max_secondary_tags: "{count, plural, other {セカンダリタグは # 個までです（子タグも数に含まれます）。}}"
+        max_primary_tags: "{count, plural, other {カテゴリーは # 個までです。別のタグを選ぶには、選択済みのタグを外してください。}}"
+        max_secondary_tags: "{count, plural, other {タグは # 個までです（サブカテゴリーも数に含まれます）。}}"
         bold_label: B
         switch_to_markdown: Markdown エディターに切り替え
         switch_to_rich: 書式付きテキストを表示
@@ -2134,8 +2136,8 @@ ramon-canela:
         create_topic_desc: 新しいスレッドを作成します
     tag_modal:
       edit_title: タグを編集
-      primary_heading: プライマリタグ
-      secondary_heading: セカンダリタグ
+      primary_heading: カテゴリー
+      secondary_heading: タグ
     modals:
       login_title: おかえりなさい
       signup_title: アカウントを作成
@@ -2164,7 +2166,7 @@ ramon-canela:
         tabs_label: 検索対象
         tab_topics: スレッド
         tab_posts: 投稿
-        tab_categories: タグ
+        tab_categories: カテゴリー
         tab_users: ユーザー
         input_label: 検索語
         input_placeholder: 検索
@@ -2189,8 +2191,8 @@ ramon-canela:
         posts_filters_note: 投稿の検索では、投稿者、タグ（1つ）、いいね、ブックマークのみが使われます。その他のフィルターはスレッドに適用されます。
         filter_author: 投稿者
         filter_author_placeholder: ユーザー名
-        filter_category: プライマリタグ
-        filter_category_any: すべてのプライマリタグ
+        filter_category: カテゴリー
+        filter_category_any: すべてのカテゴリー
         filter_tags: タグ
         filter_tags_add: タグを追加…
         filter_tag_remove: タグ {name} を削除
@@ -2325,7 +2327,7 @@ ramon-canela:
         home: ホーム
         latest: 最新
         top: 人気
-        categories: タグ
+        categories: カテゴリー
         notifications: 通知
         profile: プロフィール
         settings: 設定
@@ -2439,7 +2441,7 @@ ramon-canela:
       sidebar:
         home: ホーム
         my_messages: マイメッセージ
-        new_in_category: このタグには新着または未読のスレッドがあります
+        new_in_category: このカテゴリーには新着または未読のスレッドがあります
         review: レビュー
         faq: よくある質問
         tos: 利用規約
@@ -2462,6 +2464,13 @@ ramon-canela:
       created_at: '作成：{date}'
       last_reply_at: '最新の返信：{date}'
       read_more: 続きを読む
+      empty_search: 「{query}」に一致するスレッドはありません。
+      empty_search_hint: 綴りを確認するか、より一般的な言葉で試してください。
+      empty_search_clear: 検索をクリア
+      empty_following: まだフォロー中のスレッドはありません。
+      empty_following_hint: スレッドを開いてフォロー（ベル）をタップすると、返信が届き、ここに表示されます。
+      empty_tag: まだスレッドはありません。
+      empty_tag_hint: 最初のスレッドを始めてみませんか？
     nav:
       label: スレッドリストのナビゲーション
       latest: 最新
@@ -2469,34 +2478,34 @@ ramon-canela:
       newest: 新着
       unread: 未読
       top: 人気
-      categories_link: タグ
+      categories_link: カテゴリー
       more: その他の並べ替え
       sort_label: リストを選択
-      categories: タグ
-      subcategories: 子タグ
-      tags: セカンダリタグ
-      all_categories: すべてのタグ
+      categories: カテゴリー
+      subcategories: サブカテゴリー
+      tags: タグ
+      all_categories: すべてのカテゴリー
       all_subcategories: '{name} のすべて'
-      all_tags: すべてのセカンダリタグ
+      all_tags: すべてのタグ
       new_topic: スレッドの作成
       remove_filter: フィルターを解除
-      no_subcategory: 子タグなし
-      no_tags: セカンダリタグなし
+      no_subcategory: サブカテゴリーなし
+      no_tags: タグなし
       search_placeholder: 検索…
       no_results: 結果が見つかりません。
       filter_for_more: 絞り込んでさらに表示…
     hero:
-      subcategories: 子タグ
+      subcategories: サブカテゴリー
     categories:
-      category: タグ
+      category: カテゴリー
       topics: スレッド
       latest: 最新
-      tags_title: セカンダリタグ
+      tags_title: タグ
       tags_sort_by: 並べ替え
       tags_sort_count: 件数
       tags_sort_name: 名前
       tags_all: すべてのタグ
-      tags_none: まだセカンダリタグはありません。
+      tags_none: まだタグはありません。
     messages:
       reactions:
         react: リアクション
@@ -2773,14 +2782,14 @@ ramon-canela:
       my_messages: 自分のメッセージ
       admin: 管理者
       more: その他
-      categories: タグ
-      tags: セカンダリタグ
-      all_categories: すべてのタグ
-      all_tags: すべてのセカンダリタグ
+      categories: カテゴリー
+      tags: タグ
+      all_categories: すべてのカテゴリー
+      all_tags: すべてのタグ
       notifications: 通知
       settings: 設定
-      customize_categories: タグをカスタマイズ
-      customize_tags: セカンダリタグをカスタマイズ
+      customize_categories: カテゴリーをカスタマイズ
+      customize_tags: タグをカスタマイズ
       customize_filter: 絞り込み…
       customize_community: カスタマイズ
       customize_community_help: '「その他」に移す項目のチェックを外し、ハンドルをドラッグして並び順を変更してください。この設定はこのブラウザに保存されます。'
@@ -3150,10 +3159,10 @@ ramon-canela:
       empty:
         generic: このリストに項目はありません。
         notifications_title: 通知はまだありません
-        notifications_body_1: このパネルには、あなたに直接関係するアクティビティが通知されます。あなたのスレッドや投稿への返信、誰かがあなたを <b>@メンション</b> したり引用したりしたとき、ウォッチ中のスレッドへの返信などです。しばらくログインしていない場合は、通知がメールでも送信されます。
-        notifications_body_2: 通知を受け取りたいスレッドやタグは {icon} から選べます。詳しくは<a>通知設定</a>をご覧ください。
+        notifications_body_1: あなたのスレッドへの返信、あなたへのメンション、フォロー中のスレッドの新着がここに届きます。
+        notifications_body_2: 各スレッドの {icon} や<a>通知設定</a>で、受け取る内容を選べます。
         page_title: 通知はまだありません
-        page_body_1: あなたに直接関係するアクティビティが通知されます。あなたのスレッドや投稿への返信、誰かがあなたを <b>@メンション</b> したり引用したりしたとき、ウォッチ中のスレッドへの返信などです。しばらくログインしていない場合は、通知がメールでも送信されます。
+        page_body_1: あなたのスレッドへの返信、あなたへのメンション、フォロー中のスレッドの新着がここに届きます。しばらくログインしないと、メールでも届きます。
         likes_title: まだいいねを受け取っていません
         likes_body_1: 誰かがあなたの投稿にいいねするたびにここに通知されるので、他の人が何を価値あると感じているかがわかります。あなたが他の人の投稿にいいねしたときも、相手に同じように通知されます！
         likes_body_2: いいねの通知がメールで送信されることはありませんが、サイト上でのいいねの通知の受け取り方は<a>通知設定</a>で調整できます。
