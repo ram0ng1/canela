@@ -393,7 +393,8 @@ const cards: CardDef[] = [
     icon: 'fas fa-plug',
     title: () => trans(`${KEY}.provider_title`),
     description: help('enabled'),
-    keywords: 'ia ai provedor provider anthropic claude openai chave key api modelo model sonnet opus haiku testar test conexão connection llm',
+    keywords:
+      'ia ai provedor provider anthropic claude openai chave key api modelo model sonnet opus haiku fable advisor orientador testar test conexão connection llm',
     master: AI,
     body: () => (
       <>
@@ -430,6 +431,17 @@ const cards: CardDef[] = [
               help={trans(`${KEY}.fast_model_help`)}
               options={ANTHROPIC_MODELS}
               default="claude-haiku-5-5"
+            />
+            <AdminSelect
+              settingKey="canela.ai_anthropic_advisor_model"
+              label={trans(`${KEY}.advisor_model_label`)}
+              help={trans(`${KEY}.advisor_model_help`)}
+              options={{
+                '': trans(`${KEY}.advisor_off`),
+                'claude-opus-5-5': 'Claude Opus 5.5',
+                'claude-fable-5-2': 'Claude Fable 5.2',
+              }}
+              default=""
             />
           </AdminSubGroup>
         ) : (

@@ -43,6 +43,8 @@ final class LlmRequest
         public readonly string $effort = 'medium',
         /** A busca na web do provedor (só a Anthropic tem uma ferramenta própria). */
         public readonly bool $webSearch = false,
+        /** O modelo advisor da Anthropic ('' = sem advisor); os outros provedores o ignoram. */
+        public readonly string $advisor = '',
     ) {
     }
 

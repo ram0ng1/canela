@@ -177,6 +177,7 @@ final class AssistantReplyJob extends AbstractJob
             $maxTokens,
             'medium',
             $webSearch,
+            $settings->advisorModel(),
         );
 
         try {
