@@ -43,7 +43,7 @@ final class SubscriptionController implements RequestHandlerInterface
         $body = (array) $request->getParsedBody();
         $endpoint = (string) Arr::get($body, 'endpoint');
 
-        if (! str_starts_with($endpoint, 'https://') || strlen($endpoint) > 2000) {
+        if (strlen($endpoint) > 2000 || ! Push::allowedEndpoint($endpoint)) {
             return new EmptyResponse(422);
         }
 

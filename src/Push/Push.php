@@ -30,6 +30,17 @@ final class Push
     public const PUBLIC_KEY = 'canela.push_vapid_public';
     public const PRIVATE_KEY = 'canela.push_vapid_private';
 
+    /**
+     * Os serviços de push dos navegadores (Chrome/Edge/Opera, Firefox,
+     * Windows e Safari). O servidor faz um POST para o endpoint a cada
+     * notificação: sem esta lista, qualquer conta podia cadastrar um endereço
+     * da rede interna e fazer o fórum chamá-lo.
+     */
+    private const HOSTS = ['fcm.googleapis.com', 'updates.push.services.mozilla.com', 'web.push.apple.com'];
+
+    /** Os mesmos serviços, nos subdomínios que eles usam. */
+    private const HOST_SUFFIXES = ['.push.services.mozilla.com', '.notify.windows.com', '.push.apple.com'];
+
     public function __construct(
         private readonly SettingsRepositoryInterface $settings,
     ) {
@@ -53,5 +64,29 @@ final class Push
         }
 
         return ['publicKey' => $public, 'privateKey' => $private];
+    }
+
+    /** O endpoint é HTTPS, na porta padrão, e de um dos serviços de push. */
+    public static function allowedEndpoint(string $endpoint): bool
+    {
+        $parts = parse_url($endpoint);
+
+        if (! is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || isset($parts['port']) || isset($parts['user']) || isset($parts['pass'])) {
+            return false;
+        }
+
+        $host = strtolower((string) ($parts['host'] ?? ''));
+
+        if (in_array($host, self::HOSTS, true)) {
+            return true;
+        }
+
+        foreach (self::HOST_SUFFIXES as $suffix) {
+            if (str_ends_with($host, $suffix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
