@@ -44,19 +44,29 @@ export function rememberReturn(): void {
   }
 }
 
-function takeReturn(): string {
+/** A página de volta guardada (só caminhos do próprio fórum), ou a inicial. */
+function peekReturn(): string {
   try {
     const route = sessionStorage.getItem(RETURN_KEY);
 
-    sessionStorage.removeItem(RETURN_KEY);
-
-    // Só caminhos do próprio fórum.
     if (route && route.startsWith('/') && !route.startsWith('//')) return route;
   } catch {
     // Idem.
   }
 
   return app.route('index');
+}
+
+function takeReturn(): string {
+  const route = peekReturn();
+
+  try {
+    sessionStorage.removeItem(RETURN_KEY);
+  } catch {
+    // Idem.
+  }
+
+  return route;
 }
 
 export function goToAuth(mode: AuthMode, attrs: Record<string, unknown> = {}): void {
@@ -175,6 +185,29 @@ export function backToLogin(): Mithril.Children {
   );
 }
 
+/**
+ * "Voltar", debaixo do cartão de entrar e de cadastro: a saída visível para
+ * quem chegou aqui por um clique em Responder ou Curtir e desistiu. Leva de
+ * volta à página de onde a pessoa veio.
+ */
+function backToForum(): Mithril.Children {
+  const route = peekReturn();
+
+  return (
+    <p className="CanelaAuthPage-back">
+      <a
+        href={route}
+        onclick={(event: MouseEvent) => {
+          event.preventDefault();
+          m.route.set(takeReturn());
+        }}
+      >
+        {t('auth.back_to_forum')}
+      </a>
+    </p>
+  );
+}
+
 /** O ModalManager que o modal espera, sem modal nenhum: abre na hora e não anima a saída. */
 const embeddedState = { modal: {}, close() {} };
 
@@ -252,7 +285,7 @@ export default class AuthPage extends Page<IPageAttrs> {
           ) : (
             <LoadingIndicator display="block" />
           )}
-          {mode === 'forgot' ? backToLogin() : null}
+          {mode === 'forgot' ? backToLogin() : backToForum()}
         </div>
       </div>
     );

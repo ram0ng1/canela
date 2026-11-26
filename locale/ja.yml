@@ -1502,6 +1502,7 @@ ramon-canela:
       signup_page_title: 新規登録
       forgot_heading: パスワードをリセット
       back_to_login: ログインに戻る
+      back_to_forum: フォーラムに戻る
       or: または
       panel_login_title: おかえりなさい
       panel_login_text: ログインして会話の続きに参加し、返信や気になるトピックの確認をしましょう。

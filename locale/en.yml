@@ -1502,6 +1502,7 @@ ramon-canela:
       signup_page_title: Sign Up
       forgot_heading: Reset password
       back_to_login: Back to log in
+      back_to_forum: Back to forum
       or: or
       panel_login_title: Good to see you again
       panel_login_text: Log in to keep up with the conversations, reply and follow what matters to you.

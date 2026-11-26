@@ -1502,6 +1502,7 @@ ramon-canela:
       signup_page_title: Cadastrar-se
       forgot_heading: Redefinir senha
       back_to_login: Voltar para entrar
+      back_to_forum: Voltar ao fórum
       or: ou
       panel_login_title: Que bom ver você de novo
       panel_login_text: Entre para continuar as conversas, responder e acompanhar o que importa para você.
@@ -1547,8 +1548,8 @@ ramon-canela:
         trust_level: Nível de confiança
         other: Outros
       trust_levels:
-        newuser: usuário(a) novo(a)
-        basic: usuário(a) básico(a)
+        newuser: membro novo
+        basic: membro básico
         member: membro
         regular: regular
         leader: líder
@@ -2136,7 +2137,7 @@ ramon-canela:
     modals:
       login_title: Boas-vindas outra vez
       signup_title: Criar sua conta
-      identification: E-mail/nome do(a) usuário(a)
+      identification: E-mail ou nome de usuário
       forgot_password: Esqueci minha senha
       no_account: Não tem uma conta?
       sign_up: Cadastrar-se
@@ -2985,12 +2986,12 @@ ramon-canela:
         views: Visualizações
         related_title: Discussões relacionadas
         tab_suggested: Sugestões
-        tab_related: Relacionado(a)
+        tab_related: Relacionadas
       map:
         aria_label: Resumo da discussão
         replies: '{count, plural, one {resposta} other {respostas}}'
         views: '{count, plural, one {visualização} other {visualizações}}'
-        users: '{count, plural, one {usuário(a)} other {usuários(as)}}'
+        users: '{count, plural, one {participante} other {participantes}}'
         likes: '{count, plural, one {curtida} other {curtidas}}'
         frequent_posters: Autores frequentes
         most_liked: Respostas mais curtidas
@@ -3023,7 +3024,7 @@ ramon-canela:
       stats:
         joined: Ingressou
         last_post: Última postagem
-        seen: Visto(a)
+        seen: Visto
         online: online agora
         posts: Postagens
         topics: Discussões
@@ -3046,9 +3047,9 @@ ramon-canela:
         time_read: tempo de leitura
         topics_viewed: discussões visualizadas
         posts_read: postagens lidas
-        likes_received_short: recebidos
+        likes_received_short: recebidas
         solutions: soluções
-        most_replied_to: Mais respondidos(as)
+        most_replied_to: Para quem mais respondeu
         empty_links: "Nenhum link clicado ainda."
         empty_replied: "Nenhuma resposta ainda."
         empty_likes: "Nenhuma curtida ainda."
@@ -3062,7 +3063,7 @@ ramon-canela:
         days_member: '{count, plural, one {dia de casa} other {dias de casa}}'
         topics_created: discussões criadas
         posts_created: postagens criadas
-        likes_given_short: dados
+        likes_given_short: dadas
         top_replies_heading: Melhores respostas
         top_topics_heading: Melhores discussões
         no_replies: Nenhuma resposta ainda.
