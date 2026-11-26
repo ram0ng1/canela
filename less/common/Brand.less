@@ -34,6 +34,35 @@
     dominant-baseline: central;
   }
 
+  // Só o contorno (e o fundo claro do logo próprio).
+  .CanelaBrand-frame {
+    fill: var(--cn-brand-soft);
+    stroke: var(--cn-brand-a);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .CanelaBrand-outlineInk .CanelaBrand-initials {
+    fill: var(--cn-brand-a);
+  }
+
+  // O anel fino em volta do selo cheio.
+  .CanelaBrand-ring {
+    fill: none;
+    stroke: var(--cn-brand-mid);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  // O brilho em volta: a cor primária, bem clara, que some nas bordas.
+  .CanelaBrand-glow {
+    opacity: 0.3;
+  }
+
+  .CanelaBrand-glowStop {
+    stop-color: var(--cn-brand-a);
+  }
+
   .CanelaBrand-initials--muted {
     fill: var(--cn-brand-mid);
   }

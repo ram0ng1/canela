@@ -28,6 +28,11 @@ final class Brand
 
     public const MODES = ['theme', 'image', 'none'];
 
+    /** O modelo, a borda e o efeito em volta; `auto` deixa o nome escolher. */
+    public const SHAPES = ['auto', 'circle', 'rounded', 'square', 'arch', 'leaf'];
+    public const BORDERS = ['fill', 'outline', 'ring'];
+    public const EFFECTS = ['auto', 'dots', 'lines', 'rings', 'grid', 'glow', 'none'];
+
     public static function modeKey(string $area): string
     {
         return "canela.brand_{$area}";
@@ -41,6 +46,12 @@ final class Brand
     public static function mode(mixed $value): string
     {
         return is_string($value) && in_array($value, self::MODES, true) ? $value : 'theme';
+    }
+
+    /** @param list<string> $choices O valor, se estiver na lista; senão, o primeiro dela. */
+    public static function choice(mixed $value, array $choices): string
+    {
+        return is_string($value) && in_array($value, $choices, true) ? $value : $choices[0];
     }
 
     /** `not_found` => `canelaBrandNotFound`. */

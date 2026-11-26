@@ -2,7 +2,8 @@
  * A identidade visual gerada pelo nome do fórum.
  *
  * Do nome saem as iniciais (o monograma) e uma semente, que escolhe a forma
- * do selo e um padrão de linhas finas. É de propósito pouco: uma forma, as
+ * do selo e um padrão de linhas finas. O admin pode fixar o modelo, a borda e
+ * o efeito em volta, e trocar o monograma pelo logo do fórum. É de propósito pouco: uma forma, as
  * iniciais e uma textura discreta, numa cor só. A cor não sai daqui: tudo
  * pinta com variáveis do CSS derivadas da primária (less/common/Brand.less),
  * então o claro, o escuro e a troca de cor no admin valem na hora. Mesmo
@@ -14,18 +15,39 @@ import type Mithril from 'mithril';
 
 export type BrandArea = 'header' | 'welcome' | 'empty' | 'auth';
 
+/** As formas e texturas que o nome sorteia (o admin ainda pode escolher outras). */
 const SHAPES = ['circle', 'rounded', 'arch', 'leaf'] as const;
 const PATTERNS = ['dots', 'lines', 'rings', 'grid'] as const;
 
-export type Shape = (typeof SHAPES)[number];
-export type Pattern = (typeof PATTERNS)[number];
+export const SHAPE_CHOICES = ['circle', 'rounded', 'square', 'arch', 'leaf'] as const;
+export const EFFECT_CHOICES = ['dots', 'lines', 'rings', 'grid', 'glow', 'none'] as const;
+export const BORDER_CHOICES = ['fill', 'outline', 'ring'] as const;
+
+export type Shape = (typeof SHAPE_CHOICES)[number];
+export type Effect = (typeof EFFECT_CHOICES)[number];
+export type Border = (typeof BORDER_CHOICES)[number];
 
 export interface Identity {
   initials: string;
   seed: number;
   shape: Shape;
-  pattern: Pattern;
+  effect: Effect;
+  /** fill: selo cheio; outline: só o contorno; ring: cheio, com um anel fino em volta. */
+  border: Border;
+  /** O logo do fórum no lugar das iniciais, quando o admin pede. */
+  logo: string | null;
 }
+
+/** O que o admin fixou; `auto` (ou vazio) deixa o nome escolher. */
+export interface BrandChoices {
+  shape?: string;
+  effect?: string;
+  border?: string;
+  logo?: string | null;
+}
+
+const pickChoice = <T extends string>(list: readonly T[], value: string | undefined, fallback: T): T =>
+  list.includes(value as T) ? (value as T) : fallback;
 
 /** Palavras que não viram inicial (quando sobra alguma outra). */
 const FILLER = new Set('de da do das dos e a o the of and & la le el del di du des y fórum forum foro comunidade community comunidad'.split(' '));
@@ -75,7 +97,7 @@ export function random(seed: number): () => number {
   };
 }
 
-export function identity(name: string, variant = 0): Identity {
+export function identity(name: string, variant = 0, choices: BrandChoices = {}): Identity {
   const clean = name.trim().replace(/\s+/g, ' ') || 'Flarum';
   const seed = hash(`${clean.toLocaleLowerCase()}#${variant}`);
   const rand = random(seed);
@@ -83,8 +105,10 @@ export function identity(name: string, variant = 0): Identity {
   return {
     initials: initialsOf(clean),
     seed,
-    shape: SHAPES[Math.floor(rand() * SHAPES.length)],
-    pattern: PATTERNS[Math.floor(rand() * PATTERNS.length)],
+    shape: pickChoice(SHAPE_CHOICES, choices.shape, SHAPES[Math.floor(rand() * SHAPES.length)]),
+    effect: pickChoice(EFFECT_CHOICES, choices.effect, PATTERNS[Math.floor(rand() * PATTERNS.length)]),
+    border: pickChoice(BORDER_CHOICES, choices.border, 'fill'),
+    logo: choices.logo || null,
   };
 }
 
@@ -95,6 +119,8 @@ export function shapePath(id: Identity): string {
       return 'M50 6a44 44 0 1 1 0 88a44 44 0 1 1 0-88Z';
     case 'rounded':
       return 'M30 6h40a24 24 0 0 1 24 24v40a24 24 0 0 1-24 24H30A24 24 0 0 1 6 70V30A24 24 0 0 1 30 6Z';
+    case 'square':
+      return 'M14 6h72a8 8 0 0 1 8 8v72a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8V14a8 8 0 0 1 8-8Z';
     case 'arch':
       return 'M10 94V50a40 40 0 0 1 80 0v44Z';
     default:
@@ -116,13 +142,26 @@ function initials(id: Identity, muted = false): Mithril.Children {
   );
 }
 
-/** O selo (forma + iniciais), como grupo dentro de um SVG maior. */
+/** O logo do fórum, inteiro, dentro do selo. */
+function logoImage(id: Identity, inset: number): Mithril.Children {
+  return <image href={id.logo!} x={inset} y={inset} width={100 - inset * 2} height={100 - inset * 2} preserveAspectRatio="xMidYMid meet" />;
+}
+
+/**
+ * O selo, como grupo dentro de um SVG maior: a forma (cheia, só o contorno
+ * ou com um anel em volta) e as iniciais, ou o logo do fórum. Com o logo, a
+ * forma fica clara, para o logo de qualquer cor aparecer.
+ */
 function seal(id: Identity, x: number, y: number, size: number): Mithril.Children {
+  const d = shapePath(id);
+  const filled = id.border !== 'outline' && !id.logo;
+
   return (
     <g transform={`translate(${x} ${y}) scale(${size / 100})`}>
       <g className="CanelaBrand-seal">
-        <path className="CanelaBrand-shape" d={shapePath(id)} />
-        {initials(id)}
+        {id.border === 'ring' && <path className="CanelaBrand-ring" d={d} transform="translate(-6 -6) scale(1.12)" />}
+        <path className={filled ? 'CanelaBrand-shape' : 'CanelaBrand-frame'} d={d} />
+        {id.logo ? logoImage(id, 20) : filled ? initials(id) : <g className="CanelaBrand-outlineInk">{initials(id)}</g>}
       </g>
     </g>
   );
@@ -144,13 +183,13 @@ function pattern(id: Identity, w: number, h: number): Mithril.Children {
   const gap = 16 + Math.floor(random(id.seed ^ 0x51f15e)() * 3) * 4;
   const items: Mithril.Children[] = [];
 
-  if (id.pattern === 'dots') {
+  if (id.effect === 'dots') {
     for (let y = gap / 2; y < h; y += gap) for (let x = gap / 2; x < w; x += gap) items.push(<circle cx={x} cy={y} r="1.3" />);
-  } else if (id.pattern === 'rings') {
+  } else if (id.effect === 'rings') {
     for (let r = gap; r < Math.hypot(w, h) / 2; r += gap) items.push(<circle cx={w / 2} cy={h / 2} r={r} fill="none" />);
   } else {
     for (let x = gap / 2; x < w; x += gap) items.push(<path d={`M${x} 0V${h}`} fill="none" />);
-    if (id.pattern === 'grid') for (let y = gap / 2; y < h; y += gap) items.push(<path d={`M0 ${y}H${w}`} fill="none" />);
+    if (id.effect === 'grid') for (let y = gap / 2; y < h; y += gap) items.push(<path d={`M0 ${y}H${w}`} fill="none" />);
   }
 
   return <g className="CanelaBrand-pattern">{items}</g>;
@@ -167,7 +206,7 @@ export function brandScene(id: Identity, area: Exclude<BrandArea, 'header'>, att
     body = (
       <g transform={`translate(${(w - size) / 2} ${(h - size) / 2}) scale(${size / 100})`}>
         <path className="CanelaBrand-outline" d={shapePath(id)} />
-        {initials(id, true)}
+        {id.logo ? <g opacity=".55">{logoImage(id, 22)}</g> : initials(id, true)}
       </g>
     );
   } else {
@@ -177,11 +216,19 @@ export function brandScene(id: Identity, area: Exclude<BrandArea, 'header'>, att
           <stop offset="0" stop-color="#fff" />
           <stop offset="1" stop-color="#fff" stop-opacity="0" />
         </radialGradient>
+        <radialGradient id={`${key}-c`}>
+          <stop className="CanelaBrand-glowStop" offset="0" />
+          <stop className="CanelaBrand-glowStop" offset="1" stop-opacity="0" />
+        </radialGradient>
         <mask id={`${key}-m`}>
           <rect width={w} height={h} fill={`url(#${key}-g)`} />
         </mask>
       </defs>,
-      <g mask={`url(#${key}-m)`}>{pattern(id, w, h)}</g>,
+      id.effect === 'glow' ? (
+        <rect className="CanelaBrand-glow" width={w} height={h} fill={`url(#${key}-c)`} />
+      ) : id.effect === 'none' ? null : (
+        <g mask={`url(#${key}-m)`}>{pattern(id, w, h)}</g>
+      ),
       <g className="CanelaBrand-pop">{seal(id, (w - size) / 2, (h - size) / 2, size)}</g>,
     ];
   }

@@ -21,6 +21,14 @@ final class BrandTest extends TestCase
         self::assertSame('theme', Brand::mode(null));
     }
 
+    public function test_modelo_borda_e_efeito_fora_da_lista_voltam_ao_padrao(): void
+    {
+        self::assertSame('square', Brand::choice('square', Brand::SHAPES));
+        self::assertSame('auto', Brand::choice('hexagon', Brand::SHAPES));
+        self::assertSame('fill', Brand::choice(null, Brand::BORDERS));
+        self::assertSame('glow', Brand::choice('glow', Brand::EFFECTS));
+    }
+
     public function test_chaves_e_atributos_de_cada_area(): void
     {
         self::assertSame('canela.brand_not_found', Brand::modeKey('not_found'));

@@ -13,13 +13,20 @@ import { forumBool } from '../utils/settings';
 
 let cached: { key: string; id: Identity } | null = null;
 
-/** A identidade do fórum: o nome do admin (ou o título) e a variação. */
+/** A identidade do fórum: o nome do admin (ou o título), a variação e o que o admin fixou. */
 export function forumIdentity(): Identity {
-  const name = app.forum.attribute<string>('canelaBrandName') || app.forum.attribute<string>('title') || '';
+  const attr = (name: string) => app.forum.attribute<string>(name) || '';
+  const name = attr('canelaBrandName') || attr('title');
   const variant = Number(app.forum.attribute('canelaBrandVariant')) || 0;
-  const key = `${name}#${variant}`;
+  const choices = {
+    shape: attr('canelaBrandShape'),
+    effect: attr('canelaBrandEffect'),
+    border: attr('canelaBrandBorder'),
+    logo: forumBool('canelaBrandUseLogo', false) ? attr('logoUrl') || null : null,
+  };
+  const key = JSON.stringify([name, variant, choices]);
 
-  if (cached?.key !== key) cached = { key, id: identity(name, variant) };
+  if (cached?.key !== key) cached = { key, id: identity(name, variant, choices) };
 
   return cached.id;
 }

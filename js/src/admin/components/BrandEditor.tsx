@@ -8,8 +8,8 @@
 import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
 
-import { brandMark, brandScene, identity } from '../../common/brand/identity';
-import { AdminComponent, getStr, saveSetting, trans } from '../util';
+import { BORDER_CHOICES, EFFECT_CHOICES, SHAPE_CHOICES, brandMark, brandScene, identity } from '../../common/brand/identity';
+import { AdminComponent, getBool, getStr, saveSetting, trans } from '../util';
 import AdminToggle from './AdminToggle';
 
 const KEY = 'ramon-canela.admin.brand';
@@ -136,7 +136,33 @@ export default class BrandEditor extends AdminComponent {
     const title = String(app.data.settings.forum_title || '');
     const name = getStr('canela.brand_name');
     const variant = Number(getStr('canela.brand_variant', '0')) || 0;
-    const id = identity(name || title, variant);
+    const logo = getBool('canela.brand_use_logo') ? (app.forum.attribute<string>('logoUrl') ?? null) : null;
+    const id = identity(name || title, variant, {
+      shape: getStr('canela.brand_shape', 'auto'),
+      effect: getStr('canela.brand_effect', 'auto'),
+      border: getStr('canela.brand_border', 'fill'),
+      logo,
+    });
+    // O modelo, a borda e o efeito: selects que gravam na hora, como os das áreas.
+    const choice = (setting: string, list: readonly string[], auto: boolean) => (
+      <div className="Form-group">
+        <label className="CanelaAdmin-label">{trans(`${KEY}.${setting}_label`)}</label>
+        <div className="CanelaAdmin-select-wrap">
+          <select
+            className="FormControl CanelaAdmin-select"
+            value={getStr(`canela.brand_${setting}`, auto ? 'auto' : list[0])}
+            onchange={(event: Event) => save(`canela.brand_${setting}`, (event.target as HTMLSelectElement).value)}
+          >
+            {(auto ? ['auto', ...list] : list).map((key) => (
+              <option key={key} value={key}>
+                {trans(`${KEY}.${setting}_${key}`)}
+              </option>
+            ))}
+          </select>
+          <i className="fas fa-chevron-down CanelaAdmin-select-chevron" aria-hidden="true" />
+        </div>
+      </div>
+    );
 
     return (
       <>
@@ -167,6 +193,18 @@ export default class BrandEditor extends AdminComponent {
             </Button>
           )}
         </div>
+
+        <div className="CanelaBrandChoices">
+          {choice('shape', SHAPE_CHOICES, true)}
+          {choice('border', BORDER_CHOICES, false)}
+          {choice('effect', EFFECT_CHOICES, true)}
+        </div>
+
+        <AdminToggle
+          settingKey="canela.brand_use_logo"
+          label={trans(`${KEY}.use_logo_label`)}
+          help={trans(`${KEY}.${app.forum.attribute('logoUrl') ? 'use_logo_help' : 'use_logo_missing'}`)}
+        />
 
         <AdminToggle settingKey="canela.brand_motion" label={trans(`${KEY}.motion_label`)} help={trans(`${KEY}.motion_help`)} />
 
