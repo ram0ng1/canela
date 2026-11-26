@@ -99,6 +99,7 @@ final class BotReply
             64000,
             'medium',
             $webSearch,
+            $this->settings->advisorModel(),
         );
 
         $text = '';
