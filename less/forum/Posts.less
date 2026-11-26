@@ -1112,14 +1112,14 @@
   }
 }
 
-// A batida do coração ao curtir (.4s).
+// A batida do coração ao curtir (200ms).
 @keyframes canelaHeartBump {
   0% {
     transform: scale(1);
   }
 
   50% {
-    transform: scale(1.5);
+    transform: scale(1.2);
   }
 
   100% {
@@ -1129,7 +1129,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .CanelaLike--bump .Button-icon {
-    animation: canelaHeartBump 0.4s;
+    animation: canelaHeartBump 200ms ease-out;
   }
 }
 

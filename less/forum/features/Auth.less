@@ -569,3 +569,22 @@ html.CanelaAuthRoute {
     }
   }
 }
+
+// "Voltar ao fórum" (e "Voltar para entrar" na senha), debaixo do cartão:
+// a saída de quem chegou aqui por um clique e desistiu.
+.CanelaAuthPage-back {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: var(--cn-font-down-1, 0.875rem);
+
+  a {
+    color: var(--cn-primary-medium);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--cn-link);
+  }
+}

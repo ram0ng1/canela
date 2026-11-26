@@ -91,7 +91,7 @@ function moveSelection(step: number) {
 
   items.forEach((item) => item.classList.remove(SELECTED_CLASS));
   items[next].classList.add(SELECTED_CLASS);
-  items[next].scrollIntoView({ block: 'center', behavior: 'smooth' });
+  items[next].scrollIntoView({ block: 'center' });
 }
 
 function openSelection(): boolean {

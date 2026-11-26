@@ -343,6 +343,13 @@
 // em cima que mostra que a lista rola; os botões à direita.
 .CanelaSidebar-footer {
   position: relative;
+
+  // O idioma só aparece no rodapé no celular; no computador ele fica no cabeçalho.
+  .CanelaSidebar-footerLocale {
+    display: none;
+    margin-right: auto;
+  }
+
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -702,6 +709,7 @@
       // num menu `position: fixed`, mandava o menu para fora da tela.
       .CanelaColorMode .Dropdown-menu,
       .CanelaPaletteSelector .Dropdown-menu,
+      .CanelaLocale .Dropdown-menu,
       .ThemeSwitcher .Dropdown-menu {
         top: auto;
         bottom: 0;
@@ -715,6 +723,25 @@
     // O teclado não tem atalhos no celular.
     .CanelaSidebar-footerShortcuts {
       display: none;
+    }
+
+    // O idioma, que no celular sai do cabeçalho: a mesma pílula de borda
+    // cinza do cabeçalho ("PT-BR ⌄").
+    .CanelaSidebar-footerLocale {
+      display: block;
+
+      .CanelaLocale > .Dropdown-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 33px;
+        padding: 0 8px 0 10px;
+        border: 1px solid var(--cn-shell-icon);
+        border-radius: var(--cn-radius-pill);
+        background: transparent;
+        color: var(--cn-shell-locale);
+        font-size: 0.7579rem;
+      }
     }
 
     // Um menu aberto (a folha do pé da tela): o painel para de rolar, senão o

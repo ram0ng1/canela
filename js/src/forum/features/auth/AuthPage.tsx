@@ -44,19 +44,29 @@ export function rememberReturn(): void {
   }
 }
 
-function takeReturn(): string {
+/** A página de volta guardada (só caminhos do próprio fórum), ou a inicial. */
+function peekReturn(): string {
   try {
     const route = sessionStorage.getItem(RETURN_KEY);
 
-    sessionStorage.removeItem(RETURN_KEY);
-
-    // Só caminhos do próprio fórum.
     if (route && route.startsWith('/') && !route.startsWith('//')) return route;
   } catch {
     // Idem.
   }
 
   return app.route('index');
+}
+
+function takeReturn(): string {
+  const route = peekReturn();
+
+  try {
+    sessionStorage.removeItem(RETURN_KEY);
+  } catch {
+    // Idem.
+  }
+
+  return route;
 }
 
 export function goToAuth(mode: AuthMode, attrs: Record<string, unknown> = {}): void {
@@ -97,6 +107,27 @@ function pageClass(mode: AuthMode, Base: any): any {
         </div>,
         ...content.slice(1),
       ];
+    }
+
+    // "Lembrar de mim" em maiúscula de frase; o pacote de idioma diz "Lembrar de Mim".
+    fields() {
+      const items = super.fields();
+
+      if (mode === 'login' && items.has('remember')) {
+        items.setContent(
+          'remember',
+          <div className="Form-group">
+            <div>
+              <label className="checkbox">
+                <input type="checkbox" bidi={this.remember} disabled={this.loading} />
+                {t('auth.remember_me')}
+              </label>
+            </div>
+          </div>
+        );
+      }
+
+      return items;
     }
 
     hide() {
@@ -170,6 +201,29 @@ export function backToLogin(): Mithril.Children {
         }}
       >
         {t('auth.back_to_login')}
+      </a>
+    </p>
+  );
+}
+
+/**
+ * "Voltar", debaixo do cartão de entrar e de cadastro: a saída visível para
+ * quem chegou aqui por um clique em Responder ou Curtir e desistiu. Leva de
+ * volta à página de onde a pessoa veio.
+ */
+function backToForum(): Mithril.Children {
+  const route = peekReturn();
+
+  return (
+    <p className="CanelaAuthPage-back">
+      <a
+        href={route}
+        onclick={(event: MouseEvent) => {
+          event.preventDefault();
+          m.route.set(takeReturn());
+        }}
+      >
+        {t('auth.back_to_forum')}
       </a>
     </p>
   );
@@ -252,7 +306,7 @@ export default class AuthPage extends Page<IPageAttrs> {
           ) : (
             <LoadingIndicator display="block" />
           )}
-          {mode === 'forgot' ? backToLogin() : null}
+          {mode === 'forgot' ? backToLogin() : backToForum()}
         </div>
       </div>
     );

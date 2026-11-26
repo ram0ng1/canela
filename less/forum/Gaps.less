@@ -246,7 +246,7 @@ pre.CanelaCodeBlock {
   .CanelaCodeButton:not(.CanelaCodeButton--done) {
     visibility: hidden;
     opacity: 0;
-    transition: 0.2s;
+    transition: opacity 150ms, visibility 150ms;
   }
 
   pre.CanelaCodeBlock:hover .CanelaCodeButton,
@@ -731,7 +731,7 @@ details.CanelaSpoiler {
   background: var(--cn-accent-low);
   color: var(--cn-accent);
   font-size: var(--cn-font-down-1);
-  animation: CanelaFloatDown 250ms ease-in-out forwards;
+  animation: CanelaFloatDown 150ms ease-out;
 
   &:hover,
   &:focus-visible {
@@ -743,7 +743,6 @@ details.CanelaSpoiler {
 @keyframes CanelaFloatDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
   }
 }
 
